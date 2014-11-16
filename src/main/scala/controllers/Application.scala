@@ -44,7 +44,7 @@ class Application() {
     teamService.createTeam(team)
 
     //Get team
-    var insertedTeams: Iterator[Team] = teamService.getAllTeams()
+    var insertedTeams: Seq[Team] = teamService.getAllTeams()
 
     insertedTeams.foreach{ println }
 
