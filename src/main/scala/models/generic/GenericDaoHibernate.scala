@@ -4,49 +4,54 @@ import javax.persistence.EntityManager
 import javax.persistence.criteria.CriteriaQuery
 import scala.collection.JavaConversions._
 import javax.persistence.PersistenceContext
+import javax.persistence.PersistenceUnit
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.hibernate.Session
 import java.io.Serializable
 import javax.persistence.EntityManagerFactory
 import org.springframework.stereotype.Service
+import org.springframework.stereotype.Repository
 
-abstract class GenericDaoHibernate[T, K <: Serializable] extends GenericDao[T, K]{
+@Repository
+abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K]{
 
-  var entityClass: Class[T] = _
-
-  @PersistenceContext
   var entityManager: EntityManager = _
 
-  def getManager(): EntityManager = {
+  @PersistenceUnit
+  var entityManagerFactory: EntityManagerFactory = _
+
+  def getEntityManager(): EntityManager = {
 	this.entityManager
   }
-  
-  def setManager(em: EntityManagerFactory) = {
+
+  @PersistenceUnit
+  def setEntityManagerFactory(em: EntityManagerFactory) = {
+    this.entityManagerFactory = em
     this.entityManager  = em.createEntityManager()
   }
   
   def findAll(): List[T] = {
-    var criteria: CriteriaQuery[T] = getManager().getCriteriaBuilder().createQuery(entityClass)
+    var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
     var root = criteria.from(entityClass)
     criteria.select(root)
-    var teamList: List[T] = getManager().createQuery(criteria).getResultList().toList
+    var teamList: List[T] = getEntityManager().createQuery(criteria).getResultList().toList
 
     teamList
   }
   
   def save(entity:T)= {
-    //getManager().getTransaction().begin();
-    getManager().persist(entity)
-    //getManager().getTransaction().commit();
+    //getEntityManager().getTransaction().begin();
+    getEntityManager().persist(entity)
+    //getEntityManager().getTransaction().commit();
   }
 
   def remove(entity:T) = {
-    getManager().remove(entity);        
+    getEntityManager().remove(entity);        
   }
 
   def findById(id: K):T = {
-    getManager().find(entityClass, id).asInstanceOf[T];
+    getEntityManager().find(entityClass, id).asInstanceOf[T];
   }
       
 }

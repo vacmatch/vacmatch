@@ -31,6 +31,7 @@ class Application() {
   def index = {
     println("\n\n -------------- ENTRA 1 --------- \n\n")
     null
+    "Hello world. Do nothing else"
   }
 
   @RequestMapping(value = Array("/insert"), method = Array(RequestMethod.GET))
@@ -43,7 +44,7 @@ class Application() {
     teamService.createTeam(team)
     
     //Get team
-    var insertedTeams: Iterator[List[Team]] = teamService.getAllTeams()
+    var insertedTeams: Iterator[Team] = teamService.getAllTeams()
     
     insertedTeams.foreach{ println }
     

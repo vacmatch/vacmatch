@@ -22,13 +22,14 @@ class TeamServiceHibernate() extends TeamService {
   def setTeamDao(td: TeamDao) = {
     this.teamDao = td
   }
-  
+
+  @Transactional
   def createTeam(obj: Team) = {
     teamDao.save(obj)
   }
 
-  def getAllTeams(): Iterator[List[Team]] = {
-    teamDao.findAll().asInstanceOf[Iterator[List[Team]]]
+  def getAllTeams(): Iterator[Team] = {
+    teamDao.findAll.iterator
   }
   
   

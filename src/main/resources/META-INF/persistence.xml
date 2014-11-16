@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="federation-proyect-app-persistence">
-        <jta-data-source>dataSource</jta-data-source>
+        <non-jta-data-source>myDataSource</non-jta-data-source>
 
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<!-- Persistent classes -->
 		<class>main.scala.models.team.Team</class>
 
 		<properties>
+
+			<property name="hibernate.archive.autodetection" value="class"/>
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>			<property name="hibernate.connection.release_mode" value="after_statement"/>
+
+
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.connection.url" value="jdbc:hsqldb:mem:spring" />
 			<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />

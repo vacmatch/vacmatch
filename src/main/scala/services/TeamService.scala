@@ -6,6 +6,6 @@ trait TeamService {
 
   def createTeam(obj: Team)
   
-  def getAllTeams(): Iterator[List[Team]]
+  def getAllTeams(): Iterator[Team]
   
 }
