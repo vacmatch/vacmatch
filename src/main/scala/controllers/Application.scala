@@ -17,16 +17,16 @@ import org.springframework.beans.factory.annotation.Qualifier
 class Application() {
 
   var teamService: TeamService = _
-  
+
   def getTeamService: TeamService = {
     this.teamService
   }
-  
+
   @Autowired
   def setTeamService(ts: TeamService) ={
     this.teamService = ts
   }
-  
+
   @RequestMapping(value = Array("/"), method = Array(RequestMethod.GET))
   def index = {
     println("\n\n -------------- ENTRA 1 --------- \n\n")
@@ -39,29 +39,20 @@ class Application() {
     println("\n\n------- ENTRA 2 --------\n\n")
     //Create a new team
     var team: Team = new Team("Carnicería Ángel","Desguaces Herbón",List(""),List(""),Calendar.getInstance())
-    
+
     //Insert team
     teamService.createTeam(team)
-    
+
     //Get team
     var insertedTeams: Iterator[Team] = teamService.getAllTeams()
-    
+
     insertedTeams.foreach{ println }
-    
-    var a = "Team: " + team  + " .\nInserted: " +  insertedTeams.toString() + " team_id: " 
-    
+
+    var a = "Team: " + team  + " .\nInserted: " +  insertedTeams.toString() + " team_id: "
+
     var mav: ModelAndView= new ModelAndView("testTeam");
     mav.addObject("team", team);
     mav.addObject("insertedTeams", insertedTeams);
     mav
   }
 }
-
-
-
-
-
-
-
-
-

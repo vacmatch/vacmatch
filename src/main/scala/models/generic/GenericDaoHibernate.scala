@@ -30,7 +30,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     this.entityManagerFactory = em
     this.entityManager  = em.createEntityManager()
   }
-  
+
   def findAll(): List[T] = {
     var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
     var root = criteria.from(entityClass)
@@ -39,7 +39,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
 
     teamList
   }
-  
+
   def save(entity:T)= {
     //getEntityManager().getTransaction().begin();
     getEntityManager().persist(entity)
@@ -47,15 +47,11 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
   }
 
   def remove(entity:T) = {
-    getEntityManager().remove(entity);        
+    getEntityManager().remove(entity);
   }
 
   def findById(id: K):T = {
     getEntityManager().find(entityClass, id).asInstanceOf[T];
   }
-      
+
 }
-
-
-
-

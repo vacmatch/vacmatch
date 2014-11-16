@@ -5,7 +5,7 @@ import main.scala.models.team.Team
 trait TeamService {
 
   def createTeam(obj: Team)
-  
+
   def getAllTeams(): Iterator[Team]
-  
+
 }

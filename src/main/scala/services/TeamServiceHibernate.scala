@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 class TeamServiceHibernate() extends TeamService {
 
   var teamDao: TeamDao = _
- 
+
   def getTeamDao: TeamDao = {
     this.teamDao
   }
-  
+
   @Autowired
   def setTeamDao(td: TeamDao) = {
     this.teamDao = td
@@ -31,6 +31,6 @@ class TeamServiceHibernate() extends TeamService {
   def getAllTeams(): Iterator[Team] = {
     teamDao.findAll.iterator
   }
-  
-  
+
+
 }

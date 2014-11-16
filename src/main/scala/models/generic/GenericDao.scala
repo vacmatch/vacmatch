@@ -31,10 +31,6 @@ trait GenericDao[T,K <: Serializable] {
    * @param query The name of the query to be executed
    */
   def findById(id: K): T
-  
-  
+
+
 }
-
-
-
-
