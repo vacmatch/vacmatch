@@ -7,14 +7,12 @@ import main.scala.models.generic.GenericDaoHibernate
 class TeamDaoHibernate extends GenericDaoHibernate[Team,java.lang.Long](classOf[Team]) with TeamDao {
 
   def findByTeamName(teamName: String): Team = {
-    var team: Team = getEntityManager().createQuery(
+    getEntityManager().createQuery(
       "SELECT t FROM Team t" +
         "WHERE t.teamName = :teamName")
       .setParameter("teamName", teamName)
       .getFirstResult()
       .asInstanceOf[Team]
-
-    team
   }
 
   def hasCompetitions(teamId: Int): Boolean = {

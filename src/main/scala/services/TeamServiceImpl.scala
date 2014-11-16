@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 
 @Service("teamService")
 @Transactional
-class TeamServiceHibernate() extends TeamService {
+class TeamServiceImpl() extends TeamService {
 
   var teamDao: TeamDao = _
 
@@ -28,8 +28,8 @@ class TeamServiceHibernate() extends TeamService {
     teamDao.save(obj)
   }
 
-  def getAllTeams(): Iterator[Team] = {
-    teamDao.findAll.iterator
+  def getAllTeams(): Seq[Team] = {
+    teamDao.findAll
   }
 
 

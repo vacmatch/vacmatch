@@ -35,9 +35,9 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
     var root = criteria.from(entityClass)
     criteria.select(root)
-    var teamList: List[T] = getEntityManager().createQuery(criteria).getResultList().toList
+    var teamList: List[T] = getEntityManager().createQuery(criteria).getResultList()
 
-    teamList
+    teamList.toList // return Scala types
   }
 
   def save(entity:T)= {
