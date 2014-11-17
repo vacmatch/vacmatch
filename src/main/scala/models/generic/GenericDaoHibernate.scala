@@ -13,19 +13,17 @@ import javax.persistence.EntityManagerFactory
 import org.springframework.stereotype.Service
 import org.springframework.stereotype.Repository
 
-@Repository
 abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K]{
 
   var entityManager: EntityManager = _
 
-  @PersistenceUnit
   var entityManagerFactory: EntityManagerFactory = _
 
   def getEntityManager(): EntityManager = {
 	this.entityManager
   }
 
-  @PersistenceUnit
+  @Autowired
   def setEntityManagerFactory(em: EntityManagerFactory) = {
     this.entityManagerFactory = em
     this.entityManager  = em.createEntityManager()

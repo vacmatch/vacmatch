@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="/main/webapp/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="/main/webapp/resources/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<div class="navbar navbar-inverse navbar-fixed-top" th:fragment="header">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">My project</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="#" th:href="@{/}">Home</a></li>
+						<li><a href="#" th:href="@{/insert}">Insert</a></li>
+						<li><a href="#" th:href="@{/all}">Show All</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="/signin" th:href="@{/signin}">Sign in</a></li>
+						<li><a href="/logout" th:href="@{/logout}">Logout</a></li>
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>
+	</body>
+</html>

@@ -23,7 +23,6 @@ class TeamServiceImpl() extends TeamService {
     this.teamDao = td
   }
 
-  @Transactional
   def createTeam(obj: Team) = {
     teamDao.save(obj)
   }

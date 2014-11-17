@@ -29,14 +29,12 @@ class Application() {
 
   @RequestMapping(value = Array("/"), method = Array(RequestMethod.GET))
   def index = {
-    println("\n\n -------------- ENTRA 1 --------- \n\n")
-    null
-    "Hello world. Do nothing else"
+    var mav: ModelAndView= new ModelAndView("home");
+    mav
   }
 
   @RequestMapping(value = Array("/insert"), method = Array(RequestMethod.GET))
   def insert() = {
-    println("\n\n------- ENTRA 2 --------\n\n")
     //Create a new team
     var team: Team = new Team("Carnicería Ángel","Desguaces Herbón",List(""),List(""),Calendar.getInstance())
 
@@ -50,9 +48,16 @@ class Application() {
 
     var a = "Team: " + team  + " .\nInserted: " +  insertedTeams.toString() + " team_id: "
 
-    var mav: ModelAndView= new ModelAndView("testTeam");
+    var mav: ModelAndView= new ModelAndView("team/showTeam");
     mav.addObject("team", team);
-    mav.addObject("insertedTeams", insertedTeams);
+    mav.addObject("insertedTeam", insertedTeams);
     mav
   }
+  
+  @RequestMapping(value = Array("/all"), method = Array(RequestMethod.GET))
+  def showAll = {
+    var mav: ModelAndView= new ModelAndView("home");
+    mav
+  }
+    
 }

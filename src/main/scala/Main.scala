@@ -15,12 +15,6 @@ class Main {
     // open/read the application context file
     var ctx: ClassPathXmlApplicationContext = new ClassPathXmlApplicationContext("application.xml")
     
-    var teamServ: TeamService = ctx.getBean("TeamService").asInstanceOf[TeamService]
-    var testTeam: Team = new Team()
-    
-    teamServ.createTeam(testTeam)
-    
-    println(testTeam)
   }
 
 

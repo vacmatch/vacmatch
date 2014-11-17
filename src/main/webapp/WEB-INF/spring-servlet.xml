@@ -14,14 +14,12 @@
     
   <mvc:default-servlet-handler/>
   
+  <!-- Scan for Web beans -->
+  <context:component-scan base-package="main.scala"/>
+  
   <!-- Configures the annotation-driven Spring MVC Controller programming model -->
   <mvc:annotation-driven />
   
-  <!-- Scan for Web beans -->
-  <context:component-scan base-package="main.scala"/>
-  <!-- Enable Spring anotations -->
-  <context:annotation-config/>
-
   <!-- **************************************************************** -->
   <!--  RESOURCE FOLDERS CONFIGURATION                                  -->
   <!--  Dispatcher configuration for serving static resources           -->
