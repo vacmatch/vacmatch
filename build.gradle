@@ -26,6 +26,8 @@ dependencies {
 
     compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.7.1.RELEASE'
     
+    compile group: 'org.resthub', name: 'springmvc-router', version: '1.2.0'
+    
     compile group: 'org.thymeleaf', name:'thymeleaf', version: '2.0.21'
 	compile group: 'org.thymeleaf', name:'thymeleaf-spring4', version: '2.1.2.RELEASE'
     

@@ -12,14 +12,41 @@
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd
                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     
-  <mvc:default-servlet-handler/>
-  
+  <!-- Handle static web resources -->
+  <mvc:resources mapping="/resources/**" location="/resources/" />
+
   <!-- Scan for Web beans -->
   <context:component-scan base-package="main.scala"/>
   
   <!-- Configures the annotation-driven Spring MVC Controller programming model -->
   <mvc:annotation-driven />
-  
+
+  <!-- 
+    Choose HandlerMapping.
+    RouterHandlerMapping loads routes configuration from a file.
+	Router adapted from Play! Framework.
+  -->
+  <bean id="handlerMapping"
+        class="org.resthub.web.springmvc.router.RouterHandlerMapping">
+          <property name="routeFiles">
+              <list>
+                  <value>classpath:routes.conf</value>
+              <!--
+                  Router will *append* routes declared in additional files
+                  <value>addroutes.conf</value>
+              -->
+              </list>
+          </property>
+          <!--
+              Uncomment the following configuration line
+              if you want routes to be dynamically reloaded when
+              route files are modified.
+              Can be a good idea in dev mode, not so much in production!
+          -->
+          <!-- <property name="autoReloadEnabled" value="true" /> -->
+  </bean>
+	
+	
   <!-- **************************************************************** -->
   <!--  RESOURCE FOLDERS CONFIGURATION                                  -->
   <!--  Dispatcher configuration for serving static resources           -->
