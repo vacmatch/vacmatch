@@ -12,15 +12,6 @@
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd
                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     
-  <!-- Handle static web resources -->
-  <mvc:resources mapping="/resources/**" location="/resources/" />
-
-  <!-- Scan for Web beans -->
-  <context:component-scan base-package="main.scala"/>
-  
-  <!-- Configures the annotation-driven Spring MVC Controller programming model -->
-  <mvc:annotation-driven />
-
   <!-- 
     Choose HandlerMapping.
     RouterHandlerMapping loads routes configuration from a file.
@@ -53,12 +44,13 @@
   <!-- **************************************************************** -->
   <mvc:resources location="/images/" mapping="/images/**" />
   <mvc:resources location="/css/" mapping="/css/**" />
+  <mvc:resources mapping="/resources/**" location="/resources/" />
 
   <!-- **************************************************************** -->
   <!--  SPRING ANNOTATION PROCESSING                                    -->
   <!-- **************************************************************** -->
-  <!-- <mvc:annotation-driven conversion-service="conversionService" /> -->
-  <!-- <context:component-scan base-package="thymeleafexamples.stsm" /> -->
+  <mvc:annotation-driven conversion-service="conversionService" />
+  <context:component-scan base-package="main.scala"/>
 
   <!-- **************************************************************** -->
   <!--  MESSAGE EXTERNALIZATION/INTERNATIONALIZATION                    -->
@@ -73,17 +65,14 @@
   <!--  CONVERSION SERVICE                                              -->
   <!--  Standard Spring formatting-enabled implementation               -->
   <!-- **************************************************************** -->
-  <!--
   <bean id="conversionService" 
         class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
     <property name="formatters">
       <set>
-        <bean class="thymeleafexamples.stsm.web.conversion.VarietyFormatter" /> 
         <bean class="main.scala.controllers.conversions.DateFormatter" />
       </set>
     </property>
   </bean>
-  -->
 
   <!-- **************************************************************** -->
   <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
