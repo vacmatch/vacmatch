@@ -1,4 +1,4 @@
-package main.scala.models.generic
+package main.scala.model.generic
 
 import scala.collection.mutable.Buffer
 import java.io.Serializable

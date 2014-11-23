@@ -1,4 +1,4 @@
-package main.scala.models.generic
+package main.scala.model.generic
 
 import javax.persistence.EntityManager
 import javax.persistence.criteria.CriteriaQuery
@@ -12,6 +12,7 @@ import java.io.Serializable
 import javax.persistence.EntityManagerFactory
 import org.springframework.stereotype.Service
 import org.springframework.stereotype.Repository
+import javax.persistence.metamodel.Metamodel
 
 abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K]{
 
@@ -28,28 +29,59 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     this.entityManagerFactory = em
     this.entityManager  = em.createEntityManager()
   }
-
+  
+  /**
+   * Find all objects from EntityClass table
+   */
   def findAll(): List[T] = {
+    getEntityManager().getTransaction().begin();
+
     var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
     var root = criteria.from(entityClass)
     criteria.select(root)
     var teamList = getEntityManager().createQuery(criteria).getResultList()
 
+    getEntityManager().getTransaction().commit();
+
     teamList.toList // return Scala types
   }
 
+  
+  /**
+   * Save or update entity
+   */
   def save(entity:T)= {
-    //getEntityManager().getTransaction().begin();
+    getEntityManager().getTransaction().begin();
+    
     getEntityManager().persist(entity)
-    //getEntityManager().getTransaction().commit();
+
+    getEntityManager().getTransaction().commit();
   }
 
+  
+  /**
+   * Remove entity from entity table
+   */
   def remove(entity:T) = {
+    getEntityManager().getTransaction().begin();
+
     getEntityManager().remove(entity);
+
+    getEntityManager().getTransaction().commit();
   }
 
+  
+  /**
+   * Find entity by id
+   */
   def findById(id: K):T = {
-    getEntityManager().find(entityClass, id).asInstanceOf[T];
+    getEntityManager().getTransaction().begin();
+
+    var res = getEntityManager().find(entityClass, id).asInstanceOf[T];
+
+    getEntityManager().getTransaction().commit();
+    
+    res
   }
 
 }

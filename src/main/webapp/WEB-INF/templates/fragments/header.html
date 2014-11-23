@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link href="/main/webapp/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+		<link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="/main/webapp/resources/js/bootstrap.min.js"></script>
+		<script src="/resources/js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -20,9 +20,20 @@
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
-						<li><a href="#" th:href="@{/}">Home</a></li>
-						<li><a href="#" th:href="@{/insert}">Insert</a></li>
-						<li><a href="#" th:href="@{/all}">Show All</a></li>
+						<li><a href="#" th:href="@{/}">Publications</a></li>
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown">Federation</a>
+							<ul class="dropdown-menu">
+								<li><a href="/federation/info">Information</a></li>
+								<li><a href="/federation/teams">Teams</a></li>
+								<li><a href="/federation/referees">Referees</a></li>
+								<li><a href="/federation/comittee">Competition Comittee</a></li>
+							</ul>
+						</li>
+						<li><a href="#" th:href="@{/competitions}">Competitions</a></li>
+						<li><a href="#" th:href="@{/rules}">Rules</a></li>
+						<li><a href="#" th:href="@{/press}">Press</a></li>
+						<li><a href="#" th:href="@{/media}">Media</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="/signin" th:href="@{/signin}">Sign in</a></li>

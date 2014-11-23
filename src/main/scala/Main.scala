@@ -1,8 +1,6 @@
 package main.scala
 
-import main.scala.services.TeamService
 import org.springframework.context.support.ClassPathXmlApplicationContext
-import main.scala.models.team.Team
 
 class Main {
 
