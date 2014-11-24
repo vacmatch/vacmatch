@@ -12,29 +12,27 @@ abstract class Staff(stName: String) {
   @SequenceGenerator(name="staffIdGenerator", sequenceName="staff_id_seq")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staffIdGenerator")
   var staffId: Long = _
-  
+
   @BeanProperty
   @Column
   var staffName: String = stName
-  
+
   @BeanProperty
   @Column
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
       name = "TEAM_STAFF",
-      joinColumns = 
-        Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
+      joinColumns =
+	Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
       inverseJoinColumns =
-        Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
+	Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
   )
-  var teamList: List[Team] = _
-  
+  var teamList: java.util.List[Team] = _
+
   def this() = this(null)
-  
-  override 
+
+  override
   def toString = "(" + this.staffId + ") " + this.staffName +
-  					"\nTeams: " + this.teamList
-  
+					"\nTeams: " + this.teamList
+
 }
-
-

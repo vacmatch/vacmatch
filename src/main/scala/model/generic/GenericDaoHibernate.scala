@@ -29,7 +29,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     this.entityManagerFactory = em
     this.entityManager  = em.createEntityManager()
   }
-  
+
   /**
    * Find all objects from EntityClass table
    */
@@ -46,19 +46,19 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     teamList.toList // return Scala types
   }
 
-  
+
   /**
    * Save or update entity
    */
   def save(entity:T)= {
     getEntityManager().getTransaction().begin();
-    
+
     getEntityManager().persist(entity)
 
     getEntityManager().getTransaction().commit();
   }
 
-  
+
   /**
    * Remove entity from entity table
    */
@@ -70,7 +70,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     getEntityManager().getTransaction().commit();
   }
 
-  
+
   /**
    * Find entity by id
    */
@@ -80,7 +80,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     var res = getEntityManager().find(entityClass, id).asInstanceOf[T];
 
     getEntityManager().getTransaction().commit();
-    
+
     res
   }
 

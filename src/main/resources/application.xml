@@ -11,14 +11,14 @@
 	   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 	   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 
-  
+
 	<!-- Enable Spring anotations -->
 	<context:annotation-config/>
 
 	<!-- Enable the configuration of transactional behavior based on
 	     annotations. -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
-	
+
 	<!-- DataSource Configuration -->
     <bean id="myDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -26,9 +26,9 @@
 		<property name="username" value="sa"/>
 		<property name="password" value=""/>
     </bean>
-    
+
 	<!-- Entity Manager Factory Configuration -->
-	<bean id="myEmf" 
+	<bean id="myEmf"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="myDataSource" />
 		<property name="jpaVendorAdapter">
@@ -37,21 +37,21 @@
 				<property name="database" value="HSQL"/>
 		    </bean>
 		</property>
-	
+
 	    <property name="persistenceUnitName" value="federation-proyect-app-persistence" />
-	    <property name="packagesToScan" >
-	        <list>
-	            <value>main.scala.models.*</value>
-	        </list>
+	    <property name="packagesToScan">
+		<list>
+		    <value>main.scala.model.*</value>
+		</list>
 	    </property>
-	
+
 	    <property name="jpaProperties">
-	        <props>
-	            <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-	            <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-	            <prop key="hibernate.show_sql">false</prop>
-	            <prop key="hibernate.format_sql">false</prop>
-	        </props>
+		<props>
+		    <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+		    <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+		    <prop key="hibernate.show_sql">false</prop>
+		    <prop key="hibernate.format_sql">false</prop>
+		</props>
 	    </property>
 	</bean>
 
@@ -62,6 +62,3 @@
 
 
 </beans>
-
-
-
