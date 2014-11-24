@@ -36,6 +36,7 @@ class TeamServiceHibernate() extends TeamService {
     var team: Team = teamDao.findById(teamId)
     //TODO add checks
     team.setTeamName(newName)
+    teamDao.save(team)
     team
   }
 
@@ -43,6 +44,7 @@ class TeamServiceHibernate() extends TeamService {
     var team: Team = teamDao.findById(teamId)
     //TODO add checks
     team.setFundationDate(newDate)
+    teamDao.save(team)
     team
   }
 
@@ -50,6 +52,7 @@ class TeamServiceHibernate() extends TeamService {
     var team: Team = teamDao.findById(teamId)
     //TODO add checks
     team.setSponsorsList(newSponsors.asJava)
+    teamDao.save(team)
     team
   }
 
@@ -57,6 +60,7 @@ class TeamServiceHibernate() extends TeamService {
     var team: Team = teamDao.findById(teamId)
     //TODO add checks
     team.setStaffList(newStaffList.asJava)
+    teamDao.save(team)
     team
   }
 
@@ -64,6 +68,7 @@ class TeamServiceHibernate() extends TeamService {
     var team: Team = teamDao.findById(teamId)
     //TODO add checks
     team.setCompetitionsList(newCompetitionList.asJava)
+    teamDao.save(team)
     team
   }
 
