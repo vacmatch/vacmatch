@@ -1,0 +1,12 @@
+build
+hsql.db*
+
+*~
+**/*~
+
+.classpath
+.ensime
+.ensime_cache
+.gradle
+.project
+.settings
