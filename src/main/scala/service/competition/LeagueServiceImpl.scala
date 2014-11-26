@@ -11,10 +11,11 @@ class LeagueServiceImpl extends LeagueService {
   @Autowired
   var leagueDao: LeagueDao = _
 
-  def createLeague(fedId: Int, leagueName: String): League = {
+  def createLeague(fedId: Int, leagueName: String, slug: String): League = {
     val l = new League
     l.fedId = fedId
     l.leagueName = leagueName
+    l.slug = slug
 
     // FIXME: Remove the following line
     // leagueDao.save(l)
@@ -23,9 +24,9 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   def findActiveByFederation(fedId: Int): Seq[League] = {
-    val l1 = createLeague(fedId, "Velociraptors")
-    val l2 = createLeague(fedId, "T-Rexes")
-    val l3 = createLeague(fedId, "Seniors")
+    val l1 = createLeague(fedId, "Velociraptors", "vr")
+    val l2 = createLeague(fedId, "T-Rexes", "trex")
+    val l3 = createLeague(fedId, "Seniors", "sr")
 
     return List(l1, l2, l3)
   }
@@ -35,10 +36,10 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   def findAllByFederation(fedId: Int): Seq[League] = {
-    val l1 = createLeague(fedId, "Velociraptors")
-    val l2 = createLeague(fedId, "T-Rexes")
-    val l3 = createLeague(fedId, "Seniors")
-    val l4 = createLeague(fedId, "Extincts")
+    val l1 = createLeague(fedId, "Velociraptors", "vr")
+    val l2 = createLeague(fedId, "T-Rexes", "tr")
+    val l3 = createLeague(fedId, "Seniors", "sr")
+    val l4 = createLeague(fedId, "Extincts", "ex")
 
     return List(l1, l2, l3)
   }
@@ -46,6 +47,12 @@ class LeagueServiceImpl extends LeagueService {
   def findById(leagueId: Int): Option[League] = {
     Option (leagueDao.findById (leagueId))
 
-    Option (createLeague(1, "TheFoundLeague!"))
+    Option (createLeague(1, "TheFoundLeague!", "slug"))
+  }
+
+  def findBySlug(fedId: Int, slug: String): Option[League] = {
+    // Option (leagueDao.findBySlug (fedId, slug))
+
+    Option (createLeague(fedId, "TheFouldLeague!", slug))
   }
 }

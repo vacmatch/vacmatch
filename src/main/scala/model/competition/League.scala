@@ -6,7 +6,8 @@ import java.util.Calendar
 import main.scala.model.staff.Staff
 
 @Entity
-@Table(name = "LEAGUE")
+@Table(name = "LEAGUE",
+  uniqueConstraints = Array(new UniqueConstraint(columnNames=Array("fedId", "slug"))))
 //@BatchSize(size=10)
 class League {
 
@@ -22,8 +23,12 @@ class League {
   var fedId: java.lang.Long = _
 
   @BeanProperty
-  @Column
+  @Column(nullable=false)
   var leagueName: String = _
+
+  @BeanProperty
+  @Column(nullable=false)
+  var slug: String = _
 
   @BeanProperty
   @Column

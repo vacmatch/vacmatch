@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Welcome!</title>
+		<title th:text="${action}">Create league</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
 		<link href="/resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
@@ -11,9 +11,23 @@
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container">
-		  <h2>League</h2>
 			<div class="jumbotron">
-			  The <span th:text="${league.leagueName}">#league name#</span> league was created successfully.
+				<h2 th:text="${action}">Create League</h2>
+
+				<div>We are going to the url <span th:text="${submitUrl}" /></div>
+
+				<form id="leagueForm" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${league}">
+				  <input type="hidden" th:field="*{fedId}" />
+
+				  <label for="slug">Name</label>
+				  <input type="text" th:field="*{leagueName}" />
+
+				  <label for="slug">Slug</label>
+				  <input type="text" th:field="*{slug}" />
+
+				  <input type="submit" name="submit" value="Create" />
+
+				</form>
 			</div>
 			<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
 		</div>

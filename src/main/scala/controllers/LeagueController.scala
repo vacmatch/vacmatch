@@ -1,14 +1,16 @@
 package main.scala.controllers
 
-import org.springframework.stereotype.Controller
-import main.scala.service.competition.LeagueService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.servlet.ModelAndView
 import java.util.Calendar
 import main.scala.model.competition.League
-import scala.collection.JavaConverters._
+import main.scala.service.competition.LeagueService
+import org.resthub.web.springmvc.router.HTTPRequestAdapter
 import org.resthub.web.springmvc.router.Router
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.servlet.ModelAndView
+import scala.collection.JavaConverters._
 
 @Controller
 class LeagueController() {
@@ -19,36 +21,69 @@ class LeagueController() {
   def list(@RequestParam("fedId") fedId: Int) = {
     val leagues: Seq[League] = leagueService.findActiveByFederation(fedId)
 
-    val mav: ModelAndView = new ModelAndView("league/list");
+    val mav: ModelAndView = new ModelAndView("league/list")
     mav.addObject("leagues", leagues.asJava)
     mav.addObject("d", fedId)
     mav
   }
 
-  def create(@RequestParam("fedId") fedId: Int): ModelAndView = {
+  def create(@RequestParam("fedId") fedId: Int) = {
 
-    var leagueName: String = null
+    var leagueName: String = "Meow"
+    var slug: String = "mw"
     var foundationalDate: Calendar = null
     var sponsors: List[String] = null
 
-    var league: League = leagueService.createLeague(fedId, leagueName)
+    val league: League = leagueService.createLeague(fedId, leagueName, slug)
+    val submitUrl = Router.getFullUrl("LeagueController.createPost")
 
-    var mav: ModelAndView = new ModelAndView("league/show");
-    mav.addObject("league", league);
-    mav.addObject("submitUrl", Router.reverse("leagueController.createPost").url)
+    val mav: ModelAndView = new ModelAndView("league/edit_form");
 
-    return mav
+    mav.addObject("league", league)
+    mav.addObject("fedId", fedId)
+    mav.addObject("action", "Create League")
+    mav.addObject("submitUrl", submitUrl)
+    mav.addObject("submitMethod", "POST")
   }
 
-  def createPost(@RequestParam("fedId") fedId: Int,
-    @RequestParam("leagueName") leagueName: String) : ModelAndView = {
+  def createPost(
+    @RequestParam("fedId") fedId: Int,
+    @RequestParam("leagueName") leagueName: String,
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
 
-    var league = leagueService.createLeague(fedId:Int, leagueName:String)
+    val league = leagueService.createLeague(fedId: Int, leagueName: String, slug)
 
-    var mav = new ModelAndView("league/show")
+    val mav = new ModelAndView("league/show")
+
     mav.addObject("league", league)
+  }
 
-    return mav
+  def edit(
+    @RequestParam("fedId") fedId: Int,
+    @PathVariable slug: String
+  ): ModelAndView = {
+    val league = leagueService.findBySlug(fedId, slug)
+    val submitUrl = Router.getFullUrl("LeagueController.editPost")
+
+    val mav = new ModelAndView("league/edit_form")
+
+    mav.addObject("league", league)
+    mav.addObject("fedId", fedId)
+    mav.addObject("action", "Edit league")
+    mav.addObject("submitUrl", submitUrl)
+    mav.addObject("submitMethod", "POST")
+  }
+
+  def editPost(
+    @RequestParam("fedId") fedId: Int,
+    @RequestParam("leagueName") leagueName: String,
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
+    val league = leagueService.createLeague(fedId, leagueName, slug)
+
+    val mav = new ModelAndView("league/show")
+    mav.addObject("league", league)
   }
 
 }
