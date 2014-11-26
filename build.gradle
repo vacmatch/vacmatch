@@ -1,5 +1,6 @@
 apply plugin: 'scala'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'spring-boot'
@@ -20,6 +21,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+	classpath("org.springframework:springloaded:1.2.0.RELEASE")
     }
 }
 
@@ -56,6 +58,16 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
+tasks.withType(ScalaCompile) {
+  configure(scalaCompileOptions.forkOptions) {
+    memoryMaximumSize = '1g'
+    jvmArgs = ['-XX:MaxPermSize=512m']
+  }
+
+  scalaCompileOptions.useAnt = false
+  scalaCompileOptions.optimize = true
+}
+
 eclipse {
     classpath {
          containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
@@ -66,4 +78,17 @@ eclipse {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
 }
+
+test {
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
+jettyRun {
+	reload = "manual"
+}
+
+stopPort = 9091
+httpPort = 9090
 
