@@ -2,12 +2,19 @@ package main.scala.service.competition
 
 import java.util.Date
 import main.scala.model.competition.League
+import main.scala.model.competition.LeagueSeason
 
 trait LeagueService {
-  def createLeague(fedId: Int, leagueName: String, slug: String): League
-  def findActiveByFederation(fedId: Int): Seq[League]
-  def findActiveByFederation(fedId: Int, startTime: Date, endTime: Date): Seq[League]
-  def findAllByFederation(fedId: Int): Seq[League]
+  def createLeague(fedId: Long, leagueName: String, slug: String): League
+  def findActiveByFederation(fedId: Long): Seq[League]
+  def findActiveByFederation(fedId: Long, when: Calendar): Seq[League]
+  def findAllByFederation(fedId: Long): Seq[League]
   def findById(leagueId: Int): Option[League]
-  def findBySlug(fedId: Int, slug: String): Option[League]
+  def findBySlug(fedId: Long, slug: String): Option[League]
+
+
+  def createSeason(fedId: Long, slug: String, seasonYear: String): LeagueSeason
+  def findSeasonsByLeague(fedId: Long, slug: String): Option[League]
+  def findSeasonsByLeagueAsSeq(fedId: Long, slug: String): Seq[LeagueSeason]
+  def findSeasonByLeagueSlug(fedId: Long, slug: String, seasonYear: String): Option[LeagueSeason]
 }
