@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Show league seasons</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+		<link href="/resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="/resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>
+	</head>
+	<body>
+		<div th:replace="fragments/header :: header">[Here goes the header]</div>
+		<div class="container">
+
+		  <h2 th:text="|League ${league.leagueName}|">League Alevins</h2>
+
+		  <ul>
+		    <li th:each="season: ${seasons}">
+		      <a th:href="${season.getLink()}" th:text="${season.year}">2014-2015</a>
+		      <dl th:object="${season}">
+			<dd><a th:href="${league.getEditLink()}" th:text="${league.getEditLink()}">Edit</a>
+			  <a th:href="${league.getRemoveLink()}" th:text="${league.getRemoveLink()}">Remove</a></dd>
+		      </dl>
+		    </li>
+		  </ul>
+		</div>
+		<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+	</body>
+</html>
+
