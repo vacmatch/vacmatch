@@ -12,6 +12,15 @@ class LeagueSeason extends Serializable {
   @EmbeddedId
   var id: LeagueSeason.LeagueSeasonPK = _
 
+  @BeanProperty
+  @Column(nullable=false)
+  @Temporal(TemporalType.DATE)
+  var startTime: Calendar = _
+
+  @BeanProperty
+  @Column
+  @Temporal(TemporalType.DATE)
+  var endTime: Calendar = _
 }
 
 object LeagueSeason {
