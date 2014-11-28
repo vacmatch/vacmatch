@@ -1,31 +1,57 @@
 package main.scala.controllers
 
 import java.util.Calendar
+import main.scala.controllers.utils.UrlGrabber
 import main.scala.model.competition.League
 import main.scala.service.competition.LeagueService
-import org.resthub.web.springmvc.router.HTTPRequestAdapter
 import org.resthub.web.springmvc.router.Router
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
 import org.springframework.web.servlet.ModelAndView
+import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 @Controller
-class LeagueController() {
+class LeagueController() extends UrlGrabber {
 
   @Autowired
   var leagueService: LeagueService = _
 
+  class ActionableLeague(base: League) extends League with UrlGrabber {
+
+    fedId = base.fedId
+    leagueName = base.leagueName
+    slug = base.slug
+
+    def getEditLink() = {
+      getUrl("LeagueController.edit", "slug" -> slug) + "?fedId=" + fedId
+    }
+
+    def getDeleteLink() = {
+      getUrl("LeagueController.delete", "slug" -> slug) + "?fedId=" + fedId
+    }
+  }
+
   def list(@RequestParam("fedId") fedId: Int) = {
-    val leagues: Seq[League] = leagueService.findActiveByFederation(fedId)
+    val leagues: Seq[League] = leagueService
+      .findActiveByFederation(fedId).map({ league => new ActionableLeague(league) })
 
     val mav: ModelAndView = new ModelAndView("league/list")
     mav.addObject("leagues", leagues.asJava)
     mav.addObject("d", fedId)
     mav
   }
+
+  def show(@RequestParam("fedId") fedId: Int,
+    @PathVariable("slug") slug: String) = {
+
+    val league = leagueService.findBySlug(fedId, slug)
+
+    val mav = new ModelAndView("league/show")
+    mav.addObject("league", league.get)
+  }
+
 
   def create(@RequestParam("fedId") fedId: Int) = {
 
@@ -35,7 +61,7 @@ class LeagueController() {
     var sponsors: List[String] = null
 
     val league: League = leagueService.createLeague(fedId, leagueName, slug)
-    val submitUrl = Router.getFullUrl("LeagueController.createPost")
+    val submitUrl = getUrl("LeagueController.createPost")
 
     val mav: ModelAndView = new ModelAndView("league/edit_form");
 
@@ -61,14 +87,16 @@ class LeagueController() {
 
   def edit(
     @RequestParam("fedId") fedId: Int,
-    @PathVariable slug: String
+    @PathVariable("slug") slug: String
   ): ModelAndView = {
     val league = leagueService.findBySlug(fedId, slug)
-    val submitUrl = Router.getFullUrl("LeagueController.editPost")
+    val submitUrl = getUrl("LeagueController.editPost", "slug" -> slug)
+
+    // TODO handle notfound league (Option=None)
 
     val mav = new ModelAndView("league/edit_form")
 
-    mav.addObject("league", league)
+    mav.addObject("league", league.get)
     mav.addObject("fedId", fedId)
     mav.addObject("action", "Edit league")
     mav.addObject("submitUrl", submitUrl)

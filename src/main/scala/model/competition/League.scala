@@ -46,6 +46,7 @@ class League {
   @Transient
   var sponsorList: java.util.List[String] = _
 
+  @BeanProperty
   @OneToMany(mappedBy="id.league")
   var seasonList: java.util.List[LeagueSeason] = _
 

@@ -9,6 +9,13 @@ import main.scala.model.staff.Staff
 @Table(name = "SEASONL")
 class LeagueSeason extends Serializable {
 
+  @EmbeddedId
+  var id: LeagueSeason.LeagueSeasonPK = _
+
+}
+
+object LeagueSeason {
+
   @Embeddable
   class LeagueSeasonPK extends Serializable {
     @BeanProperty
@@ -18,11 +25,6 @@ class LeagueSeason extends Serializable {
 
     @BeanProperty
     @Column(nullable=false)
-    var seasonYear: Int = _ // Something like: 2012
+    var seasonYear: String = _ // Something like: 2012, or maybe "XIII"
   }
-
-  @EmbeddedId
-  var id: LeagueSeasonPK = _
-
 }
-

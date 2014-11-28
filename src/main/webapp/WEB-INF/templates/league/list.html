@@ -20,6 +20,8 @@
 			<dd th:text="*{fedId}">#NUM#</dd>
 			<dt>League Name</dt>
 			<dd th:text="*{leagueName}">Alevines</dd>
+			<dt>Actions</dt>
+			<dd><a th:href="${league.getEditLink()}" th:text="${league.getEditLink()}">Edit</a></dd>
 		      </dl>
 		    </li>
 		  </ul>

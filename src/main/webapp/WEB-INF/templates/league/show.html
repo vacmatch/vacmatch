@@ -11,11 +11,16 @@
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container">
-		  <h2>League</h2>
-			<div class="jumbotron">
-			  The <span th:text="${league.leagueName}">#league name#</span> league was created successfully.
-			</div>
-			<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+		  <h2 th:text="|League ${league.leagueName}|">League Seniors</h2>
+
+		  <p>There are the following seasons registered in this league</p>
+		  <ul>
+		    <li th:each="season: ${league.seasonList}" th:text="${season}">
+		      Season details
+		    </li>
+		  </ul>
+
 		</div>
+		<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
 	</body>
 </html>
