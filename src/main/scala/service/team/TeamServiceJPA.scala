@@ -26,14 +26,18 @@ class TeamServiceJPA() extends TeamService {
   var competitionDao: CompetitionDao = _
 
   
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team] = {
-    teamDao.findTeamsByFederationId(fedId, startIndex, count)
-  }
-
   def findByTeamId(teamId: Long): Team = {
     teamDao.findById(teamId)
   }
 
+  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team] = {
+    teamDao.findTeamsByFederationId(fedId, startIndex, count)
+  }
+
+  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
+    teamDao.findTeamsByCompetitionId(compId, fedId)
+  }
+    
   @throws[IllegalArgumentException]("If teamName or fundationalDate doesn't exist")
   def createTeam(teamName: String, fundationalDate: Calendar, address: String): Team = {
     var team: Team = new Team(teamName, fundationalDate, address)
@@ -78,8 +82,14 @@ class TeamServiceJPA() extends TeamService {
     team
   }
 
+  @throws[IllegalArgumentException]("If any element in newSponsors is null")
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team = {
     var team: Team = teamDao.findById(teamId)
+   
+    newSponsors.map(x => 
+      if(x==null)
+      throw new IllegalArgumentException("Illegal null element in newSponsors")
+    )
 
     team.setSponsorsList(newSponsors.asJava)
     teamDao.save(team)
@@ -91,7 +101,7 @@ class TeamServiceJPA() extends TeamService {
     var team: Team = teamDao.findById(teamId)
 
     //Check if all staff exists
-    newStaffList.foreach(st => 
+    newStaffList.map(st => 
       if(staffDao.findById(st.staffId) == null)
     	  throw new IllegalArgumentException("staffId " + st.staffId + " cannot be null"))
     	  
@@ -105,7 +115,7 @@ class TeamServiceJPA() extends TeamService {
     var team: Team = teamDao.findById(teamId)
 
     //Check if all competition exists
-    newCompetitionList.foreach(cp => 
+    newCompetitionList.map(cp => 
       if(competitionDao.findById(cp.compId) == null)
     	  throw new IllegalArgumentException("compId " + cp.compId + " cannot be null"))
     

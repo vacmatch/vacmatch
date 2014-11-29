@@ -9,13 +9,15 @@ import com.vac.manager.model.competition.Competition
 
 trait TeamService {
 
+  def findByTeamId(teamId: Long): Team
+
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
 
-  def findByTeamId(teamId: Long): Team
+  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
   def createTeam(teamName: String, fundationalDate: Calendar, address: String): Team
 
-  def modifyTeam(teamName: String, fundationalDate: Calendar, address: String): Team
+  def modifyTeam(teamId: Long, teamName: String, fundationalDate: Calendar, address: String): Team
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team
 
