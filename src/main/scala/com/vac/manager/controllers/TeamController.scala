@@ -28,8 +28,9 @@ class TeamController() {
     var teamName: String = null
     var fundationalDate: Calendar = null
     var teamSponsors: List[String] = null
+    var teamAddress: String = null
     
-    var createdTeam: Team = teamService.createTeam(teamName, fundationalDate)
+    var createdTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
 
     var mav: ModelAndView= new ModelAndView("team/showTeam");
     mav.addObject("team", createdTeam);
