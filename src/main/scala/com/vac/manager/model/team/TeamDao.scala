@@ -10,12 +10,6 @@ trait TeamDao extends GenericDao[Team, java.lang.Long]{
 
   def findByTeamName(name: String): Team
   
-  def getTeamSponsors(teamId: Long): List[String]
-
-  def getTeamStaff(teamId: Long): List[Staff]
-
-  def getTeamCompetitions(teamId: Long): List[Competition]
-
   def hasCompetitions(id: Long): Boolean
 
   def getNumberByFederationId(fedId: Long): Long

@@ -10,7 +10,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @Entity
 @Table(name = "TEAM")
 //@BatchSize(size=10)
-class Team (name: String, date: Calendar) {
+class Team (name: String, date: Calendar, address: String) {
 
   @Id
   @SequenceGenerator(name="teamIdGenerator", sequenceName="team_id_seq")
@@ -25,7 +25,11 @@ class Team (name: String, date: Calendar) {
   @Column
   @Temporal(TemporalType.TIMESTAMP)
   var fundationDate: Calendar = date
-
+  
+  @BeanProperty
+  @Column
+  var teamAddress: String = address
+  
   @BeanProperty
   // TODO: Add @Column and model sponsors as a real thing
   // And remove @Transient
@@ -57,10 +61,11 @@ class Team (name: String, date: Calendar) {
   )
   var competitionsList: java.util.List[Competition] = _
 
-  def this() = this (null, null)
+  def this() = this (null, null, null)
 
   override
   def toString = "(" + this.teamId + ") " + this.teamName +
-					"\nFundation: " + this.fundationDate
+					"\nFundation: " + this.fundationDate +
+					"\nAddress: " + this.teamAddress 
 
 }

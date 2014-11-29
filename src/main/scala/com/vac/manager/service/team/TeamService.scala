@@ -13,11 +13,9 @@ trait TeamService {
 
   def findByTeamId(teamId: Long): Team
 
-  def createTeam(teamName: String, fundationalDate: Calendar): Team
+  def createTeam(teamName: String, fundationalDate: Calendar, address: String): Team
 
-  def modifyTeamName(teamId: Long, newName: String): Team
-
-  def modifyTeamDate(teamId: Long, newDate: Calendar): Team
+  def modifyTeam(teamName: String, fundationalDate: Calendar, address: String): Team
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team
 

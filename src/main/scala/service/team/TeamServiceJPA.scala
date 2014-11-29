@@ -35,8 +35,8 @@ class TeamServiceJPA() extends TeamService {
   }
 
   @throws[IllegalArgumentException]("If teamName or fundationalDate doesn't exist")
-  def createTeam(teamName: String, fundationalDate: Calendar): Team = {
-    var team: Team = new Team(teamName, fundationalDate)
+  def createTeam(teamName: String, fundationalDate: Calendar, address: String): Team = {
+    var team: Team = new Team(teamName, fundationalDate, address)
     
     if(teamName == null){
       throw new IllegalArgumentException("teamName cannot be null")
@@ -45,32 +45,35 @@ class TeamServiceJPA() extends TeamService {
       throw new IllegalArgumentException("fundationalDate cannot be null")
     }
     
+    if(address == null){
+      throw new IllegalArgumentException("address cannot be null")
+    }
+    
     teamDao.save(team)
     team
   }
 
-  @throws[IllegalArgumentException]("If newName doesn't exist")
-  def modifyTeamName(teamId: Long, newName: String): Team = {
+  @throws[IllegalArgumentException]("If newName, newDate or newAddress doesn't exist")
+  def modifyTeam(teamId: Long, newName: String, newDate: Calendar, newAddress: String): Team = {
     var team: Team = teamDao.findById(teamId)
-
+    
     if(newName == null){
       throw new IllegalArgumentException("newName cannot be null")
     }
     
-    team.setTeamName(newName)
-    teamDao.save(team)
-    team
-  }
-
-  @throws[IllegalArgumentException]("If newDate doesn't exist")
-  def modifyTeamDate(teamId: Long, newDate: Calendar): Team = {
-    var team: Team = teamDao.findById(teamId)
-
     if((newDate == null) || (newDate.compareTo(Calendar.getInstance()) != 1)){
-      throw new IllegalArgumentException("newDate cannot be null")
+     throw new IllegalArgumentException("newDate cannot be null")
     }
     
-    team.setFundationDate(newDate)
+    if(newAddress == null){
+      throw new IllegalArgumentException("newAddress cannot be null")
+    }
+    
+    team.teamName = newName
+    team.fundationDate = newDate
+    team.teamAddress = newAddress
+
+    team.setTeamName(newName)
     teamDao.save(team)
     team
   }

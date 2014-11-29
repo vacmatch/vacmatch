@@ -28,36 +28,6 @@ class TeamDaoJPA
   }
 
 
-  def getTeamSponsors(teamId: Long): List[String] = {
-    getEntityManager().createQuery(
-	    "SELECT t.sponsorsList FROM Team t " +
-		"WHERE t.teamId LIKE :teamId ")
-		.setParameter("teamId", teamId)
-		.getResultList()
-		.asInstanceOf[List[String]]
-  }
-
-
-  def getTeamStaff(teamId: Long): List[Staff] = {
-    getEntityManager().createQuery(
-	    "SELECT t.staffList FROM Team t " +
-		"WHERE t.teamId LIKE :teamId ")
-		.setParameter("teamId", teamId)
-		.getResultList()
-		.asInstanceOf[List[Staff]]
-  }
-
-
-  def getTeamCompetitions(teamId: Long): List[Competition] = {
-    getEntityManager().createQuery(
-	    "SELECT t.competitionsList FROM Team t " +
-		"WHERE t.teamId LIKE :teamId ")
-		.setParameter("teamId", teamId)
-		.getResultList()
-		.asInstanceOf[List[Competition]]
-  }
-
-
   def hasCompetitions(teamId: Long): Boolean = {
     var count: Int = getEntityManager().createQuery(
       "SELECT count(t) FROM Team t" +
