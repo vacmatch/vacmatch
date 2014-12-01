@@ -34,6 +34,6 @@ object LeagueSeason {
 
     @BeanProperty
     @Column(nullable=false)
-    var seasonYear: String = _ // Something like: 2012, or maybe "XIII"
+    var seasonSlug: String = _ // Something like: 2012, or maybe "XIII"
   }
 }

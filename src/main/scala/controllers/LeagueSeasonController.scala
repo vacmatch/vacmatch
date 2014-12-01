@@ -20,7 +20,7 @@ class LeagueSeasonController() extends UrlGrabber {
     id = base.id
     val slug = id.league.slug
     val fedId = id.league.fedId
-    val year = id.seasonYear
+    val year = id.seasonSlug
 
     def getLink() = {
       getUrl("LeagueSeasonController.showSeason", "slug" -> slug, "year" -> year) + "?fedId=" + fedId

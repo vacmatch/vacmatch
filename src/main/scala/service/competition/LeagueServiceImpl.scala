@@ -23,50 +23,42 @@ class LeagueServiceImpl extends LeagueService {
     l.leagueName = leagueName
     l.slug = slug
 
-    // FIXME: Remove the following line
-    // leagueDao.save(l)
+    leagueDao.save(l)
 
     return l
   }
 
-  def findActiveByFederation(fedId: Long): Seq[League] = {
+  def findActiveByFederation(fedId: Long): Seq[LeagueSeason] = {
     val today = new GregorianCalendar()
     return findActiveByFederation(fedId, today)
   }
 
-  def findActiveByFederation(fedId: Long, when: Calendar): Seq[League] = {
-    return null
+  def findActiveByFederation(fedId: Long, when: Calendar): Seq[LeagueSeason] = {
+    return leagueSeasonDao.findByFedAndTime(fedId, when)
   }
 
   def findAllByFederation(fedId: Long): Seq[League] = {
-    val l1 = createLeague(fedId, "Velociraptors", "vr")
-    val l2 = createLeague(fedId, "T-Rexes", "tr")
-    val l3 = createLeague(fedId, "Seniors", "sr")
-    val l4 = createLeague(fedId, "Extincts", "ex")
-
-    return List(l1, l2, l3)
+    return leagueDao.findAllByFedId(fedId)
   }
 
   def findById(leagueId: Int): Option[League] = {
-    // Option (leagueDao.findById (leagueId))
-
-    Option (createLeague(1, "TheFoundLeague!", "slug"))
+    Option (leagueDao.findById (leagueId))
   }
 
   def findBySlug(fedId: Long, slug: String): Option[League] = {
-    // Option (leagueDao.findBySlug (fedId, slug))
-
-    Option (createLeague(fedId, "TheFouldLeague!", slug))
+    leagueDao.findBySlug (fedId, slug)
   }
 
 
-  def createSeason(fedId: Long, slug: String, year: String): LeagueSeason = {
+  def createSeason(fedId: Long, slug: String, year: String, startTime: Calendar, endTime: Calendar): LeagueSeason = {
     val l = findBySlug(fedId, slug)
     if (l.isEmpty) throw new NoSuchFieldError()
 
     val s = new LeagueSeason()
     s.id.setLeague(l.get)
-    s.id.setSeasonYear(year)
+    s.id.setSeasonSlug(year)
+
+    leagueSeasonDao.save(s)
 
     return s
   }
