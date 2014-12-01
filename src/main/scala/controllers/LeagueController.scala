@@ -34,8 +34,12 @@ class LeagueController() extends UrlGrabber {
   }
 
   def list(@RequestParam("fedId") fedId: Int) = {
-    val leagues: Seq[League] = leagueService
-      .findActiveByFederation(fedId).map({ league => new ActionableLeague(league) })
+    var leagues: Seq[League] = leagueService
+      .findActiveByFederation(fedId).map({ season => season.id.league })
+      .map({ league => new ActionableLeague(league) })
+
+    val slugs = leagues.map({ league => league.getSlug() })
+    leagues = leagues.filter({league => !slugs.contains(league.getSlug()) })
 
     val mav: ModelAndView = new ModelAndView("league/list")
     mav.addObject("leagues", leagues.asJava)
