@@ -4,9 +4,11 @@ import scala.beans.BeanProperty
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.persistence.PrimaryKeyJoinColumn
 
 @Entity
 @Table(name = "PLAYER_STATISTICS_SOCCER")
+@PrimaryKeyJoinColumn(name="playerStatsId")
 class PlayerStatisticsSoccer extends PlayerStatistics {
   
   @BeanProperty

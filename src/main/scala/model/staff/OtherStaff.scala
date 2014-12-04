@@ -7,9 +7,11 @@ import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import javax.persistence.CascadeType
 import javax.persistence.FetchType
+import javax.persistence.PrimaryKeyJoinColumn
 
 @Entity
 @Table(name = "OTHER_STAFF")
+@PrimaryKeyJoinColumn(name="staffId")
 class OtherStaff {
   
 }

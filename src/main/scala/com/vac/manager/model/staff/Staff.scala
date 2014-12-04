@@ -4,12 +4,18 @@ import javax.persistence._
 import scala.beans.BeanProperty
 import com.vac.manager.model.team.Team
 import java.util.Calendar
-import main.scala.model.generic.Avatar
+import main.scala.model.personal.Avatar
+import main.scala.model.personal.Address
 
 @Entity
 @Table(name = "STAFF")
-class Staff(stName: String, stSurnames: java.util.List[String], stEmail: String,
-    stTelephones: java.util.List[String], stAddress: String, stNif: String,
+@Inheritance(strategy=InheritanceType.JOINED)
+class Staff(stName: String,
+    stSurnames: java.util.List[String],
+    stEmail: String,
+    stTelephones: java.util.List[String],
+    stAddress: Address,
+    stNif: String,
     stBirth: Calendar) {
 
   @Id
@@ -39,7 +45,7 @@ class Staff(stName: String, stSurnames: java.util.List[String], stEmail: String,
 
   @BeanProperty
   @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "avatarID")
+  @JoinColumn(name = "avatarId")
   var staffAvatar: Avatar = _
 
   @BeanProperty
@@ -52,7 +58,7 @@ class Staff(stName: String, stSurnames: java.util.List[String], stEmail: String,
 
   @BeanProperty
   @Column
-  var staffAddress: String = stAddress
+  var staffAddress: Address = stAddress
 
   @BeanProperty
   @Column
@@ -64,7 +70,8 @@ class Staff(stName: String, stSurnames: java.util.List[String], stEmail: String,
 
   @BeanProperty
   @Column
-  @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @ManyToMany(fetch = FetchType.LAZY,
+      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
   @JoinTable(
       name = "TEAM_STAFF",
       joinColumns =

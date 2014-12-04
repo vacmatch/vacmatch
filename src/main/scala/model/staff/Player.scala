@@ -8,14 +8,26 @@ import javax.persistence.JoinColumn
 import javax.persistence.OneToOne
 import javax.persistence.FetchType
 import javax.persistence.CascadeType
+import javax.persistence.PrimaryKeyJoinColumn
+import java.util.Calendar
+import main.scala.model.personal.Address
 
 @Entity
 @Table(name = "PLAYER")
-class Player extends Staff  {
+@PrimaryKeyJoinColumn(name="staffId")
+class Player(stName: String,
+    stSurnames: java.util.List[String],
+    stEmail: String,
+    stTelephones: java.util.List[String],
+    stAddress: Address,
+    stNif: String,
+    stBirth: Calendar,
+    num: Int)
+    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif, stBirth)  {
   
   @BeanProperty
   @Column
-  var playerNumber: Int = _
+  var playerNumber: Int = num
   
   @BeanProperty
   @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))

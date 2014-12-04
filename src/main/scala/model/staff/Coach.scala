@@ -8,15 +8,29 @@ import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import javax.persistence.FetchType
 import javax.persistence.CascadeType
+import javax.persistence.PrimaryKeyJoinColumn
+import java.util.Calendar
+import main.scala.model.personal.Address
+import javax.persistence.ManyToOne
 
 @Entity
 @Table(name = "COACH")
-class Coach extends Staff {
+@PrimaryKeyJoinColumn(name="staffId")
+class Coach(stName: String,
+    stSurnames: java.util.List[String],
+    stEmail: String,
+    stTelephones: java.util.List[String],
+    stAddress: Address, 
+    stNif: String,
+    stBirth: Calendar,
+    licen: License)
+    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif, stBirth) {
   
   @BeanProperty
-  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "playerStatsId")
-  var coachLicense: License = _
+  @ManyToOne(optional=false, fetch = FetchType.LAZY, 
+      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
+  @JoinColumn(name = "licenseId")
+  var coachLicense: License = licen
 
   override
   def toString = "Coach\n" + super.toString + 

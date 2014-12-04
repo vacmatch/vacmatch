@@ -5,13 +5,14 @@ import scala.beans.BeanProperty
 import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
-import javax.persistence.metamodel.StaticMetamodel;
-import main.scala.model.generic.Avatar
+import javax.persistence.metamodel.StaticMetamodel
+import main.scala.model.personal.Avatar
+import main.scala.model.personal.Address
 
 @Entity
 @Table(name = "TEAM")
 //@BatchSize(size=10)
-class Team (name: String, publicName: String, date: Calendar, address: String, web: String) {
+class Team (name: String, publicName: String, date: Calendar, address: Address, web: String) {
 
   @Id
   @SequenceGenerator(name="teamIdGenerator", sequenceName="team_id_seq")
@@ -24,33 +25,35 @@ class Team (name: String, publicName: String, date: Calendar, address: String, w
 
   @BeanProperty
   @Column
-  var publicTeamName: String = publicName
-  
+  var teamActivated: Boolean = false
+
   @BeanProperty
   @Column
-  var teamActivated: Boolean = false
-  
+  var publicTeamName: String = publicName
+
   @BeanProperty
   @Column
   @Temporal(TemporalType.TIMESTAMP)
   var fundationDate: Calendar = date
-  
+
   @BeanProperty
-  @Column
-  var teamAddress: String = address
-  
+  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @JoinColumn(name = "addressId")
+  var teamAddress: Address = address
+
   @BeanProperty
   @Column
   var teamWeb: String = web
-  
+
   @BeanProperty
-  @Column
+  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @JoinColumn(name = "avatarId")
   var teamShield: Avatar = _
 
   @BeanProperty
   @Column
   var teamTelephones: java.util.List[String] = _
-  
+
   @BeanProperty
   // TODO: Add @Column and model sponsors as a real thing
   // And remove @Transient
@@ -59,25 +62,19 @@ class Team (name: String, publicName: String, date: Calendar, address: String, w
   var sponsorsList: java.util.List[String] = _
 
   @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinTable(
-      name = "TEAM_EQUIPMENT",
-      joinColumns =
-	Array(new JoinColumn(name = "equipmentId", nullable = false, updatable = false)),
-      inverseJoinColumns =
-	Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
-  )
+  @OneToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @JoinColumn(name = "equipmentId")
   var teamEquipments: java.util.List[Equipment] = _
-  
+
   @BeanProperty
   @Column
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
       name = "TEAM_STAFF",
       joinColumns =
-	Array(new JoinColumn(name = "staffId", nullable = false, updatable = false)),
+        Array(new JoinColumn(name = "staffId", nullable = false, updatable = false)),
       inverseJoinColumns =
-	Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
+        Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
   )
   var staffList: java.util.List[Staff] = _
 
@@ -87,20 +84,20 @@ class Team (name: String, publicName: String, date: Calendar, address: String, w
   @JoinTable(
       name = "TEAM_COMPETITION",
       joinColumns =
-	Array(new JoinColumn(name = "compId", nullable = false, updatable = false)),
+        Array(new JoinColumn(name = "compId", nullable = false, updatable = false)),
       inverseJoinColumns =
-	Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
+        Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
   )
   var competitionsList: java.util.List[Competition] = _
 
-  
+
   def this() = this (null, null, null, null, null)
 
   override
   def toString = "(" + this.teamId + ") " + this.teamName +
-					"\nFundation: " + this.fundationDate +
-					"\nAddress: " + this.teamAddress +
-					"\nTelephones: " + this.teamTelephones +
-					"\nWeb: " + this.teamWeb 
+                                        "\nFundation: " + this.fundationDate +
+                                        "\nAddress: " + this.teamAddress +
+                                        "\nTelephones: " + this.teamTelephones +
+                                        "\nWeb: " + this.teamWeb
 
 }
