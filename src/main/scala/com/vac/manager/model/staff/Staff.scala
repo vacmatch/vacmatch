@@ -81,7 +81,6 @@ class Staff(stName: String,
   )
   var teamList: java.util.List[Team] = _
 
-
   def this() = this(null, null, null, null, null, null, null)
 
   override

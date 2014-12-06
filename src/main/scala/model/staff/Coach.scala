@@ -31,7 +31,7 @@ class Coach(stName: String,
       cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
   @JoinColumn(name = "licenseId")
   var coachLicense: License = licen
-
+  
   override
   def toString = "Coach\n" + super.toString + 
   					"\nLicense: " + this.coachLicense  
