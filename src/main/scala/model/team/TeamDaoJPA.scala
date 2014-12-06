@@ -1,7 +1,7 @@
 package main.scala.model.team
 
 import org.springframework.stereotype.Repository
-import main.scala.model.generic.GenericDaoHibernate
+import main.scala.model.generic.GenericDaoJPA
 import javax.persistence.Query
 import main.scala.model.staff.Staff
 import main.scala.model.competition.Competition
@@ -9,7 +9,7 @@ import main.scala.model.generic.exceptions.NotImplementedException
 
 @Repository("teamDao")
 class TeamDaoJPA 
-		extends GenericDaoHibernate[Team,java.lang.Long](classOf[Team])
+		extends GenericDaoJPA[Team,java.lang.Long](classOf[Team])
 		with TeamDao {
 
   def findByTeamName(teamName: String): Team = {
