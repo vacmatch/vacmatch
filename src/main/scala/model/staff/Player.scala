@@ -16,9 +16,9 @@ import main.scala.model.personal.Address
 @Table(name = "PLAYER")
 @PrimaryKeyJoinColumn(name="staffId")
 class Player(stName: String,
-    stSurnames: java.util.List[String],
+    stSurnames: Seq[String],
     stEmail: String,
-    stTelephones: java.util.List[String],
+    stTelephones: Seq[String],
     stAddress: Address,
     stNif: String,
     stBirth: Calendar,
@@ -31,7 +31,7 @@ class Player(stName: String,
   
   @BeanProperty
   @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "playerStatsId")
+  @JoinColumn(name = "playerStatsId", nullable = false)
   var playerStatistics: PlayerStatistics = new PlayerStatistics()
 
   override

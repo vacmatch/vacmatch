@@ -17,9 +17,9 @@ import javax.persistence.ManyToOne
 @Table(name = "COACH")
 @PrimaryKeyJoinColumn(name="staffId")
 class Coach(stName: String,
-    stSurnames: java.util.List[String],
+    stSurnames: Seq[String],
     stEmail: String,
-    stTelephones: java.util.List[String],
+    stTelephones: Seq[String],
     stAddress: Address, 
     stNif: String,
     stBirth: Calendar,

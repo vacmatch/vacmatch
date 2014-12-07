@@ -55,8 +55,8 @@ class CoachServiceJPA extends CoachService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, licen: License): Coach = {
     
-    var coach: Coach = new Coach(stName, stSurnames.asJava, stEmail, 
-        stTelephones.asJava, stAddress, stNif, stBirth, licen)
+    var coach: Coach = new Coach(stName, stSurnames, stEmail, 
+        stTelephones, stAddress, stNif, stBirth, licen)
 
     coachDao.save(coach)
     coach

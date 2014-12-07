@@ -58,8 +58,8 @@ class PlayerServiceJPA extends PlayerService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Player = {
     
-    var player: Player = new Player(stName, stSurnames.asJava, stEmail, 
-        stTelephones.asJava, stAddress, stNif, stBirth, num)
+    var player: Player = new Player(stName, stSurnames, stEmail, 
+        stTelephones, stAddress, stNif, stBirth, num)
 
     playerDao.save(player)
     player

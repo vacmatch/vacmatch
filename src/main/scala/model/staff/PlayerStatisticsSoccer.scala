@@ -12,27 +12,27 @@ import javax.persistence.PrimaryKeyJoinColumn
 class PlayerStatisticsSoccer extends PlayerStatistics {
   
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var convened: Long = 0
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var opener: Long = 0
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var surrogate: Long = 0
   
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var goals: Long = 0
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var yellowCards: Long = 0
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var redCards	: Long = 0
   
   override

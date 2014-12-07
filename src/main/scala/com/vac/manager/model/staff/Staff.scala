@@ -6,14 +6,15 @@ import com.vac.manager.model.team.Team
 import java.util.Calendar
 import main.scala.model.personal.Avatar
 import main.scala.model.personal.Address
+import scala.collection.JavaConverters._
 
 @Entity
 @Table(name = "STAFF")
 @Inheritance(strategy=InheritanceType.JOINED)
 class Staff(stName: String,
-    stSurnames: java.util.List[String],
+    stSurnames: Seq[String],
     stEmail: String,
-    stTelephones: java.util.List[String],
+    stTelephones: Seq[String],
     stAddress: Address,
     stNif: String,
     stBirth: Calendar) {
@@ -24,23 +25,29 @@ class Staff(stName: String,
   var staffId: Long = _
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffName: String = stName
 
   @BeanProperty
+<<<<<<< HEAD:src/main/scala/com/vac/manager/model/staff/Staff.scala
   @Column
   var staffSurnames: java.util.List[String] = stSurnames
 
+=======
+  @Column(nullable = false)
+  var staffSurnames: java.util.List[String] = stSurnames.asJava
+    
+>>>>>>> Added staff daos definitions and some restrictions to staff entities:src/main/scala/model/staff/Staff.scala
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffActivated: Boolean = false
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffPrivacityActivated: Boolean = false
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffAlias: String = stName
 
   @BeanProperty
@@ -54,14 +61,19 @@ class Staff(stName: String,
 
   @BeanProperty
   @Column
+<<<<<<< HEAD:src/main/scala/com/vac/manager/model/staff/Staff.scala
   var staffTelephones: java.util.List[String] = stTelephones
 
+=======
+  var staffTelephones: java.util.List[String] = stTelephones.asJava
+  
+>>>>>>> Added staff daos definitions and some restrictions to staff entities:src/main/scala/model/staff/Staff.scala
   @BeanProperty
   @Column
   var staffAddress: Address = stAddress
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffNif: String = stNif
 
   @BeanProperty
