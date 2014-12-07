@@ -1,7 +1,6 @@
 package main.scala.service.staff
 
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import main.scala.model.staff.StaffDao
 import main.scala.model.staff.Staff
@@ -16,6 +15,7 @@ import main.scala.model.staff.PlayerStatistics
 import main.scala.model.staff.License
 import main.scala.model.staff.Coach
 import main.scala.model.staff.CoachDao
+import org.springframework.transaction.annotation.Transactional
 
 @Service("staffService")
 @Transactional

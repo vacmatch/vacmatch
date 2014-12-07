@@ -20,15 +20,15 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
   var teamId: Long = _
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var teamName: String = name
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var teamActivated: Boolean = false
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var publicTeamName: String = publicName
 
   @BeanProperty
@@ -51,7 +51,7 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
   var teamShield: Avatar = _
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var teamTelephones: java.util.List[String] = _
 
   @BeanProperty

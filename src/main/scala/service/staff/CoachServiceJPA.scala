@@ -7,8 +7,8 @@ import main.scala.model.staff.License
 import main.scala.model.staff.Coach
 import java.util.Calendar
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 import scala.collection.JavaConverters._
+import org.springframework.transaction.annotation.Transactional
 
 @Service("coachService")
 @Transactional

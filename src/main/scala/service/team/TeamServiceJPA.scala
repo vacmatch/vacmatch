@@ -12,7 +12,11 @@ import main.scala.model.competition.Competition
 import scala.collection.JavaConverters._
 import main.scala.model.staff.StaffDao
 import main.scala.model.competition.CompetitionDao
-import javax.transaction.Transactional
+import main.scala.model.personal.Address
+import main.scala.model.personal.Avatar
+import main.scala.model.team.Equipment
+import main.scala.model.team.EquipmentDao
+import org.springframework.transaction.annotation.Transactional
 
 @Service("teamService")
 @Transactional
@@ -26,6 +30,9 @@ class TeamServiceJPA() extends TeamService {
   
   @Autowired
   var competitionDao: CompetitionDao = _
+  
+  @Autowired
+  var equipmentDao: EquipmentDao = _
 
   
   def findByTeamId(teamId: Long): Team = {
@@ -41,8 +48,10 @@ class TeamServiceJPA() extends TeamService {
   }
     
   @throws[IllegalArgumentException]("If teamName or fundationalDate doesn't exist")
-  def createTeam(teamName: String, fundationalDate: Calendar, address: String): Team = {
-    var team: Team = new Team(teamName, fundationalDate, address)
+  def createTeam(teamName: String, publicName: String, fundationalDate: Calendar,
+      address: Address, web:String): Team = {
+    
+    var team: Team = new Team(teamName, publicName, fundationalDate, address, web)
     
     if(teamName == null){
       throw new IllegalArgumentException("teamName cannot be null")
@@ -60,7 +69,7 @@ class TeamServiceJPA() extends TeamService {
   }
 
   @throws[IllegalArgumentException]("If newName, newDate or newAddress doesn't exist")
-  def modifyTeam(teamId: Long, newName: String, newDate: Calendar, newAddress: String): Team = {
+  def modifyTeam(teamId: Long, newName: String, newDate: Calendar, newAddress: Address): Team = {
     var team: Team = teamDao.findById(teamId)
     
     if(newName == null){
@@ -83,7 +92,62 @@ class TeamServiceJPA() extends TeamService {
     teamDao.save(team)
     team
   }
+      
+  @throws[IllegalArgumentException]("If newState doesn't exist")
+  def changeActivation(teamId: Long, newState: Boolean): Team = {
+    var team: Team = teamDao.findById(teamId)
+    
+    if(newState == null){
+      throw new IllegalArgumentException("newState cannot be null")
+    }
+    team.teamActivated = newState
+    
+    teamDao.save(team)
+    team
+  }
 
+  @throws[IllegalArgumentException]("If newPublicName doesn't exist")
+  def modifyPublicName(teamId: Long, newPublicName: String): Team = {
+    var team: Team = teamDao.findById(teamId)
+    
+    if(newPublicName == null){
+      throw new IllegalArgumentException("newPublicName cannot be null")
+    }
+    
+    team.publicTeamName = newPublicName
+    
+    teamDao.save(team)
+    team
+  }
+  
+  @throws[IllegalArgumentException]("If newShield doesn't exist")
+  def modifyShield(teamId: Long, newShield: Avatar): Team = {
+    var team: Team = teamDao.findById(teamId)
+    
+    if(newShield == null){
+      throw new IllegalArgumentException("newShield cannot be null")
+    }
+    
+    team.teamShield = newShield
+    
+    teamDao.save(team)
+    team
+  }
+  
+  @throws[IllegalArgumentException]("If newPhones doesn't exist")
+  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team = {
+    var team: Team = teamDao.findById(teamId)
+    
+    if(newPhones == null){
+      throw new IllegalArgumentException("newPhones cannot be null")
+    }
+    
+    team.teamTelephones = newPhones.asJava
+    
+    teamDao.save(team)
+    team
+  }
+  
   @throws[IllegalArgumentException]("If any element in newSponsors is null")
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team = {
     var team: Team = teamDao.findById(teamId)
@@ -94,6 +158,24 @@ class TeamServiceJPA() extends TeamService {
     )
 
     team.setSponsorsList(newSponsors.asJava)
+    teamDao.save(team)
+    team
+  }
+  
+  @throws[IllegalArgumentException]("If any element in newEquipments doesn't exist")
+  def modifyEquipments(teamId: Long, newEquipments: Seq[Equipment]): Team = {
+    var team: Team = teamDao.findById(teamId)
+    
+    if(newEquipments == null){
+      throw new IllegalArgumentException("newEquipments cannot be null")
+    }
+    
+    //Check if all equipments exists
+    newEquipments.map(eq => 
+      if(equipmentDao.findById(eq.equipmentId) == null)
+    	  throw new IllegalArgumentException("equipmentId " + eq.equipmentId + " cannot be null"))
+    	  
+    team.teamEquipments = newEquipments.asJava
     teamDao.save(team)
     team
   }
