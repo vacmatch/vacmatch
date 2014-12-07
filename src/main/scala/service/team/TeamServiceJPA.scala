@@ -12,8 +12,10 @@ import main.scala.model.competition.Competition
 import scala.collection.JavaConverters._
 import main.scala.model.staff.StaffDao
 import main.scala.model.competition.CompetitionDao
+import javax.transaction.Transactional
 
 @Service("teamService")
+@Transactional
 class TeamServiceJPA() extends TeamService {
 
   @Autowired
