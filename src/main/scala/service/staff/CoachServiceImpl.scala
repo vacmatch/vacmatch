@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("coachService")
 @Transactional
-class CoachServiceJPA extends CoachService {
+class CoachServiceImpl extends CoachService {
 
   @Autowired
   var coachDao: CoachDao = _

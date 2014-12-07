@@ -19,7 +19,7 @@ class Equipment(eqType: String, eqShirt: String, eqShorts: String, eqTights: Str
   var equipmentId: Long = _
   
   @BeanProperty
-  @Column(unique = true)
+  @Column
   var equipmentType: String = eqType
   
   @BeanProperty

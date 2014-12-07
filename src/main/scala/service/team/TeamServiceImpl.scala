@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("teamService")
 @Transactional
-class TeamServiceJPA() extends TeamService {
+class TeamServiceImpl extends TeamService {
 
   @Autowired
   var teamDao: TeamDao = _
