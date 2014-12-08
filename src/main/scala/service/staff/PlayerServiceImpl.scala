@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("playerService")
 @Transactional
-class PlayerServiceJPA extends PlayerService {
+class PlayerServiceImpl
+				extends StaffServiceImpl
+				with PlayerService {
   
   @Autowired
   var playerDao: PlayerDao = _
@@ -24,30 +26,37 @@ class PlayerServiceJPA extends PlayerService {
 
   /* --------------- FIND ---------------- */
 
+  override
   def findByStaffId(staffId: Long): Player = {
     this.playerDao.findById(staffId)
   }
   
+  override
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Player] =  {
 	this.playerDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
+  override
   def findAll(startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findAll(startIndex, count)
   }
 
+  override
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findAllByActivated(activated, startIndex, count)
   }
 	
+  override
   def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findByAlias(alias, startIndex, count)
   }
 	
+  override
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findByEmail(email, startIndex, count)
   }
 	
+  override
   def findByNif(nif: String, startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findByNif(nif, startIndex, count)
   }

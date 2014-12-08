@@ -35,7 +35,7 @@ class AddressUk extends Address {
   def toString = this.number + " " + this.road + "\n" +
 		  		 this.locality + ", " + this.postTown + "\n" +
 		  		 this.postCode + "\n" +
-		  		 super.country 
+		  		 super.toString 
 
 
 }

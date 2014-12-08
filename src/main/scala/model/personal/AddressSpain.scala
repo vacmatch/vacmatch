@@ -38,7 +38,7 @@ class AddressSpain extends Address {
   override
   def toString = this.road + ", " + this.number + " - " + this.flat + "\n" +
 		  		 this.postCode + " " + this.locality + ", " + this.province + "\n" +
-		  		 super.country
+		  		 super.toString
 		  	
 		  		 
 }

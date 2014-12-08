@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("coachService")
 @Transactional
-class CoachServiceImpl extends CoachService {
+class CoachServiceImpl 
+				extends StaffServiceImpl
+				with CoachService {
 
   @Autowired
   var coachDao: CoachDao = _
@@ -20,30 +22,37 @@ class CoachServiceImpl extends CoachService {
   
   /* --------------- FIND ---------------- */
 
+  override
   def findByStaffId(staffId: Long): Coach = {
     this.coachDao.findById(staffId)
   }
   
+  override
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach] =  {
 	this.coachDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
+  override
   def findAll(startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findAll(startIndex, count)
   }
 
+  override
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findAllByActivated(activated, startIndex, count)
   }
 	
+  override
   def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findByAlias(alias, startIndex, count)
   }
 	
+  override
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findByEmail(email, startIndex, count)
   }
 	
+  override
   def findByNif(nif: String, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findByNif(nif, startIndex, count)
   }

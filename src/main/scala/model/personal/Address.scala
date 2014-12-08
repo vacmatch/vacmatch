@@ -25,4 +25,7 @@ class Address {
   @Column
   var country: String =_
   
+  override
+  def toString(): String = this.country + "\n"
+    
 }

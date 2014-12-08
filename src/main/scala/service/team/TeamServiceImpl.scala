@@ -67,9 +67,10 @@ class TeamServiceImpl extends TeamService {
     teamDao.save(team)
     team
   }
-
+      
   @throws[IllegalArgumentException]("If newName, newDate or newAddress doesn't exist")
-  def modifyTeam(teamId: Long, newName: String, newDate: Calendar, newAddress: Address): Team = {
+  def modifyTeam(teamId: Long, newName: String, newPublicName: String,
+      newDate: Calendar, newAddress: Address, newWeb: String): Team = {
     var team: Team = teamDao.findById(teamId)
     
     if(newName == null){
@@ -85,21 +86,18 @@ class TeamServiceImpl extends TeamService {
     }
     
     team.teamName = newName
+    team.publicTeamName = newPublicName
     team.fundationDate = newDate
     team.teamAddress = newAddress
+    team.teamWeb = newWeb
 
     team.setTeamName(newName)
     teamDao.save(team)
     team
   }
       
-  @throws[IllegalArgumentException]("If newState doesn't exist")
   def changeActivation(teamId: Long, newState: Boolean): Team = {
     var team: Team = teamDao.findById(teamId)
-    
-    if(newState == null){
-      throw new IllegalArgumentException("newState cannot be null")
-    }
     team.teamActivated = newState
     
     teamDao.save(team)

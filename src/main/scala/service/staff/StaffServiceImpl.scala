@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("staffService")
 @Transactional
-class StaffServiceJPA extends StaffService {
+class StaffServiceImpl extends StaffService {
   
   @Autowired
   var staffDao: StaffDao = _
@@ -66,16 +66,14 @@ class StaffServiceJPA extends StaffService {
   def changeActivation(staffId: Long, newState: Boolean) = {
     var staff: Staff = staffDao.findById(staffId)
     
-    if(newState != null){
-    	staff.staffActivated = newState
-    	staffDao.save(staff)
-    }
+	staff.staffActivated = newState
+	staffDao.save(staff)
   }
 	
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String) = {
     var staff: Staff = staffDao.findById(staffId)
     
-    if((newState != null) && (newAlias != null)){
+    if(newAlias != null){
     	staff.staffPrivacityActivated = newState
     	staff.staffAlias = newAlias
     	staffDao.save(staff)

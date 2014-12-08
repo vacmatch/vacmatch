@@ -39,6 +39,18 @@ class TeamServiceTest extends JUnitSuite {
   @Autowired
   private var teamDao: TeamDao = _
 
+  @Autowired
+  private var addressService: AddressService = _
+
+
+  //Init variables
+
+  var defaultTeamName: String = "Test name"
+  var defaultTeamPublicName: String = "Test public name"
+  var defaultTeamFundationalDate: Calendar = Calendar.getInstance()
+  var defaultTeamAddress: Address = addressService.createAddress("USA")
+  var defaultTeamWeb: String = "www.teamweb.com"
+
 
   /**
    * ------------------ FindTeamsByFederationId ---------------------
@@ -85,14 +97,10 @@ class TeamServiceTest extends JUnitSuite {
   @Test
   def testFindByTeamId = {
 
-    //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-
-    var address: String = "Third Avenue"
-
     //Insert team and get it's id
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
     var teamId: Long = insertedTeam.teamId
 
     //Get Team
@@ -125,7 +133,9 @@ class TeamServiceTest extends JUnitSuite {
     var address: String = "Third Avenue"
 
     //Insert team and get it's id
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
     var teamId: Long = insertedTeam.teamId
 
     //Get Team
@@ -138,84 +148,77 @@ class TeamServiceTest extends JUnitSuite {
 
   @Test (expected = classOf[DuplicateInstanceException])
   def createTeamWithExistentTeamName = {
-
     //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate1: Calendar = Calendar.getInstance()
+    var publicName2: String = "Other test public name"
     var fundationalDate2: Calendar = Calendar.getInstance()
-
-    var address1: String = "Third Avenue"
-    var address2: String = "Second Avenue"
+    var address2: Address = addressService.createAddress("USA")
+    var web2: String = "www.otherweb.com"
 
     //Insert teams and expect exception in second team
-    var insertedTeam1: Team = teamService.createTeam(teamName, fundationalDate1, address1)
-    var insertedTeam2: Team = teamService.createTeam(teamName, fundationalDate2, address2)
-
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+    var insertedTeam2: Team = teamService.createTeam(defaultTeamName,
+        publicName2, fundationalDate2,
+        address2, web2)
   }
 
   @Test (expected = classOf[IllegalArgumentException])
   def createTeamWithNullTeamName = {
 
     //Init variables
-    var teamName: String = null
-    var fundationalDate: Calendar = Calendar.getInstance()
+    var nullTeamName: String = null
 
-    var address: String = "Third Avenue"
-
-    //Insert teams and expect exception in team name
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(nullTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
    }
 
   @Test (expected = classOf[IncorrectDateException])
   def createTeamWithIncorrectDate = {
-
-    //Init variables
-    var teamName: String = "Test name"
-    var address: String = "Third Avenue"
-
     //Set fundationalDate 1 year in the future
     var fundationalDate: Calendar = Calendar.getInstance()
     fundationalDate.add(Calendar.YEAR, 1)
 
     //Insert team and expect exception
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, fundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
   }
 
   @Test (expected = classOf[IllegalArgumentException])
   def createTeamWithNullDate = {
-
-    //Init variables
-    var teamName: String = "Test name"
-    var address: String = "Third Avenue"
-
-    //Set fundationalDate
-    var fundationalDate: Calendar = null
+      //Set fundationalDate
+    var nullFundationalDate: Calendar = null
 
     //Insert team and expect exception
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, nullFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+
   }
 
   /**
-   * ------------------ modifyTeam -------------------
+   * ------------------ modifyTeamName -------------------
    */
   @Test
   def modifyTeamName {
-
-    //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var address: String = "Third Avenue"
-
     //Insert team and get non modified parameters
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, address)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+
     var insertedTeamId: Long = insertedTeam.teamId
+    var insertedTeamPublicName: String = insertedTeam.publicTeamName
     var insertedTeamDate: Calendar = insertedTeam.fundationDate
-    var insertedTeamAddress: String = insertedTeam.teamAddress
+    var insertedTeamAddress: Address = insertedTeam.teamAddress
+    var insertedTeamWeb: String = insertedTeam.teamWeb
 
     //Modify team name
     var newTeamName: String = "Modified name"
-    teamService.modifyTeam(insertedTeamId, newTeamName, insertedTeamDate, insertedTeamAddress)
+    teamService.modifyTeam(insertedTeamId, newTeamName, insertedTeamPublicName,
+        insertedTeamDate, insertedTeamAddress, insertedTeamWeb)
 
     //Get team and check result
     var modifiedTeam: Team = teamService.findByTeamId(insertedTeamId)
@@ -228,54 +231,60 @@ class TeamServiceTest extends JUnitSuite {
 
     //Try to modify non existent team and expect exception
     var teamName: String = "Test name"
+    var teamPublicName: String = "Test public name"
     var teamDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
+    var teamAddress: Address = addressService.createAddress("USA")
+    var teamWeb: String = "www.teamweb.com"
 
-    teamService.modifyTeam(Non_existent_team_id, teamName, teamDate, teamAddress)
+    teamService.modifyTeam(Non_existent_team_id, defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
   }
 
   @Test (expected = classOf[IllegalArgumentException])
   def modifyTeamNameWithNullName {
 
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
-
     //Insert team and get not modified parameters
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+
     var insertedTeamId: Long = insertedTeam.teamId
+    var insertedTeamPublicName: String = insertedTeam.publicTeamName
     var insertedTeamDate: Calendar = insertedTeam.fundationDate
-    var insertedTeamAddress: String = insertedTeam.teamAddress
+    var insertedTeamAddress: Address = insertedTeam.teamAddress
+    var insertedTeamWeb: String = insertedTeam.teamWeb
 
     //Modify team name with illegal teamName
-    var newTeamName: String = null
-    teamService.modifyTeam(insertedTeamId, newTeamName, insertedTeamDate, insertedTeamAddress)
+    var nullTeamName: String = null
+    teamService.modifyTeam(insertedTeamId, nullTeamName, insertedTeamPublicName,
+        insertedTeamDate, insertedTeamAddress, insertedTeamWeb)
 
   }
 
 
   /**
-   * ------------------ modifyTeam -------------------
+   * ------------------ modifyTeamDate -------------------
    */
   @Test
   def modifyTeamDate {
-
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
-
     //Insert team and get not modified parameters
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+
     var insertedTeamId: Long = insertedTeam.teamId
     var insertedTeamName: String = insertedTeam.teamName
-    var insertedTeamAddress: String = insertedTeam.teamAddress
+    var insertedTeamPublicName: String = insertedTeam.publicTeamName
+    var insertedTeamDate: Calendar = insertedTeam.fundationDate
+    var insertedTeamAddress: Address = insertedTeam.teamAddress
+    var insertedTeamWeb: String = insertedTeam.teamWeb
 
     //Modify team date
     var newFundationalDate: Calendar = Calendar.getInstance()
-    teamService.modifyTeam(insertedTeamId, insertedTeamName, newFundationalDate, insertedTeamAddress)
+    teamService.modifyTeam(insertedTeamId, insertedTeamName, insertedTeamPublicName,
+        newFundationalDate, insertedTeamAddress, insertedTeamWeb)
 
     //Get team and check result
     var modifiedTeam: Team = teamService.findByTeamId(insertedTeamId)
@@ -287,52 +296,57 @@ class TeamServiceTest extends JUnitSuite {
   def modifyTeamDateWithNonExistentTeam {
 
     //Modify not existent team date and expect exception
-    var teamName: String = "Test name"
-    var teamAddress: String = "Third Avenue"
     var newFundationalDate: Calendar = Calendar.getInstance()
-    teamService.modifyTeam(Non_existent_team_id, teamName, newFundationalDate, teamAddress)
+
+    teamService.modifyTeam(Non_existent_team_id, defaultTeamName,
+        defaultTeamPublicName, newFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
   }
 
   @Test (expected = classOf[IncorrectDateException])
   def modifyTeamDateWithIncorrectDate {
-
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
-
     //Insert team and get not modified parameters
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
+
     var insertedTeamId: Long = insertedTeam.teamId
+    var insertedTeamPublicName: String = insertedTeam.publicTeamName
     var insertedTeamName: String = insertedTeam.teamName
-    var insertedTeamAddress: String = insertedTeam.teamAddress
+    var insertedTeamAddress: Address = insertedTeam.teamAddress
+    var insertedTeamWeb: String = insertedTeam.teamWeb
 
     //Modify team date 1 year in the future and expect exception
     var newFundationalDate: Calendar = Calendar.getInstance()
     newFundationalDate.add(Calendar.YEAR, 1)
-    teamService.modifyTeam(insertedTeamId, insertedTeamName, newFundationalDate, insertedTeamAddress)
+
+    teamService.modifyTeam(insertedTeamId, insertedTeamName,
+        insertedTeamPublicName, newFundationalDate,
+        insertedTeamAddress, insertedTeamWeb)
 
   }
 
   @Test (expected = classOf[IllegalArgumentException])
   def modifyTeamDateWithNullDate {
 
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
+    //Insert team and get not modified parameters
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
-    //Insert team and get id
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
     var insertedTeamId: Long = insertedTeam.teamId
+    var insertedTeamPublicName: String = insertedTeam.publicTeamName
     var insertedTeamName: String = insertedTeam.teamName
-    var insertedTeamAddress: String = insertedTeam.teamAddress
+    var insertedTeamAddress: Address = insertedTeam.teamAddress
+    var insertedTeamWeb: String = insertedTeam.teamWeb
 
     //Modify team date with null and expect exception
-    var newFundationalDate: Calendar = null
-    teamService.modifyTeam(insertedTeamId, insertedTeamName, newFundationalDate, insertedTeamAddress)
+    var nullFundationalDate: Calendar = null
 
+    teamService.modifyTeam(insertedTeamId, insertedTeamName,
+        insertedTeamPublicName, nullFundationalDate,
+        insertedTeamAddress, insertedTeamWeb)
   }
 
   /**
@@ -341,19 +355,16 @@ class TeamServiceTest extends JUnitSuite {
   @Test
   def modifySponsors = {
 
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
-
-    //Insert team and get id
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
+    //Insert team and get not modified parameters
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
     //Modify sponsorList
     var newSponsors: List[String] = List("Pepsi","Lotto")
     teamService.modifyTeamSponsors(insertedTeam.teamId, newSponsors)
 
-    //Get team again
+    //Get team
     var team: Team = teamService.findByTeamId(insertedTeam.teamId)
 
     assertEquals(team.sponsorsList, insertedTeam.sponsorsList)
@@ -363,16 +374,14 @@ class TeamServiceTest extends JUnitSuite {
   @Test (expected = classOf[IllegalArgumentException])
   def modifyStaffWithIncorrectSponsorList = {
 
-        //Init variables
-    var teamName: String = "Test name"
-    var fundationalDate: Calendar = Calendar.getInstance()
-    var teamAddress: String = "Third Avenue"
-
-    //Insert team and get id
-    var insertedTeam: Team = teamService.createTeam(teamName, fundationalDate, teamAddress)
+    //Insert team and get not modified parameters
+    var insertedTeam: Team = teamService.createTeam(defaultTeamName,
+        defaultTeamPublicName, defaultTeamFundationalDate,
+        defaultTeamAddress, defaultTeamWeb)
 
     //Modify sponsorList and expect exception
     var newSponsors: List[String] = List(null,"Lotto")
+
     teamService.modifyTeamSponsors(insertedTeam.teamId, newSponsors)
 
   }
