@@ -29,15 +29,9 @@ class Staff(stName: String,
   var staffName: String = stName
 
   @BeanProperty
-<<<<<<< HEAD:src/main/scala/com/vac/manager/model/staff/Staff.scala
-  @Column
-  var staffSurnames: java.util.List[String] = stSurnames
-
-=======
   @Column(nullable = false)
   var staffSurnames: java.util.List[String] = stSurnames.asJava
-    
->>>>>>> Added staff daos definitions and some restrictions to staff entities:src/main/scala/model/staff/Staff.scala
+
   @BeanProperty
   @Column(nullable = false)
   var staffActivated: Boolean = false
@@ -56,18 +50,18 @@ class Staff(stName: String,
   var staffAvatar: Avatar = _
 
   @BeanProperty
+  @OneToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @JoinColumn(name = "avatarId")
+  var staffAvatarHistorics: java.util.List[Avatar] = _
+
+  @BeanProperty
   @Column
   var staffEmail: String = stEmail
 
   @BeanProperty
   @Column
-<<<<<<< HEAD:src/main/scala/com/vac/manager/model/staff/Staff.scala
-  var staffTelephones: java.util.List[String] = stTelephones
-
-=======
   var staffTelephones: java.util.List[String] = stTelephones.asJava
-  
->>>>>>> Added staff daos definitions and some restrictions to staff entities:src/main/scala/model/staff/Staff.scala
+
   @BeanProperty
   @Column
   var staffAddress: Address = stAddress

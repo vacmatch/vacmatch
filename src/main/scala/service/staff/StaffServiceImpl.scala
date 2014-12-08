@@ -27,38 +27,44 @@ class StaffServiceJPA extends StaffService {
   /* --------------- FIND ---------------- */
 
   def findByStaffId(staffId: Long): Staff = {
-	this.staffDao.findById(staffId)
+	staffDao.findById(staffId)
   }
   
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Staff] =  {
-	this.staffDao.findByNameAndSurname(name, surname, startIndex, count)
+	staffDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
   def findAll(startIndex: Int, count: Int): Seq[Staff] = {
-    this.staffDao.findAll(startIndex, count)
+    staffDao.findAll(startIndex, count)
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Staff] = {
-    this.staffDao.findAllByActivated(activated, startIndex, count)
+    staffDao.findAllByActivated(activated, startIndex, count)
   }
 	
   def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Staff] = {
-    this.staffDao.findByAlias(alias, startIndex, count)
+    staffDao.findByAlias(alias, startIndex, count)
   }
 	
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Staff] = {
-    this.staffDao.findByEmail(email, startIndex, count)
+    staffDao.findByEmail(email, startIndex, count)
   }
 	
   def findByNif(nif: String, startIndex: Int, count: Int): Seq[Staff] = {
-    this.staffDao.findByNif(nif, startIndex, count)
+    staffDao.findByNif(nif, startIndex, count)
   }
 
+  def findAvatarHistoricByStaffId(staffId: Long): Seq[Avatar] = {
+    var staff: Staff = staffDao.findById(staffId)
+    
+    staff.getStaffAvatarHistorics().asScala
+  }
+  
 	
   /* ---------------- MODIFY --------------- */
 	
   def changeActivation(staffId: Long, newState: Boolean) = {
-    var staff: Staff = this.staffDao.findById(staffId)
+    var staff: Staff = staffDao.findById(staffId)
     
     if(newState != null){
     	staff.staffActivated = newState
@@ -67,7 +73,7 @@ class StaffServiceJPA extends StaffService {
   }
 	
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String) = {
-    var staff: Staff = this.staffDao.findById(staffId)
+    var staff: Staff = staffDao.findById(staffId)
     
     if((newState != null) && (newAlias != null)){
     	staff.staffPrivacityActivated = newState
@@ -77,7 +83,7 @@ class StaffServiceJPA extends StaffService {
   }
 	
   def assignAvatar(staffId: Long, newAvatar: Avatar) = {
-    var staff: Staff = this.staffDao.findById(staffId)
+    var staff: Staff = staffDao.findById(staffId)
     
     if(newAvatar != null){
     	staff.staffAvatar = newAvatar
@@ -86,7 +92,7 @@ class StaffServiceJPA extends StaffService {
   }
 	
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team]) = {
-    var staff: Staff = this.staffDao.findById(staffId)
+    var staff: Staff = staffDao.findById(staffId)
     
     if(newTeamList != null){
     	staff.teamList = newTeamList.asJava

@@ -28,6 +28,8 @@ trait StaffService {
 
   def findByNif(nif: String, startIndex: Int, count: Int): Seq[Staff]
 
+  def findAvatarHistoricByStaffId(staffId: Long): Seq[Avatar]
+  
   /* ---------------- MODIFY --------------- */
 
   def changeActivation(staffId: Long, newState: Boolean)

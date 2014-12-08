@@ -10,11 +10,11 @@ import main.scala.model.team.Team
 
 trait PlayerService extends StaffService {
 
-  def createPlayer(stName: String, stSurnames: java.util.List[String],
+  def createPlayer(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Player
     
-  def modifyPlayer(staffId: Long, stName: String, stSurnames: java.util.List[String],
+  def modifyPlayer(staffId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Player
   
