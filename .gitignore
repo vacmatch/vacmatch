@@ -5,8 +5,7 @@ hsql.db*
 **/*~
 
 .classpath
-.ensime
-.ensime_cache
+.ensime*
 .gradle
 .project
 .settings
