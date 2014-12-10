@@ -3,6 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'spring-boot'
+apply plugin: 'ensime'
 
 
 buildscript {
@@ -14,6 +15,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
     }
 }
 
