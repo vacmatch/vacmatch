@@ -10,7 +10,6 @@ import main.scala.service.staff.PlayerService
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.PathVariable
-import main.scala.model.personal.Avatar
 import org.springframework.ui.Model
 
 @Controller
@@ -33,15 +32,6 @@ class StaffController {
     ""
   }
 
-  @RequestMapping(value=Array("/avhist/{staffId}"), method=Array(RequestMethod.GET))
-  def showAvatarHistoricByStaffId(@PathVariable staffId: Long, model: Model) = {
-    var avatarList: Seq[Avatar] = staffService.findAvatarHistoricByStaffId(staffId)
-    
-    model.addAttribute(avatarList)
-    "staff/showAvatarHistoric"
-  }
-
-  
 }
 
 

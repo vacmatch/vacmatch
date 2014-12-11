@@ -4,8 +4,6 @@ import main.scala.model.staff.Player
 import main.scala.model.staff.PlayerStatistics
 import main.scala.model.personal.Address
 import java.util.Calendar
-import main.scala.model.staff.Staff
-import main.scala.model.personal.Avatar
 import main.scala.model.team.Team
 
 trait PlayerService extends StaffService {

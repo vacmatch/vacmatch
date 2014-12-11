@@ -4,7 +4,6 @@ import javax.persistence._
 import scala.beans.BeanProperty
 import com.vac.manager.model.team.Team
 import java.util.Calendar
-import main.scala.model.personal.Avatar
 import main.scala.model.personal.Address
 import scala.collection.JavaConverters._
 
@@ -43,16 +42,6 @@ class Staff(stName: String,
   @BeanProperty
   @Column(nullable = false)
   var staffAlias: String = stName
-
-  @BeanProperty
-  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "avatarId")
-  var staffAvatar: Avatar = _
-
-  @BeanProperty
-  @OneToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "avatarId")
-  var staffAvatarHistorics: java.util.List[Avatar] = _
 
   @BeanProperty
   @Column

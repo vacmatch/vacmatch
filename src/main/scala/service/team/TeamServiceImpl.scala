@@ -13,7 +13,6 @@ import scala.collection.JavaConverters._
 import main.scala.model.staff.StaffDao
 import main.scala.model.competition.CompetitionDao
 import main.scala.model.personal.Address
-import main.scala.model.personal.Avatar
 import main.scala.model.team.Equipment
 import main.scala.model.team.EquipmentDao
 import org.springframework.transaction.annotation.Transactional
@@ -113,20 +112,6 @@ class TeamServiceImpl extends TeamService {
     }
     
     team.publicTeamName = newPublicName
-    
-    teamDao.save(team)
-    team
-  }
-  
-  @throws[IllegalArgumentException]("If newShield doesn't exist")
-  def modifyShield(teamId: Long, newShield: Avatar): Team = {
-    var team: Team = teamDao.findById(teamId)
-    
-    if(newShield == null){
-      throw new IllegalArgumentException("newShield cannot be null")
-    }
-    
-    team.teamShield = newShield
     
     teamDao.save(team)
     team

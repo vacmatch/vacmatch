@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
 import main.scala.model.staff.StaffDao
 import main.scala.model.staff.Staff
-import main.scala.model.personal.Avatar
 import main.scala.model.team.Team
 import scala.collection.JavaConverters._
 import main.scala.model.staff.PlayerDao
@@ -54,12 +53,6 @@ class StaffServiceImpl extends StaffService {
     staffDao.findByNif(nif, startIndex, count)
   }
 
-  def findAvatarHistoricByStaffId(staffId: Long): Seq[Avatar] = {
-    var staff: Staff = staffDao.findById(staffId)
-    
-    staff.getStaffAvatarHistorics().asScala
-  }
-  
 	
   /* ---------------- MODIFY --------------- */
 	
@@ -76,15 +69,6 @@ class StaffServiceImpl extends StaffService {
     if(newAlias != null){
     	staff.staffPrivacityActivated = newState
     	staff.staffAlias = newAlias
-    	staffDao.save(staff)
-    }
-  }
-	
-  def assignAvatar(staffId: Long, newAvatar: Avatar) = {
-    var staff: Staff = staffDao.findById(staffId)
-    
-    if(newAvatar != null){
-    	staff.staffAvatar = newAvatar
     	staffDao.save(staff)
     }
   }

@@ -6,7 +6,6 @@ import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
-import main.scala.model.personal.Avatar
 import main.scala.model.personal.Address
 
 @Entity
@@ -44,11 +43,6 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
   @BeanProperty
   @Column
   var teamWeb: String = web
-
-  @BeanProperty
-  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "avatarId")
-  var teamShield: Avatar = _
 
   @BeanProperty
   @Column(nullable = false)

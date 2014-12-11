@@ -7,7 +7,6 @@ import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
 import main.scala.model.team.Equipment
-import main.scala.model.personal.Avatar
 import main.scala.model.personal.Address
 
 trait TeamService {
@@ -27,8 +26,6 @@ trait TeamService {
   def changeActivation(teamId: Long, newState: Boolean): Team
 
   def modifyPublicName(teamId: Long, newPublicName: String): Team
-
-  def modifyShield(teamId: Long, newShield: Avatar): Team
 
   def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team
 

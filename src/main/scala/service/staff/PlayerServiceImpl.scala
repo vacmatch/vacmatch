@@ -9,7 +9,6 @@ import main.scala.model.staff.StaffDao
 import main.scala.model.staff.PlayerDao
 import main.scala.model.staff.PlayerStatistics
 import main.scala.model.staff.Staff
-import main.scala.model.personal.Avatar
 import main.scala.model.team.Team
 import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
