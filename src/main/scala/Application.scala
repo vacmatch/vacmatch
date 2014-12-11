@@ -4,8 +4,12 @@ import java.util.ArrayList
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.embedded.FilterRegistrationBean
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
+import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration }
+import org.springframework.web.servlet.DispatcherServlet
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
+import org.springframework.web.servlet.view.InternalResourceViewResolver
 import scala.collection.JavaConverters._
 
 @Configuration
@@ -17,6 +21,14 @@ class WebAppConfig() extends RouterConfigurationSupport {
     val routeFiles = new ArrayList[String];
     routeFiles.add("classpath:/routes.conf");
     return routeFiles;
+  }
+
+  override def addResourceHandlers(registry: ResourceHandlerRegistry) = {
+    if (!registry.hasMappingForPattern("/**")) {
+      registry.addResourceHandler("/**")
+        .addResourceLocations("classpath:/META-INF/resources", "classpath:/resources/",
+          "classpath:/static/", "classpath:/public/")
+    }
   }
 }
 
