@@ -4,12 +4,13 @@ import java.util.ArrayList
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.embedded.ServletRegistrationBean
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
+import org.springframework.boot.context.embedded.{FilterRegistrationBean, ServletRegistrationBean}
+import org.springframework.context.annotation.{Bean, ComponentScan, Configuration, Import}
 import org.springframework.web.servlet.DispatcherServlet
-import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
+import org.springframework.web.servlet.config.annotation.{InterceptorRegistry, ResourceHandlerRegistry}
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import scala.collection.JavaConverters._
+import util.TenantFilter
 
 @Configuration
 @ComponentScan(basePackages = Array("main.scala")) // You should not use the @EnableWebMvc annotation
@@ -47,6 +48,16 @@ class WebAppConfig() extends RouterConfigurationSupport {
 @ComponentScan
 @Import(Array(classOf[WebAppConfig]))
 class Application {
+
+  @Bean
+  def multiTenantHandler(): FilterRegistrationBean = {
+    val frb = new FilterRegistrationBean
+
+    frb.addUrlPatterns("/a/*")
+    frb.setFilter(new TenantFilter)
+
+    frb
+  }
 
   @Bean
   def dispatcherRegistration(dispatcherServlet: DispatcherServlet): ServletRegistrationBean = {
