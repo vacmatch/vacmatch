@@ -39,6 +39,15 @@ class WebAppConfig() extends RouterConfigurationSupport {
 @ComponentScan
 @Import(Array(classOf[WebAppConfig]))
 class Application {
+
+  @Bean
+  def dispatcherRegistration(dispatcherServlet: DispatcherServlet): ServletRegistrationBean = {
+    val srb = new ServletRegistrationBean(dispatcherServlet)
+    srb.addUrlMappings("/*")
+
+    srb
+  }
+
 }
 
 object Application extends App {
