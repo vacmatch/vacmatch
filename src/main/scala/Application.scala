@@ -16,6 +16,8 @@ import scala.collection.JavaConverters._
 @ComponentScan(basePackages = Array("main.scala")) // You should not use the @EnableWebMvc annotation
 class WebAppConfig() extends RouterConfigurationSupport {
 
+  override protected def isHandlerMappingReloadEnabled() = { true }
+
   @Override
   def listRouteFiles(): ArrayList[String] = {
     val routeFiles = new ArrayList[String];
