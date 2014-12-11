@@ -20,7 +20,9 @@ class TenantFilter() extends Filter {
   @throws[IOException]()
   override def doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) = {
     val r = req.asInstanceOf[HttpServletRequest]
-    val uri = r.getPathInfo()
+    var uri = r.getPathInfo()
+    if (uri == null)
+      uri = r.getServletPath()
 
     println ("***** TENANTFILTER ****")
     println ("uri = " + uri)
