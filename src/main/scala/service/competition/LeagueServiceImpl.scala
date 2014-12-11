@@ -7,8 +7,10 @@ import main.scala.model.competition.{League, LeagueDao, LeagueSeason, LeagueSeas
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scala.collection.JavaConverters._
+import org.springframework.transaction.annotation.Transactional
 
 @Service("leagueService")
+@Transactional
 class LeagueServiceImpl extends LeagueService {
 
   @Autowired
