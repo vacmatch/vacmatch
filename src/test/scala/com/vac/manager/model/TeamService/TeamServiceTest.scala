@@ -43,7 +43,7 @@ class TeamServiceTest extends JUnitSuite {
   private var addressService: AddressService = _
 
 
-  //Init variables
+  //Default variables
 
   var defaultTeamName: String = "Test name"
   var defaultTeamPublicName: String = "Test public name"

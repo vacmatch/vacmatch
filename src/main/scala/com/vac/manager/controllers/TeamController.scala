@@ -7,6 +7,7 @@ import org.springframework.web.servlet.ModelAndView
 import java.util.Calendar
 import com.vac.manager.model.team.Team
 import main.scala.model.personal.Address
+import main.scala.service.personal.AddressService
 
 @Controller
 class TeamController() {
@@ -14,6 +15,9 @@ class TeamController() {
   @Autowired
   var teamService: TeamService = _
 
+  @Autowired
+  var addressService: AddressService = _
+  
   def showTeam() = {
     //TODO get parameters from url
     var teamId: Long = 0
@@ -34,6 +38,7 @@ class TeamController() {
     var web: String = null
 
     var address: Address = new Address()
+
     var createdTeam: Team = teamService.createTeam(teamName, publicName, fundationalDate, address, web)
 
     var mav: ModelAndView= new ModelAndView("team/showTeam");

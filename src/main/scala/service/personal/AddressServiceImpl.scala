@@ -9,7 +9,8 @@ import main.scala.model.personal.Address
 class AddressServiceImpl extends AddressService {
 
   def createAddress(country: String): Address = {
-    null
+    var address: Address = new Address(country)
+    address
   }
 
 }

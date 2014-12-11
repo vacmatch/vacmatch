@@ -9,7 +9,7 @@ import javax.persistence.Column
 @Entity
 @Table(name = "ADDRESS_SPAIN")
 @PrimaryKeyJoinColumn(name="addressId")
-class AddressSpain extends Address {
+class AddressSpain(coun: String) extends Address(coun) {
     
   @BeanProperty
   @Column

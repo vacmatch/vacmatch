@@ -14,7 +14,7 @@ import javax.persistence.Column
 @Entity
 @Table(name = "ADDRESS")
 @Inheritance(strategy=InheritanceType.JOINED)
-class Address {
+class Address(coun: String) {
   
   @Id
   @SequenceGenerator(name="addressIdGenerator", sequenceName="address_id_seq")
@@ -23,7 +23,7 @@ class Address {
   
   @BeanProperty
   @Column
-  var country: String =_
+  var country: String = coun
   
   override
   def toString(): String = this.country + "\n"
