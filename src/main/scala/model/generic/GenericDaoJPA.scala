@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory
 import org.springframework.stereotype.Service
 import org.springframework.stereotype.Repository
 import javax.persistence.metamodel.Metamodel
+import main.scala.model.generic.exceptions.InstanceNotFoundException
 
 abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K]{
 
