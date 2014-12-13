@@ -7,6 +7,8 @@ import main.scala.model.competition.LeagueSeason
 
 trait LeagueService {
   def createLeague(fedId: Long, leagueName: String, slug: String): League
+  def modifyLeagueName(fedId: Long, slug: String, newName: String): Option[League]
+  def modifyLeagueSlug(fedId: Long, oldSlug: String, newSlug: String): Option[League]
   def findActiveByFederation(fedId: Long): Seq[LeagueSeason]
   def findActiveByFederation(fedId: Long, when: Calendar): Seq[LeagueSeason]
   def findAllByFederation(fedId: Long): Seq[League]

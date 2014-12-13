@@ -20,6 +20,14 @@ class LeagueServiceMock extends LeagueService {
     return l
   }
 
+  def modifyLeagueName(fedId: Long, slug: String, newName: String): Option[League] = {
+    return Some (createLeague(fedId, slug, newName))
+  }
+
+  def modifyLeagueSlug(fedId: Long, oldSlug: String, newSlug: String): Option[League] = {
+    return Some (createLeague(fedId, newSlug, "TEST NAME"))
+  }
+
   def findActiveByFederation(fedId: Long): Seq[LeagueSeason] = {
     val today = new GregorianCalendar()
     return findActiveByFederation(fedId, today)
