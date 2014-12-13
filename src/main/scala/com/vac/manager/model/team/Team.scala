@@ -45,6 +45,8 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
   var teamWeb: String = web
 
   @BeanProperty
+  @ElementCollection
+  @CollectionTable
   @Column(nullable = false)
   var teamTelephones: java.util.List[String] = _
 

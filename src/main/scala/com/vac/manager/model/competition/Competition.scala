@@ -20,12 +20,11 @@ class Competition (compName: String, feder: Federation) {
   var competitionName: String = compName
 
   @BeanProperty
-  @Column
   @ManyToOne(optional=false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "fedId")
   var federation: Federation = feder
   
   @BeanProperty
-  @Column
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
       name = "TEAM_COMPETITION",

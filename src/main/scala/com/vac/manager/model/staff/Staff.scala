@@ -28,6 +28,8 @@ class Staff(stName: String,
   var staffName: String = stName
 
   @BeanProperty
+  @ElementCollection
+  @CollectionTable
   @Column(nullable = false)
   var staffSurnames: java.util.List[String] = stSurnames.asJava
 
@@ -48,11 +50,14 @@ class Staff(stName: String,
   var staffEmail: String = stEmail
 
   @BeanProperty
+  @ElementCollection
+  @CollectionTable
   @Column
   var staffTelephones: java.util.List[String] = stTelephones.asJava
 
   @BeanProperty
-  @Column
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "addressId")
   var staffAddress: Address = stAddress
 
   @BeanProperty
