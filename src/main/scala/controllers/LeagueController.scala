@@ -59,15 +59,20 @@ class LeagueController() extends UrlGrabber {
 
   def create(@RequestParam("fedId") fedId: Int) = {
 
-    var leagueName: String = "Meow"
-    var slug: String = "mw"
-    var foundationalDate: Calendar = null
+    var leagueName = "Meow"
+    var slug = "mw"
+    var foundationalDate = null
     var sponsors: List[String] = null
 
-    val league: League = leagueService.createLeague(fedId, leagueName, slug)
+    // Placeholder for values
+    val league = new League
+    league.fedId = fedId
+    league.leagueName = leagueName
+    league.slug = slug
+
     val submitUrl = getUrl("LeagueController.createPost")
 
-    val mav: ModelAndView = new ModelAndView("league/edit_form");
+    val mav: ModelAndView = new ModelAndView("league/edit_form")
 
     mav.addObject("league", league)
     mav.addObject("fedId", fedId)
@@ -112,6 +117,7 @@ class LeagueController() extends UrlGrabber {
     @RequestParam("leagueName") leagueName: String,
     @RequestParam("slug") slug: String
   ): ModelAndView = {
+
     val league = leagueService.createLeague(fedId, leagueName, slug)
 
     val mav = new ModelAndView("league/show")
