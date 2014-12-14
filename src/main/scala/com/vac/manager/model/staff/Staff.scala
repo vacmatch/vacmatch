@@ -6,6 +6,7 @@ import com.vac.manager.model.team.Team
 import java.util.Calendar
 import main.scala.model.personal.Address
 import scala.collection.JavaConverters._
+import scravatar.Gravatar
 
 @Entity
 @Table(name = "STAFF")
@@ -49,6 +50,10 @@ class Staff(stName: String,
   @Column
   var staffEmail: String = stEmail
 
+  @BeanProperty
+  @Column
+  var staffAvatarLink: String = Gravatar(stEmail).ssl(true).avatarUrl
+  
   @BeanProperty
   @ElementCollection
   @CollectionTable

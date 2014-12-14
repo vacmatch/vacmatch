@@ -15,6 +15,7 @@ import main.scala.model.staff.License
 import main.scala.model.staff.Coach
 import main.scala.model.staff.CoachDao
 import org.springframework.transaction.annotation.Transactional
+import scravatar.Gravatar
 
 @Service("staffService")
 @Transactional
@@ -80,6 +81,34 @@ class StaffServiceImpl extends StaffService {
     	staff.teamList = newTeamList.asJava
     	staffDao.save(staff)
     }
+  }
+
+  def createStaff(stName: String, stSurnames: Seq[String],
+    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+    stNif: String, stBirth: Calendar): Staff = {
+    var staff: Staff = new Staff(stName, stSurnames, stEmail, stTelephones,
+        stAddress, stNif, stBirth)
+  	
+    staffDao.save(staff)
+    staff
+  }
+    
+  def modifyStaff(staffId: Long, stName: String, stSurnames: Seq[String],
+    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+    stNif: String, stBirth: Calendar): Staff = {
+    
+    var staff: Staff = staffDao.findById(staffId)
+    staff.staffName = stName
+    staff.staffSurnames = stSurnames.asJava
+    staff.staffEmail = stEmail
+    staff.staffAvatarLink = Gravatar(stEmail).ssl(true).avatarUrl
+    staff.staffTelephones = stTelephones.asJava
+    staff.staffAddress = stAddress
+    staff.staffNif = stNif
+    staff.staffBirth = stBirth
+  	
+    staffDao.save(staff)
+    staff
   }
   
 }
