@@ -1,0 +1,71 @@
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'spring-boot'
+apply plugin: 'ensime'
+
+ext {
+  scalaLibraryVersion = '2.11.0'
+}
+
+buildscript {
+    ext {
+        springBootVersion = '1.1.9.RELEASE'
+    }
+    repositories {
+	mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+    }
+}
+
+war {
+    baseName = 'federation-proyect-app'
+    version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile group: 'org.resthub', name: 'springmvc-router', version: '1.2.0'
+    compile group: 'com.andersen-gott', name: 'scravatar_2.11', version: '1.0.3'
+<<<<<<< HEAD
+    testCompile group: 'org.specs2', name: 'specs2-core_2.11', version: '2.4.14'
+=======
+    
+>>>>>>> Added create and modify Staff servicies and added gravatar to Staff
+    compile group: 'log4j', name: 'log4j', version:'1.2.16'
+    compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaLibraryVersion
+
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-batch")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+eclipse {
+    classpath {
+         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
