@@ -52,7 +52,7 @@ configurations {
 dependencies {
     compile group: 'org.resthub', name: 'springmvc-router', version: '1.2.0'
     compile group: 'com.andersen-gott', name: 'scravatar_2.11', version: '1.0.3'
-    
+    testCompile group: 'org.specs2', name: 'specs2-core_2.11', version: '2.4.14'
     compile group: 'log4j', name: 'log4j', version:'1.2.16'
     compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaLibraryVersion
 
