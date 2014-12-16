@@ -7,6 +7,7 @@ import java.util.Calendar
 import main.scala.model.personal.Address
 import scala.collection.JavaConverters._
 import scravatar.Gravatar
+import main.scala.model.federation.Federation
 
 @Entity
 @Table(name = "STAFF")
@@ -54,7 +55,8 @@ class Staff(stName: String,
   @ElementCollection
   @CollectionTable
   @Column
-  var staffAvatarLink: String = Gravatar(stEmail).ssl(true).avatarUrl
+  var staffAvatarLink: String = 
+    (new Gravatar(if (stEmail == null) "" else stEmail)).ssl(true).avatarUrl
   
   @BeanProperty
 <<<<<<< HEAD
@@ -89,8 +91,13 @@ class Staff(stName: String,
       inverseJoinColumns =
 	Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
   )
-  var teamList: java.util.List[Team] = _
+  var staffTeamList: java.util.List[Team] = _
 
+  @BeanProperty
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "fedId")
+  var staffFederation: Federation = _
+  
   def this() = this(null, null, null, null, null, null, null)
   
   override
@@ -98,6 +105,6 @@ class Staff(stName: String,
   					", " + this.staffName +
   					"\nNIF: " + this.staffNif +
   					"\nEmail: " + this.staffEmail +
-					"\nTeams: " + this.teamList
+					"\nTeams: " + this.staffTeamList
 
 }

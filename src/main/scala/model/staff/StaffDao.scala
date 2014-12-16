@@ -8,6 +8,8 @@ trait StaffDao extends GenericDao[Staff, java.lang.Long]{
 
   def findAll(startIndex: Int, count: Int): Seq[Staff]
 
+  def findAllByFederationId(fedId: Long): Seq[Staff]
+
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Staff]
 
   def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Staff]

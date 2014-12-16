@@ -30,6 +30,10 @@ class StaffServiceImpl extends StaffService {
 	staffDao.findById(staffId)
   }
   
+  def findAllByFederationId(fedId: Long): Seq[Staff] = {
+    staffDao.findAllByFederationId(fedId)
+  }
+
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Staff] =  {
 	staffDao.findByNameAndSurname(name, surname, startIndex, count)
   }
@@ -78,7 +82,7 @@ class StaffServiceImpl extends StaffService {
     var staff: Staff = staffDao.findById(staffId)
     
     if(newTeamList != null){
-    	staff.teamList = newTeamList.asJava
+    	staff.staffTeamList = newTeamList.asJava
     	staffDao.save(staff)
     }
   }
@@ -101,7 +105,7 @@ class StaffServiceImpl extends StaffService {
     staff.staffName = stName
     staff.staffSurnames = stSurnames.asJava
     staff.staffEmail = stEmail
-    staff.staffAvatarLink = Gravatar(stEmail).ssl(true).avatarUrl
+    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
     staff.staffTelephones = stTelephones.asJava
     staff.staffAddress = stAddress
     staff.staffNif = stNif

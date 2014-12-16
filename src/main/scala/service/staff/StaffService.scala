@@ -15,6 +15,8 @@ trait StaffService {
 
   def findByStaffId(staffId: Long): Staff
 
+  def findAllByFederationId(fedId: Long): Seq[Staff]
+
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Staff]
 
   def findAll(startIndex: Int, count: Int): Seq[Staff]
@@ -34,15 +36,15 @@ trait StaffService {
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String)
 
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
-	
+
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar): Staff
-    
+
   def modifyStaff(staffId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar): Staff
-    
+
   /* ---------------- DELETE ---------------- */
 
   /* ---------------- DELETE ---------------- */
