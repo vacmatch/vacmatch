@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import main.scala.service.personal.AddressService
 import main.scala.model.personal.Address
 import java.util.Calendar
+import javax.servlet.http.HttpSession
 
 @Controller
 @SessionAttributes(Array("fedId"))
@@ -28,17 +29,31 @@ class StaffController {
   @Autowired
   var addressService: AddressService = _
   
-  def list(@ModelAttribute("fedId") fedId: Long) = {
+  def list(
+      session: HttpSession) = {
+    
+    //Get fedId from session
+    var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
+    
     var staffList: Seq[Staff] = staffService.findAllByFederationId(fedId)
     
     var mav: ModelAndView = new ModelAndView("staff/list")
     mav.addObject("staffList", staffList)
-    mav.addObject("fedId", fedId)
     mav
   }
   
-  def show() = {
-    ""
+  def showStaff(
+      @PathVariable("staffId") staffId: Long, 
+      session: HttpSession)= {
+    
+    //Get fedId from session
+    var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
+    
+    var staff: Staff = staffService.findByStaffId(staffId, fedId)
+    
+    var mav: ModelAndView = new ModelAndView("staff/show")
+    mav.addObject("staff", staff)
+    mav
   }
   
 }
