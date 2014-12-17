@@ -15,6 +15,26 @@ import javax.persistence.metamodel.Metamodel
 class StaffDaoJPA 
 		extends GenericDaoJPA[Staff,java.lang.Long](classOf[Staff])
 		with StaffDao {
+
+  def findByStaffId(staffId: Long, fedId: Long): Staff = {
+    val cb: CriteriaBuilder = getEntityManager.getCriteriaBuilder
+    var criteria: CriteriaQuery[Staff] = cb createQuery (classOf[Staff])
+
+    val root: Root[Staff] = criteria from (classOf[Staff])
+    val cond: Predicate =
+      cb.and(
+        Array(
+          cb.equal(root get ("staffId"), staffId): Predicate,
+          cb.equal(root get ("fedId"), fedId): Predicate
+        ):_*
+      )
+
+    criteria = criteria select root where (Array(cond):_*)
+
+    val query: TypedQuery[Staff] = getEntityManager createQuery criteria
+
+    query.getSingleResult()
+  }
   
   def findByNameAndSurname(name: String, surname: String, startIndex: Int,
       count: Int): Seq[Staff] = {

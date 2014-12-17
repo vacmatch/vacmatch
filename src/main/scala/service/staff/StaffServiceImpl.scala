@@ -26,8 +26,8 @@ class StaffServiceImpl extends StaffService {
 
   /* --------------- FIND ---------------- */
 
-  def findByStaffId(staffId: Long): Staff = {
-	staffDao.findById(staffId)
+  def findByStaffId(staffId: Long, fedId: Long): Staff = {
+	staffDao.findByStaffId(staffId, fedId)
   }
   
   def findAllByFederationId(fedId: Long): Seq[Staff] = {
