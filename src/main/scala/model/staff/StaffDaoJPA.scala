@@ -40,16 +40,8 @@ class StaffDaoJPA
     query.getResultList().asScala
   }
 
-  def findAll(startIndex: Int, count: Int): Seq[Staff] = {
-    null
-  }
-
   def findAllByActivated(activated: Boolean, startIndex: Int,
       count: Int): Seq[Staff] = {
-    null
-  }
-
-  def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Staff] = {
     null
   }
 

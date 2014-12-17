@@ -38,16 +38,8 @@ class StaffServiceImpl extends StaffService {
 	staffDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
-  def findAll(startIndex: Int, count: Int): Seq[Staff] = {
-    staffDao.findAll(startIndex, count)
-  }
-
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Staff] = {
     staffDao.findAllByActivated(activated, startIndex, count)
-  }
-	
-  def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Staff] = {
-    staffDao.findByAlias(alias, startIndex, count)
   }
 	
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Staff] = {
