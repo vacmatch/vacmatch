@@ -11,7 +11,7 @@
 
     <!--  ======================= Spring Infrastructure ==================== -->
 
-  
+
 	<!-- DataSource Configuration -->
     <bean id="myDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -19,8 +19,8 @@
 		<property name="username" value="sa"/>
 		<property name="password" value=""/>
     </bean>
-    
+
     <context:component-scan base-package="main.scala"/>
 
-    
+
 </beans>

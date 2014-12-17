@@ -35,23 +35,22 @@ class LeagueSeasonController() extends UrlGrabber {
     }
   }
 
-
   @Autowired
   var leagueService: LeagueService = _
 
   def listSeasons(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String) = {
+    @PathVariable("slug") slug: String) = {
 
     val league = leagueService.findSeasonsByLeague(fedId, slug)
-    var seasons = null:java.util.Collection[LeagueSeason]
+    var seasons = null: java.util.Collection[LeagueSeason]
 
-    val mav:ModelAndView = league match {
+    val mav: ModelAndView = league match {
       case None => new ModelAndView("league/notfound")
       case Some(league) => new ModelAndView("league/season/list")
     }
 
-    if (!league.isEmpty)
+    if (league nonEmpty)
       seasons = league.get.getSeasonList
 
     mav
@@ -61,12 +60,13 @@ class LeagueSeasonController() extends UrlGrabber {
 
   def edit(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String,
-    @PathVariable("year") year: String) = {
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String
+  ) = {
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)
 
-    val mav:ModelAndView = new ModelAndView("league/season/edit_form")
+    val mav: ModelAndView = new ModelAndView("league/season/edit_form")
     mav
       .addObject("season", season.get)
       .addObject("verb", "Edit")
@@ -75,12 +75,13 @@ class LeagueSeasonController() extends UrlGrabber {
 
   def delete(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String,
-    @PathVariable("year") year: String) = {
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String
+  ) = {
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)
 
-    val mav:ModelAndView = new ModelAndView("league/season/edit_form")
+    val mav: ModelAndView = new ModelAndView("league/season/edit_form")
     mav
       .addObject("season", season.get)
       .addObject("verb", "Remove")
@@ -89,29 +90,31 @@ class LeagueSeasonController() extends UrlGrabber {
 
   def editPost(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String,
-    @PathVariable("year") year: String) = {
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String
+  ) = {
 
   }
 
   def deletePost(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String,
-    @PathVariable("year") year: String) = {
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String
+  ) = {
 
   }
 
   def showSeason(
     @RequestParam("fedId") fedId: Long,
-    @PathVariable("slug") slug:String,
-    @PathVariable("year") year:String) = {
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String
+  ) = {
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)
 
-    val mav:ModelAndView = new ModelAndView("league/season/show")
+    val mav: ModelAndView = new ModelAndView("league/season/show")
     mav
       .addObject("season", season.get)
   }
-
 
 }
