@@ -12,8 +12,6 @@
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container">
 
-		<p>Federation Id</p>
-		<p th:text="${fedId}">#Fed Number#</p>
 		  <ul>
 		    <li th:each="staff ${staffList}">
 		      <pre th:text="${staff}">RAW</pre>

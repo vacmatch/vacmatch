@@ -49,11 +49,16 @@ class StaffController {
     //Get fedId from session
     var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
     
-    var staff: Staff = staffService.findByStaffId(staffId, fedId)
+    var staffOpt: Option[Staff] = staffService.findByStaffId(staffId, fedId)
     
-    var mav: ModelAndView = new ModelAndView("staff/show")
-    mav.addObject("staff", staff)
-    mav
+    staffOpt match {
+      case None => new ModelAndView("staff/notfound")
+      case Some(staff) => { 
+	    var mav: ModelAndView = new ModelAndView("staff/show")
+	    mav.addObject("staff", staff)
+	    mav
+      }
+    }
   }
   
 }
