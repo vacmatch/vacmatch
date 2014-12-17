@@ -26,7 +26,7 @@ class StaffServiceImpl extends StaffService {
 
   /* --------------- FIND ---------------- */
 
-  def findByStaffId(staffId: Long, fedId: Long): Staff = {
+  def findByStaffId(staffId: Long, fedId: Long): Option[Staff] = {
 	staffDao.findByStaffId(staffId, fedId)
   }
   

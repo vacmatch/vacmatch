@@ -16,7 +16,7 @@ class StaffDaoJPA
 		extends GenericDaoJPA[Staff,java.lang.Long](classOf[Staff])
 		with StaffDao {
 
-  def findByStaffId(staffId: Long, fedId: Long): Staff = {
+  def findByStaffId(staffId: Long, fedId: Long): Option[Staff] = {
     val cb: CriteriaBuilder = getEntityManager.getCriteriaBuilder
     var criteria: CriteriaQuery[Staff] = cb createQuery (classOf[Staff])
 
@@ -32,8 +32,12 @@ class StaffDaoJPA
     criteria = criteria select root where (Array(cond):_*)
 
     val query: TypedQuery[Staff] = getEntityManager createQuery criteria
-
-    query.getSingleResult()
+    var maybeStaff = query.getResultList()
+    
+    if(maybeStaff == null)
+      None
+    else 
+      Some(maybeStaff.get(0))
   }
   
   def findByNameAndSurname(name: String, surname: String, startIndex: Int,

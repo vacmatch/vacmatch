@@ -13,7 +13,7 @@ trait StaffService {
 
   /* --------------- FIND ---------------- */
 
-  def findByStaffId(staffId: Long, fedId: Long): Staff
+  def findByStaffId(staffId: Long, fedId: Long): Option[Staff]
 
   def findAllByFederationId(fedId: Long): Seq[Staff]
 
