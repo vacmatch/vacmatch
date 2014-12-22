@@ -23,8 +23,8 @@ class CoachServiceImpl
   /* --------------- FIND ---------------- */
 
   override
-  def findByStaffId(staffId: Long): Coach = {
-    this.coachDao.findById(staffId)
+  def findByStaffId(staffId: Long, fedId: Long): Option[Coach] = {
+    this.coachDao.findByStaffId(staffId, fedId)
   }
   
   override
@@ -33,18 +33,8 @@ class CoachServiceImpl
   }
 
   override
-  def findAll(startIndex: Int, count: Int): Seq[Coach] = {
-    this.coachDao.findAll(startIndex, count)
-  }
-
-  override
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findAllByActivated(activated, startIndex, count)
-  }
-	
-  override
-  def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Coach] = {
-    this.coachDao.findByAlias(alias, startIndex, count)
   }
 	
   override
@@ -71,23 +61,28 @@ class CoachServiceImpl
     coach
   }
     
-  def modifyCoach(staffId: Long, stName: String, stSurnames: Seq[String],
+  def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar, licen: License): Coach = {
+    stNif: String, stBirth: Calendar, licen: License): Option[Coach] = {
     
-    var coach: Coach = coachDao.findById(staffId)
+    var maybeCoach: Option[Coach] = coachDao.findByStaffId(staffId, fedId)
     
-    coach.staffName = stName
-    coach.staffSurnames = stSurnames.asJava
-    coach.staffEmail = stEmail
-    coach.staffTelephones = stTelephones.asJava
-    coach.staffAddress = stAddress
-    coach.staffNif = stNif
-    coach.staffBirth = stBirth
-    coach.coachLicense = licen
-    
-    coachDao.save(coach)
-    coach
+    maybeCoach match {
+      case None => 
+      case Some(coach) =>{
+	    coach.staffName = stName
+	    coach.staffSurnames = stSurnames.asJava
+	    coach.staffEmail = stEmail
+	    coach.staffTelephones = stTelephones.asJava
+	    coach.staffAddress = stAddress
+	    coach.staffNif = stNif
+	    coach.staffBirth = stBirth
+	    coach.coachLicense = licen
+	    
+	    coachDao.save(coach)
+      }
+    }
+    maybeCoach
   }
  
   /* ------------- DELETE ---------------- */

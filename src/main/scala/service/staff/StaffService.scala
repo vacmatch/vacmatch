@@ -37,9 +37,9 @@ trait StaffService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar): Staff
 
-  def modifyStaff(staffId: Long, stName: String, stSurnames: Seq[String],
+  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar): Staff
+    stNif: String, stBirth: Calendar): Option[Staff]
 
   /* ---------------- DELETE ---------------- */
 

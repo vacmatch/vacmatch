@@ -12,6 +12,8 @@ import main.scala.model.staff.Staff
 import main.scala.model.team.Team
 import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
+import main.scala.model.generic.exceptions.ElementNotFoundException
+import main.scala.model.staff.Player
 
 @Service("playerService")
 @Transactional
@@ -21,13 +23,12 @@ class PlayerServiceImpl
   
   @Autowired
   var playerDao: PlayerDao = _
-    
 
   /* --------------- FIND ---------------- */
 
   override
-  def findByStaffId(staffId: Long): Player = {
-    this.playerDao.findById(staffId)
+  def findByStaffId(staffId: Long, fedId: Long): Option[Player] = {
+    this.playerDao.findByStaffId(staffId, fedId)
   }
   
   override
@@ -36,18 +37,8 @@ class PlayerServiceImpl
   }
 
   override
-  def findAll(startIndex: Int, count: Int): Seq[Player] = {
-    this.playerDao.findAll(startIndex, count)
-  }
-
-  override
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Player] = {
     this.playerDao.findAllByActivated(activated, startIndex, count)
-  }
-	
-  override
-  def findByAlias(alias: String, startIndex: Int, count: Int): Seq[Player] = {
-    this.playerDao.findByAlias(alias, startIndex, count)
   }
 	
   override
@@ -73,23 +64,28 @@ class PlayerServiceImpl
     player
   }
   
-  def modifyPlayer(staffId: Long, stName: String, stSurnames: Seq[String],
+  def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar, num: Int): Player = {
+    stNif: String, stBirth: Calendar, num: Int): Option[Player] = {
     
-    var player: Player = playerDao.findById(staffId)
+    var maybePlayer: Option[Player] = playerDao.findByStaffId(staffId, fedId)
     
-    player.staffName = stName
-    player.staffSurnames = stSurnames.asJava
-    player.staffEmail = stEmail
-    player.staffTelephones = stTelephones.asJava
-    player.staffAddress = stAddress
-    player.staffNif = stNif
-    player.staffBirth = stBirth
-    player.playerNumber = num
-    
-    playerDao.save(player)
-    player
+    maybePlayer match {
+      case None =>
+      case Some(player) => {
+	    player.staffName = stName
+	    player.staffSurnames = stSurnames.asJava
+	    player.staffEmail = stEmail
+	    player.staffTelephones = stTelephones.asJava
+	    player.staffAddress = stAddress
+	    player.staffNif = stNif
+	    player.staffBirth = stBirth
+	    player.playerNumber = num
+	    
+	    playerDao.save(player)
+	  }
+    }
+    maybePlayer
   }
   
   def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics) = {

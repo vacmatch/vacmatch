@@ -89,22 +89,27 @@ class StaffServiceImpl extends StaffService {
     staff
   }
     
-  def modifyStaff(staffId: Long, stName: String, stSurnames: Seq[String],
+  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar): Staff = {
+    stNif: String, stBirth: Calendar): Option[Staff] = {
     
-    var staff: Staff = staffDao.findById(staffId)
-    staff.staffName = stName
-    staff.staffSurnames = stSurnames.asJava
-    staff.staffEmail = stEmail
-    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
-    staff.staffTelephones = stTelephones.asJava
-    staff.staffAddress = stAddress
-    staff.staffNif = stNif
-    staff.staffBirth = stBirth
-  	
-    staffDao.save(staff)
-    staff
+    var maybeStaff: Option[Staff] = staffDao.findByStaffId(staffId, fedId)
+
+    maybeStaff match {
+      case None =>
+      case Some(staff) => {
+  	    staff.staffName = stName
+        staff.staffSurnames = stSurnames.asJava
+	    staff.staffEmail = stEmail
+	    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
+	    staff.staffTelephones = stTelephones.asJava
+	    staff.staffAddress = stAddress
+	    staff.staffNif = stNif
+	    staff.staffBirth = stBirth
+	  staffDao.save(staff)
+	  }
+    }
+    maybeStaff
   }
   
 }

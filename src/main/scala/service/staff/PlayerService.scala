@@ -12,9 +12,9 @@ trait PlayerService extends StaffService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Player
     
-  def modifyPlayer(staffId: Long, stName: String, stSurnames: Seq[String],
+  def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar, num: Int): Player
+    stNif: String, stBirth: Calendar, num: Int): Option[Player]
   
   def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics)
 	
