@@ -1,5 +1,7 @@
 package main.scala
 
+import com.vac.manager.util.TenantFilter
+import com.vac.manager.util.ThymeleafLayoutInterceptor
 import java.util.ArrayList
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
@@ -10,7 +12,6 @@ import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{InterceptorRegistry, ResourceHandlerRegistry}
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import scala.collection.JavaConverters._
-import util.TenantFilter
 
 @Configuration
 @ComponentScan(basePackages = Array("main.scala")) // You should not use the @EnableWebMvc annotation
@@ -35,7 +36,7 @@ class WebAppConfig() extends RouterConfigurationSupport {
 
   @Bean
   def layoutInterceptor: HandlerInterceptorAdapter = {
-    return new util.ThymeleafLayoutInterceptor
+    return new ThymeleafLayoutInterceptor
   }
 
   override def addInterceptors(registry: InterceptorRegistry) = {
@@ -70,6 +71,6 @@ class Application {
 }
 
 object Application extends App {
-  SpringApplication.run(classOf[Application]);
+  SpringApplication.run(classOf[Application])
 }
 
