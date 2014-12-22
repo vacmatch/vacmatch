@@ -12,15 +12,16 @@ import javax.persistence.metamodel.EntityType
 import javax.persistence.metamodel.Metamodel
 
 @Repository("staffDao")
-class StaffDaoJPA 
+class StaffDaoJPA
 		extends GenericDaoJPA[Staff,java.lang.Long](classOf[Staff])
 		with StaffDao {
 
+  override
   def findByStaffId(staffId: Long, fedId: Long): Option[Staff] = {
     val cb: CriteriaBuilder = getEntityManager.getCriteriaBuilder
-    var criteria: CriteriaQuery[Staff] = cb createQuery (classOf[Staff])
+    var criteria: CriteriaQuery[Staff] = cb createQuery (entityClass)
 
-    val root: Root[Staff] = criteria from (classOf[Staff])
+    val root: Root[Staff] = criteria from (entityClass)
     val cond: Predicate =
       cb.and(
         Array(
@@ -44,12 +45,12 @@ class StaffDaoJPA
       count: Int): Seq[Staff] = {
     null
   }
-  
+
   def findAllByFederationId(fedId: Long): Seq[Staff] = {
     val cb: CriteriaBuilder = getEntityManager.getCriteriaBuilder
-    var criteria: CriteriaQuery[Staff] = cb createQuery (classOf[Staff])
+    var criteria: CriteriaQuery[Staff] = cb createQuery (entityClass)
 
-    val root: Root[Staff] = criteria from (classOf[Staff])
+    val root: Root[Staff] = criteria from (entityClass)
     val cond: Predicate =
       cb.and(
         Array(
