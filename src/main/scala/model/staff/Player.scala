@@ -11,6 +11,7 @@ import javax.persistence.CascadeType
 import javax.persistence.PrimaryKeyJoinColumn
 import java.util.Calendar
 import main.scala.model.personal.Address
+import main.scala.model.federation.Federation
 
 @Entity
 @Table(name = "PLAYER")
@@ -22,8 +23,10 @@ class Player(stName: String,
     stAddress: Address,
     stNif: String,
     stBirth: Calendar,
+    stFederation: Federation,
     num: Int)
-    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif, stBirth)  {
+    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif,
+        stBirth, stFederation)  {
   
   @BeanProperty
   @Column

@@ -12,6 +12,7 @@ import javax.persistence.PrimaryKeyJoinColumn
 import java.util.Calendar
 import main.scala.model.personal.Address
 import javax.persistence.ManyToOne
+import main.scala.model.federation.Federation
 
 @Entity
 @Table(name = "COACH")
@@ -23,8 +24,10 @@ class Coach(stName: String,
     stAddress: Address, 
     stNif: String,
     stBirth: Calendar,
+    stFederation: Federation,
     licen: License)
-    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif, stBirth) {
+    extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif,
+        stBirth, stFederation) {
   
   @BeanProperty
   @ManyToOne(optional=false, fetch = FetchType.LAZY, 

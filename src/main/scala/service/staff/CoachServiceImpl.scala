@@ -9,6 +9,8 @@ import java.util.Calendar
 import org.springframework.stereotype.Service
 import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
+import main.scala.model.federation.Federation
+import main.scala.service.federation.FederationService
 
 @Service("coachService")
 @Transactional
@@ -16,6 +18,9 @@ class CoachServiceImpl
 				extends StaffServiceImpl
 				with CoachService {
 
+  @Autowired
+  var federationService: FederationService = _
+  
   @Autowired
   var coachDao: CoachDao = _
 
@@ -52,10 +57,11 @@ class CoachServiceImpl
   
   def createCoach(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar, licen: License): Coach = {
+    stNif: String, stBirth: Calendar, idFederation: Long, licen: License): Coach = {
     
+    var stFederation: Federation = federationService.findById(idFederation)
     var coach: Coach = new Coach(stName, stSurnames, stEmail, 
-        stTelephones, stAddress, stNif, stBirth, licen)
+        stTelephones, stAddress, stNif, stBirth, stFederation, licen)
 
     coachDao.save(coach)
     coach

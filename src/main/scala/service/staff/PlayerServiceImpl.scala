@@ -12,14 +12,18 @@ import main.scala.model.staff.Staff
 import main.scala.model.team.Team
 import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
-import main.scala.model.generic.exceptions.ElementNotFoundException
 import main.scala.model.staff.Player
+import main.scala.model.federation.Federation
+import main.scala.service.federation.FederationService
 
 @Service("playerService")
 @Transactional
 class PlayerServiceImpl
 				extends StaffServiceImpl
 				with PlayerService {
+  
+  @Autowired
+  var federationService: FederationService = _
   
   @Autowired
   var playerDao: PlayerDao = _
@@ -55,10 +59,11 @@ class PlayerServiceImpl
   
   def createPlayer(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar, num: Int): Player = {
+    stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player = {
     
+    var stFederation: Federation = federationService.findById(idFederation)
     var player: Player = new Player(stName, stSurnames, stEmail, 
-        stTelephones, stAddress, stNif, stBirth, num)
+        stTelephones, stAddress, stNif, stBirth, stFederation, num)
 
     playerDao.save(player)
     player

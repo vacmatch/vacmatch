@@ -18,7 +18,8 @@ class Staff(stName: String,
     stTelephones: Seq[String],
     stAddress: Address,
     stNif: String,
-    stBirth: Calendar) {
+    stBirth: Calendar,
+    federation: Federation) {
 
   @Id
   @SequenceGenerator(name="staffIdGenerator", sequenceName="staff_id_seq")
@@ -96,9 +97,9 @@ class Staff(stName: String,
   @BeanProperty
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "fedId")
-  var staffFederation: Federation = _
+  var staffFederation: Federation = federation
   
-  def this() = this(null, null, null, null, null, null, null)
+  def this() = this(null, null, null, null, null, null, null, null)
   
   override
   def toString = "(" + this.staffId + ") " + this.staffSurnames +

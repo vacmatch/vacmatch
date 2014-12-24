@@ -35,11 +35,15 @@ trait StaffService {
 
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar): Staff
+    stNif: String, stBirth: Calendar, idFederation: Long): Staff
 
   def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar): Option[Staff]
+
+  def getSurnamesFromString(surnames: String): Seq[String]
+
+  def getTelephonesFromString(telephones: String): Seq[String]
 
   /* ---------------- DELETE ---------------- */
 

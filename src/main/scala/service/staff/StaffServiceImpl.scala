@@ -16,14 +16,19 @@ import main.scala.model.staff.Coach
 import main.scala.model.staff.CoachDao
 import org.springframework.transaction.annotation.Transactional
 import scravatar.Gravatar
+import main.scala.model.federation.Federation
+import main.scala.service.federation.FederationService
 
 @Service("staffService")
 @Transactional
 class StaffServiceImpl extends StaffService {
   
   @Autowired
+  var federationService: FederationService = _
+  
+  @Autowired
   var staffDao: StaffDao = _
-
+  
   /* --------------- FIND ---------------- */
 
   def findByStaffId(staffId: Long, fedId: Long): Option[Staff] = {
@@ -81,9 +86,11 @@ class StaffServiceImpl extends StaffService {
 
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
-    stNif: String, stBirth: Calendar): Staff = {
+    stNif: String, stBirth: Calendar, idFederation: Long): Staff = {
+    
+    var stFederation: Federation = federationService.findById(idFederation)
     var staff: Staff = new Staff(stName, stSurnames, stEmail, stTelephones,
-        stAddress, stNif, stBirth)
+        stAddress, stNif, stBirth, stFederation)
   	
     staffDao.save(staff)
     staff
@@ -110,6 +117,14 @@ class StaffServiceImpl extends StaffService {
 	  }
     }
     maybeStaff
+  }
+
+  def getSurnamesFromString(surnames: String): Seq[String] = {
+    surnames.split(" ")
+  }
+  
+  def getTelephonesFromString(telephones: String): Seq[String] = {
+    telephones.split(", ")
   }
   
 }
