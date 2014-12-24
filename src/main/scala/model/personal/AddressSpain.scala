@@ -9,31 +9,33 @@ import javax.persistence.Column
 @Entity
 @Table(name = "ADDRESS_SPAIN")
 @PrimaryKeyJoinColumn(name="addressId")
-class AddressSpain(coun: String) extends Address(coun) {
+class AddressSpain(argRoad: String, argNum: String, argFlat: String,
+    argPostCod: Int, argLocality: String, argProvince: String, country: String)
+    extends Address(country) {
     
   @BeanProperty
   @Column
-  var road: String = _
+  var road: String = argRoad
     
   @BeanProperty
   @Column
-  var number: String = _
+  var number: String = argNum
     
   @BeanProperty
   @Column
-  var flat: String = _
+  var flat: String = argFlat
     
   @BeanProperty
   @Column
-  var postCode: Int = _
+  var postCode: Int = argPostCod
     
   @BeanProperty
   @Column
-  var locality: String = _
+  var locality: String = argLocality
   
   @BeanProperty
   @Column
-  var province: String = _
+  var province: String = argProvince
 
   override
   def toString = this.road + ", " + this.number + " - " + this.flat + "\n" +
