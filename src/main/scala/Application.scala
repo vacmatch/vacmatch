@@ -4,12 +4,11 @@ import java.util.ArrayList
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
-import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration }
+import org.springframework.boot.context.embedded.ServletRegistrationBean
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
 import org.springframework.web.servlet.DispatcherServlet
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
-import org.springframework.web.servlet.view.InternalResourceViewResolver
+import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import scala.collection.JavaConverters._
 
 @Configuration
@@ -31,6 +30,15 @@ class WebAppConfig() extends RouterConfigurationSupport {
         .addResourceLocations("classpath:/META-INF/resources", "classpath:/resources/",
           "classpath:/static/", "classpath:/public/")
     }
+  }
+
+  @Bean
+  def layoutInterceptor: HandlerInterceptorAdapter = {
+    return new util.ThymeleafLayoutInterceptor
+  }
+
+  override def addInterceptors(registry: InterceptorRegistry) = {
+    registry.addInterceptor(layoutInterceptor)
   }
 }
 
