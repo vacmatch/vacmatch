@@ -13,26 +13,27 @@ import javax.persistence.EntityManagerFactory
 import org.springframework.stereotype.Service
 import org.springframework.stereotype.Repository
 import javax.persistence.metamodel.Metamodel
+import main.scala.model.generic.exceptions.InstanceNotFoundException
 
-abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K]{
+abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K] {
 
   var entityManager: EntityManager = _
 
   var entityManagerFactory: EntityManagerFactory = _
 
   def getEntityManager(): EntityManager = {
-	this.entityManager
+    this.entityManager
   }
 
   @Autowired
   def setEntityManagerFactory(em: EntityManagerFactory) = {
     this.entityManagerFactory = em
-    this.entityManager  = em.createEntityManager()
+    this.entityManager = em.createEntityManager()
   }
 
   /**
-   * Find all objects from EntityClass table
-   */
+    * Find all objects from EntityClass table
+    */
   def findAll(): List[T] = {
     var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
     var root = criteria.from(entityClass)
@@ -42,31 +43,28 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     teamList.toList // return Scala types
   }
 
-
   /**
-   * Save or update entity
-   */
-  def save(entity:T)= {
+    * Save or update entity
+    */
+  def save(entity: T) = {
     getEntityManager().persist(entity)
   }
 
-
   /**
-   * Remove entity from entity table
-   */
-  def remove(entity:T) = {
+    * Remove entity from entity table
+    */
+  def remove(entity: T) = {
     getEntityManager().remove(entity);
   }
 
-
   /**
-   * Find entity by id
-   */
-  def findById(id: K):T = {
+    * Find entity by id
+    */
+  def findById(id: K): T = {
     var entity: T = getEntityManager().find(entityClass, id).asInstanceOf[T];
 
-    if(entity == null){
-      throw new InstanceNotFoundException(id.toString(),entityClass.getName())
+    if (entity == null) {
+      throw new InstanceNotFoundException(id.toString(), entityClass.getName())
     }
 
     entity
