@@ -26,19 +26,19 @@ class StaffDaoJPA
       cb.and(
         Array(
           cb.equal(root get ("staffId"), staffId): Predicate,
-          cb.equal(root get ("fedId"), fedId): Predicate
+          cb.equal(root get ("staffFederation") get ("fedId"), fedId): Predicate
         ):_*
       )
 
     criteria = criteria select root where (Array(cond):_*)
 
     val query: TypedQuery[Staff] = getEntityManager createQuery criteria
-    var maybeStaff = query.getResultList()
+    var maybeStaff: Seq[Staff] = query.getResultList().asScala
     
-    if(maybeStaff == null)
+    if(maybeStaff.length == 0)
       None
     else 
-      Some(maybeStaff.get(0))
+      Some(maybeStaff(0))
   }
   
   def findByNameAndSurname(name: String, surname: String, startIndex: Int,

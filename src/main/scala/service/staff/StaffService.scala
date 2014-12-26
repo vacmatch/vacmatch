@@ -8,6 +8,7 @@ import main.scala.model.staff.Player
 import main.scala.model.staff.PlayerStatistics
 import main.scala.model.staff.License
 import main.scala.model.staff.Coach
+import main.scala.model.generic.exceptions.InstanceNotFoundException
 
 trait StaffService {
 
@@ -33,6 +34,7 @@ trait StaffService {
 
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
 
+  @throws[InstanceNotFoundException]
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff

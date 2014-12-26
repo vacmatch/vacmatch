@@ -15,15 +15,13 @@ import org.springframework.transaction.annotation.Transactional
 import main.scala.model.staff.Player
 import main.scala.model.federation.Federation
 import main.scala.service.federation.FederationService
+import main.scala.model.generic.exceptions.InstanceNotFoundException
 
 @Service("playerService")
 @Transactional
 class PlayerServiceImpl
 				extends StaffServiceImpl
 				with PlayerService {
-  
-  @Autowired
-  var federationService: FederationService = _
   
   @Autowired
   var playerDao: PlayerDao = _
@@ -57,16 +55,23 @@ class PlayerServiceImpl
 
   /* ------------- MODIFY --------------- */
   
+  @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player = {
-    
-    var stFederation: Federation = federationService.findById(idFederation)
-    var player: Player = new Player(stName, stSurnames, stEmail, 
-        stTelephones, stAddress, stNif, stBirth, stFederation, num)
 
-    playerDao.save(player)
-    player
+    var maybeFederation: Option[Federation] = federationService.findById(idFederation)
+
+    maybeFederation match {
+      case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
+      case Some(stFederation) => {
+	    var player: Player = new Player(stName, stSurnames, stEmail, 
+	        stTelephones, stAddress, stNif, stBirth, stFederation, num)
+	
+	    playerDao.save(player)
+	    player
+      }
+    }
   }
   
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],

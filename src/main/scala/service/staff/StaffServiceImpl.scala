@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import scravatar.Gravatar
 import main.scala.model.federation.Federation
 import main.scala.service.federation.FederationService
+import main.scala.model.generic.exceptions.InstanceNotFoundException
 
 @Service("staffService")
 @Transactional
@@ -84,16 +85,23 @@ class StaffServiceImpl extends StaffService {
     }
   }
 
+  @throws[InstanceNotFoundException]
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff = {
     
-    var stFederation: Federation = federationService.findById(idFederation)
-    var staff: Staff = new Staff(stName, stSurnames, stEmail, stTelephones,
-        stAddress, stNif, stBirth, stFederation)
-  	
-    staffDao.save(staff)
-    staff
+    var maybeFederation: Option[Federation] = federationService.findById(idFederation)
+    
+    maybeFederation match {
+      case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
+      case Some(stFederation) => {
+	    var staff: Staff = new Staff(stName, stSurnames, stEmail, stTelephones,
+	        stAddress, stNif, stBirth, stFederation)
+	  	
+	    staffDao.save(staff)
+	    staff
+      }
+    }
   }
     
   def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
