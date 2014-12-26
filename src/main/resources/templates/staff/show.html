@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>List Staff</title>
+		<title th:text="#{title}">Staff profile</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
-		<link href="/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+		<link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+		<link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+		<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 	</head>
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container">
 		      <dl th:object="${staff}">
 		        <dd><img th:src="*{staffAvatarLink}" alt="avatar" src="http://www.gravatar.com/avatar/HASH"></dd>
-		      	<dt>Staff status</dt>
+		        
+		      	<dt th:text="#{staff.status}">Staff status</dt>
 		      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
-				<dt>Staff name</dt>
+		      	
+				<dt th:text="#{staff.name}">Staff name</dt>
 				<dd th:text="*{staffName}">John</dd>
 				<dd th:each="surname : *{staffSurnames}" th:text="${surname}">Mustang</dd>
-				<dt>Staff NIF</dt>
+				
+				<dt th:text="#{staff.nif}">Staff NIF</dt>
 				<dd th:text="*{staffNif}">33445566F</dd>
-				<dt>Staff Email</dt>
+				
+				<dt th:text="#{staff.email}">Staff Email</dt>
 				<dd th:text="*{staffEmail}">imworking@mymail.gal</dd>
-				<dt>Staff Telephones</dt>
+				
+				<dt th:text="#{staff.telephones}">Staff Telephones</dt>
 				<dd th:each="telephone : *{staffTelephones}" th:text="${telephone}">696698876</dd>
 				<dd th:text="*{staffTelephoness}"></dd>
-				<dt>Staff Address</dt>
+				
+				<dt th:text="#{staff.address}">Staff Address</dt>
 				<dd th:text="*{staffAddress}">First Avenue</dd>
-				<dt>Staff Birth</dt>
+				
+				<dt th:text="#{staff.birth}">Staff Birth</dt>
 				<dd th:text="*{staffBirth}">18/05/1991</dd>
-				<dt>Team List</dt>
-				<dd th:each="team : *{staffTeamList}" th:text="${team}">IA Angel</dd>
-				<dt>Actions</dt>
-				<dd><a th:href="${staff.getAssignTeamLink()}" th:text="${staff.getAssignTeamLink()}">Assign team</a></dd>
-				<dd><a th:href="${staff.getEditPrivacityLink()}" th:text="${staff.getEditPrivacityLink()}">Edit privacity</a></dd>
-				<dd><a th:href="${staff.getEditPropertiesLink()}" th:text="${league.getEditPropertiesLink()}">Edit properties</a></dd>
-				<dd><a th:href="${staff.getRemoveLink()}" th:text="${league.getRemoveLink()}">Delete</a></dd>
+				
+				<dt th:text="#{staff.teamList}">Team List</dt>
+				<dd th:each="team : *{staffTeamList}" th:text="${team.teamName}">IA Angel</dd>
+				
+				<dt th:text="#{staff.actions}">Actions</dt>
+				<dd><a th:href="${staff.getAssignTeamLink()}" th:text="${link.assignTeam}">Assign team</a></dd>
+				<dd><a th:href="${staff.getEditPrivacityLink()}" th:text="${link.modifyPrivacity}">Modify privacity</a></dd>
+				<dd><a th:href="${staff.getEditLink()}" th:text="${link.edit}">Edit</a></dd>
+				<dd><a th:href="${staff.getRemoveLink()}" th:text="${link.remove}">Delete</a></dd>
 		      </dl>
 	      </div>  
 		</div>

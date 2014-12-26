@@ -37,7 +37,9 @@ class StaffController extends UrlGrabber {
   @Autowired
   var addressSpainService: AddressSpainService = _
   
-  class PostStaff {
+  class PostStaff(fedId: Long) {
+    
+    var federationId: Long = fedId
     @BeanProperty
     var stName: String = _
     @BeanProperty
@@ -64,6 +66,12 @@ class StaffController extends UrlGrabber {
     var stNif: String = _
     @BeanProperty
     var stBirth: Calendar = _
+    
+    def getShowLink: String = ""
+    def getEditLink: String = ""
+    def getRemoveLink: String = ""
+    def getAssignTeamLink: String = ""
+    def getModifyPrivacityLink: String = ""
   }
 
   def list(
@@ -109,7 +117,7 @@ class StaffController extends UrlGrabber {
     
     var submitUrl: String = getUrl("StaffController.createPost")
     var submitMethod: String = "POST"
-    var receiverStaff: PostStaff = new PostStaff
+    var receiverStaff: PostStaff = new PostStaff(fedId)
 
     var mav: ModelAndView = new ModelAndView("staff/create")
     mav.addObject("staff", receiverStaff)

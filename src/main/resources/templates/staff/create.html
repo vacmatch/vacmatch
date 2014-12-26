@@ -17,7 +17,7 @@
 				<div>Submit url: <span th:text="${submitUrl}" /></div>
 	
 				<form id="staffForm" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
-				  <input type="hidden" th:field="${fedId}" />
+				  <input type="hidden" th:field="$*{federationId}" />
 				  <div>
 				  	<label th:text="#{form.name}" for="name">Name</label>
 				  	<input id="name" type="text" th:field="*{stName}" />

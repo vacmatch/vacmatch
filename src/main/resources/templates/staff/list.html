@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>List Staff</title>
+		<title th:text="#{title}">List Staff</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
-		<link href="/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+		<link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+		<link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+		<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 	</head>
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
@@ -14,18 +14,21 @@
 
 		  <ul>
 		    <li th:each="staff ${staffList}">
-		      <pre th:text="${staff}">RAW</pre>
+		      <hr/>
 		      <dl th:object="${staff}">
-		      	<dt>Staff status</dt>
-		      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
-				<dt>Staff name</dt>
+				<dt th:text="#{staff.name}">Staff name</dt>
 				<dd th:text="*{staffName}">Name</dd>
 				<dd th:text="*{staffSurnames}">Surnames</dd>
-				<dt>Staff NIF</dt>
+
+		      	<dt th:text="#{staff.status}">Staff status</dt>
+		      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
+				
+				<dt th:text="#{staff.nif}">Staff NIF</dt>
 				<dd th:text="*{staffNif}">#Nif number#</dd>
-				<dt>Actions</dt>
-				<dd><a th:href="${staff.getEditLink()}" th:text="${league.getEditLink()}">Show</a></dd>
-				<dd><a th:href="${staff.getEditLink()}" th:text="${league.getEditLink()}">Edit</a></dd>
+				
+				<dt th:text="#{staff.actions}">Actions</dt>
+				<dd><a th:href="${staff.getShowLink()}" th:text="${link.show}">Show</a></dd>
+				<dd><a th:href="${staff.getEditLink()}" th:text="${link.edit}">Edit</a></dd>
 		      </dl>
 		    </li>
 		  </ul>
