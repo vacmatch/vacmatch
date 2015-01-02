@@ -33,7 +33,7 @@ class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
   }
 
   private def isRedirectOrForward(viewName: String): Boolean = {
-    return viewName.startsWith("redirect:") || viewName.startsWith("forward:")
+    return viewName.startsWith("redirect:") || viewName.startsWith("forward:") || viewName.startsWith("error")
   }
 
   private def getLayoutName(handler: Object): String = {
