@@ -10,7 +10,7 @@ class Competition (compName: String) {
 
   @Id
   @SequenceGenerator(name="competitionIdGenerator", sequenceName="competition_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "competitionIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "competitionIdGenerator")
   var compId: Long = _
 
   @BeanProperty

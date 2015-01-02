@@ -14,7 +14,7 @@ class League {
   @Id
   @Column(name="league_id")
   @SequenceGenerator(name="leagueIdGenerator", sequenceName="league_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leagueIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "leagueIdGenerator")
   var leagueId: java.lang.Long = _
 
   @BeanProperty

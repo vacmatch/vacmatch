@@ -10,7 +10,7 @@ abstract class Staff(stName: String) {
 
   @Id
   @SequenceGenerator(name="staffIdGenerator", sequenceName="staff_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staffIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffIdGenerator")
   var staffId: Long = _
 
   @BeanProperty

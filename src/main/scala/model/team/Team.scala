@@ -14,7 +14,7 @@ class Team (name: String, date: Calendar) {
 
   @Id
   @SequenceGenerator(name="teamIdGenerator", sequenceName="team_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teamIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "teamIdGenerator")
   var teamId: Long = _
 
   @BeanProperty
