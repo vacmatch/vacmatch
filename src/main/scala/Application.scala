@@ -8,13 +8,14 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration }
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import scala.collection.JavaConverters._
 
-//@Configuration
+@Configuration
 @ComponentScan(basePackages = Array("main.scala")) // You should not use the @EnableWebMvc annotation
 class WebAppConfig() extends RouterConfigurationSupport {
 
@@ -47,7 +48,8 @@ class WebAppConfig() extends RouterConfigurationSupport {
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan //@Import(Array(classOf[WebAppConfig]))
+@EnableTransactionManagement
+@ComponentScan @Import(Array(classOf[WebAppConfig]))
 class Application {
 
   @Bean
@@ -61,7 +63,7 @@ class Application {
   }
 
   @Bean
-  @ConditionalOnBean(Array(classOf[DispatcherServlet]))
+  //@ConditionalOnBean(Array(classOf[DispatcherServlet]))
   def dispatcherRegistration(dispatcherServlet: DispatcherServlet): ServletRegistrationBean = {
     val srb = new ServletRegistrationBean(dispatcherServlet)
     srb.addUrlMappings("/*")
