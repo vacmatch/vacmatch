@@ -26,36 +26,37 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
     * Find all objects from EntityClass table
     */
   def findAll(): List[T] = {
-    var criteria: CriteriaQuery[T] = getEntityManager().getCriteriaBuilder().createQuery(entityClass)
-    var root = criteria.from(entityClass)
-    criteria.select(root)
-    var teamList = getEntityManager().createQuery(criteria).getResultList()
+    val criteria: CriteriaQuery[T] = entityManager.getCriteriaBuilder createQuery entityClass
+    
+    criteria select (criteria from entityClass)
+    
+    val teamList = entityManager createQuery criteria getResultList
 
-    teamList.toList // return Scala types
+    teamList toList // return Scala types
   }
 
   /**
     * Save or update entity
     */
   def save(entity: T) = {
-    getEntityManager().persist(entity)
+    entityManager persist entity
   }
 
   /**
     * Remove entity from entity table
     */
   def remove(entity: T) = {
-    getEntityManager().remove(entity);
+    entityManager remove entity
   }
 
   /**
-    * Find entity by id
-    */
+   * Find entity by id
+   */
   def findById(id: K): T = {
-    var entity: T = getEntityManager().find(entityClass, id).asInstanceOf[T];
+    val entity = entityManager.find(entityClass, id).asInstanceOf[T];
 
     if (entity == null) {
-      throw new InstanceNotFoundException(id.toString(), entityClass.getName())
+      throw new InstanceNotFoundException(id.toString, entityClass.getName)
     }
 
     entity
