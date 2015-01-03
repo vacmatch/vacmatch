@@ -49,6 +49,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-actuator")
+    
+    compile("org.xerial:sqlite-jdbc:3.8.7")
+    
     providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
