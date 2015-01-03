@@ -14,22 +14,13 @@ import org.springframework.stereotype.Service
 import org.springframework.stereotype.Repository
 import javax.persistence.metamodel.Metamodel
 import main.scala.model.generic.exceptions.InstanceNotFoundException
+import scala.beans.BeanProperty
 
 abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K] {
 
+  @BeanProperty
+  @PersistenceContext
   var entityManager: EntityManager = _
-
-  var entityManagerFactory: EntityManagerFactory = _
-
-  def getEntityManager(): EntityManager = {
-    this.entityManager
-  }
-
-  @Autowired
-  def setEntityManagerFactory(em: EntityManagerFactory) = {
-    this.entityManagerFactory = em
-    this.entityManager = em.createEntityManager()
-  }
 
   /**
     * Find all objects from EntityClass table
