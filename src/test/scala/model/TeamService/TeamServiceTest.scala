@@ -9,16 +9,16 @@ import org.junit.Test
 import org.junit.Assert._
 import java.util.Calendar
 import test.scala.util.GlobalNames.Spring_test_config_file
-import main.scala.util.GlobalNames.Spring_config_file
-import main.scala.service.team.TeamService
-import main.scala.model.team.TeamDao
-import main.scala.model.generic.exceptions.NotImplementedException
-import main.scala.model.team.Team
-import main.scala.model.generic.exceptions.DuplicateInstanceException
-import main.scala.model.generic.exceptions.IncorrectDateException
+import com.vac.manager.util.GlobalNames.Spring_config_file
+import com.vac.manager.service.team.TeamService
+import com.vac.manager.model.team.TeamDao
+import com.vac.manager.model.generic.exceptions.NotImplementedException
+import com.vac.manager.model.team.Team
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import com.vac.manager.model.generic.exceptions.IncorrectDateException
 import javax.management.InstanceNotFoundException
-import main.scala.model.generic.exceptions.IncorrectNameException
-import main.scala.Application
+import com.vac.manager.model.generic.exceptions.IncorrectNameException
+import com.vac.manager.Application
 
 @RunWith(classOf[SpringJUnit4ClassRunner])
 //@ContextConfiguration(locations = Array("classpath:/application.xml", "classpath:/spring-config-test.xml"))

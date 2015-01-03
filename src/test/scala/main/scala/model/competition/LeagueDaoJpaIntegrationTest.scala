@@ -2,8 +2,8 @@ package main.scala.model.competition
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import main.scala.Application
-import main.scala.model.competition.League
+import com.vac.manager.Application
+import com.vac.manager.model.competition.League
 import org.junit.runner.RunWith
 import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -12,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.junit.Test
 import org.junit.Assert._
 import java.util.Calendar
-import main.scala.service.competition.LeagueService
-import main.scala.model.team.TeamDao
-import main.scala.model.generic.exceptions.NotImplementedException
-import main.scala.model.team.Team
-import main.scala.model.generic.exceptions.DuplicateInstanceException
-import main.scala.model.generic.exceptions.IncorrectDateException
+import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.model.team.TeamDao
+import com.vac.manager.model.generic.exceptions.NotImplementedException
+import com.vac.manager.model.team.Team
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import com.vac.manager.model.generic.exceptions.IncorrectDateException
 import javax.management.InstanceNotFoundException
-import main.scala.model.generic.exceptions.IncorrectNameException
+import com.vac.manager.model.generic.exceptions.IncorrectNameException
 import org.springframework.transaction.annotation.Transactional
 
 @RunWith(classOf[SpringJUnit4ClassRunner])
