@@ -1,5 +1,6 @@
 package com.vac.manager.model.competition
 
+import java.lang.Long
 import com.vac.manager.model.generic.GenericDao
 
 trait LeagueDao extends GenericDao[League, java.lang.Long] {

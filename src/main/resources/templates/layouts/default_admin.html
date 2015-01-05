@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>NoTitleYet</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+		<link href="/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+	</head>
+
+	<body>
+		<div th:replace="fragments/header :: header">Header</div>
+
+		<div style="float:right; background-color: red">FED ADMIN ACCESS</div>
+		<div class="container" th:replace="${view} :: content">
+		  Here will go the content.
+		</div>
+		<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+	</body>
+
+</html>

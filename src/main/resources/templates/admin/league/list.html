@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List leagues</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet"
+	  media="screen" th:href="@{/css/bootstrap.min.css}" />
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen"
+	  th:href="@{/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js"
+	    th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div class="container" th:fragment="content">
+
+      <nav role="actions" class="nav navbar">
+	<a class="btn btn-default" th:href="${createUrl}">Create league</a>
+      </nav>
+
+      <ul>
+	<li th:each="league: ${leagues}">
+	  <dl th:object="${league}">
+	    <dt>Federation Id</dt>
+	    <dd th:text="*{fedId}">#NUM#</dd>
+	    <dt>League Name</dt>
+	    <dd th:text="*{leagueName}">Alevines</dd>
+	    <dt>Actions</dt>
+	    <dd>
+	      <ul>
+		<li><a th:href="${league.getEditLink()}">Edit league</a></li>
+		<li><a th:href="${league.getUserLink()}">Go to user view</a></li>
+		<li><a th:href="${league.getDeleteLink()}">Delete league</a></li>
+		<li><a th:href="${league.getSeasonAdminLink()}">Manage
+		    seasons</a></li>
+	      </ul>
+	    </dd>
+	  </dl>
+	</li>
+      </ul>
+    </div>
+  </body>
+</html>
+

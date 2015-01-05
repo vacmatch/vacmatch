@@ -1,13 +1,11 @@
 package com.vac.manager.service.competition
 
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
-import com.vac.manager.model.competition.{ League, LeagueDao, LeagueSeason, LeagueSeasonDao }
+import com.vac.manager.model.competition.{ League, LeagueDao, LeagueSeason, LeagueSeasonDao, LeagueSeasonPK }
+import java.util.{ Calendar, GregorianCalendar }
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
+import scala.collection.JavaConverters.asScalaBufferConverter
 
 @Service("leagueService")
 @Transactional
@@ -81,6 +79,7 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   def findBySlug(fedId: Long, slug: String): Option[League] = {
+    //leagueDao.findBySlug(fedId, slug)
     leagueDao.findBySlug(fedId, slug)
   }
 
@@ -89,8 +88,11 @@ class LeagueServiceImpl extends LeagueService {
     if (l.isEmpty) throw new NoSuchFieldError()
 
     val s = new LeagueSeason()
+    s.id = new LeagueSeasonPK()
     s.id.setLeague(l.get)
     s.id.setSeasonSlug(year)
+    s.startTime = startTime
+    s.endTime = endTime
 
     leagueSeasonDao.save(s)
 
@@ -115,5 +117,66 @@ class LeagueServiceImpl extends LeagueService {
 
   def findSeasonByLeagueSlug(fedId: Long, slug: String, seasonYear: String): Option[LeagueSeason] = {
     return leagueSeasonDao.findBySlug(fedId, slug, seasonYear)
+  }
+
+  /**
+   * Only deletes the league if it has no seasons
+   */
+  def removeLeagueBySlug(fedId: Long, slug: String): Boolean = {
+    val league = leagueDao findBySlug (fedId, slug)
+
+    if (league.isEmpty) {
+      return false
+    }
+
+    if ((league.get.seasonList.size) > 0) {
+      return false
+    }
+
+    leagueDao remove league.get
+
+    return true
+  }
+
+  def modifySeasonYearBySlug(fedId: Long, slug: String, oldYear: String, newYear: String): Option[LeagueSeason] = {
+    val season = leagueSeasonDao findBySlug (fedId, slug, oldYear)
+
+    if (season.isDefined) {
+      season.get.id.seasonSlug = newYear
+      leagueSeasonDao save season.get
+
+    }
+    return season
+  }
+  def modifySeasonStartTimeBySlug(fedId: Long, slug: String, seasonYear: String, startTime: Calendar): Option[LeagueSeason] = {
+    val season = leagueSeasonDao findBySlug (fedId, slug, seasonYear)
+
+    if (season.isDefined) {
+      season.get.startTime = startTime
+      leagueSeasonDao save season.get
+
+    }
+    return season
+  }
+  def modifySeasonEndTimeBySlug(fedId: Long, slug: String, seasonYear: String, endTime: Calendar): Option[LeagueSeason] = {
+    val season = leagueSeasonDao findBySlug (fedId, slug, seasonYear)
+
+    if (season.isDefined) {
+      season.get.endTime = endTime
+      leagueSeasonDao save season.get
+
+    }
+    return season
+  }
+
+  def removeSeasonBySlug(fedId: Long, slug: String, seasonYear: String): Boolean = {
+    val season = leagueSeasonDao findBySlug (fedId, slug, seasonYear)
+
+    return if (season.isDefined) {
+      leagueSeasonDao remove season.get
+      true
+    } else {
+      false
+    }
   }
 }

@@ -1,12 +1,8 @@
 package com.vac.manager.service.competition
 
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
-import com.vac.manager.model.competition.{League, LeagueDao, LeagueSeason, LeagueSeasonDao}
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
-import scala.collection.JavaConverters._
+import com.vac.manager.model.competition.{ League, LeagueSeason }
+import java.util.{ Calendar, Date, GregorianCalendar }
+import scala.collection.JavaConverters.asScalaBufferConverter
 
 //@Service("leagueService")
 class LeagueServiceMock extends LeagueService {
@@ -21,11 +17,11 @@ class LeagueServiceMock extends LeagueService {
   }
 
   def modifyLeagueName(fedId: Long, slug: String, newName: String): Option[League] = {
-    return Some (createLeague(fedId, slug, newName))
+    return Some(createLeague(fedId, slug, newName))
   }
 
   def modifyLeagueSlug(fedId: Long, oldSlug: String, newSlug: String): Option[League] = {
-    return Some (createLeague(fedId, newSlug, "TEST NAME"))
+    return Some(createLeague(fedId, newSlug, "TEST NAME"))
   }
 
   def findActiveByFederation(fedId: Long): Seq[LeagueSeason] = {
@@ -51,13 +47,12 @@ class LeagueServiceMock extends LeagueService {
   }
 
   def findById(leagueId: Int): Option[League] = {
-    Some (createLeague(1, "TheFoundLeague!", "slug"))
+    Some(createLeague(1, "TheFoundLeague!", "slug"))
   }
 
   def findBySlug(fedId: Long, slug: String): Option[League] = {
-    Some (createLeague(fedId, "TheFouldLeague!", slug))
+    Some(createLeague(fedId, "TheFouldLeague!", slug))
   }
-
 
   def createSeason(fedId: Long, slug: String, year: String, startTime: Calendar, endTime: Calendar): LeagueSeason = {
     val l = findBySlug(fedId, slug)
@@ -72,7 +67,8 @@ class LeagueServiceMock extends LeagueService {
     return s
   }
 
- /** It's free to return the League instead of the Seq[LeagueSeason]
+  /**
+   * It's free to return the League instead of the Seq[LeagueSeason]
    * naturally because the JOIN must be made in the DB anyway, so all
    * data is already fetched.
    */
@@ -82,7 +78,8 @@ class LeagueServiceMock extends LeagueService {
     return Some(l1)
   }
 
- /** But we can already return just the Seq as a Scala value
+  /**
+   * But we can already return just the Seq as a Scala value
    */
   def findSeasonsByLeagueAsSeq(fedId: Long, slug: String): Seq[LeagueSeason] = {
     return findSeasonsByLeague(fedId, slug).get.getSeasonList.asScala
@@ -99,5 +96,23 @@ class LeagueServiceMock extends LeagueService {
     val s1 = createSeason(fedId, slug, seasonYear, startCal, endCal)
 
     return Some(s1)
+  }
+
+  def removeLeagueBySlug(fedId: Long, slug: String): Boolean = {
+    return (fedId == 1)
+  }
+
+  def modifySeasonYearBySlug(fedId: Long, slug: String, oldYear: String, newYear: String): Option[LeagueSeason] = {
+    return None
+  }
+  def modifySeasonStartTimeBySlug(fedId: Long, slug: String, seasonYear: String, startTime: Calendar): Option[LeagueSeason] = {
+    return None
+  }
+  def modifySeasonEndTimeBySlug(fedId: Long, slug: String, seasonYear: String, endTime: Calendar): Option[LeagueSeason] = {
+    return None
+  }
+
+  def removeSeasonBySlug(fedId: Long, slug: String, seasonYear: String): Boolean = {
+    return false
   }
 }

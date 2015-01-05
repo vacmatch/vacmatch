@@ -1,10 +1,10 @@
 package com.vac.manager.model.competition
 
 import com.vac.manager.model.generic.GenericDaoHibernate
+import java.lang.Long
+import javax.persistence.criteria._
 import org.springframework.stereotype.Repository
-import javax.persistence.criteria.Predicate
-import javax.persistence.criteria.Expression
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.asScalaBufferConverter
 
 @Repository("leagueDao")
 class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[League]) with LeagueDao {
@@ -18,10 +18,10 @@ class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[L
       cb.and(
         Array(
           cb.equal(root get ("fedId"), fedId): Predicate
-        ):_*
+        ): _*
       )
 
-    criteria = criteria select root where (Array(cond):_*)
+    criteria = criteria select root where (Array(cond): _*)
 
     val q = getEntityManager createQuery criteria
 
@@ -33,7 +33,8 @@ class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[L
     var q = getEntityManager().createQuery(
       "SELECT l FROM League l " +
         "WHERE l.fedId = :fedId " +
-        "AND l.slug = :slug", classOf[League])
+        "AND l.slug = :slug", classOf[League]
+    )
       .setParameter("fedId", fedId)
       .setParameter("slug", slug)
 
@@ -53,11 +54,11 @@ class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[L
       cb.and(
         Array(
           cb.equal(root get ("fedId"), fedId): Predicate,
-          cb.equal(root get ("slug"), slug):Predicate
-        ):_*
+          cb.equal(root get ("slug"), slug): Predicate
+        ): _*
       )
 
-    criteria = criteria select root where (Array(cond):_*)
+    criteria = criteria select root where (Array(cond): _*)
 
     val xq = getEntityManager createQuery criteria
 
@@ -66,7 +67,7 @@ class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[L
     return if (r.size == 0) {
       None
     } else {
-      Some (r.get(0))
+      Some(r.get(0))
     }
   }
 

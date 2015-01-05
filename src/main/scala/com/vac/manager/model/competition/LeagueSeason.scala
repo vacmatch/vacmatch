@@ -1,19 +1,32 @@
 package com.vac.manager.model.competition
 
+import com.vac.manager.model.staff.Staff
+import java.util.Calendar
 import javax.persistence._
 import scala.beans.BeanProperty
-import java.util.Calendar
-import com.vac.manager.model.staff.Staff
+
+@Embeddable
+class LeagueSeasonPK extends Serializable {
+  @BeanProperty
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @JoinColumn(name = "lid", referencedColumnName = "league_id", nullable = false)
+  var league: League = _
+
+  @BeanProperty
+  @Column(nullable = false)
+  var seasonSlug: String = _ // Something like: 2012, or maybe "XIII"
+}
 
 @Entity
 @Table(name = "SEASONL")
 class LeagueSeason extends Serializable {
 
   @EmbeddedId
-  var id: LeagueSeason.LeagueSeasonPK = _
+  @BeanProperty
+  var id: LeagueSeasonPK = _
 
   @BeanProperty
-  @Column(nullable=false)
+  @Column(nullable = false)
   @Temporal(TemporalType.DATE)
   var startTime: Calendar = _
 
@@ -21,19 +34,4 @@ class LeagueSeason extends Serializable {
   @Column
   @Temporal(TemporalType.DATE)
   var endTime: Calendar = _
-}
-
-object LeagueSeason {
-
-  @Embeddable
-  class LeagueSeasonPK extends Serializable {
-    @BeanProperty
-    @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="lid", referencedColumnName="league_id", nullable=false)
-    var league: League = _
-
-    @BeanProperty
-    @Column(nullable=false)
-    var seasonSlug: String = _ // Something like: 2012, or maybe "XIII"
-  }
 }
