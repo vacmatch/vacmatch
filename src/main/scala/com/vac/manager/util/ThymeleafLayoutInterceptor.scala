@@ -47,11 +47,12 @@ class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
   }
 
   private def getMethodOrTypeAnnotation(handlerMethod: HandlerMethod): Layout = {
-    val layout = handlerMethod.getMethodAnnotation(classOf[Layout])
+    var layout = handlerMethod.getMethodAnnotation(classOf[Layout])
     if (layout == null) {
-      handlerMethod.getBeanType().getAnnotation(classOf[Layout])
+      layout = handlerMethod.getBeanType().getAnnotation(classOf[Layout])
     }
-    layout
+
+    return layout
   }
 
 }
