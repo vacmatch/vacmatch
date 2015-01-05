@@ -1,21 +1,24 @@
 package com.vac.manager
 
-import com.vac.manager.util.TenantFilter
-import com.vac.manager.util.ThymeleafLayoutInterceptor
+import controllers.conversions.{ CalendarFormatter, DateFormatter }
 import java.util.ArrayList
-import javax.sql.DataSource
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
-import org.springframework.jdbc.datasource.SimpleDriverDataSource
+import org.springframework.core.convert.ConversionService
+import org.springframework.core.convert.converter.Converter
+import org.springframework.format.Formatter
+import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import scala.collection.JavaConverters._
+import util.TenantFilter
+import util.ThymeleafLayoutInterceptor
 
 @Configuration
 @ComponentScan(basePackages = Array("com.vac.manager")) // You should not use the @EnableWebMvc annotation
@@ -62,6 +65,31 @@ class Application {
     frb.setFilter(new TenantFilter)
 
     frb
+  }
+
+  @Bean
+  def dateFormatter(): DateFormatter = {
+    return new DateFormatter
+  }
+
+  @Bean
+  def calendarFormatter(messageSource: MessageSource): CalendarFormatter = {
+    val bean = new CalendarFormatter
+    bean.messageSource = messageSource
+
+    return bean
+  }
+
+  @Bean
+  def mvcConversionService(dateFormatter: DateFormatter, calendarFormatter: CalendarFormatter): ConversionService = {
+    val bean = new FormattingConversionServiceFactoryBean();
+    bean.setFormatters(Set(dateFormatter, calendarFormatter).asJava)
+    bean.afterPropertiesSet()
+    return bean.getObject()
+  }
+
+  private def getConverters(): java.util.Set[Converter[_, _]] = {
+    return Set().asJava
   }
 
   @Bean //@ConditionalOnBean(Array(classOf[DispatcherServlet]))

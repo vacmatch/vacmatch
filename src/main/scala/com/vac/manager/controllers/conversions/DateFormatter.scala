@@ -10,25 +10,26 @@ import org.springframework.context.MessageSource
 
 class DateFormatter extends Formatter[Date] {
 
-    @Autowired
-    private var messageSource: MessageSource = _
+  @Autowired
+  private var messageSource: MessageSource = _
 
-    @throws(classOf[ParseException])
-    def parse(text: String, locale: Locale): Date = {
-        val dateFormat: SimpleDateFormat = createDateFormat(locale);
-        dateFormat.parse(text);
-    }
+  @throws(classOf[ParseException])
+  def parse(text: String, locale: Locale): Date = {
+    val dateFormat: SimpleDateFormat = createDateFormat(locale);
+    dateFormat.parse(text);
+  }
 
-    def print(obj: Date,locale: Locale): String = {
-        val dateFormat: SimpleDateFormat = createDateFormat(locale);
-        dateFormat.format(obj);
-    }
+  def print(obj: Date, locale: Locale): String = {
+    val dateFormat: SimpleDateFormat = createDateFormat(locale);
+    dateFormat.format(obj);
+  }
 
-    def createDateFormat(locale: Locale): SimpleDateFormat = {
-        val format: String = this.messageSource.getMessage("date.format", null, locale);
-        val dateFormat: SimpleDateFormat = new SimpleDateFormat(format);
-        dateFormat.setLenient(false);
-        dateFormat;
-    }
+  def createDateFormat(locale: Locale): SimpleDateFormat = {
+    val format: String = this.messageSource.getMessage("date.format", null, locale);
+
+    val dateFormat: SimpleDateFormat = new SimpleDateFormat(format);
+    dateFormat.setLenient(false);
+    dateFormat;
+  }
 
 }
