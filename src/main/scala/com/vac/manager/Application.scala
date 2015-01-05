@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+import org.thymeleaf.templateresolver.TemplateResolver
 import scala.collection.JavaConverters._
 import util.TenantFilter
 import util.ThymeleafLayoutInterceptor
@@ -108,6 +109,7 @@ class Application {
 // class WebApplication
 
 object Application extends App {
-  SpringApplication.run(classOf[Application])
+  val app = SpringApplication run classOf[Application]
+  app getBean classOf[TemplateResolver] setCacheable false
 }
 
