@@ -138,15 +138,25 @@ class LeagueServiceImpl extends LeagueService {
     return true
   }
 
+  @Transactional
   def modifySeasonYearBySlug(fedId: Long, slug: String, oldYear: String, newYear: String): Option[LeagueSeason] = {
-    val season = leagueSeasonDao findBySlug (fedId, slug, oldYear)
+    val maybeSeason = leagueSeasonDao findBySlug (fedId, slug, oldYear)
 
-    if (season.isDefined) {
-      season.get.id.seasonSlug = newYear
-      leagueSeasonDao save season.get
+    return maybeSeason match {
+      case None => None
+      case Some(oldSeason) =>
+        /* In JPA you cannot update the id column, so a delete plus recreate is needed */
+        val season = new LeagueSeason
+        season.id = new LeagueSeasonPK
+        season.id.setLeague(oldSeason.id getLeague)
+        season.id setSeasonSlug newYear
+        season.startTime = oldSeason.startTime
+        season.endTime = oldSeason.endTime
 
+        leagueSeasonDao remove oldSeason
+        leagueSeasonDao save season
+        Some(season)
     }
-    return season
   }
   def modifySeasonStartTimeBySlug(fedId: Long, slug: String, seasonYear: String, startTime: Calendar): Option[LeagueSeason] = {
     val season = leagueSeasonDao findBySlug (fedId, slug, seasonYear)
