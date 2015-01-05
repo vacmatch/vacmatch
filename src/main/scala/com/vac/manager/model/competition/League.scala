@@ -47,6 +47,7 @@ class League {
 
   @BeanProperty
   @OneToMany(mappedBy = "id.league", fetch = FetchType.EAGER)
+  @OrderBy("startTime DESC")
   var seasonList: java.util.List[LeagueSeason] = _
 
   override def toString: String = {
