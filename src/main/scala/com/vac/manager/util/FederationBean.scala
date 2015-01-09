@@ -27,7 +27,7 @@ class FederationBeanImpl(req: ServletRequest) extends FederationBean {
     // Go by other rules in development mode
     if (fedDomain == "127.0.0.1" && req.getLocalAddr() == "127.0.0.1") {
       println("FEDERATIONBEAN REQ IS LOCALLY-TRIGGERED")
-      1
+      1L
     } else {
 
       println("FEDERATIONBEAN REQ LOCALADDR = " + req.getLocalAddr())
