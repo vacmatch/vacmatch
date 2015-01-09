@@ -2,12 +2,14 @@ package com.vac.manager
 
 import controllers.conversions.{ CalendarFormatter, DateFormatter }
 import java.util.ArrayList
+import javax.servlet.ServletRequest
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import }
+import org.springframework.context.annotation.ScopedProxyMode
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Scope }
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.Formatter
@@ -18,8 +20,7 @@ import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
 import scala.collection.JavaConverters._
-import util.TenantFilter
-import util.ThymeleafLayoutInterceptor
+import util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
 
 @Configuration
 @ComponentScan(basePackages = Array("com.vac.manager")) // You should not use the @EnableWebMvc annotation
@@ -91,6 +92,12 @@ class Application {
 
   private def getConverters(): java.util.Set[Converter[_, _]] = {
     return Set().asJava
+  }
+
+  @Bean
+  @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+  def federationBean(req: ServletRequest): FederationBean = {
+    return new FederationBeanImpl(req);
   }
 
   @Bean //@ConditionalOnBean(Array(classOf[DispatcherServlet]))
