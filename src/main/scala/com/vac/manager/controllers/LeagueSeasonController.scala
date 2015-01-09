@@ -3,6 +3,7 @@ package com.vac.manager.controllers
 import com.vac.manager.controllers.utils.UrlGrabber
 import com.vac.manager.model.competition.{ League, LeagueSeason }
 import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.util.FederationBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
@@ -22,17 +23,18 @@ class LeagueSeasonController extends UrlGrabber {
     val year = id.seasonSlug
 
     def getLink() = {
-      getUrl("LeagueSeasonController.showSeason", "slug" -> slug, "year" -> year, "fedId" -> fedId)
+      getUrl("LeagueSeasonController.showSeason", "slug" -> slug, "year" -> year)
     }
   }
 
   @Autowired
   var leagueService: LeagueService = _
 
-  def listSeasons(
-    @RequestParam("fedId") fedId: java.lang.Long,
-    @PathVariable("slug") slug: String
-  ) = {
+  @Autowired
+  var federation: FederationBean = _
+
+  def listSeasons(@PathVariable("slug") slug: String) = {
+    val fedId = federation.getId()
 
     val league = leagueService.findSeasonsByLeague(fedId, slug)
     var seasons = null: java.util.Collection[ActionableLeagueSeason]
@@ -52,10 +54,10 @@ class LeagueSeasonController extends UrlGrabber {
   }
 
   def showSeason(
-    @RequestParam("fedId") fedId: Long,
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String
   ) = {
+    val fedId = federation.getId()
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)
 

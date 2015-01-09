@@ -3,6 +3,7 @@ package com.vac.manager.controllers
 import com.vac.manager.controllers.utils.UrlGrabber
 import com.vac.manager.model.competition.League
 import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.util.FederationBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
@@ -16,6 +17,9 @@ class LeagueController {
   @Autowired
   var leagueService: LeagueService = _
 
+  @Autowired
+  var federation: FederationBean = _
+
   class ActionableLeague(base: League) extends League with UrlGrabber {
 
     fedId = base.fedId
@@ -23,19 +27,21 @@ class LeagueController {
     slug = base.slug
 
     def getSeasonsLink() = {
-      getUrl("LeagueSeasonController.listSeasons", "fedId" -> fedId, "slug" -> slug)
+      getUrl("LeagueSeasonController.listSeasons", "slug" -> slug)
     }
 
     def getEditLink() = {
-      getUrl("LeagueAdminController.edit", "slug" -> slug, "fedId" -> fedId)
+      getUrl("LeagueAdminController.edit", "slug" -> slug)
     }
 
     def getDeleteLink() = {
-      getUrl("LeagueAdminController.delete", "slug" -> slug, "fedId" -> fedId)
+      getUrl("LeagueAdminController.delete", "slug" -> slug)
     }
   }
 
-  def list(@RequestParam("fedId") fedId: Int) = {
+  def list() = {
+    val fedId = federation.getId()
+
     var leagues: Seq[League] = leagueService
       .findAllByFederation(fedId) //.map({ season => season.id.league })
       .map({ league => new ActionableLeague(league) })
@@ -46,11 +52,8 @@ class LeagueController {
     mav
   }
 
-  def show(
-    @RequestParam("fedId") fedId: Int,
-    @PathVariable("slug") slug: String
-  ) = {
-
+  def show(@PathVariable("slug") slug: String) = {
+    val fedId = federation.getId()
     val league = leagueService.findBySlug(fedId, slug)
 
     val mav = new ModelAndView("league/show")
