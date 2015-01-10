@@ -32,7 +32,7 @@ class TenantFilter() extends Filter {
       val fedName = mostlyAll.substring(0, mostlyAll.indexOf("/", 0))
       val rest = mostlyAll.substring(fedName.length)
 
-      r.setAttribute("com.vac.manager.fedName", fedName)
+      r.setAttribute("com.vac.manager.request.domain", fedName)
 
       var newURI = rest
 
