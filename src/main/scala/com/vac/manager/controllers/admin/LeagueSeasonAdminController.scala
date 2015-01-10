@@ -6,6 +6,7 @@ import com.vac.manager.service.competition.LeagueService
 import com.vac.manager.util.Layout
 import com.vac.manager.util.FederationBean
 import java.lang.Long
+import java.util.ArrayList
 import java.util.{ Calendar, Date, GregorianCalendar }
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.convert.ConversionService
@@ -63,7 +64,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   ): ModelAndView = {
 
     val league = leagueService.findBySlug(federation getId, slug)
-    val seasons_ = league.orElse(Option(new League)).get.seasonList
+    val seasons_ = Option(league.orElse(Option(new League)).get.seasonList)
+      .orElse(Some(new ArrayList[LeagueSeason])).get
 
     val seasons = seasons_.asScala.map({ season => new CrudSeasonLeague(season) })
 

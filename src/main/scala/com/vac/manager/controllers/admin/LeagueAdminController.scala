@@ -85,6 +85,7 @@ class LeagueAdminController extends UrlGrabber {
     val mav: ModelAndView = new ModelAndView("admin/league/edit_form")
 
     mav.addObject("league", league)
+    mav.addObject("hiddens", Map().asJava)
     mav.addObject("action", "Create League")
     mav.addObject("submitUrl", submitUrl)
     mav.addObject("submitMethod", "POST")
