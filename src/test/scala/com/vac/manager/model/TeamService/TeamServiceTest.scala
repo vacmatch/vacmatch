@@ -1,5 +1,6 @@
-package test.scala.model.TeamService
+package com.vac.manager.model.TeamService
 
+import javax.transaction.Transactional
 import org.junit.runner.RunWith
 import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -8,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.junit.Test
 import org.junit.Assert._
 import java.util.Calendar
-import test.scala.util.GlobalNames.Spring_test_config_file
-import com.vac.manager.util.GlobalNames.Spring_config_file
+import com.vac.manager.util.GlobalNames.Spring_test_config_file
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.team.TeamDao
 import com.vac.manager.model.generic.exceptions.NotImplementedException
@@ -19,11 +19,14 @@ import com.vac.manager.model.generic.exceptions.IncorrectDateException
 import javax.management.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.IncorrectNameException
 import com.vac.manager.Application
+import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @RunWith(classOf[SpringJUnit4ClassRunner])
 //@ContextConfiguration(locations = Array("classpath:/application.xml", "classpath:/spring-config-test.xml"))
 @SpringApplicationConfiguration(classes = Array(classOf[Application]), locations = Array("classpath:/spring-config-test.xml"))
-//@Transactional
+@EnableTransactionManagement
+@Transactional
 class TeamServiceTest {
 
   private val Non_existent_team_id: Long = -1

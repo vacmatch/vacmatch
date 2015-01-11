@@ -1,4 +1,4 @@
-package test.scala.util
+package com.vac.manager.util
 
 object GlobalNames {
 

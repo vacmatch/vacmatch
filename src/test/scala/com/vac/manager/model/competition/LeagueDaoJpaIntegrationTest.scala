@@ -1,9 +1,8 @@
-package main.scala.model.competition
+package com.vac.manager.model.competition
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import com.vac.manager.Application
-import com.vac.manager.model.competition.League
 import org.junit.runner.RunWith
 import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -20,6 +19,7 @@ import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.model.generic.exceptions.IncorrectDateException
 import javax.management.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.IncorrectNameException
+import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
 
 @RunWith(classOf[SpringJUnit4ClassRunner])
@@ -61,7 +61,6 @@ class LeagueDaoJpaIntegrationTest {
       case Some(aLeague) => assertEquals(league, aLeague)
     }
 
-    assertEquals(league, secondLeague)
     assertNotNull(secondLeague)
 
   }
