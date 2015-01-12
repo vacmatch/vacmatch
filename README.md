@@ -9,13 +9,13 @@ Gradle 2.2
 	
 ##Installation
 
-**Download proyect**
+**Download project**
 
 Clone repository into your working directory
 	
-**Import into eclipse**
+**Import into Eclipse**
 
-* Open a terminal in proyect folder
+* Open a terminal and set the project folder as the working directory 
 ```
 gradle eclipse
 ```
@@ -23,7 +23,7 @@ gradle eclipse
 
 *File/Import/General/Existing Proyects into Workspace*
 
-* Select your root proyect folder
+* Select your root project folder
 
 **Run it**
 ```
@@ -34,4 +34,3 @@ gradle bootrun
 *localhost:8080*
 
 ##License
-
