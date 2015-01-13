@@ -28,4 +28,24 @@ class FederationDaoJpa extends GenericDaoHibernate[Federation, java.lang.Long](c
 
     return dns.asScala
   }
+
+  def findDomainNamesAsEntity(fedId:java.lang.Long):Seq[FederationDomainName] = {
+    val dns = entityManager.createQuery("SELECT dns FROM FederationDomainName dns " +
+      "WHERE dns.fed.fedId = :fedId ", classOf[FederationDomainName])
+      .setParameter("fedId", fedId)
+      .getResultList
+
+    return dns.asScala
+  }
+
+  def saveDomainName(entity:FederationDomainName) = {
+    entityManager persist entity
+  }
+
+  def removeDomainName(entity:FederationDomainName) = {
+    entityManager remove entity
+  }
 }
+
+
+

@@ -1,4 +1,4 @@
-package com.vac.manager.util
+package com.vac.manager.util.test
 
 object GlobalNames {
 

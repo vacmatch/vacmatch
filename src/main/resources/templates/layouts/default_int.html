@@ -15,10 +15,10 @@
 			th:src="@{/js/bootstrap.min.js}"></script>
 	</head>
 
-	<body>
+	<body style="background-color: #FFCCCC" class="intadmin">
 		<div th:replace="fragments/header :: header">Header</div>
 
-		<div style="float:right; background-color: red">FED ADMIN ACCESS</div>
+		<div style="position:absolute;bottom:0;right:0; background-color: red; padding:20px;font-weight:bold;color:#FFFFFF">INTERNAL SUPERADMIN ACCESS</div>
 		<div class="container" th:replace="${view} :: content">
 		  Here will go the content.
 		</div>

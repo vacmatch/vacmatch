@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.junit.Test
 import org.junit.Assert._
 import java.util.Calendar
-import com.vac.manager.util.GlobalNames.Spring_test_config_file
+import com.vac.manager.util.test.GlobalNames.Spring_test_config_file
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.team.TeamDao
 import com.vac.manager.model.generic.exceptions.NotImplementedException

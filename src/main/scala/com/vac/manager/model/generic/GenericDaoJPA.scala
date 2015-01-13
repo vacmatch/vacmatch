@@ -32,7 +32,7 @@ abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) 
 
     val teamList = entityManager createQuery criteria getResultList
 
-    teamList toList // return Scala types
+    return teamList toList // return Scala types
   }
 
   /**
