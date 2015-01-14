@@ -1,3 +1,24 @@
+
+buildscript {
+    ext {
+        springBootVersion = '1.1.9.RELEASE'
+    }
+    repositories {
+	mavenLocal()
+        mavenCentral()
+	jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+	classpath("org.springframework:springloaded:1.2.0.RELEASE")
+    }
+}
+
+plugins {
+  id "com.github.maiflai.scalatest" version "0.6-5-g9065d91"
+}
+
 apply plugin: 'scala'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -7,23 +28,10 @@ apply plugin: 'spring-boot'
 apply plugin: 'ensime'
 
 ext {
+  scalaLibraryVersionMajor = '2.11'
   scalaLibraryVersion = '2.11.0'
 }
 
-buildscript {
-    ext {
-        springBootVersion = '1.1.9.RELEASE'
-    }
-    repositories {
-	mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
-	classpath("org.springframework:springloaded:1.2.0.RELEASE")
-    }
-}
 
 war {
     baseName = 'federation-proyect-app'
@@ -64,6 +72,11 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("info.cukes:cucumber-scala_2.11:1.2.0")
     testCompile("info.cukes:cucumber-junit:1.2.0")
+
+    testCompile("org.scalatest:scalatest_${scalaLibraryVersionMajor}:2.2.1")
+    testCompile("org.scalacheck:scalacheck_${scalaLibraryVersionMajor}:1.12.1")
+    testCompile("org.mockito:mockito-core:1.+")
+    testCompile("org.pegdown:pegdown:1.4.2")
 }
 
 tasks.withType(ScalaCompile) {
