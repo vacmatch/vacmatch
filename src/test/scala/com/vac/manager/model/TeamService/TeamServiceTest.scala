@@ -2,6 +2,7 @@ package com.vac.manager.model.TeamService
 
 import javax.transaction.Transactional
 import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitSuite
 import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.ContextConfiguration
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @SpringApplicationConfiguration(classes = Array(classOf[Application]), locations = Array("classpath:/spring-config-test.xml"))
 @EnableTransactionManagement
 @Transactional
-class TeamServiceTest {
+class TeamServiceTest extends JUnitSuite {
 
   private val Non_existent_team_id: Long = -1
 
