@@ -1,6 +1,7 @@
 package com.vac.manager.service.competition
 
 import com.vac.manager.model.competition.{ League, LeagueDao, LeagueSeason, LeagueSeasonDao, LeagueSeasonPK }
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import java.util.{ Calendar, GregorianCalendar }
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,6 +23,9 @@ class LeagueServiceImpl extends LeagueService {
     l.fedId = fedId
     l.leagueName = leagueName
     l.slug = slug
+
+    if (leagueDao.findBySlug(fedId, slug).isDefined)
+      throw new DuplicateInstanceException("Duplicated slug for league")
 
     leagueDao.save(l)
 
