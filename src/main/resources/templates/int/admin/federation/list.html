@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List federations</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js">
+    </script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+
+    <div class="content" th:fragment="content">
+      <nav role="actions" class="nav navbar">
+	<a class="btn btn-default" th:href="${createUrl}">Create federation</a>
+      </nav>
+
+      <ul>
+	<li th:each="federation: ${federations}">
+	  <dl th:object="${federation}">
+	    <dt>Federation Id</dt>
+	    <dd th:text="*{fedId}">#NUM#</dd>
+	    <dt>Federation Name</dt>
+	    <dd th:text="*{fedName}">Alevines</dd>
+	    <dt>Actions</dt>
+	    <dd>
+	      <ul>
+		<li><a th:href="*{editLink}">Edit federation</a></li>
+		<li><a th:href="${federation.userLink}">Go to webpage</a></li>
+		<li><a th:href="${federation.deleteLink}">Delete federation</a></li>
+		<li><a th:href="${federation.manageLink}">Manage federation</a></li>
+	      </ul>
+	    </dd>
+	  </dl>
+	</li>
+      </ul>
+    </div>
+  </body>
+</html>

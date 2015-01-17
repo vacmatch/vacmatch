@@ -1,13 +1,3 @@
-apply plugin: 'scala'
-apply plugin: 'eclipse'
-apply plugin: 'war'
-apply plugin: 'jetty'
-apply plugin: 'spring-boot'
-apply plugin: 'ensime'
-
-ext {
-  scalaLibraryVersion = '2.11.0'
-}
 
 buildscript {
     ext {
@@ -16,12 +6,32 @@ buildscript {
     repositories {
 	mavenLocal()
         mavenCentral()
+	jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+	classpath("org.springframework:springloaded:1.2.0.RELEASE")
     }
 }
+
+plugins {
+  id "com.github.maiflai.scalatest" version "0.6-5-g9065d91"
+}
+
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'spring-boot'
+apply plugin: 'ensime'
+
+ext {
+  scalaLibraryVersionMajor = '2.11'
+  scalaLibraryVersion = '2.11.0'
+}
+
 
 war {
     baseName = 'federation-proyect-app'
@@ -36,6 +46,7 @@ repositories {
 
 configurations {
     providedRuntime
+    compile.exclude module: "spring-boot-starter-tomcat"
 }
 
 dependencies {
@@ -49,11 +60,33 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    
+
+    compile("org.springframework:spring-tx")
+    compile("org.springframework:spring-jdbc")
+
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    //providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
+
     compile("org.xerial:sqlite-jdbc:3.8.7")
-    
-    providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("info.cukes:cucumber-scala_2.11:1.2.0")
+    testCompile("info.cukes:cucumber-junit:1.2.0")
+
+    testCompile("org.scalatest:scalatest_${scalaLibraryVersionMajor}:2.2.1")
+    testCompile("org.scalacheck:scalacheck_${scalaLibraryVersionMajor}:1.12.1")
+    testCompile("org.mockito:mockito-core:1.+")
+    testCompile("org.pegdown:pegdown:1.4.2")
+}
+
+tasks.withType(ScalaCompile) {
+  configure(scalaCompileOptions.forkOptions) {
+    memoryMaximumSize = '1g'
+    jvmArgs = ['-XX:MaxPermSize=512m']
+  }
+
+  scalaCompileOptions.useAnt = false
+  scalaCompileOptions.optimize = true
 }
 
 eclipse {
@@ -66,4 +99,17 @@ eclipse {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
 }
+
+test {
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
+jettyRun {
+	reload = "manual"
+}
+
+stopPort = 9091
+httpPort = 9090
 

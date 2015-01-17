@@ -30,9 +30,21 @@
         </init-param>
     </filter>
 
+    <filter>
+      <filter-name>tenant-filter</filter-name>
+      <filter-class>
+	main.scala.util.TenantFilter
+      </filter-class>
+    </filter>
+
     <filter-mapping>
         <filter-name>encoding-filter</filter-name>
         <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>tenant-filter</filter-name>
+      <url-pattern>/a/*</url-pattern>
     </filter-mapping>
 
     <servlet>
@@ -42,7 +54,7 @@
 
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
 
