@@ -10,6 +10,7 @@ def getSpringBootDependencies(version:String) = {
     "web",
     "thymeleaf",
     "actuator",
+    "security",
     "jetty",
     "test"
   )
