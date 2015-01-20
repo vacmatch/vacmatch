@@ -54,6 +54,8 @@ class LeagueServiceImplTest extends FeatureSpec with GivenWhenThen with MockitoS
       Then("It cannot be created again")
 
       forAll("name", "slug") { (name: String, slug: String) =>
+        Mockito.when(service.leagueDao.findBySlug(fedId, slug)).thenReturn(None)
+
         val l = service.createLeague(fedId, name, slug)
 
         Mockito.when(service.leagueDao.findBySlug(fedId, slug)).thenReturn(Some(l))
