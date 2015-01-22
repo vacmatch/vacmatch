@@ -9,11 +9,13 @@ buildscript {
 	    jcenter()
     }
     dependencies {
-	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
-		classpath("org.springframework:springloaded:1.2.0.RELEASE")
-    }
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+	classpath("org.springframework:springloaded:1.2.0.RELEASE")
+	classpath("org.scoverage:gradle-scoverage:1.0.6")
+  }
 }
+
 
 plugins {
   id "com.github.maiflai.scalatest" version "0.6-5-g9065d91"
@@ -26,15 +28,16 @@ apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'spring-boot'
 apply plugin: 'ensime'
+apply plugin: 'scoverage'
 
 ext {
   scalaLibraryVersionMajor = '2.11'
-  scalaLibraryVersion = '2.11.0'
+  scalaLibraryVersion = '2.11.4'
 }
 
 
 war {
-    baseName = 'federation-proyect-app'
+    baseName = 'federation-project-app'
     version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.7
@@ -77,16 +80,20 @@ dependencies {
     testCompile("org.scalacheck:scalacheck_${scalaLibraryVersionMajor}:1.12.1")
     testCompile("org.mockito:mockito-core:1.+")
     testCompile("org.pegdown:pegdown:1.4.2")
+
+    scoverage("org.scoverage:scalac-scoverage-plugin_${scalaLibraryVersionMajor}:1.0.2")
+    scoverage("org.scoverage:scalac-scoverage-runtime_${scalaLibraryVersionMajor}:1.0.2")
 }
 
 tasks.withType(ScalaCompile) {
-  configure(scalaCompileOptions.forkOptions) {
-    memoryMaximumSize = '1g'
-    jvmArgs = ['-XX:MaxPermSize=512m']
-  }
+  // configure(scalaCompileOptions.forkOptions) {
+  //   memoryMaximumSize = '1g'
+  //   jvmArgs = ['-XX:MaxPermSize=512m']
+  // }
 
+  scalaCompileOptions.additionalParameters = [ "-feature", "-Xlint" ]
   scalaCompileOptions.useAnt = false
-  scalaCompileOptions.optimize = true
+  scalaCompileOptions.optimize = false
 }
 
 eclipse {
