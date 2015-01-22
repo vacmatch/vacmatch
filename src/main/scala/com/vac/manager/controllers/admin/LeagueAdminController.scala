@@ -47,7 +47,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def list() = {
-    val fedId = federation getId
+    val fedId = federation.getId
     var leagues: Seq[CrudLeague] =
       leagueService findAllByFederation fedId map (new CrudLeague(_))
 
@@ -60,7 +60,7 @@ class LeagueAdminController extends UrlGrabber {
   def show(
     @RequestParam("slug") slug: String
   ) = {
-    val fedId = federation getId
+    val fedId = federation.getId
     val league = leagueService.findBySlug(fedId, slug)
 
     val mav = new ModelAndView("admin/league/show")
@@ -68,7 +68,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def create() = {
-    val fedId = federation getId
+    val fedId = federation.getId
     val leagueName = "Meow"
     val slug = "mw"
     val foundationalDate = null
@@ -95,7 +95,7 @@ class LeagueAdminController extends UrlGrabber {
     @RequestParam("leagueName") leagueName: String,
     @RequestParam("slug") slug: String
   ): ModelAndView = {
-    val league = leagueService.createLeague(federation getId, leagueName: String, slug)
+    val league = leagueService.createLeague(federation.getId, leagueName: String, slug)
 
     val mav = new ModelAndView("admin/league/show")
 
@@ -105,7 +105,7 @@ class LeagueAdminController extends UrlGrabber {
   def edit(
     @RequestParam("slug") slug: String
   ): ModelAndView = {
-    val league = leagueService.findBySlug(federation getId, slug)
+    val league = leagueService.findBySlug(federation.getId, slug)
     val submitUrl = getUrl("LeagueAdminController.postEdit")
 
     // TODO handle notfound league (Option=None)
@@ -124,7 +124,7 @@ class LeagueAdminController extends UrlGrabber {
     @RequestParam("leagueName") leagueName: String,
     @RequestParam("slug") slug: String
   ): String = {
-    val fedId = federation getId
+    val fedId = federation.getId
 
     leagueService modifyLeagueName (fedId, oldSlug, leagueName)
     leagueService modifyLeagueSlug (fedId, oldSlug, slug)
@@ -137,7 +137,7 @@ class LeagueAdminController extends UrlGrabber {
   def delete(
     @RequestParam("slug") slug: String
   ): ModelAndView = {
-    val fedId = federation getId
+    val fedId = federation.getId
 
     return new ModelAndView("admin/league/delete_confirm")
       .addObject("entity", "league")
@@ -149,7 +149,7 @@ class LeagueAdminController extends UrlGrabber {
     @RequestParam("slug") slug: String
   ): String = {
 
-    val result = leagueService removeLeagueBySlug (federation getId, slug)
+    val result = leagueService removeLeagueBySlug (federation.getId, slug)
 
     return "redirect:" + getUrl("LeagueAdminController.list")
 

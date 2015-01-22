@@ -63,7 +63,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("slug") slug: String
   ): ModelAndView = {
 
-    val league = leagueService.findBySlug(federation getId, slug)
+    val league = leagueService.findBySlug(federation.getId, slug)
     val seasons_ = Option(league.orElse(Option(new League)).get.seasonList)
       .orElse(Some(new ArrayList[LeagueSeason])).get
 
@@ -106,7 +106,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
     println("CREATING STUFF AT " + startTime)
 
-    leagueService.createSeason(federation getId, slug, year, start, end)
+    leagueService.createSeason(federation.getId, slug, year, start, end)
 
     return "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
   }
@@ -123,7 +123,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Calendar], classOf[String]))
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[GregorianCalendar], classOf[String]))
 
-    val leagueSeason = leagueService.findSeasonByLeagueSlug(federation getId, slug, year)
+    val leagueSeason = leagueService.findSeasonByLeagueSlug(federation.getId, slug, year)
 
     val startTimeStr = conversionService.convert(leagueSeason.get.getStartTime(), classOf[String])
     val endTimeStr = conversionService.convert(leagueSeason.get.getEndTime(), classOf[String])
@@ -147,7 +147,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("endTime") endTime: Date
   ): String = {
 
-    val fedId = federation getId
+    val fedId = federation.getId
     val start = new GregorianCalendar()
     start.setTime(startTime)
     val end = new GregorianCalendar()
@@ -176,7 +176,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("year") year: String
   ): String = {
 
-    var result = leagueService.removeSeasonBySlug(federation getId, slug, year)
+    var result = leagueService.removeSeasonBySlug(federation.getId, slug, year)
 
     return "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
   }

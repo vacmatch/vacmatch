@@ -24,9 +24,9 @@ class FederationBeanImplTest extends FeatureSpec with MockitoSugar with GivenWhe
 
       Given("A mock servlet with localhost values")
       val req = mock[ServletRequest]
-      Mockito.when(req getServerName) thenReturn ("127.0.0.1")
-      Mockito.when(req getRemoteHost) thenReturn ("127.0.0.1")
-      Mockito.when(req getLocalAddr) thenReturn ("127.0.0.1")
+      Mockito.when(req.getServerName) thenReturn "127.0.0.1"
+      Mockito.when(req.getRemoteHost) thenReturn "127.0.0.1"
+      Mockito.when(req.getLocalAddr) thenReturn "127.0.0.1"
 
       When("The FederationBean gets instantiated with such a servlet")
       val bean = new FederationBeanImpl(req)
@@ -40,8 +40,8 @@ class FederationBeanImplTest extends FeatureSpec with MockitoSugar with GivenWhe
     scenario("FederationBean returns the valid fedId on a production environment") {
       Given("A mock servlet with some valid serverName and remoteHost")
       val req = mock[ServletRequest]
-      Mockito.when(req getServerName) thenReturn ("testfed.example")
-      Mockito.when(req getRemoteHost) thenReturn ("fe80::48:1234")
+      Mockito.when(req.getServerName) thenReturn "testfed.example"
+      Mockito.when(req.getRemoteHost) thenReturn "fe80::48:1234"
 
       Given("A mock DAO returning a valid federation for such a serverName")
       val federationDao = mock[FederationDao]
@@ -49,37 +49,36 @@ class FederationBeanImplTest extends FeatureSpec with MockitoSugar with GivenWhe
       val fed = new Federation
       fed.fedId = 77
       fed.fedName = "TestFed"
-      Mockito.when(federationDao findByDomainName "testfed.example") thenReturn (Some(fed))
+      Mockito.when(federationDao findByDomainName "testfed.example") thenReturn Some(fed)
 
       When("The FederationBean gets instantiated with such a servlet")
       val bean = new FederationBeanImpl(req)
       bean.federationDao = federationDao
 
       Then("it should return the fedId as the result")
-      Assert.assertEquals(fed.fedId, bean.getId())
+      Assert.assertEquals(fed.fedId, bean.getId)
 
       Then("The mock should have been called once to find the domain name")
       verify(federationDao) findByDomainName "testfed.example"
     }
 
-
     scenario("FederationBean should throw an exception when it cannot find the federation belonging to an environment") {
       Given("A mock servlet with some valid serverName and remoteHost")
       val req = mock[ServletRequest]
       val domain = "producturl.example"
-      Mockito.when(req getServerName) thenReturn (domain)
-      Mockito.when(req getRemoteHost) thenReturn ("fe80::48:1234")
+      Mockito.when(req.getServerName) thenReturn domain
+      Mockito.when(req.getRemoteHost) thenReturn "fe80::48:1234"
 
       Given("A mock DAO returning no federation for such a domain")
       val federationDao = mock[FederationDao]
-      Mockito.when(federationDao findByDomainName domain) thenReturn (None)
+      Mockito.when(federationDao findByDomainName domain) thenReturn None
 
       When("The FederationBean gets instantiated")
       val bean = new FederationBeanImpl(req)
       bean.federationDao = federationDao
 
       Then("We should intercept a RuntimeException")
-      intercept[RuntimeException] { bean.getId() }
+      intercept[RuntimeException] { bean.getId }
     }
   }
 }

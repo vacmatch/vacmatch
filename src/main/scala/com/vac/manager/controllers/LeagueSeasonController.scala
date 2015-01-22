@@ -44,7 +44,7 @@ class LeagueSeasonController extends UrlGrabber {
       case Some(league) => new ModelAndView("league/season/list")
     }
 
-    if (league nonEmpty)
+    if (league.nonEmpty)
       seasons = league.get.getSeasonList.asScala.map(new ActionableLeagueSeason(_)).asJava
 
     mav

@@ -32,9 +32,9 @@ abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends G
 
     criteria select (criteria from entityClass)
 
-    val teamList = entityManager createQuery criteria getResultList
+    val teamList = (entityManager createQuery criteria).getResultList
 
-    return teamList toList // return Scala types
+    return teamList.toList // return Scala types
   }
 
   /**
