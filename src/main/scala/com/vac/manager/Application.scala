@@ -9,15 +9,16 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
-import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.ScopedProxyMode
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Scope }
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope }
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.Formatter
 import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
@@ -58,11 +59,59 @@ class WebAppConfig() extends RouterConfigurationSupport {
   }
 }
 
+@Configuration
+@EnableWebMvcSecurity
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+  override def configure(http: HttpSecurity) = {
+    // In order to better understand the implications between these
+    // objects, the indentation means things :)
+
+    // format: OFF
+    http.authorizeRequests
+      .antMatchers("/", "/css/**", "/js/**", "/images/**", "**/favicon.ico")
+        .permitAll
+      .antMatchers("/admin/**")
+        .hasRole("ADMINFED")
+      .antMatchers("/_adm/**")
+        .hasRole("ROOT")
+      .anyRequest
+        .permitAll
+      .and
+        .csrf
+      .and
+        .formLogin
+          .loginPage("/admin/login")
+          .loginProcessingUrl("/admin/login/do")
+          .permitAll
+      .and
+        .rememberMe
+          .useSecureCookie(true)
+          .tokenValiditySeconds(3600)
+      .and
+        .logout
+          .permitAll
+
+    // format: ON
+
+  }
+
+  @Autowired
+  def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
+    auth.inMemoryAuthentication()
+      .withUser("admin").password("admin").roles("ROOT", "ADMINFED")
+      .and()
+      .withUser("adminfed").password("admin").roles("ADMINFED")
+      .and()
+      .withUser("coach").password("coach").roles("COACH")
+  }
+
+}
+
 @Lazy
 @EnableTransactionManagement
 @EnableAutoConfiguration
-@EnableWebSecurity
-@ComponentScan @Import(Array(classOf[WebAppConfig]))
+@ComponentScan @Import(Array(classOf[WebAppConfig], classOf[WebSecurityConfig]))
 class WebApplication extends Application {
   @Bean
   def multiTenantHandler(): FilterRegistrationBean = {
@@ -72,16 +121,6 @@ class WebApplication extends Application {
     frb.setFilter(new TenantFilter)
 
     frb
-  }
-
-  @Autowired
-  def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
-    auth.inMemoryAuthentication()
-      .withUser("admin").password("admin").roles("ROOT")
-      .and()
-      .withUser("adminfed").password("admin").roles("ADMINFED")
-      .and()
-      .withUser("coach").password("coach").roles("COACH")
   }
 
   @Bean
@@ -134,7 +173,7 @@ class Application {
 
 // @Configuration
 // @EnableAutoConfiguration
-// @Import(Array(classOf[WebAppConfig], classOf[Application]))
+// @Import(Array(classOf[WebAppConfig], classOf[Application]))))
 // class WebApplication
 
 object Application extends App {
