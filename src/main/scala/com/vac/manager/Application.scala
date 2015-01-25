@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
 import scala.collection.JavaConverters._
 import util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
+import auth.model.FederationUserDetailsService
 
 @Lazy
 @Configuration
@@ -83,13 +85,15 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .formLogin
           .loginPage("/admin/login")
           .loginProcessingUrl("/admin/login/do")
+          .defaultSuccessUrl("/admin")
           .permitAll
       .and
         .rememberMe
           .useSecureCookie(true)
           .tokenValiditySeconds(3600)
       .and
-        .logout
+      .logout
+        .logoutUrl("/admin/logout")
           .permitAll
 
     // format: ON
@@ -98,12 +102,21 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
+
+    auth.userDetailsService(userDetailsService())
+    /*
     auth.inMemoryAuthentication()
       .withUser("admin").password("admin").roles("ROOT", "ADMINFED")
       .and()
       .withUser("adminfed").password("admin").roles("ADMINFED")
       .and()
       .withUser("coach").password("coach").roles("COACH")
+     */
+  }
+
+  @Bean
+  override protected def userDetailsService(): UserDetailsService = {
+    return new FederationUserDetailsService()
   }
 
 }
