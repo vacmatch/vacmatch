@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -7,41 +6,42 @@
 		<script src="../../static/js/bootstrap.min.js"></script>
 	</head>
 	<body>
-		<!-- Navbar -->
-		<div class="navbar navbar-inverse" th:fragment="header">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">My project</a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li><a href="#" th:href="@{/}">Publications</a></li>
-						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown">Federation</a>
-							<ul class="dropdown-menu">
-								<li><a href="/federation/info">Information</a></li>
-								<li><a href="/federation/teams">Teams</a></li>
-								<li><a href="/federation/referees">Referees</a></li>
-								<li><a href="/federation/comittee">Competition Comittee</a></li>
-							</ul>
-						</li>
-						<li><a href="#" th:href="@{/competitions}">Competitions</a></li>
-						<li><a href="#" th:href="@{/rules}">Rules</a></li>
-						<li><a href="#" th:href="@{/press}">Press</a></li>
-						<li><a href="#" th:href="@{/media}">Media</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="/signin" th:href="@{/signin}">Sign in</a></li>
-						<li><a href="/logout" th:href="@{/logout}">Logout</a></li>
-					</ul>
-				</div>
-				<!--/.nav-collapse -->
-			</div>
-		</div>
+	  <!-- Navbar -->
+	  <div class="navbar navbar-inverse" th:fragment="header">
+	    <div class="container">
+	      <div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">My project</a>
+	      </div>
+	      <div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+		  <li><a href="#" th:href="@{/}">Publications</a></li>
+		  <li class="dropdown">
+		    <a class="dropdown-toggle" data-toggle="dropdown">Federation</a>
+		    <ul class="dropdown-menu">
+		      <li><a href="/federation/info">Information</a></li>
+		      <li><a href="/federation/teams">Teams</a></li>
+		      <li><a href="/federation/referees">Referees</a></li>
+		      <li><a href="/federation/comittee">Competition Comittee</a></li>
+		    </ul>
+		  </li>
+		  <li><a href="#" th:href="@{/league}">Leagues</a></li>
+		  <li><a href="#" th:href="@{/rules}">Rules</a></li>
+		  <li><a href="#" th:href="@{/press}">Press</a></li>
+		  <li><a href="#" th:href="@{/media}">Media</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		  <li><a href="/signin" th:href="@{/signin}">Sign in</a></li>
+		  <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
+		</ul>
+	      </div>
+	      <!--/.nav-collapse -->
+	    </div>
+
+	  </div>
 	</body>
 </html>

@@ -64,6 +64,7 @@ class LeagueSeasonController extends UrlGrabber {
     val mav: ModelAndView = new ModelAndView("league/season/show")
     mav
       .addObject("season", season.get)
+      .addObject("teams", new java.util.ArrayList[AnyRef])
   }
 
 }

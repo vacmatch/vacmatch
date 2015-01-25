@@ -16,13 +16,33 @@
 	</head>
 
 	<body>
-		<div th:replace="fragments/header :: header">Header</div>
+	  <div th:replace="fragments/header :: header">Header</div>
 
-		<div style="float:right; background-color: red">FED ADMIN ACCESS</div>
-		<div class="container" th:replace="${view} :: content">
-		  Here will go the content.
+	  <th:block th:fragment="nav" sec:authorize="hasRole('ROLE_ADMINFED')">
+	    <nav th:fragment="admin-navbar" role="navigation actions" class="navbar navbar-default" style="border: 2px solid red">
+	      <div class="navbar-header"><span class="navbar-brand">Actions available</span></div>
+	      <div class="nav navbar-nav">
+
+		<th:block th:include="${view} :: admin-navbar" />
+
+	      </div>
+
+
+	      <form class="navbar-form navbar-right" role="login" id="adminLogoutForm" method="POST" action="/admin/logout">
+		<span>Currently logged in as <span th:text="${#authentication.name}">userName</span></span>
+		<div class="form-group">
+		  <input type="submit" value="Log out" class="btn btn-default" />
+		  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 		</div>
-		<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+	      </form>
+
+	  </nav>
+	  </th:block>
+
+	  <div class="container" th:replace="${view} :: content">
+	    Here will go the content.
+	  </div>
+	  <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
 	</body>
 
 </html>

@@ -22,7 +22,6 @@ class LeagueAdminController extends UrlGrabber {
   @Autowired
   var federation: FederationBean = _
 
-
   class CrudLeague(base: League) extends League with UrlGrabber {
 
     fedId = base.fedId
@@ -53,6 +52,7 @@ class LeagueAdminController extends UrlGrabber {
 
     val mav: ModelAndView = new ModelAndView("admin/league/list")
     mav addObject ("createUrl", getUrl("LeagueAdminController.create"))
+    mav addObject ("listUrl", getUrl("LeagueAdminController.list"))
     mav addObject ("leagues", (leagues.asJava))
     mav
   }
@@ -65,6 +65,9 @@ class LeagueAdminController extends UrlGrabber {
 
     val mav = new ModelAndView("admin/league/show")
     mav.addObject("league", league.get)
+      .addObject("createUrl", getUrl("LeagueAdminController.create"))
+      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+
   }
 
   def create() = {
@@ -89,6 +92,8 @@ class LeagueAdminController extends UrlGrabber {
     mav.addObject("action", "Create League")
     mav.addObject("submitUrl", submitUrl)
     mav.addObject("submitMethod", "POST")
+      .addObject("createUrl", getUrl("LeagueAdminController.create"))
+      .addObject("listUrl", getUrl("LeagueAdminController.list"))
   }
 
   def postCreate(
@@ -117,6 +122,8 @@ class LeagueAdminController extends UrlGrabber {
     mav.addObject("action", "Edit league")
     mav.addObject("submitUrl", submitUrl)
     mav.addObject("submitMethod", "POST")
+      .addObject("createUrl", getUrl("LeagueAdminController.create"))
+      .addObject("listUrl", getUrl("LeagueAdminController.list"))
   }
 
   def postEdit(
@@ -143,6 +150,8 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("entity", "league")
       .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
       .addObject("hiddens", Map("slug" -> slug).asJava)
+      .addObject("createUrl", getUrl("LeagueAdminController.create"))
+      .addObject("listUrl", getUrl("LeagueAdminController.list"))
   }
 
   def postDelete(

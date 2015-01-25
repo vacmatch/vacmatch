@@ -65,6 +65,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-security")
 
+    compile("org.thymeleaf.extras:thymeleaf-extras-springsecurity3:2.1.1.RELEASE")
+
     compile("org.springframework:spring-tx")
     compile("org.springframework:spring-jdbc")
 
