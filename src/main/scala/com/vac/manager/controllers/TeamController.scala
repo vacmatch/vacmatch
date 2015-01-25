@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.servlet.ModelAndView
 import java.util.Calendar
 import com.vac.manager.model.team.Team
-import main.scala.model.personal.Address
-import main.scala.service.personal.AddressService
+import com.vac.manager.model.personal.Address
+import com.vac.manager.service.personal.AddressService
 
 @Controller
 class TeamController() {
@@ -36,8 +36,9 @@ class TeamController() {
     var teamSponsors: List[String] = null
     var teamAddress: String = null
     var web: String = null
+    var country: String = ""
 
-    var address: Address = new Address()
+    var address: Address = new Address(country)
 
     var createdTeam: Team = teamService.createTeam(teamName, publicName, fundationalDate, address, web)
 

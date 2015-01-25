@@ -6,7 +6,7 @@ import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
-import main.scala.model.personal.Address
+import com.vac.manager.model.personal.Address
 
 @Entity
 @Table(name = "TEAM")

@@ -1,12 +1,12 @@
 package com.vac.manager.model.federation
 
-import com.vac.manager.model.generic.GenericDaoHibernate
+import com.vac.manager.model.generic.GenericDaoJPA
 import javax.persistence.criteria.Predicate
 import org.springframework.stereotype.Repository
 import scala.collection.JavaConverters._
 
 @Repository("federationDao")
-class FederationDaoJpa extends GenericDaoHibernate[Federation, java.lang.Long](classOf[Federation]) with FederationDao {
+class FederationDaoJpa extends GenericDaoJPA[Federation, java.lang.Long](classOf[Federation]) with FederationDao {
 
   def findByDomainName(dns: String): Option[Federation] = {
     val fed = getEntityManager createQuery

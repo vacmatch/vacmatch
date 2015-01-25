@@ -1,13 +1,13 @@
 package com.vac.manager.model.competition
 
-import com.vac.manager.model.generic.GenericDaoHibernate
+import com.vac.manager.model.generic.GenericDaoJPA
 import java.lang.Long
 import javax.persistence.criteria._
 import org.springframework.stereotype.Repository
 import scala.collection.JavaConverters.asScalaBufferConverter
 
 @Repository("leagueDao")
-class LeagueDaoJpa extends GenericDaoHibernate[League, java.lang.Long](classOf[League]) with LeagueDao {
+class LeagueDaoJpa extends GenericDaoJPA[League, java.lang.Long](classOf[League]) with LeagueDao {
 
   def findAllByFedId(fedId: Long): Seq[League] = {
     val cb = getEntityManager.getCriteriaBuilder

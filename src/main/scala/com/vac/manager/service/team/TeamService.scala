@@ -6,8 +6,8 @@ import javax.persistence.Table
 import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
-import main.scala.model.team.Equipment
-import main.scala.model.personal.Address
+import com.vac.manager.model.team.Equipment
+import com.vac.manager.model.personal.Address
 
 trait TeamService {
 

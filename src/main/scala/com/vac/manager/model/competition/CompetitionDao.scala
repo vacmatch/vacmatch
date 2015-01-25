@@ -1,5 +1,7 @@
 package com.vac.manager.model.competition
 
-class CompetitionDao {
+import com.vac.manager.model.generic.GenericDao
+
+trait CompetitionDao extends GenericDao[Competition, java.lang.Long] {
 
 }

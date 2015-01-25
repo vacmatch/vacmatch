@@ -2,8 +2,8 @@ package com.vac.manager.model.competition
 
 import javax.persistence._
 import scala.beans.BeanProperty
-import main.scala.model.team.Team
-import main.scala.model.federation.Federation
+import com.vac.manager.model.team.Team
+import com.vac.manager.model.federation.Federation
 
 
 @Entity

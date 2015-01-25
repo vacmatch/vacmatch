@@ -4,9 +4,10 @@ import javax.persistence._
 import scala.beans.BeanProperty
 import com.vac.manager.model.team.Team
 import java.util.Calendar
-import main.scala.model.personal.Address
+import com.vac.manager.model.personal.Address
 import scala.collection.JavaConverters._
 import scravatar.Gravatar
+import com.vac.manager.model.federation.Federation
 
 @Entity
 @Table(name = "STAFF")
@@ -17,7 +18,8 @@ class Staff(stName: String,
     stTelephones: Seq[String],
     stAddress: Address,
     stNif: String,
-    stBirth: Calendar) {
+    stBirth: Calendar,
+    stFederation: Federation) {
 
   @Id
   @SequenceGenerator(name="staffIdGenerator", sequenceName="staff_id_seq")
@@ -84,15 +86,20 @@ class Staff(stName: String,
       inverseJoinColumns =
         Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
   )
-  var teamList: java.util.List[Team] = _
+  var staffTeamList: java.util.List[Team] = _
 
-  def this() = this(null, null, null, null, null, null, null)
+  @BeanProperty
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "fedId")
+  var staffFederation: Federation = stFederation
+
+  def this() = this(null, null, null, null, null, null, null, null)
 
   override
   def toString = "(" + this.staffId + ") " + this.staffSurnames +
                                         ", " + this.staffName +
                                         "\nNIF: " + this.staffNif +
                                         "\nEmail: " + this.staffEmail +
-                                        "\nTeams: " + this.teamList
+                                        "\nTeams: " + this.staffTeamList
 
 }
