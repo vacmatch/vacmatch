@@ -9,8 +9,14 @@ class CoachDaoJPA
 		with CoachDao {
 
   override
-  def findByStaffId(staffId: Long, fedId: Long): Option[Coach] = {
-    null
+  def findById(staffId: Long): Coach = {
+    var query = getEntityManager().createQuery(
+      "SELECT c FROM Coach c " +
+        "WHERE c.staffId = :staffId ", classOf[Coach]
+    )
+      .setParameter("staffId", staffId)
+
+    query.getSingleResult()
   }
 
   override

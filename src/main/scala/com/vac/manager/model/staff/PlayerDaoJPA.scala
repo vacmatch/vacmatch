@@ -11,8 +11,14 @@ class PlayerDaoJPA
 		with PlayerDao {
 
   override
-  def findByStaffId(staffId: Long, fedId: Long): Option[Player] = {
-    null
+  def findById(staffId: Long): Player = {
+    var query = getEntityManager().createQuery(
+      "SELECT p FROM Player p " +
+        "WHERE p.staffId = :staffId ", classOf[Player]
+    )
+      .setParameter("staffId", staffId)
+
+    query.getSingleResult()
   }
 
   override

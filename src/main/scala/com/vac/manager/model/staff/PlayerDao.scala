@@ -6,7 +6,7 @@ import java.util.Calendar
 
 trait PlayerDao extends StaffDao {
   
-  def findByStaffId(staffId: Long, fedId: Long): Option[Player]
+  def findById(staffId: Long): Player
 
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Player]
 

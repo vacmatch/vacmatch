@@ -6,7 +6,7 @@ import java.util.Calendar
 
 trait CoachDao extends StaffDao {
 
-  def findByStaffId(staffId: Long, fedId: Long): Option[Coach]
+  def findById(staffId: Long): Coach
 
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach]
 
