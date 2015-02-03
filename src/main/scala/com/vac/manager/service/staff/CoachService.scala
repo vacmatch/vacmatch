@@ -14,6 +14,7 @@ trait CoachService extends StaffService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, licen: License): Coach
     
+  @throws[InstanceNotFoundException]
   def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, licen: License): Option[Coach]

@@ -93,8 +93,27 @@ class Staff(stName: String,
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 
-  def this() = this(null, null, null, null, null, null, null, null)
+  def this(fed: Federation) = this("", Array(""), "", null, null, "", null, fed)
 
+  override
+  def equals(obj: Any): Boolean = {
+    if(!obj.isInstanceOf[Staff])
+      false
+    var staffObj: Staff = obj.asInstanceOf[Staff]
+    (staffObj.staffName == this.staffName) &&
+    (staffObj.staffSurnames == this.staffSurnames) &&
+    (staffObj.staffActivated == this.staffActivated) &&
+    (staffObj.staffPrivacityActivated == this.staffPrivacityActivated) &&
+    (staffObj.staffAlias == this.staffAlias) &&
+    (staffObj.staffEmail == this.staffEmail) &&
+    (staffObj.staffTelephones == this.staffTelephones) &&
+    (staffObj.staffAddress == this.staffAddress) && 
+    (staffObj.staffNif == this.staffNif) &&
+    (staffObj.staffBirth == this.staffBirth) &&
+    (staffObj.staffTeamList == this.staffTeamList) &&
+    (staffObj.staffFederation == this.staffFederation)
+  }
+  
   override
   def toString = "(" + this.staffId + ") " + this.staffSurnames +
                                         ", " + this.staffName +

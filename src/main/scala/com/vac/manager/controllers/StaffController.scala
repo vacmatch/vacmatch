@@ -96,7 +96,7 @@ class StaffController extends UrlGrabber {
     //Get fedId from session
     //var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
     
-    var staffOpt: Option[Staff] = staffService.findByStaffId(staffId, fedId)
+    var staffOpt: Option[Staff] = staffService.find(staffId)
     
     staffOpt match {
       case None => new ModelAndView("staff/notfound")

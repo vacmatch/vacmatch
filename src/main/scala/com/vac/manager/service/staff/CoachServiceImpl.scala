@@ -26,8 +26,8 @@ class CoachServiceImpl
   /* --------------- FIND ---------------- */
 
   override
-  def findByStaffId(staffId: Long, fedId: Long): Option[Coach] = {
-    this.coachDao.findByStaffId(staffId, fedId)
+  def find(staffId: Long): Option[Coach] = {
+    Option((this.coachDao.findById(staffId)).asInstanceOf[Coach])
   }
   
   override
@@ -58,6 +58,9 @@ class CoachServiceImpl
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long, licen: License): Coach = {
     
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
 
     maybeFederation match {
@@ -72,11 +75,15 @@ class CoachServiceImpl
     }
   }
     
+  @throws[InstanceNotFoundException]
   def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, licen: License): Option[Coach] = {
-    
-    var maybeCoach: Option[Coach] = coachDao.findByStaffId(staffId, fedId)
+
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+
+    var maybeCoach: Option[Coach] = Option(coachDao.findById(staffId))
     
     maybeCoach match {
       case None => 

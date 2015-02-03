@@ -19,6 +19,7 @@ import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
 import com.vac.manager.service.federation.FederationService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 
 @Service("staffService")
 @Transactional
@@ -32,8 +33,8 @@ class StaffServiceImpl extends StaffService {
   
   /* --------------- FIND ---------------- */
 
-  def findByStaffId(staffId: Long, fedId: Long): Option[Staff] = {
-	staffDao.findByStaffId(staffId, fedId)
+  def find(staffId: Long): Option[Staff] = {
+	Option(staffDao.findById(staffId))
   }
   
   def findAllByFederationId(fedId: Long): Seq[Staff] = {
@@ -59,11 +60,17 @@ class StaffServiceImpl extends StaffService {
 	
   /* ---------------- MODIFY --------------- */
 	
+  @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean) = {
-    var staff: Staff = staffDao.findById(staffId)
+    var maybeStaff: Option[Staff] = Option(staffDao.findById(staffId))
     
-	staff.staffActivated = newState
-	staffDao.save(staff)
+    maybeStaff match {
+      case None => throw new InstanceNotFoundException(staffId, classOf[Staff].getName())
+      case Some(stStaff) => {
+        stStaff.staffActivated = newState
+        staffDao.save(stStaff)
+      }
+    }
   }
 	
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String) = {
@@ -86,9 +93,13 @@ class StaffServiceImpl extends StaffService {
   }
 
   @throws[InstanceNotFoundException]
+  @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff = {
+    
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
     
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
     
@@ -107,8 +118,11 @@ class StaffServiceImpl extends StaffService {
   def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar): Option[Staff] = {
-    
-    var maybeStaff: Option[Staff] = staffDao.findByStaffId(staffId, fedId)
+
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+
+    var maybeStaff: Option[Staff] = Option(staffDao.findById(staffId))
 
     maybeStaff match {
       case None =>
@@ -125,6 +139,20 @@ class StaffServiceImpl extends StaffService {
 	  }
     }
     maybeStaff
+  }
+
+  @throws[IllegalArgumentException]
+  protected def checkParameters(stName: String, stSurnames: Seq[String],
+    stEmail: String, stTelephones: Seq[String], stBirth: Calendar, stNif: String) {
+    
+    if ((stName == null) || (stName.isEmpty()))
+      throw new IllegalArgumentException(stName, classOf[String].getName())
+    if ((stSurnames == null) || (stSurnames.isEmpty))
+      throw new IllegalArgumentException(stSurnames, classOf[Seq[String]].getName())
+    if((stNif == null) || (stNif.isEmpty()))
+      throw new IllegalArgumentException(stNif, classOf[String].getName())
+    if((stBirth == null))
+      throw new IllegalArgumentException(stBirth, classOf[Calendar].getName())
   }
 
   def getSurnamesFromString(surnames: String): Seq[String] = {

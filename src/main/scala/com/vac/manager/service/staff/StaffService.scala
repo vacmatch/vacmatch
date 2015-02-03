@@ -14,7 +14,7 @@ trait StaffService {
 
   /* --------------- FIND ---------------- */
 
-  def findByStaffId(staffId: Long, fedId: Long): Option[Staff]
+  def find(staffId: Long): Option[Staff]
 
   def findAllByFederationId(fedId: Long): Seq[Staff]
 
@@ -28,6 +28,7 @@ trait StaffService {
 
   /* ---------------- MODIFY --------------- */
 
+  @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean)
 
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String)
@@ -35,6 +36,7 @@ trait StaffService {
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
 
   @throws[InstanceNotFoundException]
+  @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff

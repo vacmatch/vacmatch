@@ -15,10 +15,12 @@ trait PlayerService extends StaffService {
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player
     
+  @throws[InstanceNotFoundException]
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Option[Player]
   
+  @throws[InstanceNotFoundException]
   def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics)
 	
 }

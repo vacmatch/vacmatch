@@ -29,8 +29,8 @@ class PlayerServiceImpl
   /* --------------- FIND ---------------- */
 
   override
-  def findByStaffId(staffId: Long, fedId: Long): Option[Player] = {
-    this.playerDao.findByStaffId(staffId, fedId)
+  def find(staffId: Long): Option[Player] = {
+    Option((playerDao.findById(staffId)).asInstanceOf[Player])
   }
   
   override
@@ -60,6 +60,9 @@ class PlayerServiceImpl
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player = {
 
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
 
     maybeFederation match {
@@ -74,11 +77,15 @@ class PlayerServiceImpl
     }
   }
   
+  @throws[InstanceNotFoundException]
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
     stEmail: String, stTelephones: Seq[String], stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Option[Player] = {
-    
-    var maybePlayer: Option[Player] = playerDao.findByStaffId(staffId, fedId)
+
+    //Check if there's an incorrect parameter
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+
+    var maybePlayer: Option[Player] = Option(playerDao.findById(staffId))
     
     maybePlayer match {
       case None =>
@@ -98,10 +105,18 @@ class PlayerServiceImpl
     maybePlayer
   }
   
+  @throws[InstanceNotFoundException]
   def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics) = {
-	var player: Player = this.playerDao.findById(staffId).asInstanceOf[Player]
+    
+	var maybePlayer: Option[Player] = Option(playerDao.findById(staffId))
 	
-	player.playerStatistics = newStats
+    maybePlayer match {
+      case None => throw new InstanceNotFoundException(staffId, classOf[Player].getName())
+      case Some(player) => {
+        player.playerStatistics = newStats
+        playerDao.save(player)
+      }
+    }
   }
 
   /* ------------- DELETE ---------------- */
