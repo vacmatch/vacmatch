@@ -18,9 +18,9 @@ import com.vac.manager.model.federation.Federation
 @Table(name = "COACH")
 @PrimaryKeyJoinColumn(name="staffId")
 class Coach(stName: String,
-    stSurnames: Seq[String],
+    stSurnames: String,
     stEmail: String,
-    stTelephones: Seq[String],
+    stTelephones: String,
     stAddress: Address, 
     stNif: String,
     stBirth: Calendar,

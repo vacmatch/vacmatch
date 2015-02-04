@@ -94,8 +94,8 @@ class StaffServiceImpl extends StaffService {
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
-  def createStaff(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def createStaff(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff = {
     
     //Check if there's an incorrect parameter
@@ -115,8 +115,8 @@ class StaffServiceImpl extends StaffService {
     }
   }
     
-  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar): Option[Staff] = {
 
     //Check if there's an incorrect parameter
@@ -128,10 +128,10 @@ class StaffServiceImpl extends StaffService {
       case None =>
       case Some(staff) => {
   	    staff.staffName = stName
-        staff.staffSurnames = stSurnames.asJava
+        staff.staffSurnames = stSurnames
 	    staff.staffEmail = stEmail
 	    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
-	    staff.staffTelephones = stTelephones.asJava
+	    staff.staffTelephones = stTelephones
 	    staff.staffAddress = stAddress
 	    staff.staffNif = stNif
 	    staff.staffBirth = stBirth
@@ -142,8 +142,8 @@ class StaffServiceImpl extends StaffService {
   }
 
   @throws[IllegalArgumentException]
-  protected def checkParameters(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stBirth: Calendar, stNif: String) {
+  protected def checkParameters(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stBirth: Calendar, stNif: String) {
     
     if ((stName == null) || (stName.isEmpty()))
       throw new IllegalArgumentException(stName, classOf[String].getName())

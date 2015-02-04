@@ -13,9 +13,9 @@ import com.vac.manager.model.federation.Federation
 @Table(name = "STAFF")
 @Inheritance(strategy=InheritanceType.JOINED)
 class Staff(stName: String,
-    stSurnames: Seq[String],
+    stSurnames: String,
     stEmail: String,
-    stTelephones: Seq[String],
+    stTelephones: String,
     stAddress: Address,
     stNif: String,
     stBirth: Calendar,
@@ -31,10 +31,8 @@ class Staff(stName: String,
   var staffName: String = stName
 
   @BeanProperty
-  @ElementCollection
-  @CollectionTable
   @Column(nullable = false)
-  var staffSurnames: java.util.List[String] = stSurnames.asJava
+  var staffSurnames: String = stSurnames
 
   @BeanProperty
   @Column(nullable = false)
@@ -57,10 +55,8 @@ class Staff(stName: String,
   var staffAvatarLink: String = Gravatar(stEmail).ssl(true).avatarUrl
   
   @BeanProperty
-  @ElementCollection
-  @CollectionTable
   @Column
-  var staffTelephones: java.util.List[String] = stTelephones.asJava
+  var staffTelephones: String = stTelephones
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.LAZY)
@@ -93,7 +89,7 @@ class Staff(stName: String,
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 
-  def this(fed: Federation) = this("", Array(""), "", null, null, "", null, fed)
+  def this() = this("", "", "", null, null, "", null, null)
 
   override
   def equals(obj: Any): Boolean = {

@@ -11,13 +11,13 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 trait PlayerService extends StaffService {
 
   @throws[InstanceNotFoundException]
-  def createPlayer(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def createPlayer(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player
     
   @throws[InstanceNotFoundException]
-  def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Option[Player]
   
   @throws[InstanceNotFoundException]

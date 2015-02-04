@@ -10,13 +10,13 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 trait CoachService extends StaffService {
   
   @throws[InstanceNotFoundException]
-  def createCoach(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def createCoach(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar,  idFederation: Long, licen: License): Coach
     
   @throws[InstanceNotFoundException]
-  def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, licen: License): Option[Coach]
   
 

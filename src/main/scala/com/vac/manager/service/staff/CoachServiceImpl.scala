@@ -54,8 +54,8 @@ class CoachServiceImpl
   /* ------------- MODIFY --------------- */
   
   @throws[InstanceNotFoundException]
-  def createCoach(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def createCoach(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long, licen: License): Coach = {
     
     //Check if there's an incorrect parameter
@@ -76,8 +76,8 @@ class CoachServiceImpl
   }
     
   @throws[InstanceNotFoundException]
-  def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, licen: License): Option[Coach] = {
 
     //Check if there's an incorrect parameter
@@ -89,9 +89,9 @@ class CoachServiceImpl
       case None => 
       case Some(coach) =>{
 	    coach.staffName = stName
-	    coach.staffSurnames = stSurnames.asJava
+	    coach.staffSurnames = stSurnames
 	    coach.staffEmail = stEmail
-	    coach.staffTelephones = stTelephones.asJava
+	    coach.staffTelephones = stTelephones
 	    coach.staffAddress = stAddress
 	    coach.staffNif = stNif
 	    coach.staffBirth = stBirth

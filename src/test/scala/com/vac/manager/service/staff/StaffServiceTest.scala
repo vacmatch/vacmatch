@@ -54,7 +54,7 @@ class StaffServiceTest
    */
   before {
     validStaff = new Staff(
-    "Jose", Array("López", "Castro"), "jlcastro@email.com", Array("666555444"), mockAddress, 
+    "Jose", "López Castro", "jlcastro@email.com", "666555444", mockAddress, 
     "33442212X", Calendar.getInstance(), mockFederation)
   }
   
@@ -78,10 +78,10 @@ class StaffServiceTest
 	  Mockito.when(staffService.federationService find(fedId)) thenReturn Some(mockFederation)
 
       var insertedStaff: Staff = staffService.createStaff(
-        validStaff.getStaffName, validStaff.getStaffSurnames.asScala,
-        validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-        validStaff.getStaffAddress, validStaff.getStaffNif,
-        validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+        validStaff.staffName, validStaff.staffSurnames ,
+        validStaff.staffEmail, validStaff.staffTelephones, 
+        validStaff.staffAddress, validStaff.staffNif,
+        validStaff.staffBirth, validStaff.staffFederation.getFedId)
       
       Then("The Staff gets created")
       Then("The Staff has the same parameters")
@@ -109,10 +109,10 @@ class StaffServiceTest
 
       intercept[InstanceNotFoundException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, validStaff.getStaffSurnames.asScala,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, validStaff.staffSurnames ,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          validStaff.staffBirth, fedId)
       }
       
       Then("The Staff cannot be created")
@@ -139,70 +139,70 @@ class StaffServiceTest
 
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          "", validStaff.getStaffSurnames.asScala,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          "", validStaff.staffSurnames ,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffName parameter is null")
       
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          null, validStaff.getStaffSurnames.asScala,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          null, validStaff.staffSurnames ,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffSurnames parameter is empty")
 
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, Array.empty[String],
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, "" ,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffSurnames parameter is null")
       
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, null,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, null ,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffNif parameter is empty")
 
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, validStaff.getStaffSurnames.asScala,
-           validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, "",
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, validStaff.staffSurnames,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress,"",
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffNif parameter is null")
       
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, validStaff.getStaffSurnames.asScala,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, null,
-          validStaff.getStaffBirth, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, validStaff.staffSurnames,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, null,
+          validStaff.staffBirth, validStaff.staffFederation.fedId)
       }
 
       When("staffBirth parameter is null")
       
       intercept[IllegalArgumentException]{
         var insertedStaff: Staff = staffService.createStaff(
-          validStaff.getStaffName, validStaff.getStaffSurnames.asScala,
-          validStaff.getStaffEmail, validStaff.getStaffTelephones.asScala, 
-          validStaff.getStaffAddress, validStaff.getStaffNif,
-          null, validStaff.getStaffFederation.getFedId)
+          validStaff.staffName, validStaff.staffSurnames,
+          validStaff.staffEmail, validStaff.staffTelephones, 
+          validStaff.staffAddress, validStaff.staffNif,
+          null, validStaff.staffFederation.fedId)
       }
       
       Then("The Staff cannot be created")
@@ -213,9 +213,8 @@ class StaffServiceTest
   
   feature("Staff activation") {
     scenario("Staff activation can be changed when Staff exists and parameters are valid") {
-      Given("A federation, a staff and a new activation state")
-      var mockFederation: Federation = mock[Federation]
-      var staff: Staff = new Staff(mockFederation)
+      Given("A staff and a new activation state")
+      var staff: Staff = new Staff
       var newState: Boolean = true
 
       //Service to be tested
@@ -241,9 +240,8 @@ class StaffServiceTest
     }
     
     scenario("Staff activation cannot be changed when Staff doesn't exist") {
-      Given("A federation, a staff, an old activation state and a new activation state")
-      var mockFederation: Federation = mock[Federation]
-      var staff: Staff = new Staff(mockFederation)
+      Given("A staff, an old activation state and a new activation state")
+      var staff: Staff = new Staff
       var oldState: Boolean = false
       var newState: Boolean = true
 

@@ -26,6 +26,9 @@ import com.vac.manager.service.personal.AddressSpainService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import scala.beans.BeanProperty
+import com.vac.manager.util.FederationBean
+import com.vac.manager.model.federation.Federation
+import com.vac.manager.service.federation.FederationService
 
 @Controller
 @SessionAttributes(Array("fedId"))
@@ -36,18 +39,15 @@ class StaffController extends UrlGrabber {
 
   @Autowired
   var addressSpainService: AddressSpainService = _
+
+  @Autowired
+  var federationService: FederationService = _
   
-  class PostStaff(fedId: Long) {
-    
-    var federationId: Long = fedId
-    @BeanProperty
-    var stName: String = _
-    @BeanProperty
-    var stSurnames: String = _
-    @BeanProperty
-    var stEmail: String = _
-    @BeanProperty
-    var stTelephones: String = _
+  @Autowired
+  var federation: FederationBean = _
+
+  class PostStaff extends Staff with UrlGrabber {
+
     @BeanProperty
     var addRoad: String = _
     @BeanProperty
@@ -62,10 +62,6 @@ class StaffController extends UrlGrabber {
     var addProvince: String = _
     @BeanProperty
     var addCountry: String = _
-    @BeanProperty
-    var stNif: String = _
-    @BeanProperty
-    var stBirth: Calendar = _
     
     def getShowLink: String = ""
     def getEditLink: String = ""
@@ -74,12 +70,9 @@ class StaffController extends UrlGrabber {
     def getModifyPrivacityLink: String = ""
   }
 
-  def list(
-      @RequestParam("fedId") fedId: Long,
-      session: HttpSession) = {
+  def list() = {
     
-    //Get fedId from session
-    //var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
+    var fedId: Long = federation.getId
     
     var staffList: Seq[Staff] = staffService.findAllByFederationId(fedId)
     
@@ -89,16 +82,13 @@ class StaffController extends UrlGrabber {
   }
   
   def showStaff(
-      @PathVariable("staffId") staffId: Long, 
-      @RequestParam("fedId") fedId: Long,
-      session: HttpSession)= {
+      @PathVariable("staffId") staffId: Long)= {
     
-    //Get fedId from session
-    //var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
+    var fedId: Long = federation.getId
     
-    var staffOpt: Option[Staff] = staffService.find(staffId)
+    var maybeStaff: Option[Staff] = staffService.find(staffId)
     
-    staffOpt match {
+    maybeStaff match {
       case None => new ModelAndView("staff/notfound")
       case Some(staff) => { 
 	    var mav: ModelAndView = new ModelAndView("staff/show")
@@ -108,18 +98,16 @@ class StaffController extends UrlGrabber {
     }
   }
   
-  def create(
-      @RequestParam("fedId") fedId: Long,
-      session: HttpSession) = {
+  def create() = {
 
-    //Get fedId from session
-    //var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
-    
+    var fedId: Long = federation.getId
+    var receiverStaff: PostStaff = new PostStaff
+
     var submitUrl: String = getUrl("StaffController.createPost")
     var submitMethod: String = "POST"
-    var receiverStaff: PostStaff = new PostStaff(fedId)
 
     var mav: ModelAndView = new ModelAndView("staff/create")
+
     mav.addObject("staff", receiverStaff)
     mav.addObject("fedId", fedId)
     mav.addObject("submitUrl", submitUrl)
@@ -128,38 +116,32 @@ class StaffController extends UrlGrabber {
   }
 
   def createPost(
-      @RequestParam("fedId") fedId: Long,
       @Valid postStaff: PostStaff,
       result: BindingResult) = {
 
-    //Get fedId from session
-    //var fedId: Long = session.getAttribute("fedId").asInstanceOf[Long]
+    var fedId: Long = federation.getId
+
+    var mav: ModelAndView = new ModelAndView("staff/new")
     
-    var mav: ModelAndView = new ModelAndView("/staff")
+    if(result.hasErrors())
+      mav
     
-    if(result.hasErrors()){
-      mav = new ModelAndView("staff/new")
-    }else{
-      var staffSurnames: Seq[String] = staffService.getSurnamesFromString(postStaff.stSurnames)
-      var staffTelephones: Seq[String] = staffService.getTelephonesFromString(postStaff.stTelephones)
-      var staffAddress: AddressSpain = addressSpainService.createAddress(
-          postStaff.addRoad, postStaff.addNumber, postStaff.addFlat,
-          postStaff.addPostCode, postStaff.addLocality, postStaff.addProvince,
-          postStaff.addCountry)
+    var staffAddress: AddressSpain = addressSpainService.createAddress(
+      postStaff.addRoad, postStaff.addNumber, postStaff.addFlat,
+      postStaff.addPostCode, postStaff.addLocality, postStaff.addProvince,
+      postStaff.addCountry)
       
-      try {
-        var staff: Staff = staffService.createStaff(postStaff.stName, staffSurnames,
-          postStaff.stEmail, staffTelephones, staffAddress, postStaff.stNif,
-          postStaff.stBirth, fedId)
-          
-        mav = new ModelAndView("redirect:/staff/" + staff.staffId)
-      } catch {
+    try {
+      var staff: Staff = staffService.createStaff(postStaff.staffName, postStaff.staffSurnames,
+        postStaff.staffEmail, postStaff.staffTelephones, staffAddress, postStaff.staffNif,
+        postStaff.staffBirth, fedId)
+
+      mav = new ModelAndView("redirect:/staff/" + staff.staffId)
+      mav
+    } catch {
         //Federation not found
         case e: InstanceNotFoundException => mav = new ModelAndView("redirect:/federation/notfound")
-      }
     }
-    
-    mav
   }
 }
 

@@ -37,12 +37,12 @@ trait StaffService {
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
-  def createStaff(stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def createStaff(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): Staff
 
-  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: Seq[String],
-    stEmail: String, stTelephones: Seq[String], stAddress: Address,
+  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar): Option[Staff]
 
   def getSurnamesFromString(surnames: String): Seq[String]
