@@ -15,7 +15,7 @@ class PlayerStatistics {
   
   @Id
   @SequenceGenerator(name="playerStatsIdGenerator", sequenceName="playerStats_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "playerStatsIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "playerStatsIdGenerator")
   var playerStatsId: Long = _
   
 }

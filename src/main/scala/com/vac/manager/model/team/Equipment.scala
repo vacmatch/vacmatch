@@ -15,7 +15,7 @@ class Equipment(eqType: String, eqShirt: String, eqShorts: String, eqTights: Str
 
   @Id
   @SequenceGenerator(name="equipmentIdGenerator", sequenceName="equipment_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equipmentIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "equipmentIdGenerator")
   var equipmentId: Long = _
   
   @BeanProperty

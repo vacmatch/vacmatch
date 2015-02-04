@@ -15,7 +15,7 @@ class License(liType: String, liDef: String) {
   
   @Id
   @SequenceGenerator(name="licenseIdGenerator", sequenceName="license_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "licenseIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "licenseIdGenerator")
   var licenseId: Long = _
 
   @BeanProperty

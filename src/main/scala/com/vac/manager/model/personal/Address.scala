@@ -18,7 +18,7 @@ class Address(coun: String) {
   
   @Id
   @SequenceGenerator(name="addressIdGenerator", sequenceName="address_id_seq")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "addressIdGenerator")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "addressIdGenerator")
   var addressId: Long = _
   
   @BeanProperty
