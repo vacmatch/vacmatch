@@ -8,6 +8,20 @@ import scala.collection.JavaConverters._
 @Repository("federationDao")
 class FederationDaoJpa extends GenericDaoJPA[Federation, java.lang.Long](classOf[Federation]) with FederationDao {
 
+  def findByName(fedName: String): Option[Federation] = {
+    val fed = getEntityManager.createQuery(
+      "SELECT f FROM Federation f " +
+        "WHERE f.fedName = :fedName", classOf[Federation])
+      .setParameter("fedName", fedName)
+      .getResultList
+
+    return if (fed.isEmpty) {
+      None
+    } else {
+      Some(fed.get(0))
+    }
+  }
+
   def findByDomainName(dns: String): Option[Federation] = {
     val fed = getEntityManager createQuery
       "SELECT dns.fed FROM FederationDomainName dns " +

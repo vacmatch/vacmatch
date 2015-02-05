@@ -43,7 +43,15 @@ class FederationCRUDController extends UrlGrabber {
   @Autowired
   var federationService: FederationService = _
 
-  def list(@ModelAttribute("pageable") pageable: Pageable): ModelAndView = {
+  def list(@ModelAttribute("pageable") p: Pageable): ModelAndView = {
+
+    val pageable =
+      if (p == null) {
+        val p1 = new Pageable
+        p1.start = 0
+
+        p1
+      } else p
 
     val raw_federations = federationService.findAll(pageable)
 
@@ -81,12 +89,18 @@ class FederationCRUDController extends UrlGrabber {
       .addObject("submitMethod", "POST")
   }
 
-  def createPost(@ModelAttribute fed:Federation): String = {
-    return editPost(fed)
+  def createPost(
+    @RequestParam("fedName") fedName: String,
+    @RequestParam("dns") dnsTextArea: String
+  ): String = {
+    val domains = dnsTextArea.split("\n").map(_.trim()).filter(_.nonEmpty)
+    federationService.createFederation(fedName, domains)
+
+    return "redirect:" + getUrl("FederationCRUDController.list")
   }
 
   def editPost(@ModelAttribute fed: Federation): String = {
-    federationService modifyFederationName(fed.fedId, fed.fedName)
+    federationService modifyFederationName (fed.fedId, fed.fedName)
 
     return "redirect:" + getUrl("FederationCRUDController.list")
   }

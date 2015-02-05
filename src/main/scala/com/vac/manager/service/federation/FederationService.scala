@@ -6,6 +6,7 @@ import java.lang.Long
 
 trait FederationService {
   def find(id: Long): Option[Federation]
+  def findByName(fedName: String): Option[Federation]
   def findAll(page: Pageable): Seq[Federation]
   def findByDomain(domainName: String): Option[Federation]
   def findDomainNames(fedId: Long): Seq[String]

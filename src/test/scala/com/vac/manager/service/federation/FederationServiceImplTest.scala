@@ -11,10 +11,6 @@ import org.scalatest.{ FeatureSpec, GivenWhenThen, PropSpec }
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-/*
-   This is a stub test class. To learn how to customize it,
-see the documentation for `ensime-goto-test-configs'
-*/
 
 class FederationServiceImplTest extends PropSpec with MockitoSugar with GeneratorDrivenPropertyChecks {
 
@@ -23,28 +19,72 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
     service.federationDao = mock[FederationDao]
 
     forAll("fedName") { (fedName: String) =>
-      val domains = List()
-      // when
-      service.createFederation(fedName, domains): Boolean
+      whenever(fedName != null && fedName.trim != "") {
+        val domains = List()
+
+        when(service.federationDao.findByName(fedName)).thenReturn(None)
+
+        val wasCreated = service.createFederation(fedName, domains)
+        assert(wasCreated)
+      }
     }
+  }
+
+  property("federations cannot be registered with the names of already existing federations") {
+    val service = new FederationServiceImpl
+    service.federationDao = mock[FederationDao]
+
+    forAll((validFed, "fed")) { (fed: Federation) =>
+      val fedName = fed.fedName
+      whenever(fedName != null && fedName != "") {
+        val domains = List()
+
+        when(service.federationDao.findByName(fedName)).thenReturn(None)
+
+        val wasCreated = service.createFederation(fedName, domains)
+
+        when(service.federationDao.findByName(fedName)).thenReturn(Some(fed))
+
+        val wasCreatedAgain = service.createFederation(fedName, domains)
+
+        assert(wasCreated)
+        assert(!wasCreatedAgain)
+      }
+    }
+  }
+
+  property("federations cannot be registered with empty names") {
+    val service = new FederationServiceImpl
+    service.federationDao = mock[FederationDao]
+
+    verifyZeroInteractions(service.federationDao)
+
+    assert(service.createFederation("", List()) == false)
+    assert(service.createFederation(null, List()) == false)
+
   }
 
   property("federations can modify their name once registered") {
     val service = new FederationServiceImpl
     service.federationDao = mock[FederationDao]
 
-    forAll("fedId", "originalFedName", "destinyFedName") { (fedId: Long, originalFedName: String, finalFedName: String) =>
-      val domains = List()
-      val fed = new Federation
-      fed.fedId = fedId
-      fed.fedName = originalFedName
-      when(service.federationDao.findById(fedId)).thenReturn(fed)
+    forAll("fedId", "originalFedName", "destinyFedName") {
+      (fedId: Long, originalFedName: String, finalFedName: String) =>
 
-      service.modifyFederationName(fedId, finalFedName)
-      verify(service.federationDao).save(fed)
+        whenever(originalFedName != null && finalFedName != null
+          && originalFedName.trim() != "" && finalFedName.trim() != "") {
+          val domains = List()
+          val fed = new Federation
+          fed.fedId = fedId
+          fed.fedName = originalFedName
+          when(service.federationDao.findById(fedId)).thenReturn(fed)
 
-      (fed fedName) == finalFedName &&
-        (fed fedId) == fedId
+          service.modifyFederationName(fedId, finalFedName)
+          verify(service.federationDao).save(fed)
+
+          assert(fed.fedName == finalFedName)
+          assert(fed.fedId == fedId)
+        }
     }
   }
 
@@ -64,33 +104,38 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
     val fedId = 1
 
     forAll((arbitrary[String], "dnsName"), (validFed, "fed")) { (dnsName: String, fed: Federation) =>
-      service.federationDao = mock[FederationDao]
-      when(service.federationDao.findByDomainName(dnsName)).thenReturn(None)
-      when(service.federationDao.findById(fed.fedId)).thenReturn(fed)
+      whenever(dnsName != null && dnsName.length > 0) {
+        service.federationDao = mock[FederationDao]
+        when(service.federationDao.findByDomainName(dnsName)).thenReturn(None)
+        when(service.federationDao.findById(fed.fedId)).thenReturn(fed)
 
-      service.addFederationDomain(fed.fedId, dnsName)
-      val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+        service.addFederationDomain(fed.fedId, dnsName)
+        val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
 
-      verify(service.federationDao).saveDomainName(captor.capture())
-      (captor getValue () dns) == dnsName
+        verify(service.federationDao).saveDomainName(captor.capture())
+        assert((captor.getValue.dns) == dnsName)
+      }
     }
   }
 
   property("federation cannot add a clashing domain of another federation") {
     val service = new FederationServiceImpl
-    service.federationDao = mock[FederationDao]
 
     forAll("domainName", "fedId", "fedName") { (domainName: String, fedId: Long, fedName: String) =>
-      val existingFederation = new Federation
-      existingFederation setFedId fedId
-      existingFederation setFedName fedName
-      when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(existingFederation))
+      whenever(domainName != null && domainName.length > 0 && fedName != null && fedName.trim.nonEmpty) {
+        service.federationDao = mock[FederationDao]
 
-      val r = service.addFederationDomain(fedId, domainName)
-      val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+        val existingFederation = new Federation
+        existingFederation setFedId fedId
+        existingFederation setFedName fedName
+        when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(existingFederation))
 
-      verify(service.federationDao, never()).saveDomainName(captor.capture())
-      r == true
+        val r = service.addFederationDomain(fedId, domainName)
+        val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+
+        verify(service.federationDao, never()).saveDomainName(captor.capture())
+        assert(r == false)
+      }
     }
   }
 
@@ -110,7 +155,7 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
       val r = service.removeFederation(fedId)
 
       verify(service.federationDao).remove(existingFed)
-      r == true
+      assert(r)
     }
   }
 
@@ -129,7 +174,7 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
       // find is called once, and nothing more (no remove)
       verify(service.federationDao).findById(fedId)
       verifyNoMoreInteractions(service.federationDao)
-      r == false
+      assert(r == false)
     }
   }
 }
