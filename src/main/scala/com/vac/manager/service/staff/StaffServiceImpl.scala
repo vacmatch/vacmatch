@@ -34,7 +34,7 @@ class StaffServiceImpl extends StaffService {
   /* --------------- FIND ---------------- */
 
   def find(staffId: Long): Option[Staff] = {
-	Option(staffDao.findById(staffId))
+    Option(staffDao.findById(staffId))
   }
   
   def findAllByFederationId(fedId: Long): Seq[Staff] = {

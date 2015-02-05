@@ -22,20 +22,11 @@ class StaffDaoJPA
   }
 
   def findAllByFederationId(fedId: Long): Seq[Staff] = {
-    val cb: CriteriaBuilder = getEntityManager.getCriteriaBuilder
-    var criteria: CriteriaQuery[Staff] = cb createQuery (entityClass)
-
-    val root: Root[Staff] = criteria from (entityClass)
-    val cond: Predicate =
-      cb.and(
-        Array(
-          cb.equal(root get ("fedId"), fedId): Predicate
-        ):_*
-      )
-
-    criteria = criteria select root where (Array(cond):_*)
-
-    val query: TypedQuery[Staff] = getEntityManager createQuery criteria
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM Staff s " +
+        "WHERE s.staffFederation.fedId = :fedId ", classOf[Staff]
+    )
+      .setParameter("fedId", fedId)
 
     query.getResultList().asScala
   }

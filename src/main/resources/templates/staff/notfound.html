@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
-		<div class="container">
+		<div class="container" th:fragment="content">
 		  <h2 th:text="#{error.title}">Staff not found</h2>
 
 		  <p th:text="#{error.description}">The requested staff could not be found.</p>

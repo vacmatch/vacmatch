@@ -10,17 +10,17 @@
 	</head>
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
-		<div class="container">
+		<div class="container" th:fragment="content">
 			<div class="jumbotron">
 				<h2 th:text="#{title}">Create Staff</h2>
 	
 				<div>Submit url: <span th:text="${submitUrl}" /></div>
 	
 				<form id="staffForm" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
-				  <input type="hidden" th:field="$*{federationId}" />
+				  <input type="hidden" th:field="${fedId}" />
 				  <div>
 				  	<label th:text="#{form.name}" for="name">Name</label>
-				  	<input id="name" type="text" th:field="*{stName}" />
+				  	<input id="name" type="text" th:field="*{staffName}" />
 				  </div>
 				  
 				  <div>
