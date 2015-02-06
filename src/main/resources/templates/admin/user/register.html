@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title th:text="${action}">Register a new user</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+	  media="screen" th:href="@{/css/bootstrap.min.css}" />
+    <link href="../../../static/css/core.css" rel="stylesheet" media="screen"
+	  th:href="@{/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js"
+	    th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+
+    <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
+      <li class="active"><a th:href="${createUrl}">Create new user</a></li>
+      <li><a th:href="${listUrl}">Show users</a></li>
+    </ul>
+    
+
+    <div class="container" th:fragment="content">
+      <div class="jumbotron">
+	<h2 th:text="|User ${action} form|">Registration form</h2>
+
+	<form id="loginForm"
+	      class="form form-horizontal"
+	      th:action="${submitUrl}"
+	      th:method="POST"
+	      th:object="${user}">
+
+	    <div th:if="${param.error}" class="alert alert-danger">
+	      Some data in the form was invalid.
+	      <ul>
+		<li th:each="err: ${param.error}" th:text="${err}">${param.error}</li>
+	      </ul>
+	    </div>
+
+	    <div class="form-group">
+	      <label for="username" class="col-sm-3 control-label">User name</label>
+	      <div class="col-sm-9">
+		<input class="form-control" type="text" th:field="*{username}" />
+	      </div>
+	    </div>
+
+	    <div class="form-group">
+	      <label for="fullname" class="col-sm-3 control-label">Real name</label>
+	      <div class="col-sm-9">
+		<input class="form-control" type="text" th:field="*{fullName}" />
+	      </div>
+	    </div>
+
+	    <div class="form-group">
+	      <label for="password" class="col-sm-3 control-label">Password</label>
+	      <div class="col-sm-9">
+		<input th:type="password" class="form-control" type="text" th:field="*{encPasswd}" />
+	      </div>
+	    </div>
+
+	    <div class="form-group">
+	      <label for="passwordConfirm" class="col-sm-3 control-label">Confirm Password</label>
+	      <div class="col-sm-9">
+		<input th:type="password" class="form-control" type="text" name="password" />
+	      </div>
+	    </div>
+
+	    <div class="form-group">
+	      <label for="roles" class="col-sm-3 control-label">Roles</label>
+	      <div class="col-sm-9">
+		<select multiple="multiple" class="form-control" th:field="*{textRoles}">
+		  <option th:each="role: ${roles}" th:text="${role.humanName}" th:value="${role.name}"></option>
+		</select>
+	      </div>
+	    </div>
+
+	    <div class="form-actions form-group">
+	      <div class="col-sm-offset-3 col-sm-9">
+		<input type="submit" name="submit" class="btn btn-default" th:value="${action}" value="Register" />
+	      </div>
+	    </div>
+
+	</form>
+      </div>
+    </div>
+  </body>
+</html>

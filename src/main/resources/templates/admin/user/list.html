@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title th:text="${action}">Register a new user</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+	  media="screen" th:href="@{/css/bootstrap.min.css}" />
+    <link href="../../../static/css/core.css" rel="stylesheet" media="screen"
+	  th:href="@{/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../../static/js/bootstrap.min.js"
+	    th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+
+    <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
+      <li><a th:href="${createUrl}">Create new user</a></li>
+      <li class="active"><a th:href="${listUrl}">Show users</a></li>
+    </ul>
+
+    <div class="container" th:fragment="content">
+      <h2>User list</h2>
+
+      <table class="table table-striped">
+	<thead>
+	  <tr>
+	    <th>Username</th>
+	    <th>Full name</th>
+	    <th>Email</th>
+	    <th>Actions</th>
+	  </tr>
+	</thead>
+
+	<tbody>
+	  <tr th:each="user: ${users}" th:object="${user.props}">
+	    <td th:text="*{username}">userName</td>
+	    <td th:text="*{fullName}">Sir Full Name</td>
+	    <td th:text="*{email}">user@example.net</td>
+	    <td>
+	      <a class="disabled" th:href="${user.editLink}">Edit</a>
+	      &bull;
+	      <a class="disabled" th:href="${user.removeLink}">Remove</a>
+	    </td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+  </body>
+</html>
