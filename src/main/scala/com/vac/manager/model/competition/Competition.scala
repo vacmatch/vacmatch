@@ -8,7 +8,7 @@ import com.vac.manager.model.federation.Federation
 
 @Entity
 @Table(name = "COMPETITION")
-class Competition (compName: String, feder: Federation) {
+class Competition (compName: String, fed: Federation) {
 
   @Id
   @SequenceGenerator(name="competitionIdGenerator", sequenceName="competition_id_seq")
@@ -22,7 +22,7 @@ class Competition (compName: String, feder: Federation) {
   @BeanProperty
   @ManyToOne(optional=false, fetch = FetchType.LAZY)
   @JoinColumn(name = "fedId")
-  var federation: Federation = feder
+  var federation: Federation = fed
   
   @BeanProperty
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
