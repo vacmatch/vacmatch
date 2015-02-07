@@ -7,7 +7,6 @@ import com.vac.manager.model.staff.Player
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.model.staff.StaffDao
 import com.vac.manager.model.staff.PlayerDao
-import com.vac.manager.model.staff.PlayerStatistics
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.team.Team
 import scala.collection.JavaConverters._
@@ -105,20 +104,6 @@ class PlayerServiceImpl
     maybePlayer
   }
   
-  @throws[InstanceNotFoundException]
-  def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics) = {
-    
-	var maybePlayer: Option[Player] = Option(playerDao.findById(staffId))
-	
-    maybePlayer match {
-      case None => throw new InstanceNotFoundException(staffId, classOf[Player].getName())
-      case Some(player) => {
-        player.playerStatistics = newStats
-        playerDao.save(player)
-      }
-    }
-  }
-
   /* ------------- DELETE ---------------- */
   
   

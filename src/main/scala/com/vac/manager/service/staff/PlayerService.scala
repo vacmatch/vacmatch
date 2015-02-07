@@ -1,7 +1,6 @@
 package com.vac.manager.service.staff
 
 import com.vac.manager.model.staff.Player
-import com.vac.manager.model.staff.PlayerStatistics
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
 import com.vac.manager.model.team.Team
@@ -20,9 +19,6 @@ trait PlayerService extends StaffService {
     stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, num: Int): Option[Player]
   
-  @throws[InstanceNotFoundException]
-  def modifyPlayerStatistics(staffId: Long, newStats: PlayerStatistics)
-	
 }
 
 

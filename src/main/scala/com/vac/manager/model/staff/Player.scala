@@ -32,15 +32,9 @@ class Player(stName: String,
   @Column
   var playerNumber: Int = num
   
-  @BeanProperty
-  @OneToOne(optional=false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "playerStatsId", nullable = false)
-  var playerStatistics: PlayerStatistics = new PlayerStatistics()
-
   override
   def toString = "Player\n" + super.toString + 
-  					"\nNumber: " + this.playerNumber +
-  					"\n" + this.playerStatistics.toString()
+  					"\nNumber: " + this.playerNumber
 }
 
 
