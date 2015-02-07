@@ -10,7 +10,6 @@ import com.vac.manager.model.staff.PlayerDao
 import com.vac.manager.model.personal.Address
 import com.vac.manager.model.staff.Player
 import java.util.Calendar
-import com.vac.manager.model.staff.License
 import com.vac.manager.model.staff.Coach
 import com.vac.manager.model.staff.CoachDao
 import org.springframework.transaction.annotation.Transactional

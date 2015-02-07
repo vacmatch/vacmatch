@@ -58,11 +58,6 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
   var sponsorsList: java.util.List[String] = _
 
   @BeanProperty
-  @OneToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinColumn(name = "equipmentId")
-  var teamEquipments: java.util.List[Equipment] = _
-
-  @BeanProperty
   @Column
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(

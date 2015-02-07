@@ -4,9 +4,6 @@ import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.team.Team
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
-import com.vac.manager.model.staff.Player
-import com.vac.manager.model.staff.PlayerStatistics
-import com.vac.manager.model.staff.License
 import com.vac.manager.model.staff.Coach
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 

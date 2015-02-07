@@ -6,7 +6,6 @@ import javax.persistence.Table
 import java.util.Calendar
 import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
-import com.vac.manager.model.team.Equipment
 import com.vac.manager.model.personal.Address
 
 trait TeamService {
@@ -30,8 +29,6 @@ trait TeamService {
   def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team
-
-  def modifyEquipments(teamId: Long, eq: Seq[Equipment]): Team
 
   def modifyStaff(teamId: Long, newStaffList: List[Staff]): Team
 

@@ -13,8 +13,6 @@ import scala.collection.JavaConverters._
 import com.vac.manager.model.staff.StaffDao
 import com.vac.manager.model.competition.CompetitionDao
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.team.Equipment
-import com.vac.manager.model.team.EquipmentDao
 import org.springframework.transaction.annotation.Transactional
 
 @Service("teamService")
@@ -29,10 +27,6 @@ class TeamServiceImpl extends TeamService {
   
   @Autowired
   var competitionDao: CompetitionDao = _
-  
-  @Autowired
-  var equipmentDao: EquipmentDao = _
-
   
   def findByTeamId(teamId: Long): Team = {
     teamDao.findById(teamId)
@@ -145,24 +139,6 @@ class TeamServiceImpl extends TeamService {
     team
   }
   
-  @throws[IllegalArgumentException]("If any element in newEquipments doesn't exist")
-  def modifyEquipments(teamId: Long, newEquipments: Seq[Equipment]): Team = {
-    var team: Team = teamDao.findById(teamId)
-    
-    if(newEquipments == null){
-      throw new IllegalArgumentException("newEquipments cannot be null")
-    }
-    
-    //Check if all equipments exists
-    newEquipments.map(eq => 
-      if(equipmentDao.findById(eq.equipmentId) == null)
-    	  throw new IllegalArgumentException("equipmentId " + eq.equipmentId + " cannot be null"))
-    	  
-    team.teamEquipments = newEquipments.asJava
-    teamDao.save(team)
-    team
-  }
-
   @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
   def modifyStaff(teamId: Long, newStaffList: List[Staff]): Team = {
     var team: Team = teamDao.findById(teamId)
