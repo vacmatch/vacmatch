@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import com.vac.manager.controllers.utils.UrlGrabber
 import javax.validation.Valid
 import org.springframework.validation.BindingResult
-import com.vac.manager.model.personal.AddressSpain
-import com.vac.manager.service.personal.AddressSpainService
+import com.vac.manager.model.personal.Address
+import com.vac.manager.service.personal.AddressService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import scala.beans.BeanProperty
@@ -25,7 +25,7 @@ class StaffController extends UrlGrabber {
   var staffService: StaffService = _
 
   @Autowired
-  var addressSpainService: AddressSpainService = _
+  var addressSpainService: AddressService = _
 
   @Autowired
   var federationService: FederationService = _
@@ -114,7 +114,7 @@ class StaffController extends UrlGrabber {
     if(result.hasErrors())
       new ModelAndView("staff/new")
     
-    var staffAddress: AddressSpain = addressSpainService.createAddress(
+    var staffAddress: Address = addressSpainService.createAddress(
       postStaff.addRoad, postStaff.addNumber, postStaff.addFlat,
       postStaff.addPostCode, postStaff.addLocality, postStaff.addProvince,
       postStaff.addCountry)
