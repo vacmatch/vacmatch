@@ -3,7 +3,7 @@ package com.vac.manager.model.team
 import javax.persistence._
 import scala.beans.BeanProperty
 import java.util.Calendar
-import com.vac.manager.model.staff.Staff
+import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
 import com.vac.manager.model.personal.Address
@@ -67,7 +67,7 @@ class Team (name: String, publicName: String, date: Calendar, address: Address, 
       inverseJoinColumns =
         Array(new JoinColumn(name = "teamId", nullable = false, updatable = false))
   )
-  var staffList: java.util.List[Staff] = _
+  var staffList: java.util.List[StaffMember] = _
 
   @BeanProperty
   @Column

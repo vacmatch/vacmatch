@@ -2,8 +2,8 @@ package com.vac.manager.service.staff
 
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
-import com.vac.manager.model.staff.StaffDao
-import com.vac.manager.model.staff.Staff
+import com.vac.manager.model.staff.StaffMemberDao
+import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
 import scala.collection.JavaConverters._
 import com.vac.manager.model.staff.PlayerDao
@@ -19,40 +19,40 @@ import com.vac.manager.service.federation.FederationService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 
-@Service("staffService")
+@Service("staffMemberService")
 @Transactional
-class StaffServiceImpl extends StaffService {
+class StaffMemberServiceImpl extends StaffMemberService {
   
   @Autowired
   var federationService: FederationService = _
   
   @Autowired
-  var staffDao: StaffDao = _
+  var staffMemberDao: StaffMemberDao = _
   
   /* --------------- FIND ---------------- */
 
-  def find(staffId: Long): Option[Staff] = {
-    Option(staffDao.findById(staffId))
+  def find(staffId: Long): Option[StaffMember] = {
+    Option(staffMemberDao.findById(staffId))
   }
   
-  def findAllByFederationId(fedId: Long): Seq[Staff] = {
-    staffDao.findAllByFederationId(fedId)
+  def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
+    staffMemberDao.findAllByFederationId(fedId)
   }
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Staff] =  {
-	staffDao.findByNameAndSurname(name, surname, startIndex, count)
+  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember] =  {
+	staffMemberDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Staff] = {
-    staffDao.findAllByActivated(activated, startIndex, count)
+  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findAllByActivated(activated, startIndex, count)
   }
 	
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Staff] = {
-    staffDao.findByEmail(email, startIndex, count)
+  def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findByEmail(email, startIndex, count)
   }
 	
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Staff] = {
-    staffDao.findByNif(nif, startIndex, count)
+  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findByNif(nif, startIndex, count)
   }
 
 	
@@ -60,33 +60,33 @@ class StaffServiceImpl extends StaffService {
 	
   @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean) = {
-    var maybeStaff: Option[Staff] = Option(staffDao.findById(staffId))
+    var maybeStaff: Option[StaffMember] = Option(staffMemberDao.findById(staffId))
     
     maybeStaff match {
-      case None => throw new InstanceNotFoundException(staffId, classOf[Staff].getName())
+      case None => throw new InstanceNotFoundException(staffId, classOf[StaffMember].getName())
       case Some(stStaff) => {
         stStaff.staffActivated = newState
-        staffDao.save(stStaff)
+        staffMemberDao.save(stStaff)
       }
     }
   }
 	
   def changePrivacity(staffId: Long, newState: Boolean, newAlias: String) = {
-    var staff: Staff = staffDao.findById(staffId)
+    var staff: StaffMember = staffMemberDao.findById(staffId)
     
     if(newAlias != null){
     	staff.staffPrivacityActivated = newState
     	staff.staffAlias = newAlias
-    	staffDao.save(staff)
+    	staffMemberDao.save(staff)
     }
   }
 	
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team]) = {
-    var staff: Staff = staffDao.findById(staffId)
+    var staff: StaffMember = staffMemberDao.findById(staffId)
     
     if(newTeamList != null){
     	staff.staffTeamList = newTeamList.asJava
-    	staffDao.save(staff)
+    	staffMemberDao.save(staff)
     }
   }
 
@@ -94,7 +94,7 @@ class StaffServiceImpl extends StaffService {
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): Staff = {
+    stNif: String, stBirth: Calendar, idFederation: Long): StaffMember = {
     
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -104,10 +104,10 @@ class StaffServiceImpl extends StaffService {
     maybeFederation match {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
-	    var staff: Staff = new Staff(stName, stSurnames, stEmail, stTelephones,
+	    var staff: StaffMember = new StaffMember(stName, stSurnames, stEmail, stTelephones,
 	        stAddress, stNif, stBirth, stFederation)
 	  	
-	    staffDao.save(staff)
+	    staffMemberDao.save(staff)
 	    staff
       }
     }
@@ -115,12 +115,12 @@ class StaffServiceImpl extends StaffService {
     
   def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[Staff] = {
+    stNif: String, stBirth: Calendar): Option[StaffMember] = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
 
-    var maybeStaff: Option[Staff] = Option(staffDao.findById(staffId))
+    var maybeStaff: Option[StaffMember] = Option(staffMemberDao.findById(staffId))
 
     maybeStaff match {
       case None =>
@@ -133,7 +133,7 @@ class StaffServiceImpl extends StaffService {
 	    staff.staffAddress = stAddress
 	    staff.staffNif = stNif
 	    staff.staffBirth = stBirth
-	  staffDao.save(staff)
+	  staffMemberDao.save(staff)
 	  }
     }
     maybeStaff

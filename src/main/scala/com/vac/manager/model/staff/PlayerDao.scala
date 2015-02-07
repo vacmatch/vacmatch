@@ -4,7 +4,7 @@ import com.vac.manager.model.generic.GenericDao
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
 
-trait PlayerDao extends StaffDao {
+trait PlayerDao extends StaffMemberDao {
   
   def findById(staffId: Long): Player
 

@@ -1,27 +1,27 @@
 package com.vac.manager.service.staff
 
-import com.vac.manager.model.staff.Staff
+import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
 import com.vac.manager.model.staff.Coach
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
-trait StaffService {
+trait StaffMemberService {
 
   /* --------------- FIND ---------------- */
 
-  def find(staffId: Long): Option[Staff]
+  def find(staffId: Long): Option[StaffMember]
 
-  def findAllByFederationId(fedId: Long): Seq[Staff]
+  def findAllByFederationId(fedId: Long): Seq[StaffMember]
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Staff]
+  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Staff]
+  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Staff]
+  def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Staff]
+  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   /* ---------------- MODIFY --------------- */
 
@@ -36,11 +36,11 @@ trait StaffService {
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): Staff
+    stNif: String, stBirth: Calendar, idFederation: Long): StaffMember
 
   def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[Staff]
+    stNif: String, stBirth: Calendar): Option[StaffMember]
 
   def getSurnamesFromString(surnames: String): Seq[String]
 

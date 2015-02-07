@@ -7,10 +7,10 @@ import com.vac.manager.model.team.Team
 import javax.persistence.Entity
 import javax.persistence.Table
 import java.util.Calendar
-import com.vac.manager.model.staff.Staff
+import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.competition.Competition
 import scala.collection.JavaConverters._
-import com.vac.manager.model.staff.StaffDao
+import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.competition.CompetitionDao
 import com.vac.manager.model.personal.Address
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +23,7 @@ class TeamServiceImpl extends TeamService {
   var teamDao: TeamDao = _
   
   @Autowired
-  var staffDao: StaffDao = _
+  var staffMemberDao: StaffMemberDao = _
   
   @Autowired
   var competitionDao: CompetitionDao = _
@@ -140,12 +140,12 @@ class TeamServiceImpl extends TeamService {
   }
   
   @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
-  def modifyStaff(teamId: Long, newStaffList: List[Staff]): Team = {
+  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Team = {
     var team: Team = teamDao.findById(teamId)
 
     //Check if all staff exists
     newStaffList.map(st => 
-      if(staffDao.findById(st.staffId) == null)
+      if(staffMemberDao.findById(st.staffId) == null)
     	  throw new IllegalArgumentException("staffId " + st.staffId + " cannot be null"))
     	  
     team.setStaffList(newStaffList.asJava)

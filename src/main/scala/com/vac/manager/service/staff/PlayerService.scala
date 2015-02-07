@@ -7,7 +7,7 @@ import com.vac.manager.model.team.Team
 import com.vac.manager.model.federation.Federation
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
-trait PlayerService extends StaffService {
+trait PlayerService extends StaffMemberService {
 
   @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: String,

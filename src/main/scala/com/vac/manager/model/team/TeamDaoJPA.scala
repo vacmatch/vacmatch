@@ -3,7 +3,6 @@ package com.vac.manager.model.team
 import org.springframework.stereotype.Repository
 import com.vac.manager.model.generic.GenericDaoJPA
 import javax.persistence.Query
-import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.generic.exceptions.NotImplementedException
 

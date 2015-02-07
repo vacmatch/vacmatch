@@ -7,7 +7,7 @@ import com.vac.manager.model.personal.Address
 
 @Repository("playerDao")
 class PlayerDaoJPA 
-		extends StaffDaoJPA
+		extends StaffMemberDaoJPA
 		with PlayerDao {
 
   override

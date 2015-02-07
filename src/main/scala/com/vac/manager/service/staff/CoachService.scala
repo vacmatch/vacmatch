@@ -6,7 +6,7 @@ import java.util.Calendar
 import com.vac.manager.model.federation.Federation
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
-trait CoachService extends StaffService {
+trait CoachService extends StaffMemberService {
   
   @throws[InstanceNotFoundException]
   def createCoach(stName: String, stSurnames: String,

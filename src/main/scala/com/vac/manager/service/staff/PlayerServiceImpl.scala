@@ -5,9 +5,7 @@ import com.vac.manager.model.personal.Address
 import java.util.Calendar
 import com.vac.manager.model.staff.Player
 import org.springframework.beans.factory.annotation.Autowired
-import com.vac.manager.model.staff.StaffDao
 import com.vac.manager.model.staff.PlayerDao
-import com.vac.manager.model.staff.Staff
 import com.vac.manager.model.team.Team
 import scala.collection.JavaConverters._
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +17,7 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 @Service("playerService")
 @Transactional
 class PlayerServiceImpl
-				extends StaffServiceImpl
+				extends StaffMemberServiceImpl
 				with PlayerService {
   
   @Autowired

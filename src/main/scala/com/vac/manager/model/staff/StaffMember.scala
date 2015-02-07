@@ -10,9 +10,9 @@ import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
 
 @Entity
-@Table(name = "STAFF")
+@Table(name = "STAFFMEMBER")
 @Inheritance(strategy=InheritanceType.JOINED)
-class Staff(stName: String,
+class StaffMember(stName: String,
     stSurnames: String,
     stEmail: String,
     stTelephones: String,
@@ -22,8 +22,8 @@ class Staff(stName: String,
     stFederation: Federation) {
 
   @Id
-  @SequenceGenerator(name="staffIdGenerator", sequenceName="staff_id_seq")
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffIdGenerator")
+  @SequenceGenerator(name="staffMemberIdGenerator", sequenceName="staffMember_id_seq")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffMemberIdGenerator")
   var staffId: Long = _
 
   @BeanProperty
@@ -93,9 +93,9 @@ class Staff(stName: String,
 
   override
   def equals(obj: Any): Boolean = {
-    if(!obj.isInstanceOf[Staff])
+    if(!obj.isInstanceOf[StaffMember])
       false
-    var staffObj: Staff = obj.asInstanceOf[Staff]
+    var staffObj: StaffMember = obj.asInstanceOf[StaffMember]
     (staffObj.staffName == this.staffName) &&
     (staffObj.staffSurnames == this.staffSurnames) &&
     (staffObj.staffActivated == this.staffActivated) &&

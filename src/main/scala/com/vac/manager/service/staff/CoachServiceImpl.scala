@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service("coachService")
 @Transactional
 class CoachServiceImpl 
-				extends StaffServiceImpl
+				extends StaffMemberServiceImpl
 				with CoachService {
 
   @Autowired

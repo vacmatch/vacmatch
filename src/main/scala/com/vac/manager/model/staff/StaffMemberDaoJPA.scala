@@ -11,20 +11,20 @@ import javax.persistence.TypedQuery
 import javax.persistence.metamodel.EntityType
 import javax.persistence.metamodel.Metamodel
 
-@Repository("staffDao")
-class StaffDaoJPA
-		extends GenericDaoJPA[Staff,java.lang.Long](classOf[Staff])
-		with StaffDao {
+@Repository("staffMemberDao")
+class StaffMemberDaoJPA
+		extends GenericDaoJPA[StaffMember,java.lang.Long](classOf[StaffMember])
+		with StaffMemberDao {
 
   def findByNameAndSurname(name: String, surname: String, startIndex: Int,
-      count: Int): Seq[Staff] = {
+      count: Int): Seq[StaffMember] = {
     null
   }
 
-  def findAllByFederationId(fedId: Long): Seq[Staff] = {
+  def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Staff s " +
-        "WHERE s.staffFederation.fedId = :fedId ", classOf[Staff]
+        "WHERE s.staffFederation.fedId = :fedId ", classOf[StaffMember]
     )
       .setParameter("fedId", fedId)
 
@@ -32,15 +32,15 @@ class StaffDaoJPA
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int,
-      count: Int): Seq[Staff] = {
+      count: Int): Seq[StaffMember] = {
     null
   }
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Staff] = {
+  def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {
     null
   }
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Staff] = {
+  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember] = {
     null
   }
   

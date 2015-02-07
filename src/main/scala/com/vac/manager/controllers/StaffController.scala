@@ -2,8 +2,8 @@ package com.vac.manager.controllers
 
 import org.springframework.stereotype.Controller
 import org.springframework.beans.factory.annotation.Autowired
-import com.vac.manager.service.staff.StaffService
-import com.vac.manager.model.staff.Staff
+import com.vac.manager.service.staff.StaffMemberService
+import com.vac.manager.model.staff.StaffMember
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
@@ -22,7 +22,7 @@ import scala.collection.JavaConverters._
 class StaffController extends UrlGrabber {
   
   @Autowired
-  var staffService: StaffService = _
+  var staffMemberService: StaffMemberService = _
 
   @Autowired
   var addressSpainService: AddressService = _
@@ -33,7 +33,7 @@ class StaffController extends UrlGrabber {
  // @Autowired
  // var federation: FederationBean = _
 
-  class PostStaff extends Staff with UrlGrabber {
+  class PostStaff extends StaffMember with UrlGrabber {
 
     @BeanProperty
     var addRoad: String = _
@@ -62,7 +62,7 @@ class StaffController extends UrlGrabber {
     
     var fedId: Long = id
     
-    var staffList: Seq[Staff] = staffService.findAllByFederationId(fedId)
+    var staffList: Seq[StaffMember] = staffMemberService.findAllByFederationId(fedId)
     
     var mav: ModelAndView = new ModelAndView("staff/list")
     mav.addObject("staffList", staffList.asJava)
@@ -75,7 +75,7 @@ class StaffController extends UrlGrabber {
     
     var fedId: Long = id
     
-    var maybeStaff: Option[Staff] = staffService.find(staffId)
+    var maybeStaff: Option[StaffMember] = staffMemberService.find(staffId)
     
     maybeStaff match {
       case None => new ModelAndView("staff/notfound")
@@ -120,7 +120,7 @@ class StaffController extends UrlGrabber {
       postStaff.addCountry)
       
     try {
-      var staff: Staff = staffService.createStaff(postStaff.staffName, postStaff.staffSurnames,
+      var staff: StaffMember = staffMemberService.createStaff(postStaff.staffName, postStaff.staffSurnames,
         postStaff.staffEmail, postStaff.staffTelephones, staffAddress, postStaff.staffNif,
         postStaff.staffBirth, fedId)
 

@@ -5,7 +5,7 @@ import com.vac.manager.model.generic.GenericDaoJPA
 
 @Repository("coachDao")
 class CoachDaoJPA
-		extends StaffDaoJPA 
+		extends StaffMemberDaoJPA 
 		with CoachDao {
 
   override
