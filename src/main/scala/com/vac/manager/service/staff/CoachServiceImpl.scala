@@ -3,7 +3,6 @@ package com.vac.manager.service.staff
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.model.staff.CoachDao
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.staff.License
 import com.vac.manager.model.staff.Coach
 import java.util.Calendar
 import org.springframework.stereotype.Service
@@ -56,7 +55,7 @@ class CoachServiceImpl
   @throws[InstanceNotFoundException]
   def createCoach(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long, licen: License): Coach = {
+    stNif: String, stBirth: Calendar, idFederation: Long): Coach = {
     
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -67,7 +66,7 @@ class CoachServiceImpl
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
         var coach: Coach = new Coach(stName, stSurnames, stEmail, 
-          stTelephones, stAddress, stNif, stBirth, stFederation, licen)
+          stTelephones, stAddress, stNif, stBirth, stFederation)
 	
 	    coachDao.save(coach)
 	    coach
@@ -78,7 +77,7 @@ class CoachServiceImpl
   @throws[InstanceNotFoundException]
   def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, licen: License): Option[Coach] = {
+    stNif: String, stBirth: Calendar): Option[Coach] = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -95,7 +94,6 @@ class CoachServiceImpl
 	    coach.staffAddress = stAddress
 	    coach.staffNif = stNif
 	    coach.staffBirth = stBirth
-	    coach.coachLicense = licen
 	    
 	    coachDao.save(coach)
       }

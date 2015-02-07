@@ -24,19 +24,11 @@ class Coach(stName: String,
     stAddress: Address, 
     stNif: String,
     stBirth: Calendar,
-    stFederation: Federation,
-    licen: License)
+    stFederation: Federation)
     extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif,
         stBirth, stFederation) {
   
-  @BeanProperty
-  @ManyToOne(optional=false, fetch = FetchType.LAZY, 
-      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
-  @JoinColumn(name = "licenseId")
-  var coachLicense: License = licen
-  
   override
-  def toString = "Coach\n" + super.toString + 
-  					"\nLicense: " + this.coachLicense  
+  def toString = "Coach\n" + super.toString
 
 }

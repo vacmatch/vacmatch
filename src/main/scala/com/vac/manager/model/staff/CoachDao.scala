@@ -18,6 +18,4 @@ trait CoachDao extends StaffDao {
 	
   def findByNif(nif: String, startIndex: Int, count: Int): Seq[Coach]  
   
-  def getCoachLicense(staffId: Long): License
-
 }

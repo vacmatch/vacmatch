@@ -46,11 +46,6 @@ class CoachDaoJPA
     null
   }
   
-  def getCoachLicense(staffId: Long): License = {
-    null
-  }
-  
-  
 }
 
 
