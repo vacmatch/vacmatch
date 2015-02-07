@@ -24,17 +24,17 @@ class Player(stName: String,
     stNif: String,
     stBirth: Calendar,
     stFederation: Federation,
-    num: Int)
+    num: String)
     extends Staff(stName, stSurnames, stEmail, stTelephones, stAddress, stNif,
         stBirth, stFederation)  {
   
   @BeanProperty
   @Column
-  var playerNumber: Int = num
+  var dorsal: String = num
   
   override
   def toString = "Player\n" + super.toString + 
-  					"\nNumber: " + this.playerNumber
+  					"\nDorsal: " + this.dorsal
 }
 
 

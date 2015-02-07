@@ -57,7 +57,7 @@ class PlayerServiceImpl
   @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar,  idFederation: Long, num: Int): Player = {
+    stNif: String, stBirth: Calendar,  idFederation: Long, num: String): Player = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -79,7 +79,7 @@ class PlayerServiceImpl
   @throws[InstanceNotFoundException]
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, num: Int): Option[Player] = {
+    stNif: String, stBirth: Calendar, num: String): Option[Player] = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -96,7 +96,7 @@ class PlayerServiceImpl
 	    player.staffAddress = stAddress
 	    player.staffNif = stNif
 	    player.staffBirth = stBirth
-	    player.playerNumber = num
+	    player.dorsal = num
 	    
 	    playerDao.save(player)
 	  }
