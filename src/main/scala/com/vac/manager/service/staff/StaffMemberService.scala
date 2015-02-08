@@ -37,8 +37,9 @@ trait StaffMemberService {
   def createStaff(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar, idFederation: Long): StaffMember
-
-  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+  
+  @throws[IllegalArgumentException]
+  def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar): Option[StaffMember]
 

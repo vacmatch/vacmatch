@@ -112,16 +112,17 @@ class StaffMemberServiceImpl extends StaffMemberService {
       }
     }
   }
-    
-  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+
+  @throws[IllegalArgumentException]
+  def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar): Option[StaffMember] = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
 
-    var maybeStaff: Option[StaffMember] = Option(staffMemberDao.findById(staffId))
-
+    var maybeStaff: Option[StaffMember] = find(staffId)
+    
     maybeStaff match {
       case None =>
       case Some(staff) => {

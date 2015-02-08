@@ -35,27 +35,29 @@ class StaffMemberServiceTest
 				with BeforeAndAfter {
 
   /* Generic variables */
+  var staffMemberService: StaffMemberServiceImpl = _
   var validStaffMember: StaffMember = _
-  var mockAddress: Address = mock[Address]
-  var mockFederation: Federation = mock[Federation]
-  
-  /*
-   * Auxiliar function for checking if parameters are legal or not
-   */
-  def validParameters(staffName: String, staffSurnames: Array[String],
-    staffEmail: String, staffTelephones: Array[String], staffNif: String): Boolean = {
-    
-    ! ((staffName.isEmpty()) || (staffSurnames.isEmpty) || (staffEmail.isEmpty) 
-        || (staffTelephones.isEmpty) || (staffNif.isEmpty()))
-  }
+  var mockAddress: Address = _
+  var mockFederation: Federation = _
   
   /**
    * Generic variables initialization
    */
   before {
+    //Initialization from service to be tested
+    staffMemberService = new StaffMemberServiceImpl
+    staffMemberService.federationService = mock[FederationServiceImpl]
+    staffMemberService.staffMemberDao = mock[StaffMemberDao]
+
+    //Initialization of a valid StaffMember
+    mockAddress = mock[Address]
+    mockFederation = mock[Federation]
+
+    mockFederation.fedId = 1
     validStaffMember = new StaffMember(
     "Jose", "López Castro", "jlcastro@email.com", "666555444", mockAddress, 
     "33442212X", Calendar.getInstance(), mockFederation)
+
   }
   
   
@@ -64,12 +66,6 @@ class StaffMemberServiceTest
       Given("A federation")
       var fedId: Int = 1
 
-      //Service to be tested
-      var staffMemberService: StaffMemberServiceImpl = new StaffMemberServiceImpl
-      
-      staffMemberService.federationService = mock[FederationServiceImpl]
-      staffMemberService.staffMemberDao = mock[StaffMemberDao]
-      
       When("A new StaffMember is created")
       When("StaffMember parameters are valid")
       When("Federation exists")
@@ -94,12 +90,6 @@ class StaffMemberServiceTest
       Given("A not existent federation")
       var fedId: Int = 2
 
-      //Service to be tested
-      var staffMemberService: StaffMemberServiceImpl = new StaffMemberServiceImpl
-      
-      staffMemberService.federationService = mock[FederationServiceImpl]
-      staffMemberService.staffMemberDao = mock[StaffMemberDao]
-      
       When("A new StaffMember is created")
       When("StaffMember parameters are valid")
       When("Federation doesn't exist")
@@ -123,12 +113,6 @@ class StaffMemberServiceTest
       Given("A federation")
       var fedId: Int = 1
 
-      //Service to be tested
-      var staffMemberService: StaffMemberServiceImpl = new StaffMemberServiceImpl
-      
-      staffMemberService.federationService = mock[FederationServiceImpl]
-      staffMemberService.staffMemberDao = mock[StaffMemberDao]
-      
       When("A new StaffMember is created")
       When("Federation exists")
       
@@ -214,14 +198,8 @@ class StaffMemberServiceTest
   feature("StaffMember activation") {
     scenario("StaffMember activation can be changed when StaffMember exists and parameters are valid") {
       Given("A staffMember and a new activation state")
-      var staffMember: StaffMember = new StaffMember
+      var staffMember: StaffMember = new StaffMember(mockFederation)
       var newState: Boolean = true
-
-      //Service to be tested
-      var staffMemberService: StaffMemberServiceImpl = new StaffMemberServiceImpl
-
-      staffMemberService.federationService = mock[FederationServiceImpl]
-      staffMemberService.staffMemberDao = mock[StaffMemberDao]
 
       When("Federation exists")
       When("StaffMember exists")
@@ -234,22 +212,16 @@ class StaffMemberServiceTest
       Then("StaffMember activation has been changed")
       Then("StaffMember activation has the new state")
       
-      assert(staffMember.staffActivated == newState)
+      staffMember.staffActivated should equal (newState)
       verify(staffMemberService staffMemberDao) save(staffMember)
 
     }
     
     scenario("StaffMember activation cannot be changed when StaffMember doesn't exist") {
       Given("A staffMember, an old activation state and a new activation state")
-      var staffMember: StaffMember = new StaffMember
+      var staffMember: StaffMember = new StaffMember(mockFederation)
       var oldState: Boolean = false
       var newState: Boolean = true
-
-      //Service to be tested
-      var staffMemberService: StaffMemberServiceImpl = new StaffMemberServiceImpl
-
-      staffMemberService.federationService = mock[FederationServiceImpl]
-      staffMemberService.staffMemberDao = mock[StaffMemberDao]
 
       When("Federation exists")
       When("StaffMember doesn't exist")
@@ -267,6 +239,136 @@ class StaffMemberServiceTest
       verify(staffMemberService staffMemberDao, never) save(staffMember)
     }
   }
+  
+  
+  feature("StaffMember modification"){
+    scenario("Someone try to modify a existent StaffMember with valid parameters"){
+
+      Given("An existent StaffMember")
+      Given("Valid StaffMember parameters")
+      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMemberId: Long = 1
+
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn staffMember
+
+      When("StaffMember try to be modified")
+      var modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, validStaffMember.staffSurnames, 
+          validStaffMember.staffEmail, validStaffMember.staffTelephones,
+          validStaffMember.staffAddress, validStaffMember.staffNif,
+          validStaffMember.staffBirth)
+      
+      Then("StaffMember must be modified")
+      Then("StaffMember must be saved")
+      modifiedStaffMember should equal (Some(validStaffMember))
+      verify(staffMemberService staffMemberDao) save(staffMember)
+
+    }
+
+    scenario("Someone try to modify a not existent StaffMember"){
+      
+      Given("A not existent StaffMember")
+      Given("Valid StaffMember parameters")
+      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMemberId: Long = 1
+
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn null
+      
+      When("StaffMember try to be modified")
+      var modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, validStaffMember.staffBirth)
+      
+      Then("StaffMember can't be modified")
+      Then("StaffMember can't be saved")
+      modifiedStaffMember should equal (None)
+      verify(staffMemberService staffMemberDao, never) save(staffMember)
+
+    }
+
+    scenario("Someone try to modify a existent StaffMember with not valid parameters"){
+      
+      Given("An existent StaffMember")
+      Given("Not valid StaffMember parameter")
+      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMemberId: Long = 1
+      
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn staffMember
+
+      When("staffName is null")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          null, 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, validStaffMember.staffBirth)
+      }
+
+      When("staffName is empty")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          "", 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, validStaffMember.staffBirth)
+      }
+      
+      When("staffSurnames are null")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          null, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, validStaffMember.staffBirth)
+      }
+      
+      When("staffSurnames are empty")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          "", validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, validStaffMember.staffBirth)
+      }
+
+      When("staffNif is null")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          null, validStaffMember.staffBirth)
+      }
+      
+      When("staffNif is empty")
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          "", validStaffMember.staffBirth)
+      }
+
+      When("staffBirth parameter is null")
+      
+      intercept[IllegalArgumentException]{
+        staffMemberService.modifyStaff(staffMemberId, 
+          validStaffMember.staffName, 
+          validStaffMember.staffSurnames, validStaffMember.staffEmail, 
+          validStaffMember.staffTelephones , validStaffMember.staffAddress, 
+          validStaffMember.staffNif, null)
+      }
+
+      Then("StaffMember can't be modified")
+
+    }
+  }
 }
+
+
 
 

@@ -8,6 +8,7 @@ import com.vac.manager.model.personal.Address
 import scala.collection.JavaConverters._
 import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
+import java.text.SimpleDateFormat
 
 @Entity
 @Table(name = "STAFFMEMBER")
@@ -43,8 +44,8 @@ class StaffMember(stName: String,
   var staffPrivacityActivated: Boolean = false
 
   @BeanProperty
-  @Column(nullable = false)
-  var staffAlias: String = stName
+  @Column
+  var staffAlias: String = ""
 
   @BeanProperty
   @Column
@@ -68,7 +69,7 @@ class StaffMember(stName: String,
   var staffNif: String = stNif
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var staffBirth: Calendar = stBirth
 
   @BeanProperty
@@ -89,13 +90,14 @@ class StaffMember(stName: String,
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 
-  def this() = this("", "", "", null, null, "", null, null)
+  def this(fed: Federation) = this("", "", "", null, null, "", Calendar.getInstance(), fed)
 
   override
   def equals(obj: Any): Boolean = {
     if(!obj.isInstanceOf[StaffMember])
       false
     var staffObj: StaffMember = obj.asInstanceOf[StaffMember]
+    (staffObj.staffId == this.staffId) &&
     (staffObj.staffName == this.staffName) &&
     (staffObj.staffSurnames == this.staffSurnames) &&
     (staffObj.staffActivated == this.staffActivated) &&
@@ -111,10 +113,19 @@ class StaffMember(stName: String,
   }
   
   override
-  def toString = "(" + this.staffId + ") " + this.staffSurnames +
-                                        ", " + this.staffName +
-                                        "\nNIF: " + this.staffNif +
-                                        "\nEmail: " + this.staffEmail +
-                                        "\nTeams: " + this.staffTeamList
+  def toString = "(" + this.staffId + ") " +
+		  				this.staffSurnames +
+                        ", " + this.staffName +
+                        "\nNIF: " + this.staffNif +
+                        "\nEmail: " + this.staffEmail +
+                        "\nActivated: " + this.staffActivated + 
+                        " PrivacityActivated: " + this.staffPrivacityActivated +
+                        "\nAlias: " + this.staffAlias +
+                        "\nTelephones: " + this.staffTelephones +
+                        "\nAddress: " + this.staffAddress +
+                        "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
+                        					.format(this.staffBirth.getTime()) +
+                        "\nFederation: " + this.staffFederation +
+                        "\nTeams: " + this.staffTeamList
 
 }
