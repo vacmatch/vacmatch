@@ -23,21 +23,10 @@ class FederationCRUDController extends UrlGrabber {
     fedId = base.fedId
     fedName = base.fedName
 
-    def getEditLink(): String = {
-      return getUrl("FederationCRUDController.edit", "fedId" -> fedId)
-    }
-
-    def getUserLink(): String = {
-      return dns
-    }
-
-    def getDeleteLink(): String = {
-      return getUrl("FederationCRUDController.delete", "fedId" -> fedId)
-    }
-
-    def getManageLink(): String = {
-      return getUrl("FederationMgmtController.show", "fedId" -> fedId)
-    }
+    def getEditLink(): String = getUrl("FederationCRUDController.edit", "fedId" -> fedId)
+    def getUserLink(): String = dns
+    def getDeleteLink(): String = getUrl("FederationCRUDController.delete", "fedId" -> fedId)
+    def getManageLink(): String = getUrl("FederationMgmtController.show", "fedId" -> fedId)
   }
 
   @Autowired
@@ -79,12 +68,14 @@ class FederationCRUDController extends UrlGrabber {
   }
 
   def edit(@RequestParam("fedId") fedId: java.lang.Long): ModelAndView = {
-    val fed = federationService find fedId
+    val fed = federationService.find(fedId)
+    val domains = federationService.findDomainNames(fedId).reduce { (a, b) => a + "\n" + b }
 
     return new ModelAndView("int/admin/federation/edit_form")
       .addObject("submitUrl", getUrl("FederationCRUDController.editPost"))
-      .addObject("entity", fed)
-      .addObject("hiddens", Map("fedId" -> fedId))
+      .addObject("entity", fed.orNull)
+      .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
+      .addObject("dns", domains)
       .addObject("action", "edit")
       .addObject("submitMethod", "POST")
   }
@@ -93,16 +84,57 @@ class FederationCRUDController extends UrlGrabber {
     @RequestParam("fedName") fedName: String,
     @RequestParam("dns") dnsTextArea: String
   ): String = {
-    val domains = dnsTextArea.split("\n").map(_.trim()).filter(_.nonEmpty)
+    val domains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
     federationService.createFederation(fedName, domains)
 
     return "redirect:" + getUrl("FederationCRUDController.list")
   }
 
-  def editPost(@ModelAttribute fed: Federation): String = {
-    federationService modifyFederationName (fed.fedId, fed.fedName)
+  def editPost(
+    @ModelAttribute fed: Federation,
+    @RequestParam("dns") dnsTextArea: String
+  ): String = {
+    federationService.modifyFederationName(fed.fedId, fed.fedName)
 
-    return "redirect:" + getUrl("FederationCRUDController.list")
+    val prevDomains = federationService.findDomainNames(fed.fedId)
+    val curDomains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
+
+    // Add = x in curr / x not in prev
+    val toAdd = curDomains.filterNot { prevDomains.contains(_) }
+
+    // Del = x in prev / x not in curr
+    val toDel = prevDomains.filterNot { curDomains.contains(_) }
+
+    val added = toAdd.map { dns => (dns, federationService.addFederationDomain(fed.fedId, dns)) }
+    val removed = toDel.map { dns => (dns, federationService.removeFederationDomain(fed.fedId, dns)) }
+
+    val tra = added.map {
+      case (dns, state) =>
+        if (state)
+          Right(dns + " was added successfully")
+        else
+          Left(dns + " could not be added")
+    }
+
+    val trr = removed.map {
+      case (dns, state) =>
+        if (state)
+          Right(dns + " was removed successfully")
+        else
+          Left(dns + " could not be removed")
+    }
+    val xs = tra ++ trr
+
+    val info = xs.collect { case Right(x) => x }
+    val err = xs.collect { case Left(x) => x }
+
+    // TODO improve this with a better UrlGrabber
+
+    return "redirect:" + getUrl(
+      "FederationCRUDController.list",
+      "info" -> info.toList.asJava,
+      "err" -> err.toList.asJava
+    )
   }
 
 }

@@ -76,8 +76,8 @@ class FederationServiceImpl extends FederationService {
     return true
   }
 
-  @Transactional(propagation=Propagation.NESTED)
-  protected def _createFederationInTransaction(fedName:String):Federation = {
+  @Transactional(propagation = Propagation.NESTED)
+  protected def _createFederationInTransaction(fedName: String): Federation = {
     val f = new Federation()
     f.fedName = fedName.trim
     federationDao.save(f)
@@ -134,10 +134,10 @@ class FederationServiceImpl extends FederationService {
   }
 
   def removeFederationDomain(fedId: Long, domainName: String): Boolean = {
-    val matching = federationDao findDomainNamesAsEntity (fedId) filter (domainName.equals(_))
+    val matching = federationDao.findDomainNamesAsEntity(fedId) filter (d => domainName.equals(d.dns))
 
     if (matching.size > 0) {
-      federationDao removeDomainName (matching(0))
+      federationDao.removeDomainName(matching(0))
       return true
     } else {
       return false
