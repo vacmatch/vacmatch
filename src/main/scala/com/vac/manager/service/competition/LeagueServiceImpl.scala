@@ -152,7 +152,7 @@ class LeagueServiceImpl extends LeagueService {
         /* In JPA you cannot update the id column, so a delete plus recreate is needed */
         val season = new LeagueSeason
         season.id = new LeagueSeasonPK
-        season.id.setLeague(oldSeason.id getLeague)
+        season.id.setLeague(oldSeason.id.getLeague)
         season.id setSeasonSlug newYear
         season.startTime = oldSeason.startTime
         season.endTime = oldSeason.endTime

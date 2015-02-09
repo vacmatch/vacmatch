@@ -23,14 +23,16 @@ class FederationDaoJpa extends GenericDaoJPA[Federation, java.lang.Long](classOf
   }
 
   def findByDomainName(dns: String): Option[Federation] = {
-    val fed = getEntityManager createQuery
+    val fed = getEntityManager.createQuery(
       "SELECT dns.fed FROM FederationDomainName dns " +
-      "WHERE dns.dns = :servername " setParameter ("servername", dns) getResultList
+        "WHERE dns.dns = :servername ")
+      .setParameter ("servername", dns)
+      .getResultList
 
-    return if (fed isEmpty) {
+    return if (fed.isEmpty) {
       None
     } else {
-      Some((fed get 0).asInstanceOf[Federation])
+      Some(fed.get(0).asInstanceOf[Federation])
     }
   }
 

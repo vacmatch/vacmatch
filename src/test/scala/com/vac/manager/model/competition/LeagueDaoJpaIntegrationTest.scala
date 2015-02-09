@@ -1,3 +1,4 @@
+
 package com.vac.manager.model.competition
 
 import javax.persistence.EntityManager
@@ -36,7 +37,7 @@ class LeagueDaoJpaIntegrationTest {
 
 
   @Test
-  def createAndFindById = {
+  def createAndFindById() = {
     val fedId:Long = 1
     val leagueName = "Pepitos Volantes"
     val slug = "pepitos"

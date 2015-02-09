@@ -16,10 +16,10 @@ class FederationBeanImpl(req: ServletRequest) extends FederationBean {
 
   lazy val id: java.lang.Long = {
     val serverInAttribute = (req getAttribute "com.vac.manager.request.domain").asInstanceOf[String]
-    val serverName = req getServerName
+    val serverName = req.getServerName
 
     val fedDomain = if (commonNames contains serverName) {
-      Option(serverInAttribute) orElse Option(serverName) get
+      (Option(serverInAttribute) orElse Option(serverName)).get
     } else {
       serverName
     }
@@ -39,7 +39,7 @@ class FederationBeanImpl(req: ServletRequest) extends FederationBean {
       fed match {
         case None => throw new RuntimeException("No Federation registered" +
             "at this URL in a controller depending on federation-related elements")
-        case Some(f) => f fedId
+        case Some(f) => f.fedId
       }
     }
   }
