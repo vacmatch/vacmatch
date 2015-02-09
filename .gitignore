@@ -1,6 +1,8 @@
 build
 hsql.db*
 
+bin/
+
 *~
 **/*~
 
@@ -9,3 +11,4 @@ hsql.db*
 .gradle
 .project
 .settings
+.cache

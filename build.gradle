@@ -4,14 +4,14 @@ buildscript {
         springBootVersion = '1.1.9.RELEASE'
     }
     repositories {
-	mavenLocal()
+	    mavenLocal()
         mavenCentral()
-	jcenter()
+	    jcenter()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
-	classpath("org.springframework:springloaded:1.2.0.RELEASE")
+	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
+		classpath("org.springframework:springloaded:1.2.0.RELEASE")
     }
 }
 
@@ -51,7 +51,7 @@ configurations {
 
 dependencies {
     compile group: 'org.resthub', name: 'springmvc-router', version: '1.2.0'
-
+    compile group: 'com.andersen-gott', name: 'scravatar_2.11', version: '1.0.3'
     compile group: 'log4j', name: 'log4j', version:'1.2.16'
     compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaLibraryVersion
 

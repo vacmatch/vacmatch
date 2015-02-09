@@ -16,11 +16,13 @@ import javax.persistence.metamodel.Metamodel
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import scala.beans.BeanProperty
 
-abstract class GenericDaoHibernate[T, K <: Serializable](entityClass: Class[T]) extends GenericDao[T, K] {
+abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends GenericDao[T, K] {
 
   @BeanProperty
   @PersistenceContext
   var entityManager: EntityManager = _
+  
+  var entityClass: Class[T] = entClass
 
   /**
     * Find all objects from EntityClass table

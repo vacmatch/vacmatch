@@ -3,10 +3,12 @@ package com.vac.manager.model.competition
 import javax.persistence._
 import scala.beans.BeanProperty
 import com.vac.manager.model.team.Team
+import com.vac.manager.model.federation.Federation
+
 
 @Entity
 @Table(name = "COMPETITION")
-class Competition (compName: String) {
+class Competition (compName: String, fed: Federation) {
 
   @Id
   @SequenceGenerator(name="competitionIdGenerator", sequenceName="competition_id_seq")
@@ -18,7 +20,11 @@ class Competition (compName: String) {
   var competitionName: String = compName
 
   @BeanProperty
-  @Column
+  @ManyToOne(optional=false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "fedId")
+  var federation: Federation = fed
+  
+  @BeanProperty
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
       name = "TEAM_COMPETITION",
@@ -29,7 +35,7 @@ class Competition (compName: String) {
   )
   var teamList: java.util.List[Team] = _
 
-  def this() = this(null)
+  def this() = this(null, null)
 
   override
   def toString = "(" + this.compId + ") " + this.competitionName +

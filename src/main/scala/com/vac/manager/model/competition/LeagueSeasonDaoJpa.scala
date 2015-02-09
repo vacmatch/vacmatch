@@ -1,12 +1,12 @@
 package com.vac.manager.model.competition
 
-import com.vac.manager.model.generic.GenericDaoHibernate
+import com.vac.manager.model.generic.GenericDaoJPA
 import java.util.Calendar
 import org.springframework.stereotype.Repository
 import scala.collection.JavaConverters._
 
 @Repository("leagueSeasonDao")
-class LeagueSeasonDaoJpa extends GenericDaoHibernate[LeagueSeason, LeagueSeasonPK](classOf[LeagueSeason]) with LeagueSeasonDao {
+class LeagueSeasonDaoJpa extends GenericDaoJPA[LeagueSeason, LeagueSeasonPK](classOf[LeagueSeason]) with LeagueSeasonDao {
 
   def findLeagueWithSeasonsBySlug(fedId: Long, slug: String): Option[League] = {
     var q = getEntityManager().createQuery(
