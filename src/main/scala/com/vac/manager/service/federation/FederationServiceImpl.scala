@@ -5,6 +5,7 @@ import com.vac.manager.util.Pageable
 import java.lang.Long
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import scala.collection.JavaConverters._
 
@@ -62,17 +63,26 @@ class FederationServiceImpl extends FederationService {
       return false
     }
 
-    val f = new Federation()
-    f.fedName = fedName.trim
-    federationDao.save(f)
+    val fed = _createFederationInTransaction(fedName)
 
-    val registered = domains.filter(domain => _addFederationDomain(f, domain))
+    println("GOT FEDERATION AGAIN = ", fed, "ID = ", fed.fedId)
+
+    val registered = domains.filter(domain => _addFederationDomain(fed, domain))
 
     if (registered.size != domains.size) {
       throw new RuntimeException("One or more domains were not possible to register")
     }
 
     return true
+  }
+
+  @Transactional(propagation=Propagation.NESTED)
+  protected def _createFederationInTransaction(fedName:String):Federation = {
+    val f = new Federation()
+    f.fedName = fedName.trim
+    federationDao.save(f)
+
+    return f
   }
 
   @Transactional

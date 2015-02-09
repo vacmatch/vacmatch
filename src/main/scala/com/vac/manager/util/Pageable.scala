@@ -4,8 +4,8 @@ import scala.beans.BeanProperty
 
 class Pageable {
   @BeanProperty
-  var start: Integer = _
+  var start: Int = _
 
   @BeanProperty
-  var count: Integer = _
+  var count: Int = _
 }
