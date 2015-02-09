@@ -1,6 +1,5 @@
 package com.vac.manager.model.competition
 
-import com.vac.manager.model.staff.Staff
 import java.util.Calendar
 import javax.persistence._
 import scala.beans.BeanProperty
