@@ -11,43 +11,43 @@
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container" th:fragment="content">
-		      <dl th:object="${staff}">
-		        <dd><img th:src="*{staffAvatarLink}" alt="avatar" src="http://www.gravatar.com/avatar/HASH"></dd>
-		        
-		      	<dt th:text="#{staff.status}">Staff status</dt>
-		      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
+	      <dl th:object="${staff}">
+	        <!-- <dd><img th:src="*{staffAvatarLink}" alt="avatar" src="http://www.gravatar.com/avatar/HASH"></dd>
+	         -->
+	      	<dt>Staff status</dt>
+	      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
 		      	
-				<dt th:text="#{staff.name}">Staff name</dt>
-				<dd th:text="*{staffName}">John</dd>
-				<dd th:each="surname : *{staffSurnames}" th:text="${surname}">Mustang</dd>
-				
-				<dt th:text="#{staff.nif}">Staff NIF</dt>
-				<dd th:text="*{staffNif}">33445566F</dd>
-				
-				<dt th:text="#{staff.email}">Staff Email</dt>
-				<dd th:text="*{staffEmail}">imworking@mymail.gal</dd>
-				
-				<dt th:text="#{staff.telephones}">Staff Telephones</dt>
-				<dd th:each="telephone : *{staffTelephones}" th:text="${telephone}">696698876</dd>
-				<dd th:text="*{staffTelephoness}"></dd>
-				
-				<dt th:text="#{staff.address}">Staff Address</dt>
-				<dd th:text="*{staffAddress}">First Avenue</dd>
-				
-				<dt th:text="#{staff.birth}">Staff Birth</dt>
-				<dd th:text="*{staffBirth}">18/05/1991</dd>
-				
-				<dt th:text="#{staff.teamList}">Team List</dt>
-				<dd th:each="team : *{staffTeamList}" th:text="${team.teamName}">IA Angel</dd>
-				
-				<dt th:text="#{staff.actions}">Actions</dt>
-				<dd><a th:href="${staff.getAssignTeamLink()}" th:text="${link.assignTeam}">Assign team</a></dd>
-				<dd><a th:href="${staff.getEditPrivacyLink()}" th:text="${link.modifyPrivacity}">Modify privacy</a></dd>
-				<dd><a th:href="${staff.getEditLink()}" th:text="${link.edit}">Edit</a></dd>
-				<dd><a th:href="${staff.getRemoveLink()}" th:text="${link.remove}">Delete</a></dd>
-		      </dl>
-	      </div>  
+					<dt>Staff name</dt>
+					<dd th:text="*{staffName}">John</dd>
+					<dd th:each="surname : *{staffSurnames}" th:text="${surname}">Mustang</dd>
+					
+					<dt>Staff NIF</dt>
+					<dd th:text="*{staffNif}">33445566F</dd>
+					
+					<dt>Staff Email</dt>
+					<dd th:text="*{staffEmail}">imworking@mymail.gal</dd>
+					
+					<dt>Staff Telephones</dt>
+					<dd th:each="telephone : *{staffTelephones}" th:text="${telephone}">696698876</dd>
+					<dd th:text="*{staffTelephones}"></dd>
+					
+					<dt>Staff Address</dt>
+					<dd th:text="*{staffAddress}">First Avenue</dd>
+					
+					<dt>Staff Birth</dt>
+					<dd th:text="*{staffBirth}">18/05/1991</dd>
+					
+					<dt>Team List</dt>
+					<!--<dd th:each="team : *{staffTeamList}" th:text="${team.teamName}">IA Angel</dd>-->
+					
+					<dt>Actions</dt>
+					<!-- <dd><a th:href="${staff.getAssignTeamLink()}" th:text="${link.assignTeam}">Assign team</a></dd> -->
+					<!-- <dd><a th:href="${staff.getEditPrivacyLink()}" th:text="${link.modifyPrivacy}">Modify privacy</a></dd> -->
+					<dd><a th:href="${staff.getEditLink()}">Edit</a></dd>
+					<!-- <dd><a th:href="${staff.getRemoveLink()}">Delete</a></dd> -->
+	      </dl>
 		</div>
 		<div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
 	</body>
 </html>
+

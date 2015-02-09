@@ -25,7 +25,7 @@ class StaffMember(stName: String,
   @Id
   @SequenceGenerator(name="staffMemberIdGenerator", sequenceName="staffMember_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffMemberIdGenerator")
-  var staffId: Long = _
+  var staffId: java.lang.Long = _
 
   @BeanProperty
   @Column(nullable = false)
@@ -60,7 +60,7 @@ class StaffMember(stName: String,
   var staffTelephones: String = stTelephones
 
   @BeanProperty
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "addressId")
   var staffAddress: Address = stAddress
 
@@ -90,7 +90,7 @@ class StaffMember(stName: String,
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 
-  def this(fed: Federation) = this("", "", "", null, null, "", Calendar.getInstance(), fed)
+  def this() = this("", "", "", null, null, "", Calendar.getInstance(), null)
 
   override
   def equals(obj: Any): Boolean = {

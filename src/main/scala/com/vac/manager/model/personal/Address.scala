@@ -53,8 +53,9 @@ class Address(argRoad: String, argNum: String, argFlat: String, argPostCod: Int,
   def toString = this.road + ", " + this.number + " - " + this.flat + "\n" +
 		  		 this.postCode + " " + this.locality + ", " + this.province + "\n" +
 		  		 this.country
-		  	
-		  		 
+
+  def this() = this("","","",0,"","","")
+  
 }
 
 

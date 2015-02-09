@@ -23,7 +23,7 @@ class StaffMemberDaoJPA
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
-      "SELECT s FROM Staff s " +
+      "SELECT s FROM StaffMember s " +
         "WHERE s.staffFederation.fedId = :fedId ", classOf[StaffMember]
     )
       .setParameter("fedId", fedId)
