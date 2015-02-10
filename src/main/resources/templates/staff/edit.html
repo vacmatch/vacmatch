@@ -12,93 +12,99 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-        <h2 th:if="${action == 'create'}">Create Staff</h2>
-        <h2 th:if="${action == 'edit'}">Edit Staff</h2>
-        
-        <hr/>
-        
-        <form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
-          <input th:each="h: ${hiddens}" type="hidden"
-           th:name="${h.key}" th:value="${h.value}" />
+	<h2 th:if="${action == 'create'}">Create Staff</h2>
+	<h2 th:if="${action == 'edit'}">Edit Staff</h2>
 
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="name">Name</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{staffName}" />
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="surnames">Surnames</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:field="*{staffSurnames}"/>
-            </div>
-          </div>
+	<hr/>
 
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="nif">NIF</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="nif" type="text" placeholder="Nif" th:field="*{staffNif}"/>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="email">Email</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{staffEmail}"/>
-            </div>
-          </div>
+	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
+	  <input th:each="h: ${hiddens}" type="hidden"
+	   th:name="${h.key}" th:value="${h.value}" />
 
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="birth">Birth</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{staffBirth}"/>
-            </div>
-          </div>
-    
-          <div class="form-group">
-            <div class="col-sm-3 control-label">
-	            <label for="telephones">Telephones</label>
-            </div>
-            <div class="col-sm-9">
-                <label for="telephones">(ej: "678912345, 654321987")</label>
-                <input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{staffTelephones}"/>
-            </div>
-          </div>
-  
-           <div class="form-group">
-             <label class="col-sm-3 control-label" for="addRoad">Address</label>
-             <div class="col-sm-9">
-               <input class="form-control" id="addRoad" type="text" placeholder="Address" th:field="${address.addressLine}"/>
-             </div>
-           </div>
-           <div class="form-group">
-             <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
-            <div class="col-sm-3">
-              <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
-            </div>
-           </div>
-           <div class="form-group">
-             <label class="col-sm-3 control-label" for="addLocality">Locality</label>
-             <div class="col-sm-3">
-               <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
-             </div>
-           </div>
-           <div class="form-group">
-             <label class="col-sm-3 control-label" for="addProvince">Province</label>
-             <div class="col-sm-3">
-               <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
-             </div>
-           </div>
-           <div class="form-group">
-             <label class="col-sm-3 control-label" for="addCountry">Country</label>
-             <div class="col-sm-3">
-               <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
->             </div>
-           </div>
-         
-          <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
-        </form>
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label" for="name">Name</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{staffName}" />
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label" for="surnames">Surnames</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:field="*{staffSurnames}" />
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label" for="cardId">Card Id</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="*{staffCardId}" />
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label" for="email">Email</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{staffEmail}" />
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label" for="birth">Birth</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{staffBirth}" />
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <div class="col-sm-3 control-label">
+		    <label for="telephones">Telephones</label>
+	    </div>
+	    <div class="col-sm-9">
+		<label for="telephones">(ej: "678912345, 654321987")</label>
+		<input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{staffTelephones}" />
+	    </div>
+	  </div>
+
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addFirstLine">Address First Line</label>
+	     <div class="col-sm-9">
+	       <input class="form-control" id="addFirstLine" type="text" placeholder="Address first line" th:field="${address.firstLine}"/>
+	     </div>
+	   </div>
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addSecondLine">Address Second Line</label>
+	     <div class="col-sm-9">
+	       <input class="form-control" id="addSecondLine" type="text" placeholder="Address Second Line" th:field="${address.secondLine}"/>
+	     </div>
+	   </div>
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
+	    <div class="col-sm-3">
+	      <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
+	    </div>
+	   </div>
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addLocality">Locality</label>
+	     <div class="col-sm-3">
+	       <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
+	     </div>
+	   </div>
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addProvince">Province</label>
+	     <div class="col-sm-3">
+	       <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
+	     </div>
+	   </div>
+	   <div class="form-group">
+	     <label class="col-sm-3 control-label" for="addCountry">Country</label>
+	     <div class="col-sm-3">
+	       <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
+	     </div>
+	   </div>
+
+	  <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
+	</form>
       </div>
     </div>
     <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
