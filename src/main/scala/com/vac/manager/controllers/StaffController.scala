@@ -222,15 +222,15 @@ class StaffController extends UrlGrabber {
   }
   
   def edit(
-      @RequestParam id: Long,
-      @RequestParam staffId: Long
+      @RequestParam staffId: java.lang.Long
       ): ModelAndView = {
 
-    val fedId: Long = id
-    val maybeFed: Option[Federation] = federationService.find(fedId)
+    val fedId: java.lang.Long = federation.getId
 
-    //TODO Handle federation not found
-
+    //Receivers
+    val receiverStaff: StaffMember = new StaffMember()
+  	val receiverAddress: Address = new Address()
+    //Submit params
     val submitUrl: String = getUrl("StaffController.editPost")
 	val submitMethod: String = "POST"
 
@@ -239,7 +239,8 @@ class StaffController extends UrlGrabber {
     maybeStaffMember match {
       case None => new ModelAndView("staff/notfound")
       case Some(staffMember) => {
-        val mav: ModelAndView = new ModelAndView("staff/edit")
+        val mav: ModelAndView = new ModelAndView(getUrl("StaffController.edit", "staffId" -> staffId))
+        mav.addObject("address", receiverAddress)
         mav.addObject("staff", staffMember)
         mav.addObject("submitUrl", submitUrl)
         mav.addObject("submitMethod", submitMethod)
@@ -249,25 +250,28 @@ class StaffController extends UrlGrabber {
   }
   
   def editPost(
-      @RequestParam id: Long,
-      @ModelAttribute staffMember: PostStaff
-      ): ModelAndView = {
+      staff: StaffMember,
+      result: BindingResult): ModelAndView = {
+
+    if(result.hasErrors()){
+      val mav: ModelAndView = new ModelAndView("staff/edit")
+      mav.addObject("staff", staff)
+      mav
+    }
+
+    val fedId: Long = federation.getId
     
-    val fedId: Long = id
-    val maybeFed: Option[Federation] = federationService.find(fedId)
-    
-    //TODO Handle federation not found
-    
+    //Modify Staff
     val modifiedStaffMember: Option[StaffMember] = 
-      staffMemberService.modifyStaff(staffMember.staffId, staffMember.staffName, 
-        staffMember.staffSurnames, staffMember.staffEmail, staffMember.staffTelephones,
-        staffMember.staffAddress, staffMember.staffNif, staffMember.staffBirth)
+      staffMemberService.modifyStaff(staff.staffId, staff.staffName, 
+        staff.staffSurnames, staff.staffEmail, staff.staffTelephones,
+        staff.staffAddress, staff.staffNif, staff.staffBirth)
     
     modifiedStaffMember match{
       case None => new ModelAndView("staff/notfound")
       case Some(stMember) =>
         val mav: ModelAndView = new ModelAndView(
-            "redirect:" + getUrl("StaffController.showStaff", "staffId" -> stMember.staffId) + "?id=" + id)
+            "redirect:" + getUrl("StaffController.showStaff", "staffId" -> stMember.staffId))
         mav
     }
   }
