@@ -1,7 +1,9 @@
 build
 hsql.db*
-
 bin/
+target/
+project/target/
+project/project/target/
 
 *~
 **/*~
