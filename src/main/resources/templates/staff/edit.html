@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head th:replace="fragments/head :: head">
-    <title th:text="#{title}">Edit Staff</title>
+    <title>Edit Staff</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
     <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
@@ -12,99 +12,90 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-        <h2 th:text="#{title}">Edit Staff</h2>
+        <h2 th:if="${action == 'create'}">Create Staff</h2>
+        <h2 th:if="${action == 'edit'}">Edit Staff</h2>
         
-        <hr>
+        <hr/>
         
         <form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
           <input type="hidden" th:field="${fedId}" />
           <div class="form-group">
-            <label class="col-sm-3 control-label" th:text="#{form.name}" for="name">Name</label>
+            <label class="col-sm-3 control-label" for="name">Name</label>
             <div class="col-sm-9">
-              <input class="form-control" id="name" type="text" placeholder="Name" th:placeholder="#{form.name}" th:field="*{staffName}" />
+              <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{staffName}" />
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-3 control-label" th:text="#{form.surnames}" for="surnames">Surnames</label>
+            <label class="col-sm-3 control-label" for="surnames">Surnames</label>
             <div class="col-sm-9">
-              <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:placeholder="#{form.surnames}" th:field="*{staffSurnames}" />
+              <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:field="*{staffSurnames}"/>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label" th:text="#{form.nif}" for="nif">NIF</label>
+            <label class="col-sm-3 control-label" for="nif">NIF</label>
             <div class="col-sm-9">
-              <input class="form-control" id="nif" type="text" placeholder="Nif" th:placeholder="#{form.nif}" th:field="*{staffNif}" />
+              <input class="form-control" id="nif" type="text" placeholder="Nif" th:field="*{staffNif}"/>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-3 control-label" th:text="#{form.email}" for="email">Email</label>
+            <label class="col-sm-3 control-label" for="email">Email</label>
             <div class="col-sm-9">
-              <input class="form-control" id="email" type="text" placeholder="Email" th:placeholder="#{form.email}" th:field="*{staffEmail}" />
+              <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{staffEmail}"/>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label" th:text="#{form.birth}" for="birth">Birth</label>
+            <label class="col-sm-3 control-label" for="birth">Birth</label>
             <div class="col-sm-9">
-              <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{staffBirth}" />
+              <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{staffBirth}"/>
             </div>
           </div>
     
           <div class="form-group">
             <div class="col-sm-3 control-label">
-	            <label th:text="#{form.telephones}" for="telephones">Telephones</label>
+	            <label for="telephones">Telephones</label>
             </div>
             <div class="col-sm-9">
-                <label th:text="#{form.telephones.example}" for="telephones">(ej: "678912345, 654321987")</label>
-                <input class="form-control" id="telephones" type="text" placeholder="Telephones" th:placeholder="#{form.telephones}" th:field="*{staffTelephones}" />
+                <label for="telephones">(ej: "678912345, 654321987")</label>
+                <input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{staffTelephones}"/>
             </div>
           </div>
   
            <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.street}" for="addRoad">Address</label>
+             <label class="col-sm-3 control-label" for="addRoad">Address</label>
              <div class="col-sm-9">
-               <input class="form-control" id="addRoad" type="text" placeholder="Address" th:placeholder="#{form.street}" th:field="${address.road}" />
+               <input class="form-control" id="addRoad" type="text" placeholder="Address" th:field="${address.addressLine}"/>
              </div>
            </div>
            <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.number}" for="addNumber">Number</label>
-             <div class="col-sm-3">
-               <input class="form-control" id="addNumber" type="text" placeholder="Number" th:placeholder="#{form.number}" th:field="${address.number}" />
-             </div>
-             <label class="col-sm-3 control-label" th:text="#{form.flat}" for="addFlat">Flat</label>
-             <div class="col-sm-3">
-               <input class="form-control" id="addFlat" type="text" placeholder="Flat" th:placeholder="#{form.flat}" th:field="${address.flat}" />
-             </div>
-           </div>
-           <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.postCode}" for="addPostCode">Postal Code</label>
+             <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
             <div class="col-sm-3">
-              <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:placeholder="#{form.postCode}" th:field="${address.postCode}" />
+              <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
             </div>
            </div>
            <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.locality}" for="addLocality">Locality</label>
+             <label class="col-sm-3 control-label" for="addLocality">Locality</label>
              <div class="col-sm-3">
-               <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:placeholder="#{form.locality}" th:field="${address.locality}" />
+               <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
              </div>
            </div>
            <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.province}" for="addProvince">Province</label>
+             <label class="col-sm-3 control-label" for="addProvince">Province</label>
              <div class="col-sm-3">
-               <input class="form-control" id="addProvince" type="text" placeholder="Province" th:placeholder="#{form.province}" th:field="${address.province}" />
+               <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
              </div>
            </div>
            <div class="form-group">
-             <label class="col-sm-3 control-label" th:text="#{form.country}" for="addCountry">Country</label>
+             <label class="col-sm-3 control-label" for="addCountry">Country</label>
              <div class="col-sm-3">
-               <input class="form-control" id="addCountry" type="text" placeholder="Country" th:placeholder="#{form.country}" th:field="${address.country}" />
-             </div>
+               <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
+>             </div>
            </div>
          
-          <input class="btn btn-primary " type="submit" name="submit" value="Accept" th:value="#{form.button.accept}"/>
+          <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
         </form>
       </div>
     </div>
