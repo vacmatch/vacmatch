@@ -11,8 +11,8 @@ trait PlayerService extends StaffMemberService {
 
   @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar,  idFederation: Long, num: String): Player
+    stEmail: String, stTelephones: String, stNif: String, 
+    stBirth: Calendar,  idFederation: Long, num: String): Player
     
   @throws[InstanceNotFoundException]
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: String,

@@ -54,8 +54,8 @@ class PlayerServiceImpl
   
   @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar,  idFederation: Long, num: String): Player = {
+    stEmail: String, stTelephones: String, stNif: String,
+    stBirth: Calendar,  idFederation: Long, num: String): Player = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -66,7 +66,7 @@ class PlayerServiceImpl
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
 	    var player: Player = new Player(stName, stSurnames, stEmail, 
-	        stTelephones, stAddress, stNif, stBirth, stFederation, num)
+	        stTelephones, stNif, stBirth, stFederation, num)
 	
 	    playerDao.save(player)
 	    player

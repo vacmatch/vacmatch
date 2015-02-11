@@ -20,12 +20,11 @@ class Player(stName: String,
     stSurnames: String,
     stEmail: String,
     stTelephones: String,
-    stAddress: Address,
     stNif: String,
     stBirth: Calendar,
     stFederation: Federation,
     num: String)
-    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stAddress, stNif,
+    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stNif,
         stBirth, stFederation)  {
   
   @BeanProperty

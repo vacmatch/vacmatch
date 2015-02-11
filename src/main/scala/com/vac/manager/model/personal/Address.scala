@@ -13,7 +13,7 @@ import javax.persistence.GenerationType
 @Entity
 @Table(name = "ADDRESS")
 @PrimaryKeyJoinColumn(name="addressId")
-class Address(argRoad: String, argNum: String, argFlat: String, argPostCod: Int, 
+class Address(addLine: String, argPostCod: Int, 
     argLocality: String, argProvince: String, nation: String) {
  
   @Id
@@ -27,15 +27,7 @@ class Address(argRoad: String, argNum: String, argFlat: String, argPostCod: Int,
   
   @BeanProperty
   @Column
-  var road: String = argRoad
-    
-  @BeanProperty
-  @Column
-  var number: String = argNum
-    
-  @BeanProperty
-  @Column
-  var flat: String = argFlat
+  var addressLine: String = addLine
     
   @BeanProperty
   @Column
@@ -50,11 +42,11 @@ class Address(argRoad: String, argNum: String, argFlat: String, argPostCod: Int,
   var province: String = argProvince
 
   override
-  def toString = this.road + ", " + this.number + " - " + this.flat + "\n" +
+  def toString = "(" + this.addressId +") " + this.addressLine + "\n" +
 		  		 this.postCode + " " + this.locality + ", " + this.province + "\n" +
 		  		 this.country
 
-  def this() = this("","","",0,"","","")
+  def this() = this("",0,"","","")
   
 }
 

@@ -18,6 +18,7 @@ import com.vac.manager.model.federation.Federation
 import com.vac.manager.service.federation.FederationService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
+import com.vac.manager.service.personal.AddressService
 
 @Service("staffMemberService")
 @Transactional
@@ -25,7 +26,10 @@ class StaffMemberServiceImpl extends StaffMemberService {
   
   @Autowired
   var federationService: FederationService = _
-  
+
+  @Autowired
+  var addressService: AddressService = _
+
   @Autowired
   var staffMemberDao: StaffMemberDao = _
   
@@ -93,8 +97,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): StaffMember = {
+    stEmail: String, stTelephones: String, stNif: String,
+    stBirth: Calendar, idFederation: Long): StaffMember = {
     
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -105,7 +109,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
 	    var staff: StaffMember = new StaffMember(stName, stSurnames, stEmail, stTelephones,
-	        stAddress, stNif, stBirth, stFederation)
+	        stNif, stBirth, stFederation)
 	  	
 	    staffMemberDao.save(staff)
 	    staff
@@ -121,7 +125,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
 
-    var maybeStaff: Option[StaffMember] = find(staffId)
+    //Modify address
+    var maybeStaff: Option[StaffMember] = assignAddress(staffId, stAddress)
     
     maybeStaff match {
       case None =>
@@ -131,11 +136,32 @@ class StaffMemberServiceImpl extends StaffMemberService {
 	    staff.staffEmail = stEmail
 	    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
 	    staff.staffTelephones = stTelephones
-	    staff.staffAddress = stAddress
+//	    staff.staffAddress = stAddress
 	    staff.staffNif = stNif
 	    staff.staffBirth = stBirth
-	  staffMemberDao.save(staff)
+	    staffMemberDao.save(staff)
 	  }
+    }
+    maybeStaff
+  }
+
+  def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember] = {
+
+    val maybeStaff: Option[StaffMember] = find(staffId)
+    
+    maybeStaff match {
+      case None =>
+      case Some(staff)=> {
+        if(staff.staffAddress != null)
+          addressService.removeAddress(staff.staffAddress.addressId)
+        
+        val savedAddress: Address = addressService.createAddress(
+            stAddress.addressLine, stAddress.postCode, stAddress.locality,
+            stAddress.province, stAddress.country)
+        
+        staff.staffAddress = savedAddress
+        staffMemberDao.save(staff)
+      }
     }
     maybeStaff
   }

@@ -17,7 +17,6 @@ class StaffMember(stName: String,
     stSurnames: String,
     stEmail: String,
     stTelephones: String,
-    stAddress: Address,
     stNif: String,
     stBirth: Calendar,
     stFederation: Federation) {
@@ -62,7 +61,7 @@ class StaffMember(stName: String,
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "addressId")
-  var staffAddress: Address = stAddress
+  var staffAddress: Address = _
 
   @BeanProperty
   @Column(nullable = false)
@@ -90,7 +89,7 @@ class StaffMember(stName: String,
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 
-  def this() = this("", "", "", null, null, "", Calendar.getInstance(), null)
+  def this() = this("", "", "", null, "", Calendar.getInstance(), null)
 
   override
   def equals(obj: Any): Boolean = {

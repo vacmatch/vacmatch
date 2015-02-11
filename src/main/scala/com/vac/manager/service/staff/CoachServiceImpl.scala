@@ -54,8 +54,8 @@ class CoachServiceImpl
   
   @throws[InstanceNotFoundException]
   def createCoach(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): Coach = {
+    stEmail: String, stTelephones: String,stNif: String,
+    stBirth: Calendar, idFederation: Long): Coach = {
     
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
@@ -66,7 +66,7 @@ class CoachServiceImpl
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
         var coach: Coach = new Coach(stName, stSurnames, stEmail, 
-          stTelephones, stAddress, stNif, stBirth, stFederation)
+          stTelephones, stNif, stBirth, stFederation)
 	
 	    coachDao.save(coach)
 	    coach

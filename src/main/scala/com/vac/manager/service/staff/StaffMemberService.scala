@@ -35,13 +35,15 @@ trait StaffMemberService {
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): StaffMember
+    stEmail: String, stTelephones: String, stNif: String,
+    stBirth: Calendar, idFederation: Long): StaffMember
   
   @throws[IllegalArgumentException]
   def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stNif: String, stBirth: Calendar): Option[StaffMember]
+  
+  def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember]
 
   def getSurnamesFromString(surnames: String): Seq[String]
 

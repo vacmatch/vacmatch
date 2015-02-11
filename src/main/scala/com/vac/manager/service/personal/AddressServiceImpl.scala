@@ -12,17 +12,31 @@ class AddressSpainServiceImpl
 	extends AddressService {
   
   @Autowired
-  var addressSpainDao: AddressDao = _
+  var addressDao: AddressDao = _
   
-  def createAddress(road: String, number: String, flat: String, postCode: Int,
+  def find(addressId: Long): Option[Address] = {
+    Option(addressDao.findById(addressId))
+  }
+
+  def createAddress(addressLine: String, postCode: Int,
       locality: String, province: String, country: String): Address = {
     
-    var address: Address = new Address(road, number, flat, postCode,
+    var address: Address = new Address(addressLine, postCode,
         locality, province, country)
-    addressSpainDao.save(address)
+    addressDao.save(address)
     address
   }
 
+  def removeAddress(addressId: Long) = {
+    
+    val maybeAddress: Option[Address] = find(addressId)
+    
+    maybeAddress match {
+      case None =>
+      case Some(address) => addressDao.remove(address)
+    }
+  }
+  
 }
 
 

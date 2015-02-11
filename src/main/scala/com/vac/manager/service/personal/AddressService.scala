@@ -4,7 +4,11 @@ import com.vac.manager.model.personal.Address
 
 trait AddressService {
   
-  def createAddress(road: String, number: String, flat: String, postCode: Int,
+  def find(addressId: Long): Option[Address]
+  
+  def createAddress(addressLine: String, postCode: Int,
       locality: String, province: String, country: String): Address
+      
+  def removeAddress(addressId: Long)
 
 }
