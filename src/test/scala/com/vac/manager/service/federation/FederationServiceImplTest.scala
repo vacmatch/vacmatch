@@ -11,18 +11,37 @@ import org.scalatest.{ FeatureSpec, GivenWhenThen, PropSpec }
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-
 class FederationServiceImplTest extends PropSpec with MockitoSugar with GeneratorDrivenPropertyChecks {
+
+  def nonEmptyString(s: String) = { s != null && s.trim.nonEmpty }
+  def validDns(s: String) = nonEmptyString(s)
+  def validFedName(s: String) = nonEmptyString(s)
+
+  val genNonEmptyString = arbitrary[String] suchThat (nonEmptyString(_))
+  val genValidDns = arbitrary[String] suchThat (validDns(_))
+  val genValidFedId = Gen.choose(1, 1000000000L) // arbitrary[Long] suchThat (_ > 0)
+
+  val validFed = for {
+    fedId <- genValidFedId
+    fedName <- genNonEmptyString
+  } yield {
+    val f = new Federation
+    f.fedId = fedId
+    f.fedName = fedName
+
+    f
+  }
 
   property("federations can be registered for any unregistered name") {
     val service = new FederationServiceImpl
     service.federationDao = mock[FederationDao]
 
-    forAll("fedName") { (fedName: String) =>
-      whenever(fedName != null && fedName.trim != "") {
+    forAll((genNonEmptyString, "fedName")) { (fedName: String) =>
+      whenever(nonEmptyString(fedName)) {
         val domains = List()
 
         when(service.federationDao.findByName(fedName)).thenReturn(None)
+        when(service.federationDao.findByName(fedName.trim)).thenReturn(None)
 
         val wasCreated = service.createFederation(fedName, domains)
         assert(wasCreated)
@@ -36,20 +55,20 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
 
     forAll((validFed, "fed")) { (fed: Federation) =>
       val fedName = fed.fedName
-      whenever(fedName != null && fedName != "") {
-        val domains = List()
+      val domains = List()
 
-        when(service.federationDao.findByName(fedName)).thenReturn(None)
+      when(service.federationDao.findByName(fedName.trim)).thenReturn(None)
+      when(service.federationDao.findByName(fedName)).thenReturn(None)
 
-        val wasCreated = service.createFederation(fedName, domains)
+      val wasCreated = service.createFederation(fedName, domains)
 
-        when(service.federationDao.findByName(fedName)).thenReturn(Some(fed))
+      when(service.federationDao.findByName(fedName.trim)).thenReturn(Some(fed))
+      when(service.federationDao.findByName(fedName)).thenReturn(Some(fed))
 
-        val wasCreatedAgain = service.createFederation(fedName, domains)
+      val wasCreatedAgain = service.createFederation(fedName, domains)
 
-        assert(wasCreated)
-        assert(!wasCreatedAgain)
-      }
+      assert(wasCreated)
+      assert(!wasCreatedAgain)
     }
   }
 
@@ -68,75 +87,74 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
     val service = new FederationServiceImpl
     service.federationDao = mock[FederationDao]
 
-    forAll("fedId", "originalFedName", "destinyFedName") {
-      (fedId: Long, originalFedName: String, finalFedName: String) =>
+    forAll(
+      (genValidFedId, "fedId"),
+      (genNonEmptyString, "originalFedName"),
+      (genNonEmptyString, "destinyFedName")
+    ) {
+        (fedId: Long, originalFedName: String, finalFedName: String) =>
 
-        whenever(originalFedName != null && finalFedName != null
-          && originalFedName.trim() != "" && finalFedName.trim() != "") {
-          val domains = List()
-          val fed = new Federation
-          fed.fedId = fedId
-          fed.fedName = originalFedName
-          when(service.federationDao.findById(fedId)).thenReturn(fed)
+          whenever(validFedName(originalFedName) && validFedName(finalFedName)) {
+            val domains = List()
+            val fed = new Federation
+            fed.fedId = fedId
+            fed.fedName = originalFedName
+            when(service.federationDao.findById(fedId)).thenReturn(fed)
 
-          service.modifyFederationName(fedId, finalFedName)
-          verify(service.federationDao).save(fed)
+            service.modifyFederationName(fedId, finalFedName)
+            verify(service.federationDao).save(fed)
 
-          assert(fed.fedName == finalFedName)
-          assert(fed.fedId == fedId)
-        }
-    }
-  }
-
-  val validFed = for {
-    fedId <- arbitrary[Long]
-    fedName <- arbitrary[String]
-  } yield {
-    val f = new Federation
-    f.fedId = fedId
-    f.fedName = fedName
-
-    f
+            assert(fed.fedName == finalFedName)
+            assert(fed.fedId == fedId)
+          }
+      }
   }
 
   property("federations can be added non-clashing domains") {
     val service = new FederationServiceImpl
     val fedId = 1
 
-    forAll((arbitrary[String], "dnsName"), (validFed, "fed")) { (dnsName: String, fed: Federation) =>
-      whenever(dnsName != null && dnsName.length > 0) {
-        service.federationDao = mock[FederationDao]
-        when(service.federationDao.findByDomainName(dnsName)).thenReturn(None)
-        when(service.federationDao.findById(fed.fedId)).thenReturn(fed)
+    forAll(
+      (genValidDns, "dnsName"),
+      (validFed, "fed")
+    ) { (dnsName: String, fed: Federation) =>
+        whenever(validDns(dnsName)) {
+          service.federationDao = mock[FederationDao]
+          when(service.federationDao.findByDomainName(dnsName)).thenReturn(None)
+          when(service.federationDao.findById(fed.fedId)).thenReturn(fed)
 
-        service.addFederationDomain(fed.fedId, dnsName)
-        val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+          service.addFederationDomain(fed.fedId, dnsName)
+          val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
 
-        verify(service.federationDao).saveDomainName(captor.capture())
-        assert((captor.getValue.dns) == dnsName)
+          verify(service.federationDao).saveDomainName(captor.capture())
+          assert((captor.getValue.dns) == dnsName)
+        }
       }
-    }
   }
 
   property("federation cannot add a clashing domain of another federation") {
     val service = new FederationServiceImpl
 
-    forAll("domainName", "fedId", "fedName") { (domainName: String, fedId: Long, fedName: String) =>
-      whenever(domainName != null && domainName.length > 0 && fedName != null && fedName.trim.nonEmpty) {
-        service.federationDao = mock[FederationDao]
+    forAll(
+      (genNonEmptyString, "domainName"),
+      (genValidFedId, "fedId"),
+      (genNonEmptyString, "fedName")
+    ) { (domainName: String, fedId: Long, fedName: String) =>
+        whenever(validDns(domainName) && validFedName(fedName)) {
+          service.federationDao = mock[FederationDao]
 
-        val existingFederation = new Federation
-        existingFederation setFedId fedId
-        existingFederation setFedName fedName
-        when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(existingFederation))
+          val existingFederation = new Federation
+          existingFederation setFedId fedId
+          existingFederation setFedName fedName
+          when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(existingFederation))
 
-        val r = service.addFederationDomain(fedId, domainName)
-        val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+          val r = service.addFederationDomain(fedId, domainName)
+          val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
 
-        verify(service.federationDao, never()).saveDomainName(captor.capture())
-        assert(r == false)
+          verify(service.federationDao, never()).saveDomainName(captor.capture())
+          assert(r == false)
+        }
       }
-    }
   }
 
   property("domains can be removed from federations") {
@@ -162,7 +180,7 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
   property("federations cannot be removed if they do not exist") {
     val service = new FederationServiceImpl
 
-    forAll("fedId") { (fedId: Long) =>
+    forAll((genValidFedId, "fedId")) { (fedId: Long) =>
 
       // Start with a fresh mock in each iteration so that verify
       // works correctly.
