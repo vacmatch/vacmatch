@@ -65,8 +65,6 @@ class FederationServiceImpl extends FederationService {
 
     val fed = _createFederationInTransaction(fedName)
 
-    println("GOT FEDERATION AGAIN = ", fed, "ID = ", fed.fedId)
-
     val registered = domains.filter(domain => _addFederationDomain(fed, domain))
 
     if (registered.size != domains.size) {
