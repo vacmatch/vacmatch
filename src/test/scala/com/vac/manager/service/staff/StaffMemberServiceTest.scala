@@ -72,8 +72,8 @@ class StaffMemberServiceTest
       When("StaffMember parameters are valid")
       When("Federation exists")
 
-      Mockito.when(mockFederation getFedId) thenReturn fedId
-	  Mockito.when(staffMemberService.federationService find(fedId)) thenReturn Some(mockFederation)
+      Mockito.when(mockFederation.getFedId).thenReturn(fedId)
+	  Mockito.when(staffMemberService.federationService.find(fedId)).thenReturn(Some(mockFederation))
 
       var insertedStaffMember: StaffMember = staffMemberService.createStaff(
         validStaffMember.staffName, validStaffMember.staffSurnames ,
@@ -96,7 +96,7 @@ class StaffMemberServiceTest
       When("StaffMember parameters are valid")
       When("Federation doesn't exist")
 
-      Mockito.when(mockFederation getFedId) thenReturn fedId
+      Mockito.when(mockFederation.getFedId).thenReturn(fedId)
 	  Mockito.when(staffMemberService.federationService find(fedId)) thenReturn None
 
       intercept[InstanceNotFoundException]{
@@ -119,7 +119,7 @@ class StaffMemberServiceTest
       
       When("staffName parameter is empty")
 
-      Mockito.when(mockFederation getFedId) thenReturn fedId
+      Mockito.when(mockFederation.getFedId).thenReturn(fedId)
 	  Mockito.when(staffMemberService.federationService find(fedId)) thenReturn Some(mockFederation)
 
       intercept[IllegalArgumentException]{
@@ -211,7 +211,7 @@ class StaffMemberServiceTest
       Then("StaffMember activation has the new state")
       
       staffMember.staffActivated should equal (newState)
-      verify(staffMemberService staffMemberDao) save(staffMember)
+      verify(staffMemberService.staffMemberDao).save(staffMember)
 
     }
     
@@ -234,7 +234,7 @@ class StaffMemberServiceTest
       Then("StaffMember activation hasn't been changed")
 
       assert(staffMember.staffActivated == oldState)
-      verify(staffMemberService staffMemberDao, never) save(staffMember)
+      verify(staffMemberService.staffMemberDao, never).save(staffMember)
     }
   }
   
@@ -252,7 +252,7 @@ class StaffMemberServiceTest
 
       Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(staffMember)
       Mockito.when(staffMemberService.addressService.createAddress(
-          anyString, anyInt, anyString, anyString, anyString)).thenReturn(mockAddress)
+          anyString, anyString, anyString, anyString, anyString)).thenReturn(mockAddress)
       
       When("StaffMember try to be modified")
       var maybeStaffMember: Option[StaffMember] = 
@@ -292,7 +292,7 @@ class StaffMemberServiceTest
       Then("StaffMember can't be modified")
       Then("StaffMember can't be saved")
       modifiedStaffMember should equal (None)
-      verify(staffMemberService staffMemberDao, never) save(staffMember)
+      verify(staffMemberService.staffMemberDao, never).save(staffMember)
 
     }
 
@@ -372,6 +372,134 @@ class StaffMemberServiceTest
       Then("StaffMember can't be modified")
 
     }
+  }
+  
+  feature("StaffMember address modification"){
+    scenario("A StaffMember address must be modified when old address is not null"){
+      
+      Given("An existent StaffMember")
+      Given("A StaffMember old address")
+      Given("Valid new Address")
+      val staffMemberId: Long = 1
+      validStaffMember.staffAddress = new Address("Plaza Pontevedra 21", "15004", 
+          "A Coruña", "A Coruña", "España")
+      val newAddress: Address = new Address("Calle Orzan 12 5º", "15003", 
+          "A Coruña", "A Coruña", "España")
+      
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(validStaffMember)
+      Mockito.when(staffMemberService.addressService.createAddress(
+          newAddress.addressLine, newAddress.postCode, newAddress.locality,
+          newAddress.province, newAddress.country)).thenReturn(newAddress)
+          
+      When("StaffMember address try to be modified")
+      val modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.assignAddress(staffMemberId, newAddress)
+      
+      Then("Old StaffMember address must be removed from de DB")
+      Then("StaffMember must be modified")
+      verify(staffMemberService.addressService).removeAddress(anyLong)
+      modifiedStaffMember.get.staffAddress should equal (newAddress)
+    }
+
+    scenario("A StaffMember address must be modified when old address is null"){
+      
+      Given("An existent StaffMember")
+      Given("A null StaffMember old address")
+      Given("Valid new Address")
+      val staffMemberId: Long = 1
+      val newAddress: Address = new Address("Calle Orzan 12 5º", "15003", 
+          "A Coruña", "A Coruña", "España")
+      
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(validStaffMember)
+      Mockito.when(staffMemberService.addressService.createAddress(
+          newAddress.addressLine, newAddress.postCode, newAddress.locality,
+          newAddress.province, newAddress.country)).thenReturn(newAddress)
+          
+      When("StaffMember address try to be modified")
+      val modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.assignAddress(staffMemberId, newAddress)
+      
+      Then("Old StaffMember address shouldn't be removed from de DB")
+      Then("StaffMember must be modified")
+      verify(staffMemberService.addressService, never).removeAddress(anyLong)
+      modifiedStaffMember.get.staffAddress should equal (newAddress)
+    }
+
+    scenario("A StaffMember address can't be modified if StaffMember doesn't exists"){
+      
+      Given("A not existent StaffMember")
+      Given("A StaffMember old address")
+      Given("Valid new Address")
+      val staffMemberId: Long = 1
+      validStaffMember.staffAddress = new Address("Plaza Pontevedra 21", "15004", 
+          "A Coruña", "A Coruña", "España")
+      val newAddress: Address = new Address("Calle Orzan 12 5º", "15003", 
+          "A Coruña", "A Coruña", "España")
+      
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(null)
+      
+      When("StaffMember address try to be modified")
+      val modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.assignAddress(staffMemberId, newAddress)
+        
+      Then("Old StaffMember address shouldn't be removed from de DB")
+      Then("New address can't be saved in the DB")
+      Then("StaffMember can't be modified")
+      verify(staffMemberService.addressService, never).removeAddress(anyLong)
+      verify(staffMemberService.addressService, never).createAddress(anyString,
+          anyString, anyString, anyString, anyString)
+      modifiedStaffMember should equal (None)
+    }
+    
+    scenario("A StaffMember address can't be modified if new Address is null"){
+      Given("An existent StaffMember")
+      Given("A StaffMember old address")
+      Given("A null new Address")
+      val staffMemberId: Long = 1
+      validStaffMember.staffAddress = new Address("Plaza Pontevedra 21", "15004", 
+          "A Coruña", "A Coruña", "España")
+      val newAddress: Address = null
+      
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(validStaffMember)
+      
+      When("StaffMember address try to be modified")
+      val modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.assignAddress(staffMemberId, newAddress)
+      
+      Then("Old StaffMember address shouldn't be removed from de DB")
+      Then("New address can't be saved in the DB")
+      Then("StaffMember can't be modified")
+      verify(staffMemberService.addressService, never).removeAddress(anyLong)
+      verify(staffMemberService.addressService, never).createAddress(anyString,
+          anyString, anyString, anyString, anyString)
+      modifiedStaffMember.get.staffAddress should equal (validStaffMember.staffAddress)
+    }
+    
+    scenario("A StaffMember address can't be modified if new Address don't change"){
+      
+      Given("An existent StaffMember")
+      Given("A StaffMember old address")
+      Given("The same new Address than old StaffMember address")
+      val staffMemberId: Long = 1
+      val newAddress: Address = new Address("Plaza Pontevedra 21", "15004", 
+          "A Coruña", "A Coruña", "España")	
+      validStaffMember.staffAddress = newAddress
+
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(validStaffMember)
+
+      When("StaffMember address try to be modified")
+      val modifiedStaffMember: Option[StaffMember] = 
+        staffMemberService.assignAddress(staffMemberId, newAddress)
+        
+      Then("Old StaffMember address shouldn't be removed from de DB")
+      Then("New address can't be saved in the DB")
+      Then("StaffMember can't be modified")
+      verify(staffMemberService.addressService, never).removeAddress(anyLong)
+      verify(staffMemberService.addressService, never).createAddress(anyString,
+          anyString, anyString, anyString, anyString)
+      modifiedStaffMember.get.staffAddress should equal (validStaffMember.staffAddress)
+    }
+
   }
 }
 

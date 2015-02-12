@@ -39,7 +39,7 @@ class TeamController() {
     var country: String = ""
 
     var address: Address = new Address(
-      "ADDRESS LINE", 27003, "LOCALITY", "PROVINCE", "COUNTRY")
+      "ADDRESS LINE", "27003", "LOCALITY", "PROVINCE", "COUNTRY")
 
     var createdTeam: Team = teamService.createTeam(teamName, publicName, fundationalDate, address, web)
 

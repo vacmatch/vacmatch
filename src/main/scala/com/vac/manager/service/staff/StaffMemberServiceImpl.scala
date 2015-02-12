@@ -151,7 +151,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
     maybeStaff match {
       case None =>
       case Some(staff)=> {
-        if((staff.staffAddress == stAddress) || (stAddress == null))
+        if((stAddress == null) || (staff.staffAddress == stAddress))
           return maybeStaff
           
         if(staff.staffAddress != null)
@@ -161,7 +161,6 @@ class StaffMemberServiceImpl extends StaffMemberService {
             stAddress.addressLine, stAddress.postCode, stAddress.locality,
             stAddress.province, stAddress.country)
         
-        println("Param: " + stAddress + "staff address: " + staff.staffAddress + "saved: " +savedAddress)
         staff.staffAddress = savedAddress
         staffMemberDao.save(staff)
       }

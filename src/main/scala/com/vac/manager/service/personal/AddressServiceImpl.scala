@@ -8,7 +8,7 @@ import com.vac.manager.model.personal.AddressDao
 
 @Service("addressService")
 @Transactional
-class AddressSpainServiceImpl
+class AddressServiceImpl
 	extends AddressService {
   
   @Autowired
@@ -18,11 +18,11 @@ class AddressSpainServiceImpl
     Option(addressDao.findById(addressId))
   }
 
-  def createAddress(addressLine: String, postCode: Int,
+  def createAddress(addressLine: String, postCode: String,
       locality: String, province: String, country: String): Address = {
     
-    var address: Address = new Address(addressLine, postCode,
-        locality, province, country)
+    var address: Address = new Address(addressLine, postCode, locality,
+        province, country)
     addressDao.save(address)
     address
   }

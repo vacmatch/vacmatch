@@ -13,7 +13,7 @@ import javax.persistence.GenerationType
 @Entity
 @Table(name = "ADDRESS")
 @PrimaryKeyJoinColumn(name="addressId")
-class Address(addLine: String, argPostCod: Int, 
+class Address(addLine: String, argPostCod: String, 
     argLocality: String, argProvince: String, nation: String) {
  
   @Id
@@ -23,15 +23,11 @@ class Address(addLine: String, argPostCod: Int,
   
   @BeanProperty
   @Column
-  var country: String = nation
-  
-  @BeanProperty
-  @Column
   var addressLine: String = addLine
     
   @BeanProperty
   @Column
-  var postCode: Int = argPostCod
+  var postCode: String = argPostCod
     
   @BeanProperty
   @Column
@@ -40,13 +36,30 @@ class Address(addLine: String, argPostCod: Int,
   @BeanProperty
   @Column
   var province: String = argProvince
-
+  
+  @BeanProperty
+  @Column
+  var country: String = nation
+  
+  override
+  def equals(obj: Any): Boolean = {
+    if(!obj.isInstanceOf[Address])
+      false
+    var addObj: Address = obj.asInstanceOf[Address]
+    (addObj.addressId == this.addressId) &&
+    (addObj.addressLine == this.addressLine) &&
+    (addObj.postCode == this.postCode) &&
+    (addObj.locality == this.locality) &&
+    (addObj.province == this.province) &&
+    (addObj.country == this.country)
+  }
+  
   override
   def toString = "(" + this.addressId +") " + this.addressLine + "\n" +
 		  		 this.postCode + " " + this.locality + ", " + this.province + "\n" +
 		  		 this.country
 
-  def this() = this("",0,"","","")
+  def this() = this("","","","","")
   
 }
 
