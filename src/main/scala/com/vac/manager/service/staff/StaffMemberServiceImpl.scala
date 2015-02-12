@@ -136,7 +136,6 @@ class StaffMemberServiceImpl extends StaffMemberService {
 	    staff.staffEmail = stEmail
 	    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
 	    staff.staffTelephones = stTelephones
-//	    staff.staffAddress = stAddress
 	    staff.staffNif = stNif
 	    staff.staffBirth = stBirth
 	    staffMemberDao.save(staff)
@@ -152,13 +151,17 @@ class StaffMemberServiceImpl extends StaffMemberService {
     maybeStaff match {
       case None =>
       case Some(staff)=> {
+        if((staff.staffAddress == stAddress) || (stAddress == null))
+          return maybeStaff
+          
         if(staff.staffAddress != null)
           addressService.removeAddress(staff.staffAddress.addressId)
-        
+          
         val savedAddress: Address = addressService.createAddress(
             stAddress.addressLine, stAddress.postCode, stAddress.locality,
             stAddress.province, stAddress.country)
         
+        println("Param: " + stAddress + "staff address: " + staff.staffAddress + "saved: " +savedAddress)
         staff.staffAddress = savedAddress
         staffMemberDao.save(staff)
       }

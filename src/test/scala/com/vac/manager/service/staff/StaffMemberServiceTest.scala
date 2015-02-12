@@ -26,6 +26,7 @@ import org.mockito.Mockito
 import org.mockito.Matchers._
 import java.util.Collections
 import com.vac.manager.model.staff.StaffMemberDao
+import com.vac.manager.service.personal.AddressService
 
 class StaffMemberServiceTest 
 				extends FeatureSpec
@@ -48,6 +49,7 @@ class StaffMemberServiceTest
     staffMemberService = new StaffMemberServiceImpl
     staffMemberService.federationService = mock[FederationServiceImpl]
     staffMemberService.staffMemberDao = mock[StaffMemberDao]
+    staffMemberService.addressService = mock[AddressService]
 
     //Initialization of a valid StaffMember
     mockAddress = mock[Address]
@@ -55,7 +57,7 @@ class StaffMemberServiceTest
 
     mockFederation.fedId = 1
     validStaffMember = new StaffMember(
-    "Jose", "López Castro", "jlcastro@email.com", "666555444", mockAddress, 
+    "Jose", "López Castro", "jlcastro@email.com", "666555444", 
     "33442212X", Calendar.getInstance(), mockFederation)
 
   }
@@ -76,8 +78,8 @@ class StaffMemberServiceTest
       var insertedStaffMember: StaffMember = staffMemberService.createStaff(
         validStaffMember.staffName, validStaffMember.staffSurnames ,
         validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-        validStaffMember.staffAddress, validStaffMember.staffNif,
-        validStaffMember.staffBirth, validStaffMember.staffFederation.getFedId)
+        validStaffMember.staffNif, validStaffMember.staffBirth, 
+        validStaffMember.staffFederation.getFedId)
       
       Then("The Staff gets created")
       Then("The Staff has the same parameters")
@@ -101,8 +103,7 @@ class StaffMemberServiceTest
         var insertedStaff: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          validStaffMember.staffBirth, fedId)
+          validStaffMember.staffNif, validStaffMember.staffBirth, fedId)
       }
       
       Then("The StaffMember cannot be created")
@@ -125,8 +126,8 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           "", validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffFederation.fedId)
       }
 
       When("staffName parameter is null")
@@ -135,8 +136,8 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           null, validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffNif, validStaffMember.staffBirth,
+          validStaffMember.staffFederation.fedId)
       }
 
       When("staffSurnames parameter is empty")
@@ -145,8 +146,8 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, "" ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffFederation.fedId)
       }
 
       When("staffSurnames parameter is null")
@@ -155,8 +156,8 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, null ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffFederation.fedId)
       }
 
       When("staffNif parameter is empty")
@@ -165,8 +166,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress,"",
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          "", validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
       }
 
       When("staffNif parameter is null")
@@ -175,8 +175,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, null,
-          validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
+          null, validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
       }
 
       When("staffBirth parameter is null")
@@ -185,8 +184,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffAddress, validStaffMember.staffNif,
-          null, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffNif, null, validStaffMember.staffFederation.fedId)
       }
       
       Then("The StaffMember cannot be created")
@@ -198,7 +196,7 @@ class StaffMemberServiceTest
   feature("StaffMember activation") {
     scenario("StaffMember activation can be changed when StaffMember exists and parameters are valid") {
       Given("A staffMember and a new activation state")
-      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMember: StaffMember = new StaffMember()
       var newState: Boolean = true
 
       When("Federation exists")
@@ -219,7 +217,7 @@ class StaffMemberServiceTest
     
     scenario("StaffMember activation cannot be changed when StaffMember doesn't exist") {
       Given("A staffMember, an old activation state and a new activation state")
-      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMember: StaffMember = new StaffMember()
       var oldState: Boolean = false
       var newState: Boolean = true
 
@@ -245,24 +243,32 @@ class StaffMemberServiceTest
     scenario("Someone try to modify a existent StaffMember with valid parameters"){
 
       Given("An existent StaffMember")
+      Given("An existent Federation")
+      Given("A null StaffMember Address")
       Given("Valid StaffMember parameters")
-      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMember: StaffMember = new StaffMember("Pablo","Castro","email@e.com",
+         "999888222","33445566x",Calendar.getInstance(),mockFederation)
       var staffMemberId: Long = 1
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn staffMember
-
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.addressService.createAddress(
+          anyString, anyInt, anyString, anyString, anyString)).thenReturn(mockAddress)
+      
       When("StaffMember try to be modified")
-      var modifiedStaffMember: Option[StaffMember] = 
+      var maybeStaffMember: Option[StaffMember] = 
         staffMemberService.modifyStaff(staffMemberId, 
           validStaffMember.staffName, validStaffMember.staffSurnames, 
           validStaffMember.staffEmail, validStaffMember.staffTelephones,
           validStaffMember.staffAddress, validStaffMember.staffNif,
           validStaffMember.staffBirth)
-      
+
+      val modifiedStaffMember: StaffMember = maybeStaffMember.get
+
       Then("StaffMember must be modified")
+      Then("StaffMember Address must be saved")
       Then("StaffMember must be saved")
-      modifiedStaffMember should equal (Some(validStaffMember))
-      verify(staffMemberService staffMemberDao) save(staffMember)
+      modifiedStaffMember should equal (validStaffMember)
+      verify(staffMemberService.staffMemberDao).save(staffMember)
 
     }
 
@@ -270,7 +276,7 @@ class StaffMemberServiceTest
       
       Given("A not existent StaffMember")
       Given("Valid StaffMember parameters")
-      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMember: StaffMember = new StaffMember()
       var staffMemberId: Long = 1
 
       Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn null
@@ -294,7 +300,7 @@ class StaffMemberServiceTest
       
       Given("An existent StaffMember")
       Given("Not valid StaffMember parameter")
-      var staffMember: StaffMember = new StaffMember(mockFederation)
+      var staffMember: StaffMember = new StaffMember()
       var staffMemberId: Long = 1
       
       Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)) thenReturn staffMember
