@@ -18,7 +18,9 @@
         <hr/>
         
         <form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
-          <input type="hidden" th:field="${fedId}" />
+          <input th:each="h: ${hiddens}" type="hidden"
+           th:name="${h.key}" th:value="${h.value}" />
+
           <div class="form-group">
             <label class="col-sm-3 control-label" for="name">Name</label>
             <div class="col-sm-9">

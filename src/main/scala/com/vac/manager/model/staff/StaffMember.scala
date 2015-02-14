@@ -71,10 +71,8 @@ class StaffMember(
 
   @BeanProperty
   @Column
-  @ManyToMany(
-    fetch = FetchType.LAZY,
-    cascade = Array(CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE)
-  )
+  @ManyToMany(fetch = FetchType.EAGER,
+      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
   @JoinTable(
     name = "TEAM_STAFF",
     joinColumns =
@@ -85,7 +83,7 @@ class StaffMember(
   var staffTeamList: java.util.List[Team] = _
 
   @BeanProperty
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 

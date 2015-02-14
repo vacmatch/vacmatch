@@ -65,18 +65,65 @@ class StaffController extends UrlGrabber {
     def getAssignTeamLink: String = ""
     def getEditPrivacyLink: String = ""
   }
+  
+  class FindStaffs() {
 
-  def list(): ModelAndView = {
+    @BeanProperty
+    var name: String = null
+    
+    @BeanProperty
+    var cardId: String = null
+    
+    @BeanProperty
+    var email: String = null
 
+    @BeanProperty
+    var activated: Boolean = false
+
+    @BeanProperty
+    var allStaff: Boolean = true
+    
+  }
+
+  def find(): ModelAndView = {
+    
+    val fedId: java.lang.Long = federation.getId
+
+    //Receiver
+    val receiverFind = new FindStaffs
+    
+    //Submit params
+    val submitUrl: String = getUrl("StaffController.list")
+    val submitMethod: String = "POST"
+
+    val mav: ModelAndView = new ModelAndView("staff/find")
+    mav.addObject("receiver",receiverFind)
+    mav.addObject("hiddens", Map("fedId"->fedId).asJava.entrySet())
+    mav.addObject("submitUrl", submitUrl)
+    mav.addObject("submitMethod", submitMethod)
+    mav
+  }
+ 
+  def list(
+    @RequestParam name: String,
+    @RequestParam cardId: String,
+    @RequestParam email: String,
+    @RequestParam activated: Boolean,
+    @RequestParam allStaff: Boolean): ModelAndView = {
+
+    //TODO: Check errors
     val fedId: Long = federation.getId
     val createLink: String = getUrl("StaffController.create")
 
-    val staffList: Seq[ActionableStaff] =
-      staffMemberService.findAllByFederationId(fedId) map (new ActionableStaff(_))
-
-    return new ModelAndView("staff/list")
-      .addObject("createLink", createLink)
-      .addObject("staffList", staffList.asJava)
+    var staffList: Seq[ActionableStaff] = null
+    
+    if(allStaff)
+      staffList = staffMemberService.findAllByFederationId(fedId) map (new ActionableStaff(_))
+      
+    val mav: ModelAndView = new ModelAndView("staff/list")
+    mav.addObject("createLink", createLink)
+    mav.addObject("staffList", staffList.asJava)
+    mav
   }
 
   def showStaff(
