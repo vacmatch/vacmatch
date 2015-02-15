@@ -78,11 +78,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
   def changePrivacy(staffId: Long, newState: Boolean, newAlias: String) = {
     var staff: StaffMember = staffMemberDao.findById(staffId)
     
-    if(newAlias != null){
-    	staff.staffPrivacyActivated = newState
-    	staff.staffAlias = newAlias
-    	staffMemberDao.save(staff)
-    }
+	staff.staffAlias = newAlias
+	staffMemberDao.save(staff)
   }
 	
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team]) = {

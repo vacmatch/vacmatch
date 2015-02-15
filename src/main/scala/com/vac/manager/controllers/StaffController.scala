@@ -43,7 +43,6 @@ class StaffController extends UrlGrabber {
     staffName = staff.staffName
     staffSurnames = staff.staffSurnames
     staffActivated = staff.staffActivated
-    staffPrivacityActivated = staff.staffPrivacityActivated
     staffAlias = staff.staffAlias
     staffEmail = staff.staffEmail
     staffAvatarLink = staff.staffAvatarLink
