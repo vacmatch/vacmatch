@@ -21,7 +21,7 @@ trait StaffMemberService {
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember]
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   /* ---------------- MODIFY --------------- */
 
@@ -35,13 +35,13 @@ trait StaffMemberService {
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stNif: String,
+    stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar, idFederation: Long): StaffMember
   
   @throws[IllegalArgumentException]
   def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[StaffMember]
+    stCardId: String, stBirth: Calendar): Option[StaffMember]
   
   def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember]
 

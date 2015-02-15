@@ -55,8 +55,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findByEmail(email, startIndex, count)
   }
 	
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    staffMemberDao.findByNif(nif, startIndex, count)
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findByCardId(cardId, startIndex, count)
   }
 
 	
@@ -97,11 +97,11 @@ class StaffMemberServiceImpl extends StaffMemberService {
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stNif: String,
+    stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar, idFederation: Long): StaffMember = {
     
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
     
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
     
@@ -109,7 +109,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
 	    var staff: StaffMember = new StaffMember(stName, stSurnames, stEmail, stTelephones,
-	        stNif, stBirth, stFederation)
+	        stCardId, stBirth, stFederation)
 	  	
 	    staffMemberDao.save(staff)
 	    staff
@@ -120,10 +120,10 @@ class StaffMemberServiceImpl extends StaffMemberService {
   @throws[IllegalArgumentException]
   def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[StaffMember] = {
+    stCardId: String, stBirth: Calendar): Option[StaffMember] = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     //Modify address
     var maybeStaff: Option[StaffMember] = assignAddress(staffId, stAddress)
@@ -136,7 +136,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
 	    staff.staffEmail = stEmail
 	    staff.staffAvatarLink = new Gravatar(if(stEmail==null) "" else stEmail).ssl(true).avatarUrl
 	    staff.staffTelephones = stTelephones
-	    staff.staffNif = stNif
+	    staff.staffCardId = stCardId
 	    staff.staffBirth = stBirth
 	    staffMemberDao.save(staff)
 	  }
@@ -170,14 +170,14 @@ class StaffMemberServiceImpl extends StaffMemberService {
 
   @throws[IllegalArgumentException]
   protected def checkParameters(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stBirth: Calendar, stNif: String) {
+    stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String) {
     
     if ((stName == null) || (stName.isEmpty()))
       throw new IllegalArgumentException(stName, classOf[String].getName())
     if ((stSurnames == null) || (stSurnames.isEmpty))
       throw new IllegalArgumentException(stSurnames, classOf[Seq[String]].getName())
-    if((stNif == null) || (stNif.isEmpty()))
-      throw new IllegalArgumentException(stNif, classOf[String].getName())
+    if((stCardId == null) || (stCardId.isEmpty()))
+      throw new IllegalArgumentException(stCardId, classOf[String].getName())
     if((stBirth == null))
       throw new IllegalArgumentException(stBirth, classOf[Calendar].getName())
   }

@@ -40,7 +40,7 @@ class StaffMemberDaoJPA
     null
   }
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
     null
   }
   

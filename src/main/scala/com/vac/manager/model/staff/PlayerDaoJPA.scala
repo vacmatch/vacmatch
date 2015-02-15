@@ -44,7 +44,7 @@ class PlayerDaoJPA
   }
 	
   override
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Player]  = {
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Player]  = {
     null
   }
 

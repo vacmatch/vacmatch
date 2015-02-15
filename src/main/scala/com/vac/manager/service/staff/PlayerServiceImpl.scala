@@ -46,19 +46,19 @@ class PlayerServiceImpl
   }
 	
   override
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Player] = {
-    this.playerDao.findByNif(nif, startIndex, count)
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Player] = {
+    this.playerDao.findByCardId(cardId, startIndex, count)
   }
 
   /* ------------- MODIFY --------------- */
   
   @throws[InstanceNotFoundException]
   def createPlayer(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stNif: String,
+    stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar,  idFederation: Long, num: String): Player = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
 
@@ -66,7 +66,7 @@ class PlayerServiceImpl
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
 	    var player: Player = new Player(stName, stSurnames, stEmail, 
-	        stTelephones, stNif, stBirth, stFederation, num)
+	        stTelephones, stCardId, stBirth, stFederation, num)
 	
 	    playerDao.save(player)
 	    player
@@ -77,10 +77,10 @@ class PlayerServiceImpl
   @throws[InstanceNotFoundException]
   def modifyPlayer(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, num: String): Option[Player] = {
+    stCardId: String, stBirth: Calendar, num: String): Option[Player] = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     var maybePlayer: Option[Player] = Option(playerDao.findById(staffId))
     
@@ -92,7 +92,7 @@ class PlayerServiceImpl
 	    player.staffEmail = stEmail
 	    player.staffTelephones = stTelephones
 	    player.staffAddress = stAddress
-	    player.staffNif = stNif
+	    player.staffCardId = stCardId
 	    player.staffBirth = stBirth
 	    player.dorsal = num
 	    

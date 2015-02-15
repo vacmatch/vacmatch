@@ -16,7 +16,7 @@ trait PlayerDao extends StaffMemberDao {
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Player]
 	
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Player]
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Player]
 
 }
 

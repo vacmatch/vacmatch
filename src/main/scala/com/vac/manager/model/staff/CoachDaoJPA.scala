@@ -42,7 +42,7 @@ class CoachDaoJPA
   }
   
   override
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Coach] = {
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach] = {
     null
   }
   

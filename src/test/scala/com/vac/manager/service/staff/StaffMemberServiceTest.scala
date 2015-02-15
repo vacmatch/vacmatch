@@ -78,7 +78,7 @@ class StaffMemberServiceTest
       var insertedStaffMember: StaffMember = staffMemberService.createStaff(
         validStaffMember.staffName, validStaffMember.staffSurnames ,
         validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-        validStaffMember.staffNif, validStaffMember.staffBirth, 
+        validStaffMember.staffCardId, validStaffMember.staffBirth, 
         validStaffMember.staffFederation.getFedId)
       
       Then("The Staff gets created")
@@ -103,7 +103,7 @@ class StaffMemberServiceTest
         var insertedStaff: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, validStaffMember.staffBirth, fedId)
+          validStaffMember.staffCardId, validStaffMember.staffBirth, fedId)
       }
       
       Then("The StaffMember cannot be created")
@@ -126,7 +126,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           "", validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffCardId, validStaffMember.staffBirth, 
           validStaffMember.staffFederation.fedId)
       }
 
@@ -136,7 +136,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           null, validStaffMember.staffSurnames ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, validStaffMember.staffBirth,
+          validStaffMember.staffCardId, validStaffMember.staffBirth,
           validStaffMember.staffFederation.fedId)
       }
 
@@ -146,7 +146,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, "" ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffCardId, validStaffMember.staffBirth, 
           validStaffMember.staffFederation.fedId)
       }
 
@@ -156,11 +156,11 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, null ,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, validStaffMember.staffBirth, 
+          validStaffMember.staffCardId, validStaffMember.staffBirth, 
           validStaffMember.staffFederation.fedId)
       }
 
-      When("staffNif parameter is empty")
+      When("staffCardId parameter is empty")
 
       intercept[IllegalArgumentException]{
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
@@ -169,7 +169,7 @@ class StaffMemberServiceTest
           "", validStaffMember.staffBirth, validStaffMember.staffFederation.fedId)
       }
 
-      When("staffNif parameter is null")
+      When("staffCardId parameter is null")
       
       intercept[IllegalArgumentException]{
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
@@ -184,7 +184,7 @@ class StaffMemberServiceTest
         var insertedStaffMember: StaffMember = staffMemberService.createStaff(
           validStaffMember.staffName, validStaffMember.staffSurnames,
           validStaffMember.staffEmail, validStaffMember.staffTelephones, 
-          validStaffMember.staffNif, null, validStaffMember.staffFederation.fedId)
+          validStaffMember.staffCardId, null, validStaffMember.staffFederation.fedId)
       }
       
       Then("The StaffMember cannot be created")
@@ -259,7 +259,7 @@ class StaffMemberServiceTest
         staffMemberService.modifyStaff(staffMemberId, 
           validStaffMember.staffName, validStaffMember.staffSurnames, 
           validStaffMember.staffEmail, validStaffMember.staffTelephones,
-          validStaffMember.staffAddress, validStaffMember.staffNif,
+          validStaffMember.staffAddress, validStaffMember.staffCardId,
           validStaffMember.staffBirth)
 
       val modifiedStaffMember: StaffMember = maybeStaffMember.get
@@ -287,7 +287,7 @@ class StaffMemberServiceTest
           validStaffMember.staffName, 
           validStaffMember.staffSurnames, validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, validStaffMember.staffBirth)
+          validStaffMember.staffCardId, validStaffMember.staffBirth)
       
       Then("StaffMember can't be modified")
       Then("StaffMember can't be saved")
@@ -311,7 +311,7 @@ class StaffMemberServiceTest
           null, 
           validStaffMember.staffSurnames, validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, validStaffMember.staffBirth)
+          validStaffMember.staffCardId, validStaffMember.staffBirth)
       }
 
       When("staffName is empty")
@@ -320,7 +320,7 @@ class StaffMemberServiceTest
           "", 
           validStaffMember.staffSurnames, validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, validStaffMember.staffBirth)
+          validStaffMember.staffCardId, validStaffMember.staffBirth)
       }
       
       When("staffSurnames are null")
@@ -329,7 +329,7 @@ class StaffMemberServiceTest
           validStaffMember.staffName, 
           null, validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, validStaffMember.staffBirth)
+          validStaffMember.staffCardId, validStaffMember.staffBirth)
       }
       
       When("staffSurnames are empty")
@@ -338,10 +338,10 @@ class StaffMemberServiceTest
           validStaffMember.staffName, 
           "", validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, validStaffMember.staffBirth)
+          validStaffMember.staffCardId, validStaffMember.staffBirth)
       }
 
-      When("staffNif is null")
+      When("staffCardId is null")
       intercept[IllegalArgumentException]{
         staffMemberService.modifyStaff(staffMemberId, 
           validStaffMember.staffName, 
@@ -350,7 +350,7 @@ class StaffMemberServiceTest
           null, validStaffMember.staffBirth)
       }
       
-      When("staffNif is empty")
+      When("staffCardId is empty")
       intercept[IllegalArgumentException]{
         staffMemberService.modifyStaff(staffMemberId, 
           validStaffMember.staffName, 
@@ -366,7 +366,7 @@ class StaffMemberServiceTest
           validStaffMember.staffName, 
           validStaffMember.staffSurnames, validStaffMember.staffEmail, 
           validStaffMember.staffTelephones , validStaffMember.staffAddress, 
-          validStaffMember.staffNif, null)
+          validStaffMember.staffCardId, null)
       }
 
       Then("StaffMember can't be modified")

@@ -21,10 +21,10 @@ class Coach(stName: String,
     stSurnames: String,
     stEmail: String,
     stTelephones: String,
-    stNif: String,
+    stCardId: String,
     stBirth: Calendar,
     stFederation: Federation)
-    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stNif,
+    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stCardId,
         stBirth, stFederation) {
   
   override

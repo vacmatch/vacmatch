@@ -49,7 +49,7 @@ class StaffController extends UrlGrabber {
     staffAvatarLink = staff.staffAvatarLink
     staffTelephones = staff.staffTelephones
     staffAddress = staff.staffAddress
-    staffNif = staff.staffNif
+    staffCardId = staff.staffCardId
     staffBirth = staff.staffBirth
     staffTeamList = staff.staffTeamList
     staffFederation = staff.staffFederation
@@ -77,10 +77,9 @@ class StaffController extends UrlGrabber {
     val staffList: Seq[ActionableStaff] =
       staffMemberService.findAllByFederationId(fedId) map (new ActionableStaff(_))
 
-    val mav: ModelAndView = new ModelAndView("staff/list")
-    mav.addObject("createLink", createLink)
-    mav.addObject("staffList", staffList.asJava)
-    mav
+    return new ModelAndView("staff/list")
+      .addObject("createLink", createLink)
+      .addObject("staffList", staffList.asJava)
   }
 
   def showStaff(
@@ -93,9 +92,8 @@ class StaffController extends UrlGrabber {
     maybeStaff match {
       case None => new ModelAndView("staff/notfound")
       case Some(staff) => {
-        val mav: ModelAndView = new ModelAndView("staff/show")
-        mav.addObject("staff", new ActionableStaff(staff))
-        mav
+        return new ModelAndView("staff/show")
+          .addObject("staff", new ActionableStaff(staff))
       }
     }
   }
@@ -111,14 +109,13 @@ class StaffController extends UrlGrabber {
     val submitUrl: String = getUrl("StaffController.createPost")
     val submitMethod: String = "POST"
 
-    val mav: ModelAndView = new ModelAndView("staff/edit")
-    mav.addObject("action", "create")
-    mav.addObject("address", receiverAddress)
-    mav.addObject("staff", receiverStaff)
-    mav.addObject("fedId", fedId)
-    mav.addObject("submitUrl", submitUrl)
-    mav.addObject("submitMethod", submitMethod)
-    mav
+    return new ModelAndView("staff/edit")
+      .addObject("action", "create")
+      .addObject("address", receiverAddress)
+      .addObject("staff", receiverStaff)
+      .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
+      .addObject("submitUrl", submitUrl)
+      .addObject("submitMethod", submitMethod)
   }
 
   def createPost(
@@ -127,9 +124,8 @@ class StaffController extends UrlGrabber {
     result: BindingResult): ModelAndView = {
 
     if (result.hasErrors()) {
-      val mav: ModelAndView = new ModelAndView("staff/edit")
-      mav.addObject("staff", staffReceiver)
-      mav
+      return new ModelAndView("staff/edit")
+        .addObject("staff", staffReceiver)
     }
 
     val fedId: Long = federation.getId
@@ -138,7 +134,7 @@ class StaffController extends UrlGrabber {
       //Save new staff
       val staffMember: StaffMember = staffMemberService.createStaff(
           staffReceiver.staffName, staffReceiver.staffSurnames, staffReceiver.staffEmail, 
-          staffReceiver.staffTelephones, staffReceiver.staffNif, staffReceiver.staffBirth, fedId)
+          staffReceiver.staffTelephones, staffReceiver.staffCardId, staffReceiver.staffBirth, fedId)
 
       //Create address
       val staffAddress: Address = new Address(
@@ -148,10 +144,10 @@ class StaffController extends UrlGrabber {
       //Assign address to created staff
       val staffAssigned: Option[StaffMember] = staffMemberService.assignAddress(staffMember.staffId, staffAddress)
 
-      new ModelAndView("redirect:" + getUrl("StaffController.showStaff", "staffId" -> staffMember.staffId))
+      return new ModelAndView("redirect:" + getUrl("StaffController.showStaff", "staffId" -> staffMember.staffId))
     } catch {
       //Federation not found
-      case e: InstanceNotFoundException => new ModelAndView("federation/notfound")
+      case e: InstanceNotFoundException => return new ModelAndView("federation/notfound")
     }
   }
 
@@ -173,14 +169,13 @@ class StaffController extends UrlGrabber {
       case Some(staffMember) => {
         receiverAddress = staffMember.staffAddress
         
-        val mav: ModelAndView = new ModelAndView("staff/edit")
-        mav.addObject("action", "edit")
-        mav.addObject("address", receiverAddress)
-        mav.addObject("staff", staffMember)
-        mav.addObject("fedId", fedId)
-        mav.addObject("submitUrl", submitUrl)
-        mav.addObject("submitMethod", submitMethod)
-        mav
+      return new ModelAndView("staff/edit")
+        .addObject("action", "edit")
+        .addObject("address", receiverAddress)
+        .addObject("staff", staffMember)
+        .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
+        .addObject("submitUrl", submitUrl)
+        .addObject("submitMethod", submitMethod)
       }
     }
   }
@@ -192,9 +187,8 @@ class StaffController extends UrlGrabber {
     result: BindingResult): ModelAndView = {
 
     if (result.hasErrors()) {
-      val mav: ModelAndView = new ModelAndView("staff/edit")
-      mav.addObject("staff", staff)
-      mav
+      return new ModelAndView("staff/edit")
+        .addObject("staff", staff)
     }
 
     val fedId: Long = federation.getId
@@ -203,14 +197,13 @@ class StaffController extends UrlGrabber {
     val modifiedStaffMember: Option[StaffMember] =
       staffMemberService.modifyStaff(staffId, staff.staffName,
         staff.staffSurnames, staff.staffEmail, staff.staffTelephones,
-        address, staff.staffNif, staff.staffBirth)
+        address, staff.staffCardId, staff.staffBirth)
     
     modifiedStaffMember match {
       case None => new ModelAndView("staff/notfound")
       case Some(stMember) =>
-        val mav: ModelAndView = new ModelAndView(
+        return new ModelAndView(
           "redirect:" + getUrl("StaffController.showStaff", "staffId" -> stMember.staffId))
-        mav
     }
   }
 }

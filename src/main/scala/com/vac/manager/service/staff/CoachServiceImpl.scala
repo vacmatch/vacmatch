@@ -45,8 +45,8 @@ class CoachServiceImpl
   }
 	
   override
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Coach] = {
-    this.coachDao.findByNif(nif, startIndex, count)
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach] = {
+    this.coachDao.findByCardId(cardId, startIndex, count)
   }
 
   
@@ -54,11 +54,11 @@ class CoachServiceImpl
   
   @throws[InstanceNotFoundException]
   def createCoach(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String,stNif: String,
+    stEmail: String, stTelephones: String,stCardId: String,
     stBirth: Calendar, idFederation: Long): Coach = {
     
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     var maybeFederation: Option[Federation] = federationService.find(idFederation)
 
@@ -66,7 +66,7 @@ class CoachServiceImpl
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
         var coach: Coach = new Coach(stName, stSurnames, stEmail, 
-          stTelephones, stNif, stBirth, stFederation)
+          stTelephones, stCardId, stBirth, stFederation)
 	
 	    coachDao.save(coach)
 	    coach
@@ -77,10 +77,10 @@ class CoachServiceImpl
   @throws[InstanceNotFoundException]
   def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[Coach] = {
+    stCardId: String, stBirth: Calendar): Option[Coach] = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stNif)
+    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     var maybeCoach: Option[Coach] = Option(coachDao.findById(staffId))
     
@@ -92,7 +92,7 @@ class CoachServiceImpl
 	    coach.staffEmail = stEmail
 	    coach.staffTelephones = stTelephones
 	    coach.staffAddress = stAddress
-	    coach.staffNif = stNif
+	    coach.staffCardId = stCardId
 	    coach.staffBirth = stBirth
 	    
 	    coachDao.save(coach)

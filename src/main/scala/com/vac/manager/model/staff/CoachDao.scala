@@ -16,6 +16,6 @@ trait CoachDao extends StaffMemberDao {
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Coach]
 	
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[Coach]  
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach]  
   
 }

@@ -17,7 +17,7 @@ class StaffMember(stName: String,
     stSurnames: String,
     stEmail: String,
     stTelephones: String,
-    stNif: String,
+    stCardId: String,
     stBirth: Calendar,
     stFederation: Federation) {
 
@@ -65,7 +65,7 @@ class StaffMember(stName: String,
 
   @BeanProperty
   @Column(nullable = false)
-  var staffNif: String = stNif
+  var staffCardId: String = stCardId
 
   @BeanProperty
   @Column(nullable = false)
@@ -105,7 +105,7 @@ class StaffMember(stName: String,
     (staffObj.staffEmail == this.staffEmail) &&
     (staffObj.staffTelephones == this.staffTelephones) &&
     (staffObj.staffAddress == this.staffAddress) && 
-    (staffObj.staffNif == this.staffNif) &&
+    (staffObj.staffCardId == this.staffCardId) &&
     (staffObj.staffBirth == this.staffBirth) &&
     (staffObj.staffTeamList == this.staffTeamList) &&
     (staffObj.staffFederation == this.staffFederation)
@@ -115,7 +115,7 @@ class StaffMember(stName: String,
   def toString = "(" + this.staffId + ") " +
 		  				this.staffSurnames +
                         ", " + this.staffName +
-                        "\nNIF: " + this.staffNif +
+                        "\nCardId: " + this.staffCardId +
                         "\nEmail: " + this.staffEmail +
                         "\nActivated: " + this.staffActivated + 
                         " PrivacyActivated: " + this.staffPrivacyActivated +
