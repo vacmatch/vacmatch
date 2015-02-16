@@ -23,8 +23,8 @@
       	<dt>Staff status</dt>
       	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
 				
-				<dt>Staff NIF</dt>
-				<dd th:text="*{staffNif}">#Nif number#</dd>
+				<dt>Staff Card Id</dt>
+				<dd th:text="*{staffCardId}">#CardId number#</dd>
 				
 				<dt>Actions</dt>
 				<dd><a th:href="${staff.getShowLink()}">Show</a></dd>

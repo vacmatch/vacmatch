@@ -21,15 +21,14 @@
 					<dd th:text="*{staffName}">John</dd>
 					<dd th:each="surname : *{staffSurnames}" th:text="${surname}">Mustang</dd>
 					
-					<dt>Staff NIF</dt>
-					<dd th:text="*{staffNif}">33445566F</dd>
+					<dt>Staff Card Id</dt>
+					<dd th:text="*{staffCardId}">33445566F</dd>
 					
 					<dt>Staff Email</dt>
 					<dd th:text="*{staffEmail}">imworking@mymail.gal</dd>
 					
 					<dt>Staff Telephones</dt>
 					<dd th:each="telephone : *{staffTelephones}" th:text="${telephone}">696698876</dd>
-					<dd th:text="*{staffTelephones}"></dd>
 					
 					<dt>Staff Address</dt>
 					<dd th:text="*{staffAddress}">First Avenue</dd>

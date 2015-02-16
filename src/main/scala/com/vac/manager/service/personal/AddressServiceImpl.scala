@@ -18,10 +18,10 @@ class AddressServiceImpl
     Option(addressDao.findById(addressId))
   }
 
-  def createAddress(addressLine: String, postCode: String,
+  def createAddress(firstLine: String, secondLine: String, postCode: String,
       locality: String, province: String, country: String): Address = {
     
-    var address: Address = new Address(addressLine, postCode, locality,
+    var address: Address = new Address(firstLine, secondLine, postCode, locality,
         province, country)
     addressDao.save(address)
     address

@@ -396,7 +396,7 @@ class StaffMemberServiceImplTest
       val federation: Federation = validFederation
       
       Given("A valid StaffMember Address")
-      val address: Address = new Address("calle","codigopostal", "provincia","ciudad","pais")
+      val address: Address = new Address("Calle Olmos", "11 3º","codigopostal", "provincia","ciudad","pais")
       
       Mockito.when(staffMemberService.addressService.createAddress(
         address.firstLine, address.secondLine, address.postCode,
@@ -422,7 +422,8 @@ class StaffMemberServiceImplTest
       Then("StaffMember Address must be created")
       verify(staffMemberService.addressService).
         createAddress(
-          address.addressLine,
+          address.firstLine,
+          address.secondLine,
           address.postCode,
           address.locality,
           address.province,
@@ -679,8 +680,8 @@ class StaffMemberServiceImplTest
       newAddress.addressId = 1
 
       Mockito.when(staffMemberService.addressService.createAddress(
-          newAddress.addressLine, newAddress.postCode, newAddress.locality,
-          newAddress.province, newAddress.country)).thenReturn(newAddress)
+          newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
+          newAddress.locality, newAddress.province, newAddress.country)).thenReturn(newAddress)
       
       
       When("StaffMember address try to be modified")
@@ -711,8 +712,8 @@ class StaffMemberServiceImplTest
       val newAddress: Address = validAddress
       
       Mockito.when(staffMemberService.addressService.createAddress(
-          newAddress.addressLine, newAddress.postCode, newAddress.locality,
-          newAddress.province, newAddress.country)).thenReturn(newAddress)
+          newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
+          newAddress.locality, newAddress.province, newAddress.country)).thenReturn(newAddress)
       
       
       When("StaffMember address try to be modified")
@@ -739,7 +740,7 @@ class StaffMemberServiceImplTest
       staffMember.staffAddress = oldAddress
       
       Given("Valid new Address")
-      val newAddress: Address = new Address("Calle Orzan 12 5º", "15003", 
+      val newAddress: Address = new Address("Calle Orzan", "12 5º", "15003", 
           "A Coruña", "A Coruña", "España")
       
       
@@ -752,8 +753,9 @@ class StaffMemberServiceImplTest
       verify(staffMemberService.addressService, never).removeAddress(anyLong)
 
       Then("New address can't be saved in the DB")
-      verify(staffMemberService.addressService, never).createAddress(newAddress.addressLine,
-          newAddress.postCode, newAddress.province, newAddress.locality, newAddress.country)
+      verify(staffMemberService.addressService, never).createAddress(
+          newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
+          newAddress.locality, newAddress.province, newAddress.country)
 
       Then("StaffMember can't be modified")
       modifiedStaffMember should equal (None)
@@ -783,8 +785,8 @@ class StaffMemberServiceImplTest
       verify(staffMemberService.addressService, never).removeAddress(oldAddress.addressId)
 
       Then("New address can't be saved in the DB")
-      verify(staffMemberService.addressService, never).createAddress(anyString,
-          anyString, anyString, anyString, anyString)
+      verify(staffMemberService.addressService, never).createAddress(
+          anyString,anyString, anyString, anyString, anyString, anyString)
 
       Then("StaffMember can't be modified")
       modifiedStaffMember.get.staffAddress should equal (oldAddress)
@@ -815,8 +817,8 @@ class StaffMemberServiceImplTest
       verify(staffMemberService.addressService, never).removeAddress(oldAddress.addressId)
 
       Then("New address can't be saved in the DB")
-      verify(staffMemberService.addressService, never).createAddress(anyString,
-          anyString, anyString, anyString, anyString)
+      verify(staffMemberService.addressService, never).createAddress(
+          anyString, anyString, anyString, anyString, anyString, anyString)
 
       Then("StaffMember can't be modified")
       modifiedStaffMember.get.staffAddress should equal (oldAddress)

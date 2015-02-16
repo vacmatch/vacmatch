@@ -67,9 +67,15 @@
           </div>
   
            <div class="form-group">
-             <label class="col-sm-3 control-label" for="addRoad">Address</label>
+             <label class="col-sm-3 control-label" for="addFirstLine">First address line</label>
              <div class="col-sm-9">
-               <input class="form-control" id="addRoad" type="text" placeholder="Address" th:field="${address.addressLine}"/>
+               <input class="form-control" id="addFirstLine" type="text" placeholder="Address" th:field="${address.firstLine}"/>
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="col-sm-3 control-label" for="addSecondLine">Second address line</label>
+             <div class="col-sm-9">
+               <input class="form-control" id="addSecondLine" type="text" placeholder="Address" th:field="${address.secondLine}"/>
              </div>
            </div>
            <div class="form-group">

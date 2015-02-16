@@ -24,7 +24,7 @@ class AddressServiceTest
     //Initialization from service to be tested
     addressService = new AddressServiceImpl()
     addressService.addressDao = mock[AddressDao]
-    validAddress = new Address("Plaza Pontevedra 22", "15003", "A Coruña", 
+    validAddress = new Address("Plaza Pontevedra", "22", "15003", "A Coruña", 
         "A Coruña", "España")
   }
   
@@ -32,13 +32,14 @@ class AddressServiceTest
     scenario("An Address can be created"){
       
       Given("A new Address")
-      val newAddress: Address = new Address("Plaza Pontevedra 22", "15003", 
+      val newAddress: Address = new Address("Plaza Pontevedra", "22", "15003", 
           "A Coruña", "A Coruña", "España")
       
       When("Address try to be created")
       val createdAddress: Address = 
-        addressService.createAddress(newAddress.addressLine, newAddress.postCode, 
-          newAddress.locality, newAddress.province, newAddress.country)
+        addressService.createAddress(newAddress.firstLine, newAddress.secondLine, 
+          newAddress.postCode, newAddress.locality, newAddress.province,
+          newAddress.country)
           
       Then("Address must be saved in DB")
       Then("Address must be created")

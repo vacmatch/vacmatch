@@ -155,7 +155,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
           addressService.removeAddress(staff.staffAddress.addressId)
           
         val savedAddress: Address = addressService.createAddress(
-            stAddress.addressLine, stAddress.postCode, stAddress.locality,
+            stAddress.firstLine, stAddress.secondLine, 
+            stAddress.postCode, stAddress.locality,
             stAddress.province, stAddress.country)
         
         staff.staffAddress = savedAddress

@@ -120,11 +120,12 @@ class StaffController extends UrlGrabber {
     staffReceiver: StaffMember,
     result: BindingResult): ModelAndView = {
 
+    /*
     if (result.hasErrors()) {
       return new ModelAndView("staff/edit")
         .addObject("staff", staffReceiver)
     }
-
+	*/
     val fedId: Long = federation.getId
 
     try {
@@ -142,7 +143,7 @@ class StaffController extends UrlGrabber {
 
       //Create address
       val staffAddress = new Address(
-        address.addressLine, address.postCode,
+        address.firstLine, address.secondLine, address.postCode,
         address.locality, address.province, address.country)
 
       //Assign address to created staff
@@ -190,10 +191,12 @@ class StaffController extends UrlGrabber {
     staff: StaffMember,
     result: BindingResult): ModelAndView = {
 
+    /*
     if (result.hasErrors()) {
       return new ModelAndView("staff/edit")
         .addObject("staff", staff)
     }
+	*/
 
     val fedId: Long = federation.getId
     
