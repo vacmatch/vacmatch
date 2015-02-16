@@ -9,8 +9,6 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 trait StaffMemberService {
 
-  /* --------------- FIND ---------------- */
-
   def find(staffId: Long): Option[StaffMember]
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember]
@@ -22,8 +20,6 @@ trait StaffMemberService {
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember]
-
-  /* ---------------- MODIFY --------------- */
 
   @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean)
@@ -37,21 +33,16 @@ trait StaffMemberService {
   def createStaff(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar, idFederation: Long): StaffMember
-  
+
   @throws[IllegalArgumentException]
   def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stCardId: String, stBirth: Calendar): Option[StaffMember]
-  
+
   def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember]
 
   def getSurnamesFromString(surnames: String): Seq[String]
 
   def getTelephonesFromString(telephones: String): Seq[String]
-
-  /* ---------------- DELETE ---------------- */
-
-  /* ---------------- DELETE ---------------- */
-
 
 }

@@ -17,10 +17,10 @@ trait TeamService {
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
   def createTeam(teamName: String, publicName: String, fundationalDate: Calendar,
-      address: Address, web: String): Team
+    address: Address, web: String): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-      fundationalDate: Calendar, address: Address, web: String): Team
+    fundationalDate: Calendar, address: Address, web: String): Team
 
   def changeActivation(teamId: Long, newState: Boolean): Team
 

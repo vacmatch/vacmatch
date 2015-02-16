@@ -14,49 +14,38 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service("coachService")
 @Transactional
-class CoachServiceImpl 
-				extends StaffMemberServiceImpl
-				with CoachService {
+class CoachServiceImpl
+  extends StaffMemberServiceImpl
+  with CoachService {
 
   @Autowired
   var coachDao: CoachDao = _
 
-  
-  /* --------------- FIND ---------------- */
-
-  override
-  def find(staffId: Long): Option[Coach] = {
+  override def find(staffId: Long): Option[Coach] = {
     Option((this.coachDao.findById(staffId)).asInstanceOf[Coach])
   }
-  
-  override
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach] =  {
-	this.coachDao.findByNameAndSurname(name, surname, startIndex, count)
+
+  override def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach] = {
+    this.coachDao.findByNameAndSurname(name, surname, startIndex, count)
   }
 
-  override
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach] = {
+  override def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findAllByActivated(activated, startIndex, count)
   }
-	
-  override
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Coach] = {
+
+  override def findByEmail(email: String, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findByEmail(email, startIndex, count)
   }
-	
-  override
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach] = {
+
+  override def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach] = {
     this.coachDao.findByCardId(cardId, startIndex, count)
   }
 
-  
-  /* ------------- MODIFY --------------- */
-  
   @throws[InstanceNotFoundException]
   def createCoach(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String,stCardId: String,
+    stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar, idFederation: Long): Coach = {
-    
+
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
@@ -65,15 +54,15 @@ class CoachServiceImpl
     maybeFederation match {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
-        var coach: Coach = new Coach(stName, stSurnames, stEmail, 
+        var coach: Coach = new Coach(stName, stSurnames, stEmail,
           stTelephones, stCardId, stBirth, stFederation)
-	
-	    coachDao.save(coach)
-	    coach
+
+        coachDao.save(coach)
+        coach
       }
     }
   }
-    
+
   @throws[InstanceNotFoundException]
   def modifyCoach(staffId: Long, fedId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
@@ -83,27 +72,24 @@ class CoachServiceImpl
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
 
     var maybeCoach: Option[Coach] = Option(coachDao.findById(staffId))
-    
+
     maybeCoach match {
-      case None => 
-      case Some(coach) =>{
-	    coach.staffName = stName
-	    coach.staffSurnames = stSurnames
-	    coach.staffEmail = stEmail
-	    coach.staffTelephones = stTelephones
-	    coach.staffAddress = stAddress
-	    coach.staffCardId = stCardId
-	    coach.staffBirth = stBirth
-	    
-	    coachDao.save(coach)
+      case None =>
+      case Some(coach) => {
+        coach.staffName = stName
+        coach.staffSurnames = stSurnames
+        coach.staffEmail = stEmail
+        coach.staffTelephones = stTelephones
+        coach.staffAddress = stAddress
+        coach.staffCardId = stCardId
+        coach.staffBirth = stBirth
+
+        coachDao.save(coach)
       }
     }
     maybeCoach
   }
- 
-  /* ------------- DELETE ---------------- */
-  
-  
+
 }
 
 

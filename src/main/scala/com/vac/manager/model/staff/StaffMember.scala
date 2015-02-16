@@ -12,17 +12,19 @@ import java.text.SimpleDateFormat
 
 @Entity
 @Table(name = "STAFFMEMBER")
-@Inheritance(strategy=InheritanceType.JOINED)
-class StaffMember(stName: String,
-    stSurnames: String,
-    stEmail: String,
-    stTelephones: String,
-    stCardId: String,
-    stBirth: Calendar,
-    stFederation: Federation) {
+@Inheritance(strategy = InheritanceType.JOINED)
+class StaffMember(
+  stName: String,
+  stSurnames: String,
+  stEmail: String,
+  stTelephones: String,
+  stCardId: String,
+  stBirth: Calendar,
+  stFederation: Federation
+) {
 
   @Id
-  @SequenceGenerator(name="staffMemberIdGenerator", sequenceName="staffMember_id_seq")
+  @SequenceGenerator(name = "staffMemberIdGenerator", sequenceName = "staffMember_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffMemberIdGenerator")
   var staffId: java.lang.Long = _
 
@@ -49,7 +51,7 @@ class StaffMember(stName: String,
   @BeanProperty
   @Column
   var staffAvatarLink: String = Gravatar(stEmail).ssl(true).avatarUrl
-  
+
   @BeanProperty
   @Column
   var staffTelephones: String = stTelephones
@@ -69,14 +71,16 @@ class StaffMember(stName: String,
 
   @BeanProperty
   @Column
-  @ManyToMany(fetch = FetchType.LAZY,
-      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
+  @ManyToMany(
+    fetch = FetchType.LAZY,
+    cascade = Array(CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE)
+  )
   @JoinTable(
-      name = "TEAM_STAFF",
-      joinColumns =
-        Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
-      inverseJoinColumns =
-        Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
+    name = "TEAM_STAFF",
+    joinColumns =
+      Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
+    inverseJoinColumns =
+      Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
   )
   var staffTeamList: java.util.List[Team] = _
 
@@ -87,38 +91,36 @@ class StaffMember(stName: String,
 
   def this() = this("", "", "", null, "", Calendar.getInstance(), null)
 
-  override
-  def equals(obj: Any): Boolean = {
-    if((obj == null) || (!obj.isInstanceOf[StaffMember]))
+  override def equals(obj: Any): Boolean = {
+    if ((obj == null) || (!obj.isInstanceOf[StaffMember]))
       return false
     var staffObj: StaffMember = obj.asInstanceOf[StaffMember]
     (staffObj.staffId == this.staffId) &&
-    (staffObj.staffName == this.staffName) &&
-    (staffObj.staffSurnames == this.staffSurnames) &&
-    (staffObj.staffActivated == this.staffActivated) &&
-    (staffObj.staffAlias == this.staffAlias) &&
-    (staffObj.staffEmail == this.staffEmail) &&
-    (staffObj.staffTelephones == this.staffTelephones) &&
-    (staffObj.staffAddress == this.staffAddress) && 
-    (staffObj.staffCardId == this.staffCardId) &&
-    (staffObj.staffBirth == this.staffBirth) &&
-    (staffObj.staffTeamList == this.staffTeamList) &&
-    (staffObj.staffFederation == this.staffFederation)
+      (staffObj.staffName == this.staffName) &&
+      (staffObj.staffSurnames == this.staffSurnames) &&
+      (staffObj.staffActivated == this.staffActivated) &&
+      (staffObj.staffAlias == this.staffAlias) &&
+      (staffObj.staffEmail == this.staffEmail) &&
+      (staffObj.staffTelephones == this.staffTelephones) &&
+      (staffObj.staffAddress == this.staffAddress) &&
+      (staffObj.staffCardId == this.staffCardId) &&
+      (staffObj.staffBirth == this.staffBirth) &&
+      (staffObj.staffTeamList == this.staffTeamList) &&
+      (staffObj.staffFederation == this.staffFederation)
   }
-  
-  override
-  def toString = "(" + this.staffId + ") " +
-		  				this.staffSurnames +
-                        ", " + this.staffName +
-                        "\nCardId: " + this.staffCardId +
-                        "\nEmail: " + this.staffEmail +
-                        "\nActivated: " + this.staffActivated + 
-                        "\nAlias: " + this.staffAlias +
-                        "\nTelephones: " + this.staffTelephones +
-                        "\nAddress: " + this.staffAddress +
-                        "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
-                        					.format(this.staffBirth.getTime()) +
-                        "\nFederation: " + this.staffFederation +
-                        "\nTeams: " + this.staffTeamList
+
+  override def toString = "(" + this.staffId + ") " +
+    this.staffSurnames +
+    ", " + this.staffName +
+    "\nCardId: " + this.staffCardId +
+    "\nEmail: " + this.staffEmail +
+    "\nActivated: " + this.staffActivated +
+    "\nAlias: " + this.staffAlias +
+    "\nTelephones: " + this.staffTelephones +
+    "\nAddress: " + this.staffAddress +
+    "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
+    .format(this.staffBirth.getTime()) +
+    "\nFederation: " + this.staffFederation +
+    "\nTeams: " + this.staffTeamList
 
 }

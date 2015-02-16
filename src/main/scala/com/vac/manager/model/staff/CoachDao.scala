@@ -15,7 +15,7 @@ trait CoachDao extends StaffMemberDao {
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach]
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Coach]
-	
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach]  
-  
+
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Coach]
+
 }

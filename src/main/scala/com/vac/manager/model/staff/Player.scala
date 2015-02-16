@@ -15,25 +15,24 @@ import com.vac.manager.model.federation.Federation
 
 @Entity
 @Table(name = "PLAYER")
-@PrimaryKeyJoinColumn(name="staffId")
+@PrimaryKeyJoinColumn(name = "staffId")
 class Player(stName: String,
-    stSurnames: String,
-    stEmail: String,
-    stTelephones: String,
-    stCardId: String,
-    stBirth: Calendar,
-    stFederation: Federation,
-    num: String)
-    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stCardId,
-        stBirth, stFederation)  {
-  
+  stSurnames: String,
+  stEmail: String,
+  stTelephones: String,
+  stCardId: String,
+  stBirth: Calendar,
+  stFederation: Federation,
+  num: String)
+  extends StaffMember(stName, stSurnames, stEmail, stTelephones, stCardId,
+    stBirth, stFederation) {
+
   @BeanProperty
   @Column
   var dorsal: String = num
-  
-  override
-  def toString = "Player\n" + super.toString + 
-  					"\nDorsal: " + this.dorsal
+
+  override def toString = "Player\n" + super.toString +
+    "\nDorsal: " + this.dorsal
 }
 
 

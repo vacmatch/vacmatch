@@ -212,7 +212,7 @@ class StaffController extends UrlGrabber {
         staff.staffCardId,
         staff.staffBirth
       )
-    
+
     modifiedStaffMember match {
       case None => new ModelAndView("staff/notfound")
       case Some(stMember) =>

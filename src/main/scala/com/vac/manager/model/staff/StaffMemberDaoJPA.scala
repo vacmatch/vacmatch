@@ -13,26 +13,25 @@ import javax.persistence.metamodel.Metamodel
 
 @Repository("staffMemberDao")
 class StaffMemberDaoJPA
-		extends GenericDaoJPA[StaffMember,java.lang.Long](classOf[StaffMember])
-		with StaffMemberDao {
+  extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
+  with StaffMemberDao {
 
   def findByNameAndSurname(name: String, surname: String, startIndex: Int,
-      count: Int): Seq[StaffMember] = {
+    count: Int): Seq[StaffMember] = {
     null
   }
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
-        "WHERE s.staffFederation.fedId = :fedId ", classOf[StaffMember]
-    )
+        "WHERE s.staffFederation.fedId = :fedId ", classOf[StaffMember])
       .setParameter("fedId", fedId)
 
     query.getResultList().asScala
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int,
-      count: Int): Seq[StaffMember] = {
+    count: Int): Seq[StaffMember] = {
     null
   }
 
@@ -43,7 +42,7 @@ class StaffMemberDaoJPA
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
     null
   }
-  
+
 }
 
 

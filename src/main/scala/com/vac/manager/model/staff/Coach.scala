@@ -16,18 +16,17 @@ import com.vac.manager.model.federation.Federation
 
 @Entity
 @Table(name = "COACH")
-@PrimaryKeyJoinColumn(name="staffId")
+@PrimaryKeyJoinColumn(name = "staffId")
 class Coach(stName: String,
-    stSurnames: String,
-    stEmail: String,
-    stTelephones: String,
-    stCardId: String,
-    stBirth: Calendar,
-    stFederation: Federation)
-    extends StaffMember(stName, stSurnames, stEmail, stTelephones, stCardId,
-        stBirth, stFederation) {
-  
-  override
-  def toString = "Coach\n" + super.toString
+  stSurnames: String,
+  stEmail: String,
+  stTelephones: String,
+  stCardId: String,
+  stBirth: Calendar,
+  stFederation: Federation)
+  extends StaffMember(stName, stSurnames, stEmail, stTelephones, stCardId,
+    stBirth, stFederation) {
+
+  override def toString = "Coach\n" + super.toString
 
 }
