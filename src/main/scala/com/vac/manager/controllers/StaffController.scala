@@ -69,9 +69,7 @@ class StaffController extends UrlGrabber {
   def list(): ModelAndView = {
 
     val fedId: Long = federation.getId
-    val maybeFed: Option[Federation] = federationService.find(fedId)
     val createLink: String = getUrl("StaffController.create")
-    //TODO Handle federation not found
 
     val staffList: Seq[ActionableStaff] =
       staffMemberService.findAllByFederationId(fedId) map (new ActionableStaff(_))
@@ -102,8 +100,8 @@ class StaffController extends UrlGrabber {
     val fedId: java.lang.Long = federation.getId
 
     //Receivers
-    val receiverStaff: StaffMember = new StaffMember()
-    val receiverAddress: Address = new Address()
+    val receiverStaff = new StaffMember()
+    val receiverAddress = new Address()
     //Submit params
     val submitUrl: String = getUrl("StaffController.createPost")
     val submitMethod: String = "POST"
@@ -131,12 +129,19 @@ class StaffController extends UrlGrabber {
 
     try {
       //Save new staff
-      val staffMember: StaffMember = staffMemberService.createStaff(
-          staffReceiver.staffName, staffReceiver.staffSurnames, staffReceiver.staffEmail, 
-          staffReceiver.staffTelephones, staffReceiver.staffCardId, staffReceiver.staffBirth, fedId)
+      val staffMember: StaffMember = 
+        staffMemberService.createStaff(
+          staffReceiver.staffName,
+          staffReceiver.staffSurnames,
+          staffReceiver.staffEmail,
+          staffReceiver.staffTelephones,
+          staffReceiver.staffCardId,
+          staffReceiver.staffBirth,
+          fedId
+        )
 
       //Create address
-      val staffAddress: Address = new Address(
+      val staffAddress = new Address(
         address.addressLine, address.postCode,
         address.locality, address.province, address.country)
 
@@ -156,7 +161,7 @@ class StaffController extends UrlGrabber {
     val fedId: java.lang.Long = federation.getId
 
     //Receivers
-    var receiverAddress: Address = new Address()
+    var receiverAddress = new Address()
     //Submit params
     val submitUrl: String = getUrl("StaffController.editPost", "staffId" -> staffId)
     val submitMethod: String = "POST"
@@ -194,9 +199,16 @@ class StaffController extends UrlGrabber {
     
     //Modify Staff
     val modifiedStaffMember: Option[StaffMember] =
-      staffMemberService.modifyStaff(staffId, staff.staffName,
-        staff.staffSurnames, staff.staffEmail, staff.staffTelephones,
-        address, staff.staffCardId, staff.staffBirth)
+      staffMemberService.modifyStaff(
+        staffId,
+        staff.staffName,
+        staff.staffSurnames,
+        staff.staffEmail,
+        staff.staffTelephones,
+        address,
+        staff.staffCardId,
+        staff.staffBirth
+      )
     
     modifiedStaffMember match {
       case None => new ModelAndView("staff/notfound")
