@@ -100,8 +100,8 @@ class StaffController extends UrlGrabber {
     val submitMethod: String = "POST"
 
     val mav: ModelAndView = new ModelAndView("staff/find")
-    mav.addObject("receiver", receiverFind)
-    mav.addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet())
+    mav.addObject("receiver",receiverFind)
+    mav.addObject("hiddens", Map("fedId"->fedId).asJava.entrySet())
     mav.addObject("submitUrl", submitUrl)
     mav.addObject("submitMethod", submitMethod)
     mav
