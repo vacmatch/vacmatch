@@ -8,19 +8,33 @@ import com.vac.manager.model.personal.AddressDao
 
 @Service("addressService")
 @Transactional
-class AddressSpainServiceImpl
-	extends AddressService {
-  
+class AddressServiceImpl
+  extends AddressService {
+
   @Autowired
-  var addressSpainDao: AddressDao = _
-  
-  def createAddress(road: String, number: String, flat: String, postCode: Int,
-      locality: String, province: String, country: String): Address = {
-    
-    var address: Address = new Address(road, number, flat, postCode,
-        locality, province, country)
-    addressSpainDao.save(address)
+  var addressDao: AddressDao = _
+
+  def find(addressId: Long): Option[Address] = {
+    Option(addressDao.findById(addressId))
+  }
+
+  def createAddress(firstLine: String, secondLine: String, postCode: String,
+    locality: String, province: String, country: String): Address = {
+
+    var address: Address = new Address(firstLine, secondLine, postCode, locality,
+      province, country)
+    addressDao.save(address)
     address
+  }
+
+  def removeAddress(addressId: Long) = {
+
+    val maybeAddress: Option[Address] = find(addressId)
+
+    maybeAddress match {
+      case None =>
+      case Some(address) => addressDao.remove(address)
+    }
   }
 
 }

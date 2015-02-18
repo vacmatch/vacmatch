@@ -2,7 +2,7 @@ package com.vac.manager.model.staff
 
 import com.vac.manager.model.generic.GenericDao
 
-trait StaffMemberDao extends GenericDao[StaffMember, java.lang.Long]{
+trait StaffMemberDao extends GenericDao[StaffMember, java.lang.Long] {
 
   def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember]
 
@@ -12,6 +12,6 @@ trait StaffMemberDao extends GenericDao[StaffMember, java.lang.Long]{
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember]
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember]
 
 }

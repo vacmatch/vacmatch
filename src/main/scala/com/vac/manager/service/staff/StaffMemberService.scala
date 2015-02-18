@@ -9,8 +9,6 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 trait StaffMemberService {
 
-  /* --------------- FIND ---------------- */
-
   def find(staffId: Long): Option[StaffMember]
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember]
@@ -21,34 +19,30 @@ trait StaffMemberService {
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember]
 
-  def findByNif(nif: String, startIndex: Int, count: Int): Seq[StaffMember]
-
-  /* ---------------- MODIFY --------------- */
+  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean)
 
-  def changePrivacity(staffId: Long, newState: Boolean, newAlias: String)
+  def changePrivacy(staffId: Long, newState: Boolean, newAlias: String)
 
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar, idFederation: Long): StaffMember
+    stEmail: String, stTelephones: String, stCardId: String,
+    stBirth: Calendar, idFederation: Long): StaffMember
 
-  def modifyStaff(staffId: Long, fedId: Long, stName: String, stSurnames: String,
+  @throws[IllegalArgumentException]
+  def modifyStaff(staffId: Long, stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stAddress: Address,
-    stNif: String, stBirth: Calendar): Option[StaffMember]
+    stCardId: String, stBirth: Calendar): Option[StaffMember]
+
+  def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember]
 
   def getSurnamesFromString(surnames: String): Seq[String]
 
   def getTelephonesFromString(telephones: String): Seq[String]
-
-  /* ---------------- DELETE ---------------- */
-
-  /* ---------------- DELETE ---------------- */
-
 
 }
