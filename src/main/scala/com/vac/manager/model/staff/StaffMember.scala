@@ -89,8 +89,8 @@ class StaffMember(stName: String,
 
   override
   def equals(obj: Any): Boolean = {
-    if(!obj.isInstanceOf[StaffMember])
-      false
+    if((obj == null) || (!obj.isInstanceOf[StaffMember]))
+      return false
     var staffObj: StaffMember = obj.asInstanceOf[StaffMember]
     (staffObj.staffId == this.staffId) &&
     (staffObj.staffName == this.staffName) &&

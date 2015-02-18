@@ -43,8 +43,8 @@ class Address(addLine: String, argPostCod: String,
   
   override
   def equals(obj: Any): Boolean = {
-    if(!obj.isInstanceOf[Address])
-      false
+    if((obj == null) || (!obj.isInstanceOf[Address]))
+      return false
     var addObj: Address = obj.asInstanceOf[Address]
     (addObj.addressId == this.addressId) &&
     (addObj.addressLine == this.addressLine) &&
