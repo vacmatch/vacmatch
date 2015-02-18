@@ -124,7 +124,11 @@ class StaffController extends UrlGrabber {
     val startIndex: Int = 0
     val count: Int = 10
 
-    var staffList: Seq[ActionableStaff] = null
+    var staffList: Seq[ActionableStaff] = Nil
+
+    if (byCardId.nonEmpty)
+      staffList = staffMemberService.findByCardId(byCardId,
+        startIndex, count).map(new ActionableStaff(_))
 
     if (byActivated)
       staffList = staffMemberService.findAllByActivated(activatedValue,

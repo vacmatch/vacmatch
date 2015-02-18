@@ -46,7 +46,13 @@ class StaffMemberDaoJPA
   }
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffCardId LIKE :cardIdFirst OR s.staffCardId LIKE :cardIdSecond", classOf[StaffMember])
+      .setParameter("cardIdFirst", "%" + cardId)
+      .setParameter("cardIdSecond", cardId + "%")
+
+    query.getResultList().asScala
   }
 
 }
