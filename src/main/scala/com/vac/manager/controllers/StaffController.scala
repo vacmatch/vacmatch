@@ -130,6 +130,10 @@ class StaffController extends UrlGrabber {
       staffList = staffMemberService.findByCardId(byCardId,
         startIndex, count).map(new ActionableStaff(_))
 
+    if (byEmail.nonEmpty)
+      staffList = staffMemberService.findByEmail(byEmail,
+        startIndex, count).map(new ActionableStaff(_))
+
     if (byActivated)
       staffList = staffMemberService.findAllByActivated(activatedValue,
         startIndex, count).map(new ActionableStaff(_))

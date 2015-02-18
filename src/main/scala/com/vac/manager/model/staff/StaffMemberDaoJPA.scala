@@ -42,7 +42,12 @@ class StaffMemberDaoJPA
   }
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffEmail LIKE :email", classOf[StaffMember])
+      .setParameter("email", "%" + email + "%")
+
+    query.getResultList().asScala
   }
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
