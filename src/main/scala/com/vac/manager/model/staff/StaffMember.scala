@@ -41,7 +41,7 @@ class StaffMember(stName: String,
 
   @BeanProperty
   @Column(nullable = false)
-  var staffPrivacityActivated: Boolean = false
+  var staffPrivacyActivated: Boolean = false
 
   @BeanProperty
   @Column
@@ -101,7 +101,7 @@ class StaffMember(stName: String,
     (staffObj.staffName == this.staffName) &&
     (staffObj.staffSurnames == this.staffSurnames) &&
     (staffObj.staffActivated == this.staffActivated) &&
-    (staffObj.staffPrivacityActivated == this.staffPrivacityActivated) &&
+    (staffObj.staffPrivacyActivated == this.staffPrivacyActivated) &&
     (staffObj.staffAlias == this.staffAlias) &&
     (staffObj.staffEmail == this.staffEmail) &&
     (staffObj.staffTelephones == this.staffTelephones) &&
@@ -119,7 +119,7 @@ class StaffMember(stName: String,
                         "\nNIF: " + this.staffNif +
                         "\nEmail: " + this.staffEmail +
                         "\nActivated: " + this.staffActivated + 
-                        " PrivacityActivated: " + this.staffPrivacityActivated +
+                        " PrivacyActivated: " + this.staffPrivacyActivated +
                         "\nAlias: " + this.staffAlias +
                         "\nTelephones: " + this.staffTelephones +
                         "\nAddress: " + this.staffAddress +

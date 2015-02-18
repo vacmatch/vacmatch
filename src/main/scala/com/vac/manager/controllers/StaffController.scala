@@ -54,7 +54,7 @@ class StaffController extends UrlGrabber {
     def getEditLink: String = ""
     def getRemoveLink: String = ""
     def getAssignTeamLink: String = ""
-    def getModifyPrivacityLink: String = ""
+    def getEditPrivacyLink: String = ""
   }
 
   def list(

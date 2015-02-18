@@ -28,7 +28,7 @@ trait StaffMemberService {
   @throws[InstanceNotFoundException]
   def changeActivation(staffId: Long, newState: Boolean)
 
-  def changePrivacity(staffId: Long, newState: Boolean, newAlias: String)
+  def changePrivacy(staffId: Long, newState: Boolean, newAlias: String)
 
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
 
