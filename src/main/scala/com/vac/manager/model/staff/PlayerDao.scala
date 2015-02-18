@@ -8,7 +8,7 @@ trait PlayerDao extends StaffMemberDao {
 
   def findById(staffId: Long): Player
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Player]
+  def findByName(name: String, startIndex: Int, count: Int): Seq[Player]
 
   def findAllByFederationId(fedId: Long): Seq[Player]
 

@@ -126,6 +126,10 @@ class StaffController extends UrlGrabber {
 
     var staffList: Seq[ActionableStaff] = Nil
 
+    if(byName.nonEmpty)
+      staffList = staffMemberService.findByName(byName,
+        startIndex, count).map(new ActionableStaff(_))
+      
     if (byCardId.nonEmpty)
       staffList = staffMemberService.findByCardId(byCardId,
         startIndex, count).map(new ActionableStaff(_))

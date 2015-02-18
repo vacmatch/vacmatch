@@ -19,8 +19,9 @@ class PlayerDaoJPA
     query.getSingleResult()
   }
 
-  override def findByNameAndSurname(name: String, surname: String, startIndex: Int,
-    count: Int): Seq[Player] = {
+  override
+  def findByName(name: String, startIndex: Int,
+      count: Int): Seq[Player] = {
     null
   }
 

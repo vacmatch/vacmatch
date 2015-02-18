@@ -41,8 +41,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findAllByFederationId(fedId)
   }
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    staffMemberDao.findByNameAndSurname(name, surname, startIndex, count)
+  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember] =  {
+	staffMemberDao.findByName(name, startIndex, count)
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember] = {

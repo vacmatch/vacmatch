@@ -16,9 +16,14 @@ class StaffMemberDaoJPA
   extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
   with StaffMemberDao {
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int,
+  def findByName(name: String, startIndex: Int,
     count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffName LIKE :name OR s.staffSurnames LIKE :name", classOf[StaffMember])
+      .setParameter("name", "%" + name + "%")
+
+    query.getResultList().asScala
   }
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember] = {

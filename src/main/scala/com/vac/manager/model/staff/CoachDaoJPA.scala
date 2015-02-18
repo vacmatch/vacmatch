@@ -17,8 +17,9 @@ class CoachDaoJPA
     query.getSingleResult()
   }
 
-  override def findByNameAndSurname(name: String, surname: String, startIndex: Int,
-    count: Int): Seq[Coach] = {
+  override
+  def findByName(name: String, startIndex: Int,
+      count: Int): Seq[Coach] = {
     null
   }
 

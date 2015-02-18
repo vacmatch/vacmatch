@@ -4,7 +4,7 @@ import com.vac.manager.model.generic.GenericDao
 
 trait StaffMemberDao extends GenericDao[StaffMember, java.lang.Long] {
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember]
+  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember]
 
