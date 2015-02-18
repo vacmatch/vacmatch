@@ -104,6 +104,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
 
     auth.userDetailsService(userDetailsService())
+      .and()
+      .inMemoryAuthentication()
+      .withUser("admin").password("secret").roles("ROOT", "ADMINFED")
+
     /*
     auth.inMemoryAuthentication()
       .withUser("admin").password("admin").roles("ROOT", "ADMINFED")
