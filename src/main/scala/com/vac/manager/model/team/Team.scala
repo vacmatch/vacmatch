@@ -56,18 +56,10 @@ class Team(name: String, publicName: String, date: Calendar, address: Address, w
   var sponsorsList: java.util.List[String] = _
 
   @BeanProperty
-  @Column
-  @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinTable(
-    name = "TEAM_STAFF",
-    joinColumns =
-      Array(new JoinColumn(name = "staffId", nullable = false, updatable = false)),
-    inverseJoinColumns =
-      Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)))
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy="staffTeamList", cascade = Array(CascadeType.ALL))
   var staffList: java.util.List[StaffMember] = _
 
   @BeanProperty
-  @Column
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
     name = "TEAM_COMPETITION",

@@ -32,7 +32,13 @@ class StaffMemberDaoJPA
 
   def findAllByActivated(activated: Boolean, startIndex: Int,
     count: Int): Seq[StaffMember] = {
-    null
+    val optionNull: String = if(activated) "IS NOT EMPTY" else "IS EMPTY"
+
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffTeamList " + optionNull, classOf[StaffMember])
+
+    query.getResultList().asScala
   }
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {

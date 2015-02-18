@@ -29,7 +29,7 @@
 	                 aria-expanded="false">Select find method <span class="caret"></span></button>
 	                <ul class="dropdown-menu" role="menu">
 	                  <li><a data-toggle="collapse" href="#byName">Name</a></li>
-                    <li><a data-toggle="collapse" href="#byNif">Nif</a></li>
+                    <li><a data-toggle="collapse" href="#byCardId">Card Id</a></li>
                     <li><a data-toggle="collapse" href="#byEmail">Email</a></li>
 	                  <li><a data-toggle="collapse" href="#byActivated">Activated</a></li>
                     <li><a data-toggle="collapse" href="#byAll">All</a></li>
@@ -42,30 +42,41 @@
           <div id="byName" class="form-group collapse">
             <label class="col-md-2 control-label" for="name">Name</label>
             <div class="col-md-10">
-              <input class="form-control" id="name" type="text" placeholder="Name" th:field="${receiver.name}" />
+              <input class="form-control" id="name" type="text" placeholder="Name" th:field="${receiver.byName}" />
             </div>
           </div>
           
-          <div id="byNif" class="form-group collapse">
+          <div id="byCardId" class="form-group collapse">
             <label class="col-md-2 control-label" for="cardId">Card Id</label>
             <div class="col-md-10">
-              <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="${receiver.cardId}"/>
+              <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="${receiver.byCardId}"/>
             </div>
           </div>
           
           <div id="byEmail" class="form-group collapse">
             <label class="col-md-2 control-label" for="email">Email</label>
             <div class="col-md-10">
-              <input class="form-control" id="email" type="text" placeholder="Email" th:field="${receiver.email}"/>
+              <input class="form-control" id="email" type="text" placeholder="Email" th:field="${receiver.byEmail}"/>
             </div>
           </div>
           
+          <div class="form-group">
+            <label class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              <label>Use this?</label>
+            </div>
+          </div>
+                    
           <div id="byActivated" class="form-group collapse">
             <label class="col-md-2 control-label" for="activated">Activated</label>
             <div class="col-md-10">
-              <select class="btn btn-default" type="button" th:field="${receiver.activated}">
+              <select class="btn btn-default" type="button" th:field="${{receiver.byActivated}}">
                 <option value="true">Yes</option>
                 <option value="false">No</option>
+              </select>
+              <select class="btn btn-default" type="button" th:field="${receiver.activatedValue}">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
               </select>
             </div>
           </div>
@@ -73,7 +84,10 @@
           <div id="byAll" class="form-group collapse">
             <label class="col-md-2 control-label" for="all">All</label>
             <div class="col-md-10">
-              <input type="hidden" value="all" th:field="${receiver.allStaff}" />
+              <select class="btn btn-default" type="button" th:field="${receiver.byAllStaff}">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
             </div>
           </div>
                     

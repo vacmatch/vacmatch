@@ -11,6 +11,7 @@
 	<body>
 		<div th:replace="fragments/header :: header">[Here goes the header]</div>
 		<div class="container" th:fragment="content">
+      <a class="btn btn-default" th:href="${findLink}">Find Staff</a>
       <a class="btn btn-default" th:href="${createLink}">Create new Staff</a>
 		  <ul>
 		    <li th:each="staff : ${staffList}">

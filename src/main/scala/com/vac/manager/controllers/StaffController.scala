@@ -52,7 +52,7 @@ class StaffController extends UrlGrabber {
     staffBirth = staff.staffBirth
     staffTeamList = staff.staffTeamList
     staffFederation = staff.staffFederation
-    
+
     def getShowLink(): String = {
       getUrl("StaffController.showStaff", "staffId" -> staff.staffId)
     }
@@ -65,63 +65,77 @@ class StaffController extends UrlGrabber {
     def getAssignTeamLink: String = ""
     def getEditPrivacyLink: String = ""
   }
-  
+
   class FindStaffs() {
 
     @BeanProperty
-    var name: String = null
-    
-    @BeanProperty
-    var cardId: String = null
-    
-    @BeanProperty
-    var email: String = null
+    var byName: String = null
 
     @BeanProperty
-    var activated: Boolean = false
+    var byCardId: String = null
 
     @BeanProperty
-    var allStaff: Boolean = true
+    var byEmail: String = null
+
+    @BeanProperty
+    var byActivated: Boolean = false
+
+    @BeanProperty
+    var activatedValue: Boolean = false
     
+    @BeanProperty
+    var byAllStaff: Boolean = false
+
   }
 
   def find(): ModelAndView = {
-    
+
     val fedId: java.lang.Long = federation.getId
 
     //Receiver
     val receiverFind = new FindStaffs
-    
+
     //Submit params
     val submitUrl: String = getUrl("StaffController.list")
     val submitMethod: String = "POST"
 
     val mav: ModelAndView = new ModelAndView("staff/find")
-    mav.addObject("receiver",receiverFind)
-    mav.addObject("hiddens", Map("fedId"->fedId).asJava.entrySet())
+    mav.addObject("receiver", receiverFind)
+    mav.addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet())
     mav.addObject("submitUrl", submitUrl)
     mav.addObject("submitMethod", submitMethod)
     mav
   }
- 
+
   def list(
-    @RequestParam name: String,
-    @RequestParam cardId: String,
-    @RequestParam email: String,
-    @RequestParam activated: Boolean,
-    @RequestParam allStaff: Boolean): ModelAndView = {
+    @RequestParam byName: String,
+    @RequestParam byCardId: String,
+    @RequestParam byEmail: String,
+    @RequestParam byActivated: Boolean,
+    @RequestParam activatedValue: Boolean,
+    @RequestParam byAllStaff: Boolean): ModelAndView = {
 
     //TODO: Check errors
+    //TODO: Check if none parameter is activated
     val fedId: Long = federation.getId
     val createLink: String = getUrl("StaffController.create")
+    val findLink: String = getUrl("StaffController.find")
+
+    val startIndex: Int = 0
+    val count: Int = 10
 
     var staffList: Seq[ActionableStaff] = null
-    
-    if(allStaff)
+
+    if (byActivated)
+      staffList = staffMemberService.findAllByActivated(activatedValue,
+        startIndex, count).map(new ActionableStaff(_))
+
+    if (byAllStaff)
       staffList = staffMemberService.findAllByFederationId(fedId) map (new ActionableStaff(_))
-      
+
     val mav: ModelAndView = new ModelAndView("staff/list")
     mav.addObject("createLink", createLink)
+    mav.addObject("findLink", findLink)
     mav.addObject("staffList", staffList.asJava)
     mav
   }
@@ -132,7 +146,7 @@ class StaffController extends UrlGrabber {
     val fedId: Long = federation.getId
 
     val maybeStaff: Option[StaffMember] = staffMemberService.find(staffId)
-    
+
     maybeStaff match {
       case None => new ModelAndView("staff/notfound")
       case Some(staff) => {
@@ -215,7 +229,7 @@ class StaffController extends UrlGrabber {
     val submitMethod: String = "POST"
 
     val maybeStaffMember: Option[StaffMember] = staffMemberService.find(staffId)
-    
+
     maybeStaffMember match {
       case None => new ModelAndView("staff/notfound")
       case Some(staffMember) => {
@@ -246,7 +260,7 @@ class StaffController extends UrlGrabber {
 	*/
 
     val fedId: Long = federation.getId
-    
+
     //Modify Staff
     val modifiedStaffMember: Option[StaffMember] =
       staffMemberService.modifyStaff(
