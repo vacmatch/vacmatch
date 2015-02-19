@@ -8,7 +8,7 @@ trait CoachDao extends StaffMemberDao {
 
   def findById(staffId: Long): Coach
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach]
+  def findByName(name: String, startIndex: Int, count: Int): Seq[Coach]
 
   def findAllByFederationId(fedId: Long): Seq[Coach]
 

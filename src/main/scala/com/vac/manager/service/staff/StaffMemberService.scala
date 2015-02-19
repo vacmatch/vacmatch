@@ -13,7 +13,7 @@ trait StaffMemberService {
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember]
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[StaffMember]
+  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember]
 
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember]
 

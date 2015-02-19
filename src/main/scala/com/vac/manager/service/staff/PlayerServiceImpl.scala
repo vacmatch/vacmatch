@@ -26,9 +26,10 @@ class PlayerServiceImpl
   override def find(staffId: Long): Option[Player] = {
     Option((playerDao.findById(staffId)).asInstanceOf[Player])
   }
-
-  override def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Player] = {
-    this.playerDao.findByNameAndSurname(name, surname, startIndex, count)
+  
+  override
+  def findByName(name: String, startIndex: Int, count: Int): Seq[Player] =  {
+	this.playerDao.findByName(name, startIndex, count)
   }
 
   override def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Player] = {

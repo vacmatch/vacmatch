@@ -16,9 +16,14 @@ class StaffMemberDaoJPA
   extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
   with StaffMemberDao {
 
-  def findByNameAndSurname(name: String, surname: String, startIndex: Int,
+  def findByName(name: String, startIndex: Int,
     count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffName LIKE :name OR s.staffSurnames LIKE :name", classOf[StaffMember])
+      .setParameter("name", "%" + name + "%")
+
+    query.getResultList().asScala
   }
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
@@ -32,15 +37,32 @@ class StaffMemberDaoJPA
 
   def findAllByActivated(activated: Boolean, startIndex: Int,
     count: Int): Seq[StaffMember] = {
-    null
+    val optionNull: String = if(activated) "IS NOT EMPTY" else "IS EMPTY"
+
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffTeamList " + optionNull, classOf[StaffMember])
+
+    query.getResultList().asScala
   }
 
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffEmail LIKE :email", classOf[StaffMember])
+      .setParameter("email", "%" + email + "%")
+
+    query.getResultList().asScala
   }
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    null
+    var query = getEntityManager().createQuery(
+      "SELECT s FROM StaffMember s " +
+        "WHERE s.staffCardId LIKE :cardIdFirst OR s.staffCardId LIKE :cardIdSecond", classOf[StaffMember])
+      .setParameter("cardIdFirst", "%" + cardId)
+      .setParameter("cardIdSecond", cardId + "%")
+
+    query.getResultList().asScala
   }
 
 }

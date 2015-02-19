@@ -25,14 +25,7 @@ class Competition (compName: String, fed: Federation) {
   var federation: Federation = fed
   
   @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinTable(
-      name = "TEAM_COMPETITION",
-      joinColumns =
-	Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
-      inverseJoinColumns =
-	Array(new JoinColumn(name = "compId", nullable = false, updatable = false))
-  )
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy="competitionsList", cascade = Array(CascadeType.ALL))
   var teamList: java.util.List[Team] = _
 
   def this() = this(null, null)

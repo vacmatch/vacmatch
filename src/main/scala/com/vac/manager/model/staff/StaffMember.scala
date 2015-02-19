@@ -70,22 +70,19 @@ class StaffMember(
   var staffBirth: Calendar = stBirth
 
   @BeanProperty
-  @Column
-  @ManyToMany(
-    fetch = FetchType.LAZY,
-    cascade = Array(CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE)
-  )
+  @ManyToMany(fetch = FetchType.EAGER,
+      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
   @JoinTable(
-    name = "TEAM_STAFF",
-    joinColumns =
-      Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)),
-    inverseJoinColumns =
-      Array(new JoinColumn(name = "staffId", nullable = false, updatable = false))
+      name = "TEAM_STAFF",
+      joinColumns =
+        Array(new JoinColumn(name = "teamId")),
+      inverseJoinColumns =
+        Array(new JoinColumn(name = "staffId"))
   )
   var staffTeamList: java.util.List[Team] = _
 
   @BeanProperty
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "fedId")
   var staffFederation: Federation = stFederation
 

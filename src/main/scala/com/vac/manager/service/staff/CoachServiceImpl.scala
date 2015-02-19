@@ -24,9 +24,10 @@ class CoachServiceImpl
   override def find(staffId: Long): Option[Coach] = {
     Option((this.coachDao.findById(staffId)).asInstanceOf[Coach])
   }
-
-  override def findByNameAndSurname(name: String, surname: String, startIndex: Int, count: Int): Seq[Coach] = {
-    this.coachDao.findByNameAndSurname(name, surname, startIndex, count)
+  
+  override
+  def findByName(name: String,startIndex: Int, count: Int): Seq[Coach] =  {
+	this.coachDao.findByName(name, startIndex, count)
   }
 
   override def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Coach] = {
