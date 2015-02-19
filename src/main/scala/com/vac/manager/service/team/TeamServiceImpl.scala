@@ -89,67 +89,53 @@ class TeamServiceImpl extends TeamService {
     team
   }
 
-  def changeActivation(teamId: Long, newState: Boolean): Team = {
-    var team: Team = teamDao.findById(teamId)
-    team.teamActivated = newState
+  protected def changeTeamDetails(teamId: Long)(callback: (Team) => Any) = {
+    var team = teamDao.findById(teamId)
 
+    callback(team)
     teamDao.save(team)
+
     team
+  }
+
+  def changeActivation(teamId: Long, newState: Boolean): Team = {
+    changeTeamDetails(teamId)(_.teamActivated = newState)
   }
 
   @throws[IllegalArgumentException]("If newPublicName doesn't exist")
   def modifyPublicName(teamId: Long, newPublicName: String): Team = {
-    var team: Team = teamDao.findById(teamId)
-
     if (newPublicName == null) {
       throw new IllegalArgumentException("newPublicName cannot be null")
     }
-
-    team.publicTeamName = newPublicName
-
-    teamDao.save(team)
-    team
+    changeTeamDetails(teamId)(_.publicTeamName = newPublicName)
   }
 
   @throws[IllegalArgumentException]("If newPhones doesn't exist")
   def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team = {
-    var team: Team = teamDao.findById(teamId)
-
     if (newPhones == null) {
       throw new IllegalArgumentException("newPhones cannot be null")
     }
-
-    team.teamTelephones = newPhones.asJava
-
-    teamDao.save(team)
-    team
+    changeTeamDetails(teamId)(_.teamTelephones = newPhones.asJava)
   }
 
   @throws[IllegalArgumentException]("If any element in newSponsors is null")
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team = {
-    var team: Team = teamDao.findById(teamId)
-
-    newSponsors.map(x =>
+    newSponsors.map { x =>
       if (x == null)
-        throw new IllegalArgumentException("Illegal null element in newSponsors"))
+        throw new IllegalArgumentException("Illegal null element in newSponsors")
+    }
 
-    team.setSponsorsList(newSponsors.asJava)
-    teamDao.save(team)
-    team
+    changeTeamDetails(teamId)(_.setSponsorsList(newSponsors.asJava))
   }
 
   @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
   def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Team = {
-    var team: Team = teamDao.findById(teamId)
-
     //Check if all staff exists
     newStaffList.map(st =>
       if (staffMemberDao.findById(st.staffId) == null)
         throw new IllegalArgumentException("staffId " + st.staffId + " cannot be null"))
 
-    team.setStaffList(newStaffList.asJava)
-    teamDao.save(team)
-    team
+    changeTeamDetails(teamId)(_.setStaffList(newStaffList.asJava))
   }
 
   @throws[IllegalArgumentException]("If any element in newCompetitionList doesn't exist")
@@ -161,9 +147,7 @@ class TeamServiceImpl extends TeamService {
       if (competitionDao.findById(cp.compId) == null)
         throw new IllegalArgumentException("compId " + cp.compId + " cannot be null"))
 
-    team.setCompetitionsList(newCompetitionList.asJava)
-    teamDao.save(team)
-    team
+    changeTeamDetails(teamId)(_.setCompetitionsList(newCompetitionList.asJava))
   }
 
   def getNumberByFederationId(fedId: Long): Long = {
