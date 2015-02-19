@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head th:replace="fragments/head :: head">
-    <title>Edit Staff</title>
+    <title>Find Staff</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
     <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
@@ -12,89 +12,90 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-        <h2>Find Staff</h2>
-        
-        <hr/>
-        
-        <form id="staffForm" class="form form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
-          <input th:each="h: ${hiddens}" type="hidden"
-           th:name="${h.key}" th:value="${h.value}" />
+	<h2>Find Staff</h2>
 
-	        <div class="form-group">
-	          <label class="col-md-2 control-label" for="find">Find by</label>
-	          <div class="col-md-10">
-	            <div class="input-group">
-	              <div class="input-group-btn">
-	                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-	                 aria-expanded="false">Select find method <span class="caret"></span></button>
-	                <ul class="dropdown-menu" role="menu">
-	                  <li><a data-toggle="collapse" href="#byName">Name</a></li>
-                    <li><a data-toggle="collapse" href="#byCardId">Card Id</a></li>
-                    <li><a data-toggle="collapse" href="#byEmail">Email</a></li>
-	                  <li><a data-toggle="collapse" href="#byActivated">Activated</a></li>
-                    <li><a data-toggle="collapse" href="#byAll">All</a></li>
-	                </ul>
-	              </div><!-- /btn-group -->
-	            </div><!-- /input-group -->
-	          </div><!-- /.col-lg-6 -->
-	        </div>
-	        
-          <div id="byName" class="form-group collapse">
-            <label class="col-md-2 control-label" for="name">Name</label>
-            <div class="col-md-10">
-              <input class="form-control" id="name" type="text" placeholder="Name" th:field="${receiver.byName}" />
-            </div>
-          </div>
-          
-          <div id="byCardId" class="form-group collapse">
-            <label class="col-md-2 control-label" for="cardId">Card Id</label>
-            <div class="col-md-10">
-              <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="${receiver.byCardId}"/>
-            </div>
-          </div>
-          
-          <div id="byEmail" class="form-group collapse">
-            <label class="col-md-2 control-label" for="email">Email</label>
-            <div class="col-md-10">
-              <input class="form-control" id="email" type="text" placeholder="Email" th:field="${receiver.byEmail}"/>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-              <label>Use this?</label>
-            </div>
-          </div>
-                    
-          <div id="byActivated" class="form-group collapse">
-            <label class="col-md-2 control-label" for="activated">Activated</label>
-            <div class="col-md-10">
-              <select class="btn btn-default" type="button" th:field="${{receiver.byActivated}}">
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-              <select class="btn btn-default" type="button" th:field="${receiver.activatedValue}">
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-              </select>
-            </div>
-          </div>
+	<hr/>
 
-          <div id="byAll" class="form-group collapse">
-            <label class="col-md-2 control-label" for="all">All</label>
-            <div class="col-md-10">
-              <select class="btn btn-default" type="button" th:field="${receiver.byAllStaff}">
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
-          </div>
-                    
-          <input class="btn btn-default" type="submit" name="submit" value="Accept"/>
-        </form>
+	<form id="staffForm" class="form form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
+	  <input th:each="h: ${hiddens}" type="hidden"
+	   th:name="${h.key}" th:value="${h.value}" />
+
+		<div class="form-group">
+		  <label class="col-sm-3 control-label" for="find">Find by</label>
+		  <div class="col-sm-9">
+		    <div class="input-group">
+		      <div class="input-group-btn">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+			 aria-expanded="false">Select find method <span class="caret"></span></button>
+			<ul class="dropdown-menu" role="menu">
+			  <li><a data-toggle="collapse" href="#byName">Name</a></li>
+		    <li><a data-toggle="collapse" href="#byCardId">Card Id</a></li>
+		    <li><a data-toggle="collapse" href="#byEmail">Email</a></li>
+			  <li><a data-toggle="collapse" href="#byActivated">Activated</a></li>
+		    <li><a data-toggle="collapse" href="#byAll">All</a></li>
+			</ul>
+		      </div><!-- /btn-group -->
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		</div>
+
+	  <div id="byName" class="form-group collapse">
+	    <label class="col-sm-3 control-label" for="name">Name</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="${receiver.byName}" />
+	    </div>
+	  </div>
+
+	  <div id="byCardId" class="form-group collapse">
+	    <label class="col-sm-3 control-label" for="cardId">Card Id</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="${receiver.byCardId}"/>
+	    </div>
+	  </div>
+
+	  <div id="byEmail" class="form-group collapse">
+	    <label class="col-sm-3 control-label" for="email">Email</label>
+	    <div class="col-sm-9">
+	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="${receiver.byEmail}"/>
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label"></label>
+	    <div class="col-sm-9">
+	      <label>Use this?</label>
+	    </div>
+	  </div>
+
+	  <div id="byActivated" class="form-group collapse">
+	    <label class="col-sm-3 control-label" for="activated">Activated</label>
+	    <div class="col-sm-9">
+	      <select class="btn btn-default" type="button" th:field="${{receiver.byActivated}}">
+		<option value="true">Yes</option>
+		<option value="false">No</option>
+	      </select>
+	      <select class="btn btn-default" type="button" th:field="${receiver.activatedValue}">
+		<option value="true">Active</option>
+		<option value="false">Inactive</option>
+	      </select>
+	    </div>
+	  </div>
+
+	  <div id="byAll" class="form-group collapse">
+	    <label class="col-sm-3 control-label" for="all">All</label>
+	    <div class="col-sm-9">
+	      <select class="btn btn-default" type="button" th:field="${receiver.byAllStaff}">
+		<option value="true">Yes</option>
+		<option value="false">No</option>
+	      </select>
+	    </div>
+	  </div>
+
+	  <input class="btn btn-default" type="submit" name="submit" value="Accept"/>
+	</form>
       </div>
     </div>
     <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
   </body>
 </html>
+
