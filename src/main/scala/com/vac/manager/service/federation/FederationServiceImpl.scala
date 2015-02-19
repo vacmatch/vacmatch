@@ -18,9 +18,7 @@ class FederationServiceImpl extends FederationService {
 
   @Transactional(readOnly = true)
   def find(id: Long): Option[Federation] = {
-    val f = federationDao findById id
-
-    return Option(f)
+    return federationDao.findById(id)
   }
 
   /**

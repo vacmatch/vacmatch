@@ -33,8 +33,10 @@ class StaffMemberServiceImpl extends StaffMemberService {
   @Autowired
   var staffMemberDao: StaffMemberDao = _
 
+  /* --------------- FIND ---------------- */
+
   def find(staffId: Long): Option[StaffMember] = {
-    Option(staffMemberDao.findById(staffId))
+    staffMemberDao.findById(staffId)
   }
 
   def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
@@ -57,9 +59,10 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findByCardId(cardId, startIndex, count)
   }
 
-  @throws[InstanceNotFoundException]
+  /* ---------------- MODIFY --------------- */
+
   def changeActivation(staffId: Long, newState: Boolean) = {
-    var maybeStaff: Option[StaffMember] = Option(staffMemberDao.findById(staffId))
+    var maybeStaff: Option[StaffMember] = staffMemberDao.findById(staffId)
 
     maybeStaff match {
       case None => throw new InstanceNotFoundException(staffId, classOf[StaffMember].getName())
@@ -69,28 +72,30 @@ class StaffMemberServiceImpl extends StaffMemberService {
       }
     }
   }
-	
-  def changePrivacy(staffId: Long, newState: Boolean, newAlias: String) = {
-    var staff: StaffMember = staffMemberDao.findById(staffId)
 
-    staff.staffAlias = newAlias
-    staffMemberDao.save(staff)
+  def changePrivacy(staffId: Long, newState: Boolean, newAlias: String) = {
+    var staff: Option[StaffMember] = staffMemberDao.findById(staffId)
+
+    staff.map(_.staffAlias = newAlias)
+    staff.map(staffMemberDao.save(_))
   }
 
   def addTeamToStaff(staffId: Long, newTeamList: Seq[Team]) = {
-    var staff: StaffMember = staffMemberDao.findById(staffId)
+    var staff: Option[StaffMember] = staffMemberDao.findById(staffId)
 
     if (newTeamList != null) {
-      staff.staffTeamList = newTeamList.asJava
-      staffMemberDao.save(staff)
+      staff.map { s =>
+        s.staffTeamList = newTeamList.asJava
+        staffMemberDao.save(s)
+      }
     }
   }
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
-    stEmail: String, stTelephones: String, stCardId: String,
-    stBirth: Calendar, idFederation: Long): StaffMember = {
+    stEmail: String, stTelephones: String,
+    stCardId: String, stBirth: Calendar, idFederation: Long): StaffMember = {
 
     //Check if there's an incorrect parameter
     checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
@@ -128,6 +133,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
         staff.staffEmail = stEmail
         staff.staffAvatarLink = new Gravatar(if (stEmail == null) "" else stEmail).ssl(true).avatarUrl
         staff.staffTelephones = stTelephones
+        staff.staffAddress = stAddress
         staff.staffCardId = stCardId
         staff.staffBirth = stBirth
         staffMemberDao.save(staff)
@@ -152,7 +158,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
         val savedAddress: Address = addressService.createAddress(
           stAddress.firstLine, stAddress.secondLine,
           stAddress.postCode, stAddress.locality,
-          stAddress.province, stAddress.country)
+          stAddress.province, stAddress.country
+        )
 
         staff.staffAddress = savedAddress
         staffMemberDao.save(staff)
@@ -184,5 +191,4 @@ class StaffMemberServiceImpl extends StaffMemberService {
   }
 
 }
-
 

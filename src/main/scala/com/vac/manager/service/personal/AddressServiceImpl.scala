@@ -15,7 +15,7 @@ class AddressServiceImpl
   var addressDao: AddressDao = _
 
   def find(addressId: Long): Option[Address] = {
-    Option(addressDao.findById(addressId))
+    addressDao.findById(addressId)
   }
 
   def createAddress(firstLine: String, secondLine: String, postCode: String,

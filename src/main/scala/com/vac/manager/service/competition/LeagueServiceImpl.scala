@@ -79,12 +79,11 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   def findById(leagueId: Int): Option[League] = {
-    Option(leagueDao.findById(leagueId))
+    return leagueDao.findById(leagueId)
   }
 
   def findBySlug(fedId: Long, slug: String): Option[League] = {
-    //leagueDao.findBySlug(fedId, slug)
-    leagueDao.findBySlug(fedId, slug)
+    return leagueDao.findBySlug(fedId, slug)
   }
 
   def createSeason(fedId: Long, slug: String, year: String, startTime: Calendar, endTime: Calendar): LeagueSeason = {

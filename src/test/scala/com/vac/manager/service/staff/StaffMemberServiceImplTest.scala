@@ -338,7 +338,7 @@ class StaffMemberServiceImplTest
       When("StaffMember exists")
       When("StaffMember activation state is valid")
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(Some(staffMember))
 
       staffMemberService.changeActivation(anyLong, newState)
 
@@ -360,7 +360,7 @@ class StaffMemberServiceImplTest
       When("StaffMember doesn't exist")
       When("StaffMember activation state is valid")
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(null)
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(None)
 
       intercept[InstanceNotFoundException] {
         staffMemberService.changeActivation(anyLong, newState)
@@ -380,7 +380,7 @@ class StaffMemberServiceImplTest
       Given("Valid StaffMember parameters")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(anyLong)).thenReturn(Some(staffMember))
 
       Given("An existent Federation")
       val federation: Federation = validFederation
@@ -430,7 +430,7 @@ class StaffMemberServiceImplTest
       Given("A not existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(null)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(None)
 
       When("StaffMember try to be modified")
       val modifiedStaffMember: Option[StaffMember] =
@@ -459,7 +459,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffName = null
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffName is null")
@@ -486,7 +486,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffName = ""
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffName is empty")
@@ -513,7 +513,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffSurnames = null
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffSurnames are null")
@@ -540,7 +540,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffSurnames = ""
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffSurnames are empty")
@@ -567,7 +567,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffCardId = null
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffCardId is null")
@@ -594,7 +594,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffCardId = ""
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffCardId is empty")
@@ -621,7 +621,7 @@ class StaffMemberServiceImplTest
       val staffMember: StaffMember = validStaffMember
       staffMember.staffBirth = null
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       When("StaffMember try to be modified")
       When("staffBirth is null")
@@ -648,7 +648,7 @@ class StaffMemberServiceImplTest
       Given("An existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       Given("A StaffMember old address")
       val oldAddress = validAddress
@@ -680,7 +680,7 @@ class StaffMemberServiceImplTest
       Given("An existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       Given("A null StaffMember old address")
       val oldAddress: Address = null
@@ -709,7 +709,7 @@ class StaffMemberServiceImplTest
       Given("A not existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(null)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(None)
 
       Given("A StaffMember old address")
       val oldAddress: Address = validAddress
@@ -741,7 +741,7 @@ class StaffMemberServiceImplTest
       Given("An existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       Given("A StaffMember old address")
       val oldAddress: Address = validAddress
@@ -771,7 +771,7 @@ class StaffMemberServiceImplTest
       Given("An existent StaffMember")
       val staffMember: StaffMember = validStaffMember
 
-      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(staffMember)
+      Mockito.when(staffMemberService.staffMemberDao.findById(staffMember.staffId)).thenReturn(Some(staffMember))
 
       Given("A StaffMember old address")
       val oldAddress: Address = validAddress

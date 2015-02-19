@@ -55,7 +55,7 @@ class AddressServiceTest
       Given("An existent Address")
       val addressId: Long = 1
 
-      Mockito.when(addressService.addressDao.findById(addressId)).thenReturn(validAddress)
+      Mockito.when(addressService.addressDao.findById(addressId)).thenReturn(Some(validAddress))
 
       When("Address try to be removed")
       addressService.removeAddress(addressId)
@@ -70,7 +70,7 @@ class AddressServiceTest
       Given("A not existent Address")
       val addressId: Long = 1
 
-      Mockito.when(addressService.addressDao.findById(addressId)).thenReturn(null)
+      Mockito.when(addressService.addressDao.findById(addressId)).thenReturn(None)
 
       When("Address try to be removed")
       addressService.removeAddress(addressId)

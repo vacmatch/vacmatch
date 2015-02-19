@@ -28,7 +28,7 @@ class TeamServiceImpl extends TeamService {
   @Autowired
   var competitionDao: CompetitionDao = _
 
-  def findByTeamId(teamId: Long): Team = {
+  def findByTeamId(teamId: Long): Option[Team] = {
     teamDao.findById(teamId)
   }
 
@@ -49,6 +49,7 @@ class TeamServiceImpl extends TeamService {
     if (teamName == null) {
       throw new IllegalArgumentException("teamName cannot be null")
     }
+
     if ((fundationalDate == null) || (fundationalDate.after(Calendar.getInstance()))) {
       throw new IllegalArgumentException("fundationalDate cannot be null")
     }
@@ -63,8 +64,8 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]("If newName, newDate or newAddress doesn't exist")
   def modifyTeam(teamId: Long, newName: String, newPublicName: String,
-    newDate: Calendar, newAddress: Address, newWeb: String): Team = {
-    var team: Team = teamDao.findById(teamId)
+    newDate: Calendar, newAddress: Address, newWeb: String): Option[Team] = {
+    var maybeTeam = teamDao.findById(teamId)
 
     if (newName == null) {
       throw new IllegalArgumentException("newName cannot be null")
@@ -78,32 +79,35 @@ class TeamServiceImpl extends TeamService {
       throw new IllegalArgumentException("newAddress cannot be null")
     }
 
-    team.teamName = newName
-    team.publicTeamName = newPublicName
-    team.fundationDate = newDate
-    team.teamAddress = newAddress
-    team.teamWeb = newWeb
+    maybeTeam.map { team =>
 
-    team.setTeamName(newName)
-    teamDao.save(team)
-    team
+      team.teamName = newName
+      team.publicTeamName = newPublicName
+      team.fundationDate = newDate
+      team.teamAddress = newAddress
+      team.teamWeb = newWeb
+
+      team.setTeamName(newName)
+      teamDao.save(team)
+
+      team
+    }
   }
 
   protected def changeTeamDetails(teamId: Long)(callback: (Team) => Any) = {
     var team = teamDao.findById(teamId)
 
-    callback(team)
-    teamDao.save(team)
-
+    team.map(callback)
+    team.map(teamDao.save(_))
     team
   }
 
-  def changeActivation(teamId: Long, newState: Boolean): Team = {
+  def changeActivation(teamId: Long, newState: Boolean): Option[Team] = {
     changeTeamDetails(teamId)(_.teamActivated = newState)
   }
 
   @throws[IllegalArgumentException]("If newPublicName doesn't exist")
-  def modifyPublicName(teamId: Long, newPublicName: String): Team = {
+  def modifyPublicName(teamId: Long, newPublicName: String): Option[Team] = {
     if (newPublicName == null) {
       throw new IllegalArgumentException("newPublicName cannot be null")
     }
@@ -111,7 +115,7 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[IllegalArgumentException]("If newPhones doesn't exist")
-  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team = {
+  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Option[Team] = {
     if (newPhones == null) {
       throw new IllegalArgumentException("newPhones cannot be null")
     }
@@ -119,17 +123,16 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[IllegalArgumentException]("If any element in newSponsors is null")
-  def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team = {
+  def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team] = {
     newSponsors.map { x =>
       if (x == null)
         throw new IllegalArgumentException("Illegal null element in newSponsors")
     }
-
     changeTeamDetails(teamId)(_.setSponsorsList(newSponsors.asJava))
   }
 
   @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
-  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Team = {
+  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Option[Team] = {
     //Check if all staff exists
     newStaffList.map(st =>
       if (staffMemberDao.findById(st.staffId) == null)
@@ -139,8 +142,7 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[IllegalArgumentException]("If any element in newCompetitionList doesn't exist")
-  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Team = {
-    var team: Team = teamDao.findById(teamId)
+  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team] = {
 
     //Check if all competition exists
     newCompetitionList.map(cp =>
