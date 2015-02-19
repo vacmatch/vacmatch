@@ -4,6 +4,7 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import com.vac.manager.model.federation.Federation
 import com.vac.manager.model.federation.FederationDao
 import com.vac.manager.service.federation.FederationService
+import com.vac.manager.auth.model.UserAuthService
 import com.vac.manager.util.Layout
 import com.vac.manager.util.Pageable
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,10 +28,15 @@ class FederationCRUDController extends UrlGrabber {
     def getUserLink(): String = dns
     def getDeleteLink(): String = getUrl("FederationCRUDController.delete", "fedId" -> fedId)
     def getManageLink(): String = getUrl("FederationMgmtController.show", "fedId" -> fedId)
+
+    def getCreateRolesLink(): String = getUrl("FederationCRUDController.createDefaultRoles", "fedId" -> fedId)
   }
 
   @Autowired
   var federationService: FederationService = _
+
+  @Autowired
+  var userAuthService: UserAuthService = _
 
   def list(@ModelAttribute("pageable") p: Pageable): ModelAndView = {
 
@@ -85,7 +91,9 @@ class FederationCRUDController extends UrlGrabber {
     @RequestParam("dns") dnsTextArea: String
   ): String = {
     val domains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
+
     federationService.createFederation(fedName, domains)
+    federationService.findByName(fedName).map(f => createDefaultRoles(f.fedId))
 
     return "redirect:" + getUrl("FederationCRUDController.list")
   }
@@ -135,6 +143,17 @@ class FederationCRUDController extends UrlGrabber {
       "info" -> info.toList.asJava,
       "err" -> err.toList.asJava
     )
+  }
+
+  /**
+   * Federations cannot yet create their own roles, but we can force
+   * sane defaults on a customized system
+   */
+  def createDefaultRoles(@RequestParam("fedId") fedId: Long) = {
+    userAuthService.createRole(fedId, "ADMINFED", "Federation administrator")
+    userAuthService.createRole(fedId, "REFEREE", "Referee")
+
+    "redirect:" + getUrl("UserAdminController.list", "info" -> "Roles created")
   }
 
 }

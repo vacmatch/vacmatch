@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome!</title>
+    <title>Show league seasons</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
     <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
@@ -9,17 +9,18 @@
     <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
   </head>
   <body>
+    <div class="container" th:fragment="content">
 
-    <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
-      <li><a th:href="${createUrl}">Create league</a></li>
-      <li><a th:href="${listUrl}">Show leagues</a></li>
-    </ul>
+      <nav class="nav navbar-default"><a th:href="${listLink}">Go to list</a></nav>
 
-    <div class="container" th:fragment="container">
-      <h2>League not found</h2>
+      <h2 th:text="|Season ${season.id.league.leagueName} ${season.id.seasonSlug}|">League Alevins</h2>
 
-      <p>The requested league could not be found.</p>
-
+      <ul>
+	<li th:each="team: ${teams}">
+	  <a th:href="${team.link}" th:text="|${team.name}|"></a>
+	</li>
+      </ul>
     </div>
   </body>
 </html>
+

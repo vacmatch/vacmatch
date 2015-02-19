@@ -10,6 +10,7 @@ def getSpringBootDependencies(version:String) = {
     "web",
     "thymeleaf",
     "actuator",
+    "security",
     "jetty",
     "test"
   )
@@ -26,6 +27,7 @@ val springTx = List("tx", "jdbc")
 
 
 val ourDeps = Seq (
+  "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
   "log4j" % "log4j" % "1.2.16"

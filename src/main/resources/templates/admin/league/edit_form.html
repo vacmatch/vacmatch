@@ -12,6 +12,12 @@
 	th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 <body>
+
+  <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
+    <li class="active"><a href="#" th:text="${action}">Create league</a></li>
+    <li><a th:href="${listUrl}">Show leagues</a></li>
+  </ul>
+
   <div class="container" th:fragment="content">
     <div class="jumbotron">
       <h2 th:text="${action}">Create League</h2>
