@@ -21,10 +21,10 @@ class TeamController() {
   def showTeam() = {
     //TODO get parameters from url
     var teamId: Long = 0
-    var team: Team = teamService.findByTeamId(teamId)
+    var team: Option[Team] = teamService.findByTeamId(teamId)
 
     var mav: ModelAndView = new ModelAndView("home");
-    mav.addObject("team", team)
+    mav.addObject("team", team.orNull)
     mav
   }
 
@@ -39,9 +39,10 @@ class TeamController() {
     var country: String = ""
 
     var address: Address = new Address(
-      "ADDRESS LINE", "ADD LINE 2", "27003", "LOCALITY", "PROVINCE", "COUNTRY")
+      "ADDRESS LINE", "ADD LINE 2", "27003", "LOCALITY", "PROVINCE", "COUNTRY"
+    )
 
-    var createdTeam: Team = teamService.createTeam(teamName, publicName, fundationalDate, address, web)
+    var createdTeam = teamService.createTeam(teamName, publicName, fundationalDate, address, web)
 
     var mav: ModelAndView = new ModelAndView("team/showTeam");
     mav.addObject("team", createdTeam);

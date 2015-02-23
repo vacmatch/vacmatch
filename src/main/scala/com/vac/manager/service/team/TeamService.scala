@@ -10,29 +10,29 @@ import com.vac.manager.model.personal.Address
 
 trait TeamService {
 
-  def findByTeamId(teamId: Long): Team
+  def findByTeamId(teamId: Long): Option[Team]
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
   def createTeam(teamName: String, publicName: String, fundationalDate: Calendar,
-    address: Address, web: String): Team
+      address: Address, web: String): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-    fundationalDate: Calendar, address: Address, web: String): Team
+      fundationalDate: Calendar, address: Address, web: String): Option[Team]
 
-  def changeActivation(teamId: Long, newState: Boolean): Team
+  def changeActivation(teamId: Long, newState: Boolean): Option[Team]
 
-  def modifyPublicName(teamId: Long, newPublicName: String): Team
+  def modifyPublicName(teamId: Long, newPublicName: String): Option[Team]
 
-  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Team
+  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Option[Team]
 
-  def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Team
+  def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team]
 
-  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Team
+  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Option[Team]
 
-  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Team
+  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team]
 
   def getNumberByFederationId(fedId: Long): Long
 

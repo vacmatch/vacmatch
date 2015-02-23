@@ -21,13 +21,13 @@ abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends G
   @BeanProperty
   @PersistenceContext
   var entityManager: EntityManager = _
-  
+
   var entityClass: Class[T] = entClass
 
   /**
     * Find all objects from EntityClass table
     */
-  def findAll(): List[T] = {
+  def findAll(): Seq[T] = {
     val criteria: CriteriaQuery[T] = entityManager.getCriteriaBuilder createQuery entityClass
 
     criteria select (criteria from entityClass)
@@ -41,27 +41,23 @@ abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends G
     * Save or update entity
     */
   def save(entity: T) = {
-    entityManager persist entity
+    entityManager.persist(entity)
   }
 
   /**
     * Remove entity from entity table
     */
   def remove(entity: T) = {
-    entityManager remove entity
+    entityManager.remove(entity)
   }
 
   /**
    * Find entity by id
    */
-  def findById(id: K): T = {
+  def findById(id: K): Option[T] = {
     val entity = entityManager.find(entityClass, id).asInstanceOf[T];
 
-    if (entity == null) {
-      throw new InstanceNotFoundException(id.toString, entityClass.getName)
-    }
-
-    entity
+    Option(entity)
   }
 
 }

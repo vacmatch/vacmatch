@@ -11,7 +11,7 @@ trait GenericDao[T, K <: Serializable] {
   /**
     * Find all items from DB table
     */
-  def findAll(): List[T]
+  def findAll(): Seq[T]
 
   /**
     * Insert a new row or update it if it has been already persisted
@@ -30,6 +30,6 @@ trait GenericDao[T, K <: Serializable] {
     * @param id The id from the object to be found
     * @param query The name of the query to be executed
     */
-  def findById(id: K): T
+  def findById(id: K): Option[T]
 
 }
