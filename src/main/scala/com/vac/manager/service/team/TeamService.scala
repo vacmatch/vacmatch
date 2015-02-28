@@ -10,23 +10,21 @@ import com.vac.manager.model.personal.Address
 
 trait TeamService {
 
-  def findByTeamId(teamId: Long): Option[Team]
+  def find(teamId: Long): Option[Team]
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
   def createTeam(teamName: String, publicName: String, fundationalDate: Calendar,
-      address: Address, web: String): Team
+      address: Address, web: String, telephones: Seq[String]): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-      fundationalDate: Calendar, address: Address, web: String): Option[Team]
+      fundationalDate: Calendar, address: Address, web: String, telephones: Seq[String]): Option[Team]
+
+  def assignAddress(teamId: Long, newAddress: Address): Option[Team]
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team]
-
-  def modifyPublicName(teamId: Long, newPublicName: String): Option[Team]
-
-  def modifyTelephones(teamId: Long, newPhones: Seq[String]): Option[Team]
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team]
 

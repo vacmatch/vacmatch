@@ -6,12 +6,8 @@ import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
 import scala.collection.JavaConverters._
-import com.vac.manager.model.staff.PlayerDao
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.staff.Player
 import java.util.Calendar
-import com.vac.manager.model.staff.Coach
-import com.vac.manager.model.staff.CoachDao
 import org.springframework.transaction.annotation.Transactional
 import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
