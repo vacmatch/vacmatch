@@ -72,9 +72,9 @@ class TeamServiceImpl extends TeamService {
     newDate: Calendar, newAddress: Address, newWeb: String, telephones: Seq[String]): Option[Team] = {
 
     checkParameters(newName, newPublicName, newDate, newWeb, telephones)
-
+    
     val maybeTeam: Option[Team] = assignAddress(teamId, newAddress)
-
+    
     maybeTeam.map { team =>
 
       team.teamName = newName
@@ -117,6 +117,8 @@ class TeamServiceImpl extends TeamService {
     team.map(teamDao.save(_))
     team
   }
+  
+  def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
 
   private def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
 

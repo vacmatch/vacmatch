@@ -23,7 +23,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamName: String = name
 
   @BeanProperty
-  @Column(nullable = false)
+  @Column
   var teamActivated: Boolean = false
 
   @BeanProperty
