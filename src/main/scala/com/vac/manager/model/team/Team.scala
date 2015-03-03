@@ -45,9 +45,9 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamWeb: String = web
 
   @BeanProperty
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable
-  @Column
+  @JoinColumn
   var teamTelephones: java.util.List[String] = telephones
 
   @BeanProperty // TODO: Add @Column and model sponsors as a real thing

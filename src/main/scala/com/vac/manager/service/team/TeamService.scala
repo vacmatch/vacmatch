@@ -12,6 +12,8 @@ trait TeamService {
 
   def find(teamId: Long): Option[Team]
 
+  def findWithTelephones(teamId: Long): Option[Team]
+  
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]

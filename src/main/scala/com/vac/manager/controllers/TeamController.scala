@@ -29,8 +29,8 @@ class TeamController()
   def showTeam(
     @PathVariable("teamId") teamId: java.lang.Long) = {
 
-    var team: Option[Team] = teamService.find(teamId)
-
+    var team: Option[Team] = teamService.findWithTelephones(teamId)
+    
     new ModelAndView("team/showTeam")
       .addObject("team", team.get)
   }
