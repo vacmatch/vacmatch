@@ -28,25 +28,23 @@ class TeamController()
 
   def showTeam(
     @PathVariable("teamId") teamId: java.lang.Long) = {
-    //TODO get parameters from url
-    //var teamId: Long = 0
+
     var team: Option[Team] = teamService.find(teamId)
 
-    var mav: ModelAndView = new ModelAndView("team/showTeam");
-    mav.addObject("team", team.get)
-    mav
+    new ModelAndView("team/showTeam")
+      .addObject("team", team.get)
   }
 
   def create(): ModelAndView = {
 
-    //Create receivers
+    // Create receivers
     val receiverTeam = new Team()
     val receiverAddress = new Address()
-    //Submit parameters
+    // Submit parameters
     val submitUrl = getUrl("TeamController.createPost")
     val submitMethod = "POST"
 
-    return new ModelAndView("team/edit")
+    new ModelAndView("team/edit")
       .addObject("hiddens", List().asJava)
       .addObject("action", "Create")
       .addObject("submitUrl", submitUrl)
@@ -61,7 +59,7 @@ class TeamController()
     @ModelAttribute address: Address,
     result: BindingResult): ModelAndView = {
 
-    //TODO: Check errors
+    // TODO: Check errors
 
     val telephonesList: Seq[String] = telephones.split(",").map(_.trim).filter(_.nonEmpty)
 
@@ -69,7 +67,7 @@ class TeamController()
       team.publicTeamName, Calendar.getInstance, address, team.teamWeb,
       telephonesList)
 
-    return new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
   }
 
 }
