@@ -121,19 +121,16 @@ class StaffMemberServiceImpl extends StaffMemberService {
     //Modify address
     var maybeStaff: Option[StaffMember] = assignAddress(staffId, stAddress)
 
-    maybeStaff match {
-      case None =>
-      case Some(staff) => {
-        staff.staffName = stName
-        staff.staffSurnames = stSurnames
-        staff.staffEmail = stEmail
-        staff.staffAvatarLink = new Gravatar(if (stEmail == null) "" else stEmail).ssl(true).avatarUrl
-        staff.staffTelephones = stTelephones
-        staff.staffAddress = stAddress
-        staff.staffCardId = stCardId
-        staff.staffBirth = stBirth
-        staffMemberDao.save(staff)
-      }
+    maybeStaff.map { staff =>
+      staff.staffName = stName
+      staff.staffSurnames = stSurnames
+      staff.staffEmail = stEmail
+      staff.staffAvatarLink = new Gravatar(if (stEmail == null) "" else stEmail).ssl(true).avatarUrl
+      staff.staffTelephones = stTelephones
+      staff.staffAddress = stAddress
+      staff.staffCardId = stCardId
+      staff.staffBirth = stBirth
+      staffMemberDao.save(staff)
     }
     maybeStaff
   }
@@ -142,23 +139,20 @@ class StaffMemberServiceImpl extends StaffMemberService {
 
     val maybeStaff: Option[StaffMember] = find(staffId)
 
-    maybeStaff match {
-      case None =>
-      case Some(staff) => {
-        if ((stAddress == null) || (staff.staffAddress == stAddress))
-          return maybeStaff
+    maybeStaff.map { staff =>
+      if ((stAddress == null) || (staff.staffAddress == stAddress))
+        return maybeStaff
 
-        if (staff.staffAddress != null)
-          addressService.removeAddress(staff.staffAddress.addressId)
+      if (staff.staffAddress != null)
+        addressService.removeAddress(staff.staffAddress.addressId)
 
-        val savedAddress: Address = addressService.createAddress(
-          stAddress.firstLine, stAddress.secondLine,
-          stAddress.postCode, stAddress.locality,
-          stAddress.province, stAddress.country)
+      val savedAddress: Address = addressService.createAddress(
+        stAddress.firstLine, stAddress.secondLine,
+        stAddress.postCode, stAddress.locality,
+        stAddress.province, stAddress.country)
 
-        staff.staffAddress = savedAddress
-        staffMemberDao.save(staff)
-      }
+      staff.staffAddress = savedAddress
+      staffMemberDao.save(staff)
     }
     maybeStaff
   }

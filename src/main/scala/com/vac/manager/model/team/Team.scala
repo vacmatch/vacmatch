@@ -33,7 +33,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   @BeanProperty
   @Column
   @Temporal(TemporalType.TIMESTAMP)
-  var fundationDate: Calendar = date
+  var foundationDate: Calendar = date
 
   @BeanProperty
   @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
@@ -83,7 +83,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
       (teamObj.teamName == this.teamName) &&
       (teamObj.publicTeamName == this.publicTeamName) &&
       (teamObj.teamActivated == this.teamActivated) &&
-      (teamObj.fundationDate == this.fundationDate) &&
+      (teamObj.foundationDate == this.foundationDate) &&
       (teamObj.teamAddress == this.teamAddress) &&
       (teamObj.teamWeb == this.teamWeb) &&
       (teamObj.teamTelephones == this.teamTelephones) &&
@@ -97,7 +97,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nName: " + this.teamName +
     "\nPublicName: " + this.publicTeamName +
     "\nTeamActivated: " + this.teamActivated +
-    "\nFundation: " + this.fundationDate +
+    "\nFundation: " + this.foundationDate +
     "\nAddress: " + this.teamAddress +
     "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +

@@ -63,7 +63,7 @@ class TeamServiceImplTest
           val createdTeam: Team = teamService.createTeam(
             teamName,
             publicName,
-            validTeam.fundationDate,
+            validTeam.foundationDate,
             validTeam.teamAddress,
             validTeam.teamWeb,
             validTeam.teamTelephones.asScala)
@@ -81,7 +81,7 @@ class TeamServiceImplTest
       teamService.createTeam(
         "",
         validTeam.publicTeamName,
-        validTeam.fundationDate,
+        validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
         validTeam.teamTelephones.asScala)
@@ -91,7 +91,7 @@ class TeamServiceImplTest
       teamService.createTeam(
         null,
         validTeam.publicTeamName,
-        validTeam.fundationDate,
+        validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
         validTeam.teamTelephones.asScala)
@@ -109,7 +109,7 @@ class TeamServiceImplTest
       teamService.createTeam(
         validTeam.teamName,
         "",
-        validTeam.fundationDate,
+        validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
         validTeam.teamTelephones.asScala)
@@ -119,7 +119,7 @@ class TeamServiceImplTest
       teamService.createTeam(
         validTeam.teamName,
         null,
-        validTeam.fundationDate,
+        validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
         validTeam.teamTelephones.asScala)

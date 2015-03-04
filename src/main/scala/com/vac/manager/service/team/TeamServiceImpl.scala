@@ -56,12 +56,12 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[IllegalArgumentException]
-  def createTeam(teamName: String, publicName: String, fundationalDate: Calendar,
+  def createTeam(teamName: String, publicName: String, foundationalDate: Calendar,
     address: Address, web: String, telephones: Seq[String]): Team = {
 
-    checkParameters(teamName, publicName, fundationalDate, web, telephones)
+    checkParameters(teamName, publicName, foundationalDate, web, telephones)
 
-    var team: Team = new Team(teamName, publicName, fundationalDate, address, web, telephones.asJava)
+    var team: Team = new Team(teamName, publicName, foundationalDate, address, web, telephones.asJava)
 
     teamDao.save(team)
     team
@@ -79,7 +79,7 @@ class TeamServiceImpl extends TeamService {
 
       team.teamName = newName
       team.publicTeamName = newPublicName
-      team.fundationDate = newDate
+      team.foundationDate = newDate
       team.teamAddress = newAddress
       team.teamWeb = newWeb
       team.teamTelephones = telephones.asJava
@@ -122,14 +122,9 @@ class TeamServiceImpl extends TeamService {
 
     val maybeTeam: Option[Team] = find(teamId)
 
-    maybeTeam match {
-      case None =>
-      case Some(team) => {
-        if ((newAddress == null) || (team.teamAddress == newAddress))
-          return maybeTeam
-
-        if (team.teamAddress != null)
-          addressService.removeAddress(team.teamAddress.addressId)
+    maybeTeam.map { team =>
+      if (!Option(newAddress).exists(_ == team.teamAddress)) {
+        Option(team.teamAddress).map(address => addressService.removeAddress(address.addressId))
 
         val savedAddress: Address = addressService.createAddress(
           newAddress.firstLine, newAddress.secondLine,
