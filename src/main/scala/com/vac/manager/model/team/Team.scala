@@ -73,10 +73,13 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   def this() = this(null, null, null, null, null, null)
 
   override def equals(obj: Any): Boolean = {
-    if ((obj == null) || (!obj.isInstanceOf[Team]))
-      return false
-    var teamObj: Team = obj.asInstanceOf[Team]
-    (teamObj.teamId == this.teamId) &&
+    Option(obj).flatMap( obj => {
+      if(!obj.isInstanceOf[Team])
+      	None
+      else
+      	Some(obj.asInstanceOf[Team])
+    }).exists({ teamObj =>
+      (teamObj.teamId == this.teamId) &&
       (teamObj.teamName == this.teamName) &&
       (teamObj.publicTeamName == this.publicTeamName) &&
       (teamObj.teamActivated == this.teamActivated) &&
@@ -87,6 +90,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
       (teamObj.sponsorsList == this.sponsorsList) &&
       (teamObj.staffList == this.staffList) &&
       (teamObj.competitionsList == this.competitionsList)
+    })
   }
 
   override def toString = "(" + this.teamId + ")" +

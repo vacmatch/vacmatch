@@ -24,8 +24,6 @@ trait TeamService {
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
       fundationalDate: Calendar, address: Address, web: String, telephones: Seq[String]): Option[Team]
 
-  def assignAddress(teamId: Long, newAddress: Address): Option[Team]
-
   def changeActivation(teamId: Long, newState: Boolean): Option[Team]
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team]

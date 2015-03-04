@@ -26,27 +26,27 @@ class TeamServiceImpl extends TeamService {
 
   @Autowired
   var addressService: AddressService = _
-  
+
   @Autowired
   var staffService: StaffMemberService = _
-  
+
   @Autowired
   var competitionService: CompetitionService = _
 
   def find(teamId: Long): Option[Team] = {
     teamDao.findById(teamId)
   }
-  
+
   @Transactional
   def findWithTelephones(teamId: Long): Option[Team] = {
     val optionTeam: Option[Team] = teamDao.findById(teamId)
-    
+
     // Force eager load
     optionTeam.map(_.teamTelephones.size())
-    
+
     optionTeam
   }
-  
+
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team] = {
     teamDao.findTeamsByFederationId(fedId, startIndex, count)
   }
@@ -72,9 +72,9 @@ class TeamServiceImpl extends TeamService {
     newDate: Calendar, newAddress: Address, newWeb: String, telephones: Seq[String]): Option[Team] = {
 
     checkParameters(newName, newPublicName, newDate, newWeb, telephones)
-    
+
     val maybeTeam: Option[Team] = assignAddress(teamId, newAddress)
-    
+
     maybeTeam.map { team =>
 
       team.teamName = newName
@@ -83,8 +83,7 @@ class TeamServiceImpl extends TeamService {
       team.teamAddress = newAddress
       team.teamWeb = newWeb
       team.teamTelephones = telephones.asJava
-      
-      
+
       teamDao.save(team)
       team
     }
@@ -92,18 +91,23 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]
   private def checkParameters(teamName: String, publicName: String,
-      fundationDate: Calendar, web: String, telephones: Seq[String]) {
+    foundationDate: Calendar, web: String, telephones: Seq[String]) {
 
-    if ((teamName == null) || (teamName.isEmpty()))
-      throw new IllegalArgumentException(teamName, classOf[String].getName())
-    if ((publicName == null) || (publicName.isEmpty))
-      throw new IllegalArgumentException(publicName, classOf[Seq[String]].getName())
-    if (fundationDate == null)
-      throw new IllegalArgumentException(fundationDate, classOf[Calendar].getName())
-    if ((web == null) || (web.isEmpty()))
-      throw new IllegalArgumentException(web, classOf[String].getName())
-    if (telephones == null)
-      throw new IllegalArgumentException(telephones, classOf[String].getName())        
+    val checkAgainstNull = List((teamName, classOf[String]), (publicName, classOf[String]),
+      (foundationDate, classOf[Calendar]), (web, classOf[String]), (telephones, classOf[String]))
+    val checkAgainstEmpty = List((teamName, classOf[String]), (publicName,
+      classOf[String]), (web, classOf[String]))
+
+    checkAgainstNull.map {
+      case (elt, cls) =>
+        if (Option(elt).isEmpty)
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
+    checkAgainstEmpty.map {
+      case (elt, cls) =>
+        if (Option(elt).exists(_.trim == ""))
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
   }
 
   protected def changeTeamDetails(teamId: Long)(callback: (Team) => Any) = {
@@ -113,8 +117,8 @@ class TeamServiceImpl extends TeamService {
     team.map(teamDao.save(_))
     team
   }
-  
-  def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
+
+  private def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
 
     val maybeTeam: Option[Team] = find(teamId)
 
@@ -130,8 +134,7 @@ class TeamServiceImpl extends TeamService {
         val savedAddress: Address = addressService.createAddress(
           newAddress.firstLine, newAddress.secondLine,
           newAddress.postCode, newAddress.locality,
-          newAddress.province, newAddress.country
-        )
+          newAddress.province, newAddress.country)
 
         team.teamAddress = savedAddress
         teamDao.save(team)
@@ -139,16 +142,16 @@ class TeamServiceImpl extends TeamService {
     }
     maybeTeam
   }
-  
+
   def changeActivation(teamId: Long, newState: Boolean): Option[Team] = {
     changeTeamDetails(teamId)(_.teamActivated = newState)
   }
 
   @throws[IllegalArgumentException]("If any element in newSponsors is null")
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team] = {
-    
+
     newSponsors.map { x =>
-      if (x == null)
+      if (Option(x).isEmpty)
         throw new IllegalArgumentException(x, x.getClass().getName())
     }
     changeTeamDetails(teamId)(_.setSponsorsList(newSponsors.asJava))
@@ -156,11 +159,11 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
   def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Option[Team] = {
-    
+
     //Check if all staff exists
     newStaffList.map(st =>
-      if (staffService.find(st.staffId) == null)
-        throw new IllegalArgumentException(st.staffId,  st.staffId.getClass().getName()))
+      if (staffService.find(st.staffId).isEmpty)
+        throw new IllegalArgumentException(st.staffId, st.staffId.getClass().getName()))
     changeTeamDetails(teamId)(_.setStaffList(newStaffList.asJava))
   }
 
@@ -169,8 +172,8 @@ class TeamServiceImpl extends TeamService {
 
     //Check if all competition exists
     newCompetitionList.map(cp =>
-      if (competitionService.find(cp.compId) == null)
-        throw new IllegalArgumentException(cp.compId,  cp.compId.getClass().getName()))
+      if (competitionService.find(cp.compId).isEmpty)
+        throw new IllegalArgumentException(cp.compId, cp.compId.getClass().getName()))
 
     changeTeamDetails(teamId)(_.setCompetitionsList(newCompetitionList.asJava))
   }

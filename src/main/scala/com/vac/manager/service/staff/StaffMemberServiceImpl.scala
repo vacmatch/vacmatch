@@ -39,8 +39,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findAllByFederationId(fedId)
   }
 
-  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember] =  {
-	staffMemberDao.findByName(name, startIndex, count)
+  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findByName(name, startIndex, count)
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember] = {
@@ -154,8 +154,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
         val savedAddress: Address = addressService.createAddress(
           stAddress.firstLine, stAddress.secondLine,
           stAddress.postCode, stAddress.locality,
-          stAddress.province, stAddress.country
-        )
+          stAddress.province, stAddress.country)
 
         staff.staffAddress = savedAddress
         staffMemberDao.save(staff)
@@ -168,14 +167,21 @@ class StaffMemberServiceImpl extends StaffMemberService {
   protected def checkParameters(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String) {
 
-    if ((stName == null) || (stName.isEmpty()))
-      throw new IllegalArgumentException(stName, classOf[String].getName())
-    if ((stSurnames == null) || (stSurnames.isEmpty))
-      throw new IllegalArgumentException(stSurnames, classOf[Seq[String]].getName())
-    if ((stCardId == null) || (stCardId.isEmpty()))
-      throw new IllegalArgumentException(stCardId, classOf[String].getName())
-    if ((stBirth == null))
-      throw new IllegalArgumentException(stBirth, classOf[Calendar].getName())
+    val checkAgainstNull = List((stName, classOf[String]), (stSurnames, classOf[String]),
+      (stCardId, classOf[String]), (stBirth, classOf[Calendar]))
+    val checkAgainstEmpty = List((stName, classOf[String]), (stSurnames,
+      classOf[String]), (stCardId, classOf[String]))
+
+    checkAgainstNull.map {
+      case (elt, cls) =>
+        if (Option(elt).isEmpty)
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
+    checkAgainstEmpty.map {
+      case (elt, cls) =>
+        if (Option(elt).exists(_.trim == ""))
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
   }
 
   def getSurnamesFromString(surnames: String): Seq[String] = {
