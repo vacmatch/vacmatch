@@ -20,6 +20,7 @@ import com.vac.manager.service.federation.FederationService
 import scala.collection.JavaConverters._
 import org.springframework.web.bind.annotation.ModelAttribute
 import com.vac.manager.util.FederationBean
+import com.vac.manager.controllers.actionable.ActionableStaff
 
 @Controller
 class StaffController extends UrlGrabber {
@@ -35,36 +36,6 @@ class StaffController extends UrlGrabber {
 
   @Autowired
   var federation: FederationBean = _
-
-  class ActionableStaff(staff: StaffMember)
-    extends StaffMember()
-    with UrlGrabber {
-
-    staffName = staff.staffName
-    staffSurnames = staff.staffSurnames
-    staffActivated = staff.staffActivated
-    staffAlias = staff.staffAlias
-    staffEmail = staff.staffEmail
-    staffAvatarLink = staff.staffAvatarLink
-    staffTelephones = staff.staffTelephones
-    staffAddress = staff.staffAddress
-    staffCardId = staff.staffCardId
-    staffBirth = staff.staffBirth
-    staffTeamList = staff.staffTeamList
-    staffFederation = staff.staffFederation
-
-    def getShowLink(): String = {
-      getUrl("StaffController.showStaff", "staffId" -> staff.staffId)
-    }
-
-    def getEditLink(): String = {
-      getUrl("StaffController.edit", "staffId" -> staff.staffId)
-    }
-
-    def getRemoveLink: String = ""
-    def getAssignTeamLink: String = ""
-    def getEditPrivacyLink: String = ""
-  }
 
   class FindStaffs() {
 
@@ -294,7 +265,4 @@ class StaffController extends UrlGrabber {
     }
   }
 }
-
-
-
 

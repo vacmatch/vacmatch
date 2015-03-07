@@ -15,6 +15,13 @@ import scala.beans.BeanProperty
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ModelAttribute
+import com.vac.manager.model.staff.StaffMemberHistoric
+import java.util.ArrayList
+import com.vac.manager.service.staff.StaffMemberService
+import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.service.staff.StaffMemberHistoricService
+import com.vac.manager.util.FederationBean
+import com.vac.manager.controllers.actionable.ActionableStaff
 
 @Controller
 class TeamController()
@@ -25,6 +32,15 @@ class TeamController()
 
   @Autowired
   var addressService: AddressService = _
+
+  @Autowired
+  var staffService: StaffMemberService = _
+
+  @Autowired
+  var staffHistoricService: StaffMemberHistoricService = _
+
+  @Autowired
+  var federation: FederationBean = _
 
   def showTeam(
     @PathVariable("teamId") teamId: java.lang.Long) = {
@@ -59,8 +75,7 @@ class TeamController()
     @ModelAttribute address: Address,
     result: BindingResult): ModelAndView = {
 
-    // TODO: Check errors
-
+    // TODO Check errors
     val telephonesList: Seq[String] = telephones.split(",").map(_.trim).filter(_.nonEmpty)
 
     val createdTeam: Team = teamService.createTeam(team.teamName,
@@ -70,4 +85,51 @@ class TeamController()
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
   }
 
+  def assignStaff(
+    @RequestParam teamId: java.lang.Long): ModelAndView = {
+
+    val fedId: Long = federation.getId
+
+    val maybeTeam: Option[Team] = teamService.find(teamId)
+
+    maybeTeam match {
+      case None => new ModelAndView("team/assignStaff") //TODO: Handle error
+      case Some(team) => {
+
+        // Initialize actual staff list
+        val actualStaffHistoricList: java.util.List[StaffMemberHistoric] = team.staffHistoricList
+
+        // Initialize all staff list
+        val allStaffList: Seq[ActionableStaff] =
+          staffService.findAllByFederationId(fedId).map(s => new ActionableStaff(s))
+
+        // Submit parameters
+        val submitUrl = getUrl("TeamController.assignStaffPost")
+        val submitMethod = "POST"
+        val acceptUrl = getUrl("TeamController.showTeam", "teamId" -> teamId)
+
+        new ModelAndView("team/assignStaff")
+          .addObject("hiddens", Map("teamId" -> teamId).asJava.entrySet())
+          .addObject("action", "assign")
+          .addObject("acceptUrl", acceptUrl)
+          .addObject("submitUrl", submitUrl)
+          .addObject("submitMethod", submitMethod)
+          .addObject("teamStaffList", actualStaffHistoricList)
+          .addObject("avaliableStaffList", allStaffList.asJava)
+      }
+    }
+  }
+
+  def assignStaffPost(
+    @RequestParam staffId: java.lang.Long,
+    @RequestParam teamId: java.lang.Long): ModelAndView = {
+
+    var inserted: Either[Exception, Team] = teamService.assignStaff(teamId, staffId)
+
+    // TODO Handle errors
+
+    new ModelAndView("redirect:" + getUrl("TeamController.assignStaff", "teamId" -> teamId))
+  }
+
 }
+
