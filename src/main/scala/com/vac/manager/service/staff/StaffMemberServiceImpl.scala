@@ -76,17 +76,6 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staff.map(staffMemberDao.save(_))
   }
 
-  def addTeamToStaff(staffId: Long, newTeamList: Seq[Team]) = {
-    var staff: Option[StaffMember] = staffMemberDao.findById(staffId)
-
-    if (newTeamList != null) {
-      staff.map { s =>
-        s.staffTeamList = newTeamList.asJava
-        staffMemberDao.save(s)
-      }
-    }
-  }
-
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
@@ -176,14 +165,6 @@ class StaffMemberServiceImpl extends StaffMemberService {
         if (Option(elt).exists(_.trim == ""))
           throw new IllegalArgumentException(elt, cls.getName())
     }
-  }
-
-  def getSurnamesFromString(surnames: String): Seq[String] = {
-    surnames.split(" ")
-  }
-
-  def getTelephonesFromString(telephones: String): Seq[String] = {
-    telephones.split(", ")
   }
 
 }

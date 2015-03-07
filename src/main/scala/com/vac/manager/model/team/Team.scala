@@ -7,6 +7,9 @@ import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
 import com.vac.manager.model.personal.Address
+import com.vac.manager.model.staff.StaffMemberHistoric
+import scala.collection.JavaConverters._
+import java.util.ArrayList
 
 @Entity
 @Table(name = "TEAM")
@@ -54,7 +57,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   // And remove @Transient
   // @Column
   @Transient
-  var sponsorsList: java.util.List[String] = _
+  var sponsorsList: java.util.List[String] = new ArrayList()
 
   @BeanProperty
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "staffTeamList", cascade = Array(CascadeType.ALL))
@@ -68,7 +71,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
       Array(new JoinColumn(name = "compId", nullable = false, updatable = false)),
     inverseJoinColumns =
       Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)))
-  var competitionsList: java.util.List[Competition] = _
+  var competitionsList: java.util.List[Competition] = List().asJava
 
   def this() = this(null, null, null, null, null, null)
 
@@ -88,7 +91,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
       (teamObj.teamWeb == this.teamWeb) &&
       (teamObj.teamTelephones == this.teamTelephones) &&
       (teamObj.sponsorsList == this.sponsorsList) &&
-      (teamObj.staffList == this.staffList) &&
+      (teamObj.staffHistoricList == this.staffHistoricList) &&
       (teamObj.competitionsList == this.competitionsList)
     })
   }
@@ -102,7 +105,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +
     "\nSponsorsList: " + this.sponsorsList +
-    "\nStaffList: " + this.staffList +
-    "\nCompetitionsList: " + this.competitionsList
+    "\nStaffList: " + this.staffHistoricList
+  //"\nCompetitionsList: " + this.competitionsList
 
 }

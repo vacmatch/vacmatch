@@ -9,6 +9,7 @@ import scala.collection.JavaConverters._
 import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 
 @Entity
 @Table(name = "STAFFMEMBER")
@@ -20,8 +21,7 @@ class StaffMember(
   stTelephones: String,
   stCardId: String,
   stBirth: Calendar,
-  stFederation: Federation
-) {
+  stFederation: Federation) {
 
   @Id
   @SequenceGenerator(name = "staffMemberIdGenerator", sequenceName = "staffMember_id_seq")
@@ -70,16 +70,9 @@ class StaffMember(
   var staffBirth: Calendar = stBirth
 
   @BeanProperty
-  @ManyToMany(fetch = FetchType.EAGER,
-      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
-  @JoinTable(
-      name = "TEAM_STAFF",
-      joinColumns =
-        Array(new JoinColumn(name = "teamId")),
-      inverseJoinColumns =
-        Array(new JoinColumn(name = "staffId"))
-  )
-  var staffTeamList: java.util.List[Team] = _
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "staffHistoricId")
+  var staffHistoricList: java.util.List[StaffMemberHistoric] = new ArrayList()
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
@@ -102,7 +95,7 @@ class StaffMember(
       (staffObj.staffAddress == this.staffAddress) &&
       (staffObj.staffCardId == this.staffCardId) &&
       (staffObj.staffBirth == this.staffBirth) &&
-      (staffObj.staffTeamList == this.staffTeamList) &&
+      (staffObj.staffHistoricList == this.staffHistoricList) &&
       (staffObj.staffFederation == this.staffFederation)
   }
 
@@ -118,6 +111,6 @@ class StaffMember(
     "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
     .format(this.staffBirth.getTime()) +
     "\nFederation: " + this.staffFederation +
-    "\nTeams: " + this.staffTeamList
+    "\nTeams: " + this.staffHistoricList
 
 }

@@ -16,6 +16,11 @@ import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.service.competition.CompetitionService
+import com.vac.manager.model.staff.StaffMemberHistoric
+import com.vac.manager.service.staff.StaffMemberHistoricService
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import java.util.Arrays.ArrayList
+import java.util.ArrayList
 
 @Service("teamService")
 @Transactional
@@ -72,9 +77,9 @@ class TeamServiceImpl extends TeamService {
     newDate: Calendar, newAddress: Address, newWeb: String, telephones: Seq[String]): Option[Team] = {
 
     checkParameters(newName, newPublicName, newDate, newWeb, telephones)
-    
+
     val maybeTeam: Option[Team] = assignAddress(teamId, newAddress)
-    
+
     maybeTeam.map { team =>
 
       team.teamName = newName
@@ -117,7 +122,7 @@ class TeamServiceImpl extends TeamService {
     team.map(teamDao.save(_))
     team
   }
-  
+
   def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
 
   private def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
@@ -154,14 +159,34 @@ class TeamServiceImpl extends TeamService {
     changeTeamDetails(teamId)(_.setSponsorsList(newSponsors.asJava))
   }
 
-  @throws[IllegalArgumentException]("If any element in newStaffList doesn't exist")
-  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Option[Team] = {
+  @throws[InstanceNotFoundException]
+  def assignStaff(teamId: Long, staffId: Long): Either[Exception, Team] = {
 
-    //Check if all staff exists
-    newStaffList.map(st =>
-      if (staffService.find(st.staffId).isEmpty)
-        throw new IllegalArgumentException(st.staffId, st.staffId.getClass().getName()))
-    changeTeamDetails(teamId)(_.setStaffList(newStaffList.asJava))
+    val maybeStaff: Option[StaffMember] = staffService.find(staffId)
+
+    if (maybeStaff.isEmpty)
+      return Left(new InstanceNotFoundException(maybeStaff, classOf[String].getName()))
+
+    val maybeTeam: Option[Team] = find(teamId)
+
+    maybeTeam match {
+      case None => Left(new InstanceNotFoundException(maybeTeam, classOf[String].getName()))
+      case Some(team) => {
+
+        val eitherStaffHistoric: Either[Exception, StaffMemberHistoric] =
+          staffHistoricService.create(maybeStaff.get, team)
+
+        eitherStaffHistoric match {
+          case Left(e) => Left(e)
+          case Right(staffHistoric) => {
+            team.staffHistoricList.add(staffHistoric)
+            teamDao.save(team)
+
+            Right(team)
+          }
+        }
+      }
+    }
   }
 
   @throws[IllegalArgumentException]("If any element in newCompetitionList doesn't exist")

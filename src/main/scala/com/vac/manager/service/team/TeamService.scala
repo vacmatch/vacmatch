@@ -30,7 +30,7 @@ trait TeamService {
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team]
 
-  def modifyStaff(teamId: Long, newStaffList: List[StaffMember]): Option[Team]
+  def assignStaff(teamId: Long, staffId: Long): Either[Exception, Team]
 
   def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team]
 

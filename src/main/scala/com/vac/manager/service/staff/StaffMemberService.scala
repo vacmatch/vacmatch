@@ -25,8 +25,6 @@ trait StaffMemberService {
 
   def changePrivacy(staffId: Long, newState: Boolean, newAlias: String)
 
-  def addTeamToStaff(staffId: Long, newTeamList: Seq[Team])
-
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def createStaff(stName: String, stSurnames: String,
@@ -43,8 +41,4 @@ trait StaffMemberService {
   protected def checkParameters(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String)
   
-  def getSurnamesFromString(surnames: String): Seq[String]
-
-  def getTelephonesFromString(telephones: String): Seq[String]
-
 }
