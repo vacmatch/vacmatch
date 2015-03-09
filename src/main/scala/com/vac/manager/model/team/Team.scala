@@ -10,12 +10,13 @@ import com.vac.manager.model.personal.Address
 
 @Entity
 @Table(name = "TEAM")
-class Team(name: String, publicName: String, date: Calendar, address: Address, web: String) {
+class Team(name: String, publicName: String, date: Calendar, address: Address,
+  web: String, telephones: java.util.List[String]) {
 
   @Id
   @SequenceGenerator(name = "teamIdGenerator", sequenceName = "team_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "teamIdGenerator")
-  var teamId: Long = _
+  var teamId: java.lang.Long = _
 
   @BeanProperty
   @Column(nullable = false)
@@ -32,7 +33,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address, w
   @BeanProperty
   @Column
   @Temporal(TemporalType.TIMESTAMP)
-  var fundationDate: Calendar = date
+  var foundationDate: Calendar = date
 
   @BeanProperty
   @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
@@ -44,10 +45,10 @@ class Team(name: String, publicName: String, date: Calendar, address: Address, w
   var teamWeb: String = web
 
   @BeanProperty
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable
-  @Column(nullable = false)
-  var teamTelephones: java.util.List[String] = _
+  @JoinColumn
+  var teamTelephones: java.util.List[String] = telephones
 
   @BeanProperty // TODO: Add @Column and model sponsors as a real thing
   // And remove @Transient
@@ -56,7 +57,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address, w
   var sponsorsList: java.util.List[String] = _
 
   @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy="staffTeamList", cascade = Array(CascadeType.ALL))
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "staffTeamList", cascade = Array(CascadeType.ALL))
   var staffList: java.util.List[StaffMember] = _
 
   @BeanProperty
@@ -69,12 +70,39 @@ class Team(name: String, publicName: String, date: Calendar, address: Address, w
       Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)))
   var competitionsList: java.util.List[Competition] = _
 
-  def this() = this(null, null, null, null, null)
+  def this() = this(null, null, null, null, null, null)
 
-  override def toString = "(" + this.teamId + ") " + this.teamName +
-    "\nFundation: " + this.fundationDate +
+  override def equals(obj: Any): Boolean = {
+    Option(obj).flatMap( obj => {
+      if(!obj.isInstanceOf[Team])
+      	None
+      else
+      	Some(obj.asInstanceOf[Team])
+    }).exists({ teamObj =>
+      (teamObj.teamId == this.teamId) &&
+      (teamObj.teamName == this.teamName) &&
+      (teamObj.publicTeamName == this.publicTeamName) &&
+      (teamObj.teamActivated == this.teamActivated) &&
+      (teamObj.foundationDate == this.foundationDate) &&
+      (teamObj.teamAddress == this.teamAddress) &&
+      (teamObj.teamWeb == this.teamWeb) &&
+      (teamObj.teamTelephones == this.teamTelephones) &&
+      (teamObj.sponsorsList == this.sponsorsList) &&
+      (teamObj.staffList == this.staffList) &&
+      (teamObj.competitionsList == this.competitionsList)
+    })
+  }
+
+  override def toString = "(" + this.teamId + ")" +
+    "\nName: " + this.teamName +
+    "\nPublicName: " + this.publicTeamName +
+    "\nTeamActivated: " + this.teamActivated +
+    "\nFundation: " + this.foundationDate +
     "\nAddress: " + this.teamAddress +
+    "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +
-    "\nWeb: " + this.teamWeb
+    "\nSponsorsList: " + this.sponsorsList +
+    "\nStaffList: " + this.staffList +
+    "\nCompetitionsList: " + this.competitionsList
 
 }

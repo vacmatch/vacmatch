@@ -4,7 +4,6 @@ import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
-import com.vac.manager.model.staff.Coach
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 trait StaffMemberService {
@@ -40,7 +39,10 @@ trait StaffMemberService {
     stCardId: String, stBirth: Calendar): Option[StaffMember]
 
   def assignAddress(staffId: Long, stAddress: Address): Option[StaffMember]
-
+  
+  protected def checkParameters(stName: String, stSurnames: String,
+    stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String)
+  
   def getSurnamesFromString(surnames: String): Seq[String]
 
   def getTelephonesFromString(telephones: String): Seq[String]

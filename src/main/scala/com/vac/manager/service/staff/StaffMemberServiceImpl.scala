@@ -6,12 +6,8 @@ import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
 import scala.collection.JavaConverters._
-import com.vac.manager.model.staff.PlayerDao
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.staff.Player
 import java.util.Calendar
-import com.vac.manager.model.staff.Coach
-import com.vac.manager.model.staff.CoachDao
 import org.springframework.transaction.annotation.Transactional
 import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
@@ -43,8 +39,8 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findAllByFederationId(fedId)
   }
 
-  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember] =  {
-	staffMemberDao.findByName(name, startIndex, count)
+  def findByName(name: String, startIndex: Int, count: Int): Seq[StaffMember] = {
+    staffMemberDao.findByName(name, startIndex, count)
   }
 
   def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[StaffMember] = {
@@ -125,19 +121,16 @@ class StaffMemberServiceImpl extends StaffMemberService {
     //Modify address
     var maybeStaff: Option[StaffMember] = assignAddress(staffId, stAddress)
 
-    maybeStaff match {
-      case None =>
-      case Some(staff) => {
-        staff.staffName = stName
-        staff.staffSurnames = stSurnames
-        staff.staffEmail = stEmail
-        staff.staffAvatarLink = new Gravatar(if (stEmail == null) "" else stEmail).ssl(true).avatarUrl
-        staff.staffTelephones = stTelephones
-        staff.staffAddress = stAddress
-        staff.staffCardId = stCardId
-        staff.staffBirth = stBirth
-        staffMemberDao.save(staff)
-      }
+    maybeStaff.map { staff =>
+      staff.staffName = stName
+      staff.staffSurnames = stSurnames
+      staff.staffEmail = stEmail
+      staff.staffAvatarLink = new Gravatar(if (stEmail == null) "" else stEmail).ssl(true).avatarUrl
+      staff.staffTelephones = stTelephones
+      staff.staffAddress = stAddress
+      staff.staffCardId = stCardId
+      staff.staffBirth = stBirth
+      staffMemberDao.save(staff)
     }
     maybeStaff
   }
@@ -146,24 +139,20 @@ class StaffMemberServiceImpl extends StaffMemberService {
 
     val maybeStaff: Option[StaffMember] = find(staffId)
 
-    maybeStaff match {
-      case None =>
-      case Some(staff) => {
-        if ((stAddress == null) || (staff.staffAddress == stAddress))
-          return maybeStaff
+    maybeStaff.map { staff =>
+      if ((stAddress == null) || (staff.staffAddress == stAddress))
+        return maybeStaff
 
-        if (staff.staffAddress != null)
-          addressService.removeAddress(staff.staffAddress.addressId)
+      if (staff.staffAddress != null)
+        addressService.removeAddress(staff.staffAddress.addressId)
 
-        val savedAddress: Address = addressService.createAddress(
-          stAddress.firstLine, stAddress.secondLine,
-          stAddress.postCode, stAddress.locality,
-          stAddress.province, stAddress.country
-        )
+      val savedAddress: Address = addressService.createAddress(
+        stAddress.firstLine, stAddress.secondLine,
+        stAddress.postCode, stAddress.locality,
+        stAddress.province, stAddress.country)
 
-        staff.staffAddress = savedAddress
-        staffMemberDao.save(staff)
-      }
+      staff.staffAddress = savedAddress
+      staffMemberDao.save(staff)
     }
     maybeStaff
   }
@@ -172,14 +161,21 @@ class StaffMemberServiceImpl extends StaffMemberService {
   protected def checkParameters(stName: String, stSurnames: String,
     stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String) {
 
-    if ((stName == null) || (stName.isEmpty()))
-      throw new IllegalArgumentException(stName, classOf[String].getName())
-    if ((stSurnames == null) || (stSurnames.isEmpty))
-      throw new IllegalArgumentException(stSurnames, classOf[Seq[String]].getName())
-    if ((stCardId == null) || (stCardId.isEmpty()))
-      throw new IllegalArgumentException(stCardId, classOf[String].getName())
-    if ((stBirth == null))
-      throw new IllegalArgumentException(stBirth, classOf[Calendar].getName())
+    val checkAgainstNull = List((stName, classOf[String]), (stSurnames, classOf[String]),
+      (stCardId, classOf[String]), (stBirth, classOf[Calendar]))
+    val checkAgainstEmpty = List((stName, classOf[String]), (stSurnames,
+      classOf[String]), (stCardId, classOf[String]))
+
+    checkAgainstNull.map {
+      case (elt, cls) =>
+        if (Option(elt).isEmpty)
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
+    checkAgainstEmpty.map {
+      case (elt, cls) =>
+        if (Option(elt).exists(_.trim == ""))
+          throw new IllegalArgumentException(elt, cls.getName())
+    }
   }
 
   def getSurnamesFromString(surnames: String): Seq[String] = {
