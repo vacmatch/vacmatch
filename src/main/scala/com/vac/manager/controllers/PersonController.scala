@@ -78,12 +78,12 @@ class PersonController extends UrlGrabber {
   }
 
   def list(
-    @RequestParam byName: String,
-    @RequestParam byCardId: String,
-    @RequestParam byEmail: String,
-    @RequestParam byActivated: Boolean,
-    @RequestParam activatedValue: Boolean,
-    @RequestParam byAllPerson: Boolean): ModelAndView = {
+    @RequestParam("byName") byName: String,
+    @RequestParam("byCardId") byCardId: String,
+    @RequestParam("byEmail") byEmail: String,
+    @RequestParam("byActivated") byActivated: Boolean,
+    @RequestParam("activatedValue") activatedValue: Boolean,
+    @RequestParam("byAllPerson") byAllPerson: Boolean): ModelAndView = {
 
     // TODO: Check errors
     // TODO: Check if none parameter is activated
@@ -158,8 +158,8 @@ class PersonController extends UrlGrabber {
   }
 
   def createPost(
-    address: Address,
-    personReceiver: Person,
+    @ModelAttribute("address") address: Address,
+    @ModelAttribute("personReceiver") personReceiver: Person,
     result: BindingResult): ModelAndView = {
 
     /*
@@ -199,7 +199,7 @@ class PersonController extends UrlGrabber {
   }
 
   def edit(
-    @RequestParam personId: java.lang.Long): ModelAndView = {
+    @RequestParam("personId") personId: java.lang.Long): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
 
@@ -228,9 +228,9 @@ class PersonController extends UrlGrabber {
   }
 
   def editPost(
-    @RequestParam personId: java.lang.Long,
-    address: Address,
-    person: Person,
+    @RequestParam("personId") personId: java.lang.Long,
+    @ModelAttribute("address") address: Address,
+    @ModelAttribute("person") person: Person,
     result: BindingResult): ModelAndView = {
 
     /*

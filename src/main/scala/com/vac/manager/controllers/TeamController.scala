@@ -70,9 +70,9 @@ class TeamController()
   }
 
   def createPost(
-    @ModelAttribute team: Team,
+    @ModelAttribute("team") team: Team,
     @RequestParam("telephones") telephones: String,
-    @ModelAttribute address: Address,
+    @ModelAttribute("address") address: Address,
     result: BindingResult): ModelAndView = {
 
     // TODO Check errors
@@ -86,14 +86,14 @@ class TeamController()
   }
 
   def assignStaffMember(
-    @RequestParam teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
 
     val fedId: Long = federation.getId
 
     val maybeTeam: Option[Team] = teamService.find(teamId)
 
     maybeTeam match {
-      case None => new ModelAndView("team/assignStaffMember") // TODO: Handle error
+      case None => throw new Exception() // TODO: Handle error
       case Some(team) => {
 
         // Initialize actual person list
@@ -121,8 +121,8 @@ class TeamController()
   }
 
   def assignStaffMemberPost(
-    @RequestParam personId: java.lang.Long,
-    @RequestParam teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("personId") personId: java.lang.Long,
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
 
     var inserted: Either[Exception, Team] = teamService.assignPerson(teamId, personId)
 
