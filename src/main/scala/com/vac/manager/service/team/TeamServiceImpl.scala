@@ -7,17 +7,17 @@ import com.vac.manager.model.team.Team
 import javax.persistence.Entity
 import javax.persistence.Table
 import java.util.Calendar
-import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.model.staff.Person
 import com.vac.manager.model.competition.Competition
 import scala.collection.JavaConverters._
 import com.vac.manager.model.personal.Address
 import org.springframework.transaction.annotation.Transactional
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.personal.AddressService
-import com.vac.manager.service.staff.StaffMemberService
+import com.vac.manager.service.staff.PersonService
 import com.vac.manager.service.competition.CompetitionService
-import com.vac.manager.model.staff.StaffMemberHistoric
-import com.vac.manager.service.staff.StaffMemberHistoricService
+import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Arrays.ArrayList
 import java.util.ArrayList
@@ -33,7 +33,10 @@ class TeamServiceImpl extends TeamService {
   var addressService: AddressService = _
 
   @Autowired
-  var staffService: StaffMemberService = _
+  var personService: PersonService = _
+
+  @Autowired
+  var staffMemberService: StaffMemberService = _
 
   @Autowired
   var competitionService: CompetitionService = _
@@ -123,8 +126,6 @@ class TeamServiceImpl extends TeamService {
     team
   }
 
-  def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
-
   private def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
 
     val maybeTeam: Option[Team] = find(teamId)
@@ -160,9 +161,9 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[InstanceNotFoundException]
-  def assignStaff(teamId: Long, staffId: Long): Either[Exception, Team] = {
+  def assignPerson(teamId: Long, personId: Long): Either[Exception, Team] = {
 
-    val maybeStaff: Option[StaffMember] = staffService.find(staffId)
+    val maybeStaff: Option[Person] = personService.find(personId)
 
     if (maybeStaff.isEmpty)
       return Left(new InstanceNotFoundException(maybeStaff, classOf[String].getName()))
@@ -173,13 +174,13 @@ class TeamServiceImpl extends TeamService {
       case None => Left(new InstanceNotFoundException(maybeTeam, classOf[String].getName()))
       case Some(team) => {
 
-        val eitherStaffHistoric: Either[Exception, StaffMemberHistoric] =
-          staffHistoricService.create(maybeStaff.get, team)
+        val eitherStaffMember: Either[Exception, StaffMember] =
+          staffMemberService.create(maybeStaff.get, team)
 
-        eitherStaffHistoric match {
+        eitherStaffMember match {
           case Left(e) => Left(e)
-          case Right(staffHistoric) => {
-            team.staffHistoricList.add(staffHistoric)
+          case Right(staffMember) => {
+            team.staffMemberList.add(staffMember)
             teamDao.save(team)
 
             Right(team)

@@ -18,10 +18,10 @@ import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
 import org.scalatest.GivenWhenThen
+import com.vac.manager.model.staff.Person
 import com.vac.manager.model.staff.StaffMember
-import com.vac.manager.model.staff.StaffMemberHistoric
+import com.vac.manager.service.staff.PersonService
 import com.vac.manager.service.staff.StaffMemberService
-import com.vac.manager.service.staff.StaffMemberHistoricService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 class TeamServiceImplTest
@@ -54,8 +54,8 @@ class TeamServiceImplTest
     teamService.teamDao = mock[TeamDao]
     teamService.addressService = mock[AddressService]
     teamService.competitionService = mock[CompetitionService]
-    teamService.staffService = mock[StaffMemberService]
-    teamService.staffHistoricService = mock[StaffMemberHistoricService]
+    teamService.personService = mock[PersonService]
+    teamService.staffMemberService = mock[StaffMemberService]
   }
 
   property("teams can be created for any unregistered id") {
@@ -139,58 +139,58 @@ class TeamServiceImplTest
 
   }
 
-  var validStaff = new StaffMember
-  var validStaffHistoric = new StaffMemberHistoric
+  var validPerson = new Person
+  var validStaffMember = new StaffMember
 
   // Assign staff
-  property("A staff can be assigned to a team") {
+  property("A person can be assigned to a team") {
 
     Given("An existent team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
 
-    Given("An existent staff")
-    val staff: StaffMember = validStaff
-    staff.staffId = 1
-    Mockito.when(teamService.staffService.find(staff.staffId)).thenReturn(Some(staff))
+    Given("An existent person")
+    val person: Person = validPerson
+    person.personId = 1
+    Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
 
-    Given("A historic between Staff and Team")
-    val staffHistoric: StaffMemberHistoric = validStaffHistoric
-    Mockito.when(teamService.staffHistoricService.create(staff, team)).thenReturn(Right(staffHistoric))
+    Given("A relatinship between Person and Team")
+    val staffMember: StaffMember = validStaffMember
+    Mockito.when(teamService.staffMemberService.create(person, team)).thenReturn(Right(staffMember))
 
-    When("Try to assign a staff to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignStaff(team.teamId, staff.staffId)
+    When("Try to assign a person to a team")
+    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
 
-    Then("Staff historic must be created")
-    verify(teamService.staffHistoricService).create(staff, team)
+    Then("StaffMember must be created")
+    verify(teamService.staffMemberService).create(person, team)
 
     Then("Staff modifications must be saved")
     verify(teamService.teamDao).save(team)
 
-    Then("Staff historic must be assigned")
-    assert(eitherTeam.right.get.staffHistoricList.contains(staffHistoric))
+    Then("StaffMember must be assigned")
+    assert(eitherTeam.right.get.staffMemberList.contains(staffMember))
 
   }
 
-  property("A staff can't be assigned to a team if team doesn't exist") {
+  property("A person can't be assigned to a team if team doesn't exist") {
 
     Given("A not existent team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(None)
 
-    Given("An existent staff")
-    val staff: StaffMember = validStaff
-    staff.staffId = 1
-    Mockito.when(teamService.staffService.find(staff.staffId)).thenReturn(Some(staff))
+    Given("An existent person")
+    val person: Person = validPerson
+    person.personId = 1
+    Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
 
-    Given("A historic between Staff and Team")
-    val staffHistoric: StaffMemberHistoric = validStaffHistoric
-    Mockito.when(teamService.staffHistoricService.create(staff, team)).thenReturn(Right(staffHistoric))
+    Given("A relationship between Person and Team")
+    val staffMember: StaffMember = validStaffMember
+    Mockito.when(teamService.staffMemberService.create(person, team)).thenReturn(Right(staffMember))
 
-    When("Try to assign a staff to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignStaff(team.teamId, staff.staffId)
+    When("Try to assign a person to a team")
+    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
 
     Then("Must return an error")
     assert(eitherTeam.isLeft)
@@ -198,25 +198,25 @@ class TeamServiceImplTest
     Then("Must return a not found exception")
     assert(eitherTeam.left.get.isInstanceOf[InstanceNotFoundException])
 
-    Then("Staff historic mustn't be created")
-    verify(teamService.staffHistoricService, never).create(staff, team)
+    Then("StaffMember mustn't be created")
+    verify(teamService.staffMemberService, never).create(person, team)
 
   }
 
-  property("A staff can't be assigned to a team if staff doesn't exist") {
+  property("A person can't be assigned to a team if person doesn't exist") {
 
     Given("An existent team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
 
-    Given("A not existent staff")
-    val staff: StaffMember = validStaff
-    staff.staffId = 1
-    Mockito.when(teamService.staffService.find(staff.staffId)).thenReturn(None)
+    Given("A not existent person")
+    val person: Person = validPerson
+    person.personId = 1
+    Mockito.when(teamService.personService.find(person.personId)).thenReturn(None)
 
-    When("Try to assign a staff to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignStaff(team.teamId, staff.staffId)
+    When("Try to assign a person to a team")
+    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
 
     Then("Must return an error")
     assert(eitherTeam.isLeft)
@@ -224,8 +224,8 @@ class TeamServiceImplTest
     Then("Must return an instance not found exception")
     assert(eitherTeam.left.get.isInstanceOf[InstanceNotFoundException])
 
-    Then("Staff historic mustn't be created")
-    verify(teamService.staffHistoricService, never).create(staff, team)
+    Then("StaffMember mustn't be created")
+    verify(teamService.staffMemberService, never).create(person, team)
 
   }
 

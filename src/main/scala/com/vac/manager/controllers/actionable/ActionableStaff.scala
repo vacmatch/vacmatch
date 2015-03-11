@@ -1,39 +1,39 @@
 package com.vac.manager.controllers.actionable
 
-import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.model.staff.Person
 import com.vac.manager.controllers.utils.UrlGrabber
 import javax.persistence.Entity
 import javax.persistence.Inheritance
 import javax.persistence.Table
 
-class ActionableStaff(staff: StaffMember)
-  extends StaffMember()
+class ActionablePerson(person: Person)
+  extends Person()
   with UrlGrabber {
 
-  staffId = staff.staffId
-  staffName = staff.staffName
-  staffSurnames = staff.staffSurnames
-  staffActivated = staff.staffActivated
-  staffAlias = staff.staffAlias
-  staffEmail = staff.staffEmail
-  staffAvatarLink = staff.staffAvatarLink
-  staffTelephones = staff.staffTelephones
-  staffAddress = staff.staffAddress
-  staffCardId = staff.staffCardId
-  staffBirth = staff.staffBirth
-  staffHistoricList = staff.staffHistoricList
-  staffFederation = staff.staffFederation
+  personId = person.personId
+  name = person.name
+  surnames = person.surnames
+  activated = person.activated
+  alias = person.alias
+  email = person.email
+  avatarLink = person.avatarLink
+  telephones = person.telephones
+  address = person.address
+  cardId = person.cardId
+  birth = person.birth
+  staffMemberList = person.staffMemberList
+  federation = person.federation
 
   def getShowLink(): String = {
-    getUrl("StaffController.showStaff", "staffId" -> staff.staffId)
+    getUrl("PersonController.showPerson", "personId" -> person.personId)
   }
 
   def getEditLink(): String = {
-    getUrl("StaffController.edit", "staffId" -> staff.staffId)
+    getUrl("PersonController.edit", "personId" -> person.personId)
   }
 
   def getAssignPostLink(): String = {
-    getUrl("TeamController.assignStaffPost", "staffId" -> staffId)
+    getUrl("TeamController.assignStaffMemberPost", "personId" -> personId)
   }
 
   def getRemoveLink: String = ""

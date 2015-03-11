@@ -12,26 +12,24 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-			  <h2 class="row">Assign Staff</h2>
-			
+			  <h2 class="row">Assign Staff Member</h2>
 			  <hr/>
-			  
 			  <div class="row">
           <div class="col-sm-5">
-            <h4>All staff</h4>
+            <h4>All people</h4>
             <table class="table">
               <tr>
                 <td>Name</td>
                 <td>Surnames</td>
                 <td>Card Id</td>
               </tr>
-              <tr th:each="a: ${avaliableStaffList}">
-                <form id="${a.staffId}" class="form form-horizontal" th:action="${a.getAssignPostLink()}" th:method="${submitMethod}">
+              <tr th:each="a: ${avaliablePersonList}">
+                <form id="${a.personId}" class="form form-horizontal" th:action="${a.getAssignPostLink()}" th:method="${submitMethod}">
 							    <input th:each="h: ${hiddens}" type="hidden"
 							     th:name="${h.key}" th:value="${h.value}" />
-                  <td th:text="${a.staffName}">Name</td>
-                  <td th:text="${a.staffSurnames}">Surnames</td>
-                  <td th:text="${a.staffCardId}">Card Id</td>
+                  <td th:text="${a.name}">Name</td>
+                  <td th:text="${a.surnames}">Surnames</td>
+                  <td th:text="${a.cardId}">Card Id</td>
                   <td>
                     <input class="btn btn-default" type="submit" name="submit" value="Add"/>
                   </td>
@@ -39,20 +37,20 @@
               </tr>
             </table>
           </div>
-          
+
 			    <div class="col-sm-offset-1 col-sm-5">
-				    <h4>Actual team staff</h4>
+				    <h4>Actual team staff members</h4>
 						<table class="table">
 						  <tr draggable="true">
 				        <td>Name</td>
                 <td>Surnames</td>
 				        <td>Card Id</td>
 						  </tr>
-				      <tr th:each="t: ${teamStaffList}">
-                <form id="${t.staffId}-remove" class="form form-horizontal" th:method="${submitMethod}">
-					        <td th:text="${t.staffMember.staffName}">Name</td>
-	                <td th:text="${t.staffMember.staffSurnames}">Surnames</td>
-					        <td th:text="${t.staffMember.staffCardId}">Card Id</td>
+				      <tr th:each="t: ${teamStaffMemberList}">
+                <form id="${t.staffMemberId}-remove" class="form form-horizontal" th:method="${submitMethod}">
+					        <td th:text="${t.person.name}">Name</td>
+	                <td th:text="${t.person.surnames}">Surnames</td>
+					        <td th:text="${t.person.cardId}">Card Id</td>
 		              <td>
 		                <input class="btn btn-default" type="submit" name="submit" value="Remove"/>
 		              </td>
@@ -61,9 +59,9 @@
 						</table>
 			    </div>
 			  </div>
-			  
+
 		    <hr/>
-		    
+
 		    <div class="row">
           <a class="btn btn-default" href="/" th:href="${acceptUrl}">Accept selection</a>
 		    </div>

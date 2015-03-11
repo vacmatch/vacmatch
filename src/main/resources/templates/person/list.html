@@ -14,22 +14,22 @@
       <a class="btn btn-default" th:href="${findLink}">Find Staff</a>
       <a class="btn btn-default" th:href="${createLink}">Create new Staff</a>
 		  <ul>
-		    <li th:each="staff : ${staffList}">
+		    <li th:each="person : ${personList}">
 		      <hr/>
-		      <dl th:object="${staff}">
+		      <dl th:object="${person}">
 				<dt>Staff name</dt>
-				<dd th:text="*{staffName}">Name</dd>
-				<dd th:text="*{staffSurnames}">Surnames</dd>
+				<dd th:text="*{name}">Name</dd>
+				<dd th:text="*{surnames}">Surnames</dd>
 
       	<dt>Staff status</dt>
-      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{staffActivated}" /></dd>
+      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{activated}" /></dd>
 				
 				<dt>Staff Card Id</dt>
-				<dd th:text="*{staffCardId}">#CardId number#</dd>
+				<dd th:text="*{cardId}">#CardId number#</dd>
 				
 				<dt>Actions</dt>
-				<dd><a th:href="${staff.getShowLink()}">Show</a></dd>
-				<dd><a th:href="${staff.getEditLink()}">Edit</a></dd>
+				<dd><a th:href="${person.getShowLink()}">Show</a></dd>
+				<dd><a th:href="${person.getEditLink()}">Edit</a></dd>
 		      </dl>
 		    </li>
 		  </ul>

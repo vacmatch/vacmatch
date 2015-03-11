@@ -2,69 +2,39 @@ package com.vac.manager.model.staff
 
 import org.springframework.stereotype.Repository
 import com.vac.manager.model.generic.GenericDaoJPA
-import javax.persistence.criteria.Predicate
 import scala.collection.JavaConverters._
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Root
-import javax.persistence.TypedQuery
-import javax.persistence.metamodel.EntityType
-import javax.persistence.metamodel.Metamodel
+import com.vac.manager.model.team.Team
 
 @Repository("staffMemberDao")
 class StaffMemberDaoJPA
   extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
   with StaffMemberDao {
 
-  def findByName(name: String, startIndex: Int,
-    count: Int): Seq[StaffMember] = {
+  def findActivatedList(teamId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
-        "WHERE s.staffName LIKE :name OR s.staffSurnames LIKE :name", classOf[StaffMember])
-      .setParameter("name", "%" + name + "%")
+        "WHERE s.exitDate IS NULL AND s.staffTeam.teamId = :teamId", classOf[StaffMember])
+      .setParameter("teamId", teamId)
 
     query.getResultList().asScala
   }
 
-  def findAllByFederationId(fedId: Long): Seq[StaffMember] = {
-    var query = getEntityManager().createQuery(
+  def findActivatedElement(personId: Long, teamId: Long): Option[StaffMember] = {
+    var result = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
-        "WHERE s.staffFederation.fedId = :fedId ", classOf[StaffMember])
-      .setParameter("fedId", fedId)
+        "WHERE s.person.id = :personId " +
+        "AND s.staffTeam.teamId = :teamId " +
+        "AND s.exitDate IS NULL", classOf[StaffMember])
+      .setParameter("teamId", teamId)
+      .setParameter("personId", personId)
+      .getResultList()
 
-    query.getResultList().asScala
-  }
-
-  def findAllByActivated(activated: Boolean, startIndex: Int,
-    count: Int): Seq[StaffMember] = {
-    val optionNull: String = if(activated) "IS NOT EMPTY" else "IS EMPTY"
-
-    var query = getEntityManager().createQuery(
-      "SELECT s FROM StaffMember s " +
-        "WHERE s.staffTeamList " + optionNull, classOf[StaffMember])
-
-    query.getResultList().asScala
-  }
-
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    var query = getEntityManager().createQuery(
-      "SELECT s FROM StaffMember s " +
-        "WHERE s.staffEmail LIKE :email", classOf[StaffMember])
-      .setParameter("email", "%" + email + "%")
-
-    query.getResultList().asScala
-  }
-
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[StaffMember] = {
-    var query = getEntityManager().createQuery(
-      "SELECT s FROM StaffMember s " +
-        "WHERE s.staffCardId LIKE :cardIdFirst OR s.staffCardId LIKE :cardIdSecond", classOf[StaffMember])
-      .setParameter("cardIdFirst", "%" + cardId)
-      .setParameter("cardIdSecond", cardId + "%")
-
-    query.getResultList().asScala
+    if (result.isEmpty()) {
+      None
+    } else {
+      Some(result.get(0))
+    }
   }
 
 }
-
 

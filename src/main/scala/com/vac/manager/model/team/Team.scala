@@ -3,11 +3,10 @@ package com.vac.manager.model.team
 import javax.persistence._
 import scala.beans.BeanProperty
 import java.util.Calendar
-import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.staff.StaffMemberHistoric
+import com.vac.manager.model.staff.StaffMember
 import scala.collection.JavaConverters._
 import java.util.ArrayList
 
@@ -26,7 +25,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamName: String = name
 
   @BeanProperty
-  @Column
+  @Column(nullable = false)
   var teamActivated: Boolean = false
 
   @BeanProperty
@@ -60,8 +59,8 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var sponsorsList: java.util.List[String] = new ArrayList()
 
   @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "staffTeamList", cascade = Array(CascadeType.ALL))
-  var staffList: java.util.List[StaffMember] = _
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "staffTeam")
+  var staffMemberList: java.util.List[StaffMember] = new ArrayList()
 
   @BeanProperty
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
@@ -71,28 +70,28 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
       Array(new JoinColumn(name = "compId", nullable = false, updatable = false)),
     inverseJoinColumns =
       Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)))
-  var competitionsList: java.util.List[Competition] = List().asJava
+  var competitionsList: java.util.List[Competition] = new ArrayList()
 
   def this() = this(null, null, null, null, null, null)
 
   override def equals(obj: Any): Boolean = {
-    Option(obj).flatMap( obj => {
-      if(!obj.isInstanceOf[Team])
-      	None
+    Option(obj).flatMap(obj => {
+      if (!obj.isInstanceOf[Team])
+        None
       else
-      	Some(obj.asInstanceOf[Team])
+        Some(obj.asInstanceOf[Team])
     }).exists({ teamObj =>
       (teamObj.teamId == this.teamId) &&
-      (teamObj.teamName == this.teamName) &&
-      (teamObj.publicTeamName == this.publicTeamName) &&
-      (teamObj.teamActivated == this.teamActivated) &&
-      (teamObj.foundationDate == this.foundationDate) &&
-      (teamObj.teamAddress == this.teamAddress) &&
-      (teamObj.teamWeb == this.teamWeb) &&
-      (teamObj.teamTelephones == this.teamTelephones) &&
-      (teamObj.sponsorsList == this.sponsorsList) &&
-      (teamObj.staffHistoricList == this.staffHistoricList) &&
-      (teamObj.competitionsList == this.competitionsList)
+        (teamObj.teamName == this.teamName) &&
+        (teamObj.publicTeamName == this.publicTeamName) &&
+        (teamObj.teamActivated == this.teamActivated) &&
+        (teamObj.foundationDate == this.foundationDate) &&
+        (teamObj.teamAddress == this.teamAddress) &&
+        (teamObj.teamWeb == this.teamWeb) &&
+        (teamObj.teamTelephones == this.teamTelephones) &&
+        (teamObj.sponsorsList == this.sponsorsList) &&
+        (teamObj.staffMemberList == this.staffMemberList) &&
+        (teamObj.competitionsList == this.competitionsList)
     })
   }
 
@@ -105,7 +104,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +
     "\nSponsorsList: " + this.sponsorsList +
-    "\nStaffList: " + this.staffHistoricList
+    "\nStaffList: " + this.staffMemberList
   //"\nCompetitionsList: " + this.competitionsList
 
 }

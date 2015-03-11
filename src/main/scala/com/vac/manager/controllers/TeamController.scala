@@ -15,13 +15,13 @@ import scala.beans.BeanProperty
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ModelAttribute
-import com.vac.manager.model.staff.StaffMemberHistoric
-import java.util.ArrayList
-import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.model.staff.StaffMember
-import com.vac.manager.service.staff.StaffMemberHistoricService
+import java.util.ArrayList
+import com.vac.manager.service.staff.PersonService
+import com.vac.manager.model.staff.Person
+import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.util.FederationBean
-import com.vac.manager.controllers.actionable.ActionableStaff
+import com.vac.manager.controllers.actionable.ActionablePerson
 
 @Controller
 class TeamController()
@@ -34,10 +34,10 @@ class TeamController()
   var addressService: AddressService = _
 
   @Autowired
-  var staffService: StaffMemberService = _
+  var personService: PersonService = _
 
   @Autowired
-  var staffHistoricService: StaffMemberHistoricService = _
+  var staffMemberService: StaffMemberService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -46,7 +46,7 @@ class TeamController()
     @PathVariable("teamId") teamId: java.lang.Long) = {
 
     var team: Option[Team] = teamService.findWithTelephones(teamId)
-    
+
     new ModelAndView("team/showTeam")
       .addObject("team", team.get)
   }
@@ -85,7 +85,7 @@ class TeamController()
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
   }
 
-  def assignStaff(
+  def assignStaffMember(
     @RequestParam teamId: java.lang.Long): ModelAndView = {
 
     val fedId: Long = federation.getId
@@ -93,42 +93,42 @@ class TeamController()
     val maybeTeam: Option[Team] = teamService.find(teamId)
 
     maybeTeam match {
-      case None => new ModelAndView("team/assignStaff") //TODO: Handle error
+      case None => new ModelAndView("team/assignStaffMember") // TODO: Handle error
       case Some(team) => {
 
-        // Initialize actual staff list
-        val actualStaffHistoricList: java.util.List[StaffMemberHistoric] = team.staffHistoricList
+        // Initialize actual person list
+        val actualStaffMemberList: java.util.List[StaffMember] = team.staffMemberList
 
-        // Initialize all staff list
-        val allStaffList: Seq[ActionableStaff] =
-          staffService.findAllByFederationId(fedId).map(s => new ActionableStaff(s))
+        // Initialize all person list
+        val allPersonList: Seq[ActionablePerson] =
+          personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s))
 
         // Submit parameters
-        val submitUrl = getUrl("TeamController.assignStaffPost")
+        val submitUrl = getUrl("TeamController.assignStaffMemberPost")
         val submitMethod = "POST"
         val acceptUrl = getUrl("TeamController.showTeam", "teamId" -> teamId)
 
-        new ModelAndView("team/assignStaff")
+        new ModelAndView("team/assignStaffMember")
           .addObject("hiddens", Map("teamId" -> teamId).asJava.entrySet())
           .addObject("action", "assign")
           .addObject("acceptUrl", acceptUrl)
           .addObject("submitUrl", submitUrl)
           .addObject("submitMethod", submitMethod)
-          .addObject("teamStaffList", actualStaffHistoricList)
-          .addObject("avaliableStaffList", allStaffList.asJava)
+          .addObject("teamStaffMemberList", actualStaffMemberList)
+          .addObject("avaliablePersonList", allPersonList.asJava)
       }
     }
   }
 
-  def assignStaffPost(
-    @RequestParam staffId: java.lang.Long,
+  def assignStaffMemberPost(
+    @RequestParam personId: java.lang.Long,
     @RequestParam teamId: java.lang.Long): ModelAndView = {
 
-    var inserted: Either[Exception, Team] = teamService.assignStaff(teamId, staffId)
+    var inserted: Either[Exception, Team] = teamService.assignPerson(teamId, personId)
 
     // TODO Handle errors
 
-    new ModelAndView("redirect:" + getUrl("TeamController.assignStaff", "teamId" -> teamId))
+    new ModelAndView("redirect:" + getUrl("TeamController.assignStaffMember", "teamId" -> teamId))
   }
 
 }
