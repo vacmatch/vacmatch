@@ -22,12 +22,12 @@ class StaffMemberServiceImpl extends StaffMemberService {
     staffMemberDao.findById(staffMemberId)
   }
 
-  def findActivatedElement(personId: Long, teamId: Long): Option[StaffMember] = {
-    staffMemberDao.findActivatedElement(personId, teamId)
+  def find(teamId: Long, personId: Long): Option[StaffMember] = {
+    staffMemberDao.find(teamId, personId)
   }
 
-  def findActivatedList(teamId: Long): Seq[StaffMember] = {
-    staffMemberDao.findActivatedList(teamId)
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember] = {
+    staffMemberDao.findCurrentStaffMemberListByTeam(teamId)
   }
 
   @throws[IllegalArgumentException]
@@ -39,7 +39,7 @@ class StaffMemberServiceImpl extends StaffMemberService {
       return Left(new IllegalArgumentException(team, classOf[Team].getName()))
 
     // If an open relationship between Staff and Team exists
-    val maybeStaffMember: Option[StaffMember] = findActivatedElement(person.personId, team.teamId)
+    val maybeStaffMember: Option[StaffMember] = find(team.teamId, person.personId)
 
     maybeStaffMember match {
       case None => {

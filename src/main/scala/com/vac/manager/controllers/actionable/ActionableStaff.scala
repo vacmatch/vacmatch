@@ -21,7 +21,6 @@ class ActionablePerson(person: Person)
   address = person.address
   cardId = person.cardId
   birth = person.birth
-  staffMemberList = person.staffMemberList
   federation = person.federation
 
   def getShowLink(): String = {

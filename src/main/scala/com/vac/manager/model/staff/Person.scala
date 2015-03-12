@@ -70,11 +70,6 @@ class Person(
   var birth: Calendar = stBirth
 
   @BeanProperty
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "staffMemberId")
-  var staffMemberList: java.util.List[StaffMember] = new ArrayList()
-
-  @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "fedId")
   var federation: Federation = stFederation
@@ -95,7 +90,6 @@ class Person(
       (personObj.address == this.address) &&
       (personObj.cardId == this.cardId) &&
       (personObj.birth == this.birth) &&
-      (personObj.staffMemberList == this.staffMemberList) &&
       (personObj.federation == this.federation)
   }
 
@@ -110,7 +104,6 @@ class Person(
     "\nAddress: " + this.address +
     "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
     .format(this.birth.getTime()) +
-    "\nFederation: " + this.federation +
-    "\nTeams: " + this.staffMemberList
+    "\nFederation: " + this.federation
 
 }

@@ -180,8 +180,8 @@ class TeamServiceImpl extends TeamService {
         eitherStaffMember match {
           case Left(e) => Left(e)
           case Right(staffMember) => {
-            team.staffMemberList.add(staffMember)
-            teamDao.save(team)
+            //team.staffMemberList.add(staffMember)
+            //teamDao.save(team)
 
             Right(team)
           }

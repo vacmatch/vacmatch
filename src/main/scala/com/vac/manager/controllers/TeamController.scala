@@ -96,8 +96,9 @@ class TeamController()
       case None => throw new Exception() // TODO: Handle error
       case Some(team) => {
 
-        // Initialize actual person list
-        val actualStaffMemberList: java.util.List[StaffMember] = team.staffMemberList
+        // Initialize current person list
+        val actualStaffMemberList: Seq[StaffMember] =
+          staffMemberService.findCurrentStaffMemberListByTeam(teamId)
 
         // Initialize all person list
         val allPersonList: Seq[ActionablePerson] =
@@ -114,7 +115,7 @@ class TeamController()
           .addObject("acceptUrl", acceptUrl)
           .addObject("submitUrl", submitUrl)
           .addObject("submitMethod", submitMethod)
-          .addObject("teamStaffMemberList", actualStaffMemberList)
+          .addObject("teamStaffMemberList", actualStaffMemberList.asJava)
           .addObject("avaliablePersonList", allPersonList.asJava)
       }
     }

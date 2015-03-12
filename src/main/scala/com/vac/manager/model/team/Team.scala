@@ -59,10 +59,6 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var sponsorsList: java.util.List[String] = new ArrayList()
 
   @BeanProperty
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "staffTeam")
-  var staffMemberList: java.util.List[StaffMember] = new ArrayList()
-
-  @BeanProperty
   @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinTable(
     name = "TEAM_COMPETITION",
@@ -90,7 +86,6 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
         (teamObj.teamWeb == this.teamWeb) &&
         (teamObj.teamTelephones == this.teamTelephones) &&
         (teamObj.sponsorsList == this.sponsorsList) &&
-        (teamObj.staffMemberList == this.staffMemberList) &&
         (teamObj.competitionsList == this.competitionsList)
     })
   }
@@ -103,8 +98,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nAddress: " + this.teamAddress +
     "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +
-    "\nSponsorsList: " + this.sponsorsList +
-    "\nStaffList: " + this.staffMemberList
+    "\nSponsorsList: " + this.sponsorsList
   //"\nCompetitionsList: " + this.competitionsList
 
 }

@@ -2,7 +2,6 @@ package com.vac.manager.model.competition
 
 import javax.persistence._
 import scala.beans.BeanProperty
-import com.vac.manager.model.team.TeamHistoric
 import com.vac.manager.model.federation.Federation
 import java.util.ArrayList
 
@@ -24,13 +23,8 @@ class Competition(compName: String, fed: Federation) {
   @JoinColumn(name = "fedId")
   var federation: Federation = fed
 
-  @BeanProperty
-  @OneToMany(mappedBy = "competition")
-  var teamHistoricList: java.util.List[TeamHistoric] = new ArrayList()
-
   def this() = this(null, null)
 
-  override def toString = "(" + this.compId + ") " + this.competitionName +
-    "\nTeams: " + this.teamHistoricList
+  override def toString = "(" + this.compId + ") " + this.competitionName
 
 }

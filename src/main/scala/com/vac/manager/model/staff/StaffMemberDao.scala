@@ -5,9 +5,9 @@ import com.vac.manager.model.team.Team
 
 trait StaffMemberDao extends GenericDao[StaffMember, java.lang.Long] {
 
-  def findActivatedList(teamId: Long): Seq[StaffMember]
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember]
 
-  def findActivatedElement(personId: Long, teamId: Long): Option[StaffMember]
+  def find(teamId: Long, personId: Long): Option[StaffMember]
 
 }
 

@@ -55,7 +55,7 @@ class StaffMemberServiceImplTest
     val staffMember: StaffMember = validStaffMember
     staffMember.staffMemberId = 1
     Mockito.when(staffMemberService.staffMemberDao
-      .findActivatedElement(person.personId, team.teamId)).thenReturn(Some(staffMember))
+      .find(team.teamId, person.personId)).thenReturn(Some(staffMember))
 
     When("Try to create a new StaffMember")
     val eitherTeam: Either[Exception, StaffMember] = staffMemberService.create(person, team)

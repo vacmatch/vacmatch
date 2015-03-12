@@ -10,7 +10,7 @@ class StaffMemberDaoJPA
   extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
   with StaffMemberDao {
 
-  def findActivatedList(teamId: Long): Seq[StaffMember] = {
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
         "WHERE s.exitDate IS NULL AND s.staffTeam.teamId = :teamId", classOf[StaffMember])
@@ -19,7 +19,7 @@ class StaffMemberDaoJPA
     query.getResultList().asScala
   }
 
-  def findActivatedElement(personId: Long, teamId: Long): Option[StaffMember] = {
+  def find(teamId: Long, personId: Long): Option[StaffMember] = {
     var result = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
         "WHERE s.person.id = :personId " +

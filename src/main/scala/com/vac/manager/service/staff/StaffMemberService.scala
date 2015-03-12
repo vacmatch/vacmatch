@@ -8,9 +8,9 @@ trait StaffMemberService {
 
   def find(staffMemberId: Long): Option[StaffMember]
 
-  def findActivatedElement(personId: Long, teamId: Long): Option[StaffMember]
+  def find(teamId: Long, personId: Long): Option[StaffMember]
 
-  def findActivatedList(teamId: Long): Seq[StaffMember]
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember]
 
   @throws[IllegalArgumentException]
   def create(person: Person, team: Team): Either[Exception, StaffMember]
