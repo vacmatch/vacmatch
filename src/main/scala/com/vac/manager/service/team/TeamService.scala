@@ -6,6 +6,7 @@ import javax.persistence.Table
 import java.util.Calendar
 import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.personal.Address
+import com.vac.manager.model.staff.StaffMember
 
 trait TeamService {
 
@@ -17,6 +18,12 @@ trait TeamService {
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
+  def findStaffMemberById(staffMemberId: Long): Option[StaffMember]
+
+  def findStaffMemberByTeamIdAndPersonId(teamId: Long, personId: Long): Option[StaffMember]
+
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember]
+
   def createTeam(teamName: String, publicName: String, foundationalDate: Calendar,
     address: Address, web: String, telephones: Seq[String]): Team
 
@@ -27,7 +34,7 @@ trait TeamService {
 
   def modifyTeamSponsors(teamId: Long, newSponsors: List[String]): Option[Team]
 
-  def assignPerson(teamId: Long, personId: Long): Either[Exception, Team]
+  def assignPerson(teamId: Long, personId: Long): StaffMember
 
   def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team]
 

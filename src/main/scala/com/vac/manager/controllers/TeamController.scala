@@ -19,7 +19,6 @@ import com.vac.manager.model.staff.StaffMember
 import java.util.ArrayList
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.model.staff.Person
-import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.util.FederationBean
 import com.vac.manager.controllers.actionable.ActionablePerson
 
@@ -35,9 +34,6 @@ class TeamController()
 
   @Autowired
   var personService: PersonService = _
-
-  @Autowired
-  var staffMemberService: StaffMemberService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -98,7 +94,7 @@ class TeamController()
 
         // Initialize current person list
         val actualStaffMemberList: Seq[StaffMember] =
-          staffMemberService.findCurrentStaffMemberListByTeam(teamId)
+          teamService.findCurrentStaffMemberListByTeam(teamId)
 
         // Initialize all person list
         val allPersonList: Seq[ActionablePerson] =
@@ -125,7 +121,7 @@ class TeamController()
     @RequestParam("personId") personId: java.lang.Long,
     @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
 
-    var inserted: Either[Exception, Team] = teamService.assignPerson(teamId, personId)
+    val staffMember: StaffMember = teamService.assignPerson(teamId, personId)
 
     // TODO Handle errors
 

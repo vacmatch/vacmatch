@@ -17,10 +17,11 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.model.staff.StaffMember
-import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Arrays.ArrayList
 import java.util.ArrayList
+import com.vac.manager.model.staff.StaffMemberDao
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 
 @Service("teamService")
 @Transactional
@@ -30,13 +31,13 @@ class TeamServiceImpl extends TeamService {
   var teamDao: TeamDao = _
 
   @Autowired
+  var staffMemberDao: StaffMemberDao = _
+
+  @Autowired
   var addressService: AddressService = _
 
   @Autowired
   var personService: PersonService = _
-
-  @Autowired
-  var staffMemberService: StaffMemberService = _
 
   @Autowired
   var competitionService: CompetitionService = _
@@ -61,6 +62,18 @@ class TeamServiceImpl extends TeamService {
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
     teamDao.findTeamsByCompetitionId(compId, fedId)
+  }
+
+  def findStaffMemberById(staffMemberId: Long): Option[StaffMember] = {
+    staffMemberDao.findById(staffMemberId)
+  }
+
+  def findStaffMemberByTeamIdAndPersonId(teamId: Long, personId: Long): Option[StaffMember] = {
+    staffMemberDao.find(teamId, personId)
+  }
+
+  def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember] = {
+    staffMemberDao.findCurrentStaffMemberListByTeam(teamId)
   }
 
   @throws[IllegalArgumentException]
@@ -160,32 +173,35 @@ class TeamServiceImpl extends TeamService {
     changeTeamDetails(teamId)(_.setSponsorsList(newSponsors.asJava))
   }
 
-  @throws[InstanceNotFoundException]
-  def assignPerson(teamId: Long, personId: Long): Either[Exception, Team] = {
+  def assignPerson(teamId: Long, personId: Long): StaffMember = {
 
-    val maybeStaff: Option[Person] = personService.find(personId)
+    val maybePerson: Option[Person] = personService.find(personId)
 
-    if (maybeStaff.isEmpty)
-      return Left(new InstanceNotFoundException(maybeStaff, classOf[String].getName()))
+    if (maybePerson.isEmpty)
+      throw new InstanceNotFoundException(maybePerson, classOf[String].getName())
 
     val maybeTeam: Option[Team] = find(teamId)
 
-    maybeTeam match {
-      case None => Left(new InstanceNotFoundException(maybeTeam, classOf[String].getName()))
-      case Some(team) => {
+    if (maybeTeam.isEmpty)
+      throw new InstanceNotFoundException(maybeTeam, classOf[String].getName())
 
-        val eitherStaffMember: Either[Exception, StaffMember] =
-          staffMemberService.create(maybeStaff.get, team)
+    val team: Team = maybeTeam.get
+    val person: Person = maybePerson.get
 
-        eitherStaffMember match {
-          case Left(e) => Left(e)
-          case Right(staffMember) => {
-            //team.staffMemberList.add(staffMember)
-            //teamDao.save(team)
+    // If an open relationship between Staff and Team exists
+    val maybeStaffMember: Option[StaffMember] =
+      findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId)
 
-            Right(team)
-          }
-        }
+    maybeStaffMember match {
+      case None => {
+        // Create new element
+        val staffMember = new StaffMember(person, team)
+        staffMemberDao.save(staffMember)
+        staffMember
+      }
+      case Some(staffMember) => {
+        // Throw
+        throw new DuplicateInstanceException()
       }
     }
   }

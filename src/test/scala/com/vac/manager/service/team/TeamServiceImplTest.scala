@@ -21,8 +21,9 @@ import org.scalatest.GivenWhenThen
 import com.vac.manager.model.staff.Person
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.service.staff.PersonService
-import com.vac.manager.service.staff.StaffMemberService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import com.vac.manager.model.staff.StaffMemberDao
 
 class TeamServiceImplTest
   extends PropSpec
@@ -55,7 +56,7 @@ class TeamServiceImplTest
     teamService.addressService = mock[AddressService]
     teamService.competitionService = mock[CompetitionService]
     teamService.personService = mock[PersonService]
-    teamService.staffMemberService = mock[StaffMemberService]
+    teamService.staffMemberDao = mock[StaffMemberDao]
   }
 
   property("teams can be created for any unregistered id") {
@@ -155,21 +156,42 @@ class TeamServiceImplTest
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
 
-    Given("A relatinship between Person and Team")
+    Given("A not existent relationship between Person and Team")
     val staffMember: StaffMember = validStaffMember
-    Mockito.when(teamService.staffMemberService.create(person, team)).thenReturn(Right(staffMember))
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId))
+      .thenReturn(None)
 
     When("Try to assign a person to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
-
-    Then("StaffMember must be created")
-    verify(teamService.staffMemberService).create(person, team)
+    val assignedStaffMember: StaffMember = teamService.assignPerson(team.teamId, person.personId)
 
     Then("Staff modifications must be saved")
-    //verify(teamService.teamDao).save(team)
+    verify(teamService.staffMemberDao).save(assignedStaffMember)
 
-    Then("StaffMember must be assigned")
-    //assert(eitherTeam.right.get.staffMemberList.contains(staffMember))
+  }
+
+  property("A person can't be assigned to a team if person was assigned before to this team") {
+
+    Given("An existent team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
+
+    Given("A existent person")
+    val person: Person = validPerson
+    person.personId = 1
+    Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
+
+    Given("A relationship between Person and Team")
+    val staffMember: StaffMember = validStaffMember
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId))
+      .thenReturn(Some(staffMember))
+
+    When("Try to assign a person to a team")
+    intercept[DuplicateInstanceException] {
+      teamService.assignPerson(team.teamId, person.personId)
+    }
+
+    Then("Must return a duplicate instance exception")
 
   }
 
@@ -185,21 +207,12 @@ class TeamServiceImplTest
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
 
-    Given("A relationship between Person and Team")
-    val staffMember: StaffMember = validStaffMember
-    Mockito.when(teamService.staffMemberService.create(person, team)).thenReturn(Right(staffMember))
-
     When("Try to assign a person to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
-
-    Then("Must return an error")
-    assert(eitherTeam.isLeft)
+    intercept[InstanceNotFoundException] {
+      teamService.assignPerson(team.teamId, person.personId)
+    }
 
     Then("Must return a not found exception")
-    assert(eitherTeam.left.get.isInstanceOf[InstanceNotFoundException])
-
-    Then("StaffMember mustn't be created")
-    verify(teamService.staffMemberService, never).create(person, team)
 
   }
 
@@ -216,16 +229,11 @@ class TeamServiceImplTest
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(None)
 
     When("Try to assign a person to a team")
-    val eitherTeam: Either[Exception, Team] = teamService.assignPerson(team.teamId, person.personId)
-
-    Then("Must return an error")
-    assert(eitherTeam.isLeft)
+    intercept[InstanceNotFoundException] {
+      teamService.assignPerson(team.teamId, person.personId)
+    }
 
     Then("Must return an instance not found exception")
-    assert(eitherTeam.left.get.isInstanceOf[InstanceNotFoundException])
-
-    Then("StaffMember mustn't be created")
-    verify(teamService.staffMemberService, never).create(person, team)
 
   }
 
