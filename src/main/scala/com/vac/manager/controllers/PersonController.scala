@@ -126,15 +126,10 @@ class PersonController extends UrlGrabber {
 
     val fedId: Long = federation.getId
 
-    val maybePerson: Option[Person] = personService.find(personId)
-
-    maybePerson match {
-      case None => new ModelAndView("person/notfound")
-      case Some(person) => {
-        new ModelAndView("person/show")
-          .addObject("person", new ActionablePerson(person))
-      }
-    }
+    personService.find(personId).map { person =>
+      new ModelAndView("person/show")
+        .addObject("person", new ActionablePerson(person))
+    }.getOrElse(throw new RuntimeException("Person not found"))
   }
 
   def create(): ModelAndView = {
@@ -167,7 +162,7 @@ class PersonController extends UrlGrabber {
       return new ModelAndView("person/edit")
         .addObject("person", personReceiver)
     }
-	*/
+    */
     val fedId: Long = federation.getId
 
     try {

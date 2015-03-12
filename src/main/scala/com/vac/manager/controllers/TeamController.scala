@@ -86,35 +86,30 @@ class TeamController()
 
     val fedId: Long = federation.getId
 
-    val maybeTeam: Option[Team] = teamService.find(teamId)
+    teamService.find(teamId).map { team =>
 
-    maybeTeam match {
-      case None => throw new Exception() // TODO: Handle error
-      case Some(team) => {
+      // Initialize current person list
+      val actualStaffMemberList: Seq[StaffMember] =
+        teamService.findCurrentStaffMemberListByTeam(teamId)
 
-        // Initialize current person list
-        val actualStaffMemberList: Seq[StaffMember] =
-          teamService.findCurrentStaffMemberListByTeam(teamId)
+      // Initialize all person list
+      val allPersonList: Seq[ActionablePerson] =
+        personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s))
 
-        // Initialize all person list
-        val allPersonList: Seq[ActionablePerson] =
-          personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s))
+      // Submit parameters
+      val submitUrl = getUrl("TeamController.assignStaffMemberPost")
+      val submitMethod = "POST"
+      val acceptUrl = getUrl("TeamController.showTeam", "teamId" -> teamId)
 
-        // Submit parameters
-        val submitUrl = getUrl("TeamController.assignStaffMemberPost")
-        val submitMethod = "POST"
-        val acceptUrl = getUrl("TeamController.showTeam", "teamId" -> teamId)
-
-        new ModelAndView("team/assignStaffMember")
-          .addObject("hiddens", Map("teamId" -> teamId).asJava.entrySet())
-          .addObject("action", "assign")
-          .addObject("acceptUrl", acceptUrl)
-          .addObject("submitUrl", submitUrl)
-          .addObject("submitMethod", submitMethod)
-          .addObject("teamStaffMemberList", actualStaffMemberList.asJava)
-          .addObject("avaliablePersonList", allPersonList.asJava)
-      }
-    }
+      new ModelAndView("team/assignStaffMember")
+        .addObject("hiddens", Map("teamId" -> teamId).asJava.entrySet())
+        .addObject("action", "assign")
+        .addObject("acceptUrl", acceptUrl)
+        .addObject("submitUrl", submitUrl)
+        .addObject("submitMethod", submitMethod)
+        .addObject("teamStaffMemberList", actualStaffMemberList.asJava)
+        .addObject("avaliablePersonList", allPersonList.asJava)
+    }.getOrElse(throw new RuntimeException("Team not found"))
   }
 
   def assignStaffMemberPost(
