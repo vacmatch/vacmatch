@@ -15,6 +15,7 @@ import com.vac.manager.service.federation.FederationService
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.personal.AddressService
+import com.vac.manager.model.staff.StaffMemberDao
 
 @Service("personService")
 @Transactional
@@ -29,8 +30,6 @@ class PersonServiceImpl extends PersonService {
   @Autowired
   var personDao: PersonDao = _
 
-  /* --------------- FIND ---------------- */
-
   def find(personId: Long): Option[Person] = {
     personDao.findById(personId)
   }
@@ -43,10 +42,6 @@ class PersonServiceImpl extends PersonService {
     personDao.findByName(name, startIndex, count)
   }
 
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findAllByActivated(activated, startIndex, count)
-  }
-
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
     personDao.findByEmail(email, startIndex, count)
   }
@@ -55,25 +50,13 @@ class PersonServiceImpl extends PersonService {
     personDao.findByCardId(cardId, startIndex, count)
   }
 
-  /* ---------------- MODIFY --------------- */
-
-  def changeActivation(personId: Long, newState: Boolean) = {
-    var maybePerson: Option[Person] = personDao.findById(personId)
-
-    maybePerson match {
-      case None => throw new InstanceNotFoundException(personId, classOf[Person].getName())
-      case Some(person) => {
-        person.activated = newState
-        personDao.save(person)
-      }
-    }
-  }
-
-  def changePrivacy(personId: Long, newState: Boolean, newAlias: String) = {
-    var person: Option[Person] = personDao.findById(personId)
-
-    person.map(_.alias = newAlias)
-    person.map(personDao.save(_))
+  @throws[InstanceNotFoundException]
+  def changePrivacy(personId: Long, newState: Boolean, newAlias: String): Person = {
+    personDao.findById(personId).map { person =>
+      person.alias = newAlias
+      personDao.save(person)
+      person
+    }.getOrElse(throw new InstanceNotFoundException(personId, classOf[Person].getName()))
   }
 
   @throws[InstanceNotFoundException]

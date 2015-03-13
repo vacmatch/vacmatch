@@ -14,9 +14,6 @@
 	      <dl th:object="${person}">
 	        <!-- <dd><img th:src="*{avatarLink}" alt="avatar" src="http://www.gravatar.com/avatar/HASH"></dd>
 	         -->
-	      	<dt>Person status</dt>
-	      	<dd><input type="checkbox" name="active" disabled="true" th:checked="*{activated}" /></dd>
-		      	
 					<dt>Person name</dt>
 					<dd th:text="*{name}">John</dd>
 					<dd th:each="surname : *{surnames}" th:text="${surname}">Mustang</dd>

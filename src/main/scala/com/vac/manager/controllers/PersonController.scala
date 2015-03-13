@@ -49,12 +49,6 @@ class PersonController extends UrlGrabber {
     var byEmail: String = _
 
     @BeanProperty
-    var byActivated: Boolean = false
-
-    @BeanProperty
-    var activatedValue: Boolean = false
-
-    @BeanProperty
     var byAllPerson: Boolean = false
 
   }
@@ -81,8 +75,6 @@ class PersonController extends UrlGrabber {
     @RequestParam("byName") byName: String,
     @RequestParam("byCardId") byCardId: String,
     @RequestParam("byEmail") byEmail: String,
-    @RequestParam("byActivated") byActivated: Boolean,
-    @RequestParam("activatedValue") activatedValue: Boolean,
     @RequestParam("byAllPerson") byAllPerson: Boolean): ModelAndView = {
 
     // TODO: Check errors
@@ -106,10 +98,6 @@ class PersonController extends UrlGrabber {
 
     if (byEmail.nonEmpty)
       personList = personService.findByEmail(byEmail,
-        startIndex, count).map(new ActionablePerson(_))
-
-    if (byActivated)
-      personList = personService.findAllByActivated(activatedValue,
         startIndex, count).map(new ActionablePerson(_))
 
     if (byAllPerson)

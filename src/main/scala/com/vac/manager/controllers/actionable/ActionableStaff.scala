@@ -13,7 +13,6 @@ class ActionablePerson(person: Person)
   personId = person.personId
   name = person.name
   surnames = person.surnames
-  activated = person.activated
   alias = person.alias
   email = person.email
   avatarLink = person.avatarLink

@@ -35,17 +35,6 @@ class PersonDaoJPA
     query.getResultList().asScala
   }
 
-  def findAllByActivated(activated: Boolean, startIndex: Int,
-    count: Int): Seq[Person] = {
-    val optionNull: String = if (activated) "IS NOT EMPTY" else "IS EMPTY"
-
-    var query = getEntityManager().createQuery(
-      "SELECT s FROM Person s " +
-        "WHERE s.teamList " + optionNull, classOf[Person])
-
-    query.getResultList().asScala
-  }
-
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +

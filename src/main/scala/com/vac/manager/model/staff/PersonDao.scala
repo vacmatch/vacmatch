@@ -8,8 +8,6 @@ trait PersonDao extends GenericDao[Person, java.lang.Long] {
 
   def findAllByFederationId(fedId: Long): Seq[Person]
 
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Person]
-
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person]
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person]

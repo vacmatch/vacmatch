@@ -14,16 +14,12 @@ trait PersonService {
 
   def findByName(name: String, startIndex: Int, count: Int): Seq[Person]
 
-  def findAllByActivated(activated: Boolean, startIndex: Int, count: Int): Seq[Person]
-
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person]
 
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person]
 
   @throws[InstanceNotFoundException]
-  def changeActivation(personId: Long, newState: Boolean)
-
-  def changePrivacy(personId: Long, newState: Boolean, newAlias: String)
+  def changePrivacy(personId: Long, newState: Boolean, newAlias: String): Person
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]

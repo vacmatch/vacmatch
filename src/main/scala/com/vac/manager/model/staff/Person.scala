@@ -37,10 +37,6 @@ class Person(
   var surnames: String = stSurnames
 
   @BeanProperty
-  @Column(nullable = false)
-  var activated: Boolean = false
-
-  @BeanProperty
   @Column
   var alias: String = null
 
@@ -83,7 +79,6 @@ class Person(
     (personObj.personId == this.personId) &&
       (personObj.name == this.name) &&
       (personObj.surnames == this.surnames) &&
-      (personObj.activated == this.activated) &&
       (personObj.alias == this.alias) &&
       (personObj.email == this.email) &&
       (personObj.telephones == this.telephones) &&
@@ -98,7 +93,6 @@ class Person(
     ", " + this.name +
     "\nCardId: " + this.cardId +
     "\nEmail: " + this.email +
-    "\nActivated: " + this.activated +
     "\nAlias: " + this.alias +
     "\nTelephones: " + this.telephones +
     "\nAddress: " + this.address +

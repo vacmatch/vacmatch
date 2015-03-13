@@ -31,7 +31,6 @@
 			  <li><a data-toggle="collapse" href="#byName">Name</a></li>
 		    <li><a data-toggle="collapse" href="#byCardId">Card Id</a></li>
 		    <li><a data-toggle="collapse" href="#byEmail">Email</a></li>
-			  <li><a data-toggle="collapse" href="#byActivated">Activated</a></li>
 		    <li><a data-toggle="collapse" href="#byAll">All</a></li>
 			</ul>
 		      </div><!-- /btn-group -->
@@ -64,20 +63,6 @@
 	    <label class="col-sm-3 control-label"></label>
 	    <div class="col-sm-9">
 	      <label>Use this?</label>
-	    </div>
-	  </div>
-
-	  <div id="byActivated" class="form-group collapse">
-	    <label class="col-sm-3 control-label" for="activated">Activated</label>
-	    <div class="col-sm-9">
-	      <select class="btn btn-default" type="button" th:field="${{receiver.byActivated}}">
-		<option value="true">Yes</option>
-		<option value="false">No</option>
-	      </select>
-	      <select class="btn btn-default" type="button" th:field="${receiver.activatedValue}">
-		<option value="true">Active</option>
-		<option value="false">Inactive</option>
-	      </select>
 	    </div>
 	  </div>
 

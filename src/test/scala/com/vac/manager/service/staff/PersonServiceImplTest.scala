@@ -328,51 +328,6 @@ class PersonServiceImplTest
 
   }
 
-  feature("Person activation") {
-    scenario("Person activation can be changed when Person exists and parameters are valid") {
-      Given("A person and a new activation state")
-      var person: Person = new Person()
-      var newState: Boolean = true
-
-      When("Federation exists")
-      When("Person exists")
-      When("Person activation state is valid")
-
-      Mockito.when(personService.personDao.findById(anyLong)).thenReturn(Some(person))
-
-      personService.changeActivation(anyLong, newState)
-
-      Then("Person activation has been changed")
-      Then("Person activation has the new state")
-
-      person.activated should equal(newState)
-      verify(personService.personDao).save(person)
-
-    }
-
-    scenario("Person activation cannot be changed when Person doesn't exist") {
-      Given("A person, an old activation state and a new activation state")
-      var person: Person = new Person()
-      var oldState: Boolean = false
-      var newState: Boolean = true
-
-      When("Federation exists")
-      When("Person doesn't exist")
-      When("Person activation state is valid")
-
-      Mockito.when(personService.personDao.findById(anyLong)).thenReturn(None)
-
-      intercept[InstanceNotFoundException] {
-        personService.changeActivation(anyLong, newState)
-      }
-
-      Then("Person activation hasn't been changed")
-
-      assert(person.activated == oldState)
-      verify(personService.personDao, never).save(person)
-    }
-  }
-
   feature("Person modification") {
     scenario("Someone try to modify a existent Person with valid parameters") {
 
