@@ -111,21 +111,22 @@ class PersonServiceImpl extends PersonService {
 
   def assignAddress(personId: Long, stAddress: Address): Option[Person] = {
 
+    val newAddress: Address = if (Option(stAddress).nonEmpty) stAddress else new Address()
     val maybePerson: Option[Person] = find(personId)
 
     maybePerson.map {
       person =>
         {
-          if ((Option(stAddress).isEmpty) || (person.address == stAddress))
+          if (person.address == stAddress)
             return maybePerson
 
           if (!Option(person.address).isEmpty)
             addressService.removeAddress(person.address.addressId)
 
           val savedAddress: Address = addressService.createAddress(
-            stAddress.firstLine, stAddress.secondLine,
-            stAddress.postCode, stAddress.locality,
-            stAddress.province, stAddress.country)
+            newAddress.firstLine, newAddress.secondLine,
+            newAddress.postCode, newAddress.locality,
+            newAddress.province, newAddress.country)
 
           person.address = savedAddress
           personDao.save(person)

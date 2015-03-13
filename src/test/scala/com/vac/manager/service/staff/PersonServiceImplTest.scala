@@ -691,7 +691,7 @@ class PersonServiceImplTest
 
     }
 
-    scenario("A Person address can't be modified if new Address is null") {
+    scenario("A Person address can be modified if new Address is null") {
 
       Given("An existent Person")
       val person: Person = validPerson
@@ -709,15 +709,12 @@ class PersonServiceImplTest
       val modifiedPerson: Option[Person] =
         personService.assignAddress(person.personId, newAddress)
 
-      Then("Old Person address shouldn't be removed from de DB")
-      verify(personService.addressService, never).removeAddress(oldAddress.addressId)
+      Then("Old Person address should be removed from de DB")
+      verify(personService.addressService).removeAddress(oldAddress.addressId)
 
-      Then("New address can't be saved in the DB")
-      verify(personService.addressService, never).createAddress(
-        anyString, anyString, anyString, anyString, anyString, anyString)
-
-      Then("Person can't be modified")
-      modifiedPerson.get.address should equal(oldAddress)
+      Then("New address must be saved in the DB")
+      verify(personService.addressService).createAddress(
+        "", "", "", "", "", "")
 
     }
 
