@@ -43,7 +43,7 @@ Step two will depend on your IDE.
 
 ### If you are using Eclipse...
 
-1. Create a file with path
+1. First create a file with path `~/.sbt/0.13/plugins/plugins.sbt`
 2. Introduce in it the following line
 
 		addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "3.0.0")
@@ -62,17 +62,19 @@ Step two will depend on your IDE.
 
 ### If you are using IntelliJ IDEA...
 
-Please fill in is this applies to you.
+If you are using IDEA >= 14, you can just use the Scala plugin and
+import the project from sbt. However, you can also generate the IDEA
+project files from sbt with the following recipe, like you'd do in
+other editors:
 
-At the moment I think the Community Edition has already Scala + sbt
-support as a provided plugin from IntelliJ.
+1. First create a file with path `~/.sbt/0.13/plugins/plugins.sbt`
+2. Introduce in it the following line:
 
-There's a project for providing similar functionality as Eclipse's, so
-you can also follow those instructions, and provide the following plugin instead:
+		addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
-	addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
-
-And then use the `gen_idea` task.
+3. Open the sbt console in the project folder (`cd /path/to/project;
+   sbt`)
+4. Type in `gen-idea` at the prompt. This should generate the required IntelliJ IDEA files.
 
 
 ### If you are using Emacs...
