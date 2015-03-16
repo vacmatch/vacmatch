@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title th:text="#{title}">List Staff</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+    <div class="container" th:fragment="content">
+      <a class="btn btn-default" th:href="${deleteCalendarLink}">Delete calendar</a>
+      <a class="btn btn-default" th:href="${createCalendarLink}">Create calendar</a>
+
+      <div th:each="map : ${gameDayList}">
+        <h3 th:text="${map.key}"></h3>
+        <table class="table">
+          <tr>
+	          <th>Date</th>
+	          <th>Local team</th>
+	          <th>Visitor team</th>
+	          <th>Action</th>
+          </tr>
+          <tr th:if="*{act != null}" th:each="game : ${map.value}" th:object="${game}">
+           <td th:text="*{act.date}">-</td>
+           <td th:text="*{act.localStats}">-</td>
+           <td th:text="*{act.visitorStats}">-</td>
+            <a class="btn btn-default" th:href="${game.getShowLink()}">Show game</a>
+           <td><a class="btn btn-primary" href="#">Edit game</a></td>
+          </tr>
+          <tr th:if="*{act == null}" th:each="game : ${map.value}">
+           <td>-</td>
+           <td>-</td>
+           <td>-</td>
+           <td>
+            <a class="btn btn-default" th:href="${game.getShowLink()}">Show game</a>
+            <a class="btn btn-primary" href="#">Assign game</a>
+           </td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+  </body>
+</html>
