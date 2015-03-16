@@ -14,6 +14,11 @@ class LeagueSeasonPK extends Serializable {
   @BeanProperty
   @Column(nullable = false)
   var seasonSlug: String = _ // Something like: 2012, or maybe "XIII"
+
+  override def toString() = {
+    "\n-League: " + league +
+      "\n-seasonSlug: " + seasonSlug
+  }
 }
 
 @Entity
@@ -33,4 +38,12 @@ class LeagueSeason extends Serializable {
   @Column
   @Temporal(TemporalType.DATE)
   var endTime: Calendar = _
+
+  override def toString() = {
+    "LeagueSeason:" +
+      "\nId: " + id +
+      "\nStartTime(Calendar): " + startTime +
+      "\nEndTime(Calendar): " + endTime
+
+  }
 }
