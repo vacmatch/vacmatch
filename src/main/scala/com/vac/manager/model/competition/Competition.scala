@@ -2,16 +2,15 @@ package com.vac.manager.model.competition
 
 import javax.persistence._
 import scala.beans.BeanProperty
-import com.vac.manager.model.team.Team
 import com.vac.manager.model.federation.Federation
-
+import java.util.ArrayList
 
 @Entity
 @Table(name = "COMPETITION")
-class Competition (compName: String, fed: Federation) {
+class Competition(compName: String, fed: Federation) {
 
   @Id
-  @SequenceGenerator(name="competitionIdGenerator", sequenceName="competition_id_seq")
+  @SequenceGenerator(name = "competitionIdGenerator", sequenceName = "competition_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "competitionIdGenerator")
   var compId: Long = _
 
@@ -20,18 +19,12 @@ class Competition (compName: String, fed: Federation) {
   var competitionName: String = compName
 
   @BeanProperty
-  @ManyToOne(optional=false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "fedId")
   var federation: Federation = fed
-  
-  @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy="competitionsList", cascade = Array(CascadeType.ALL))
-  var teamList: java.util.List[Team] = _
 
   def this() = this(null, null)
 
-  override
-  def toString = "(" + this.compId + ") " + this.competitionName +
-					"\nTeams: " + this.teamList
+  override def toString = "(" + this.compId + ") " + this.competitionName
 
 }

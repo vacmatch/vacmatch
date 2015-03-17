@@ -1,123 +1,43 @@
 package com.vac.manager.model.staff
 
-import javax.persistence._
+import javax.persistence.SequenceGenerator
+import javax.persistence.GeneratedValue
 import scala.beans.BeanProperty
-import com.vac.manager.model.team.Team
+import javax.persistence.GenerationType
 import java.util.Calendar
-import com.vac.manager.model.personal.Address
-import scala.collection.JavaConverters._
-import scravatar.Gravatar
-import com.vac.manager.model.federation.Federation
-import java.text.SimpleDateFormat
+import javax.persistence.ManyToOne
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import com.vac.manager.model.team.Team
+import javax.persistence.Id
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
-@Table(name = "STAFFMEMBER")
-@Inheritance(strategy = InheritanceType.JOINED)
-class StaffMember(
-  stName: String,
-  stSurnames: String,
-  stEmail: String,
-  stTelephones: String,
-  stCardId: String,
-  stBirth: Calendar,
-  stFederation: Federation
-) {
+@Table(name = "STAFF_MEMBER")
+class StaffMember(per: Person, team: Team) {
 
   @Id
   @SequenceGenerator(name = "staffMemberIdGenerator", sequenceName = "staffMember_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "staffMemberIdGenerator")
-  var staffId: java.lang.Long = _
+  var staffMemberId: java.lang.Long = _
 
   @BeanProperty
-  @Column(nullable = false)
-  var staffName: String = stName
+  var joinDate: Calendar = Calendar.getInstance()
 
   @BeanProperty
-  @Column(nullable = false)
-  var staffSurnames: String = stSurnames
-
-  @BeanProperty
-  @Column(nullable = false)
-  var staffActivated: Boolean = false
-
-  @BeanProperty
-  @Column
-  var staffAlias: String = null
-
-  @BeanProperty
-  @Column
-  var staffEmail: String = stEmail
-
-  @BeanProperty
-  @Column
-  var staffAvatarLink: String = Gravatar(stEmail).ssl(true).avatarUrl
-
-  @BeanProperty
-  @Column
-  var staffTelephones: String = stTelephones
+  var exitDate: Calendar = _
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "addressId")
-  var staffAddress: Address = _
-
-  @BeanProperty
-  @Column(nullable = false)
-  var staffCardId: String = stCardId
-
-  @BeanProperty
-  @Column(nullable = false)
-  var staffBirth: Calendar = stBirth
-
-  @BeanProperty
-  @ManyToMany(fetch = FetchType.EAGER,
-      cascade = Array(CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE))
-  @JoinTable(
-      name = "TEAM_STAFF",
-      joinColumns =
-        Array(new JoinColumn(name = "teamId")),
-      inverseJoinColumns =
-        Array(new JoinColumn(name = "staffId"))
-  )
-  var staffTeamList: java.util.List[Team] = _
+  @JoinColumn(name = "personId")
+  var person: Person = per
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "fedId")
-  var staffFederation: Federation = stFederation
+  @JoinColumn(name = "teamId")
+  var staffTeam: Team = team
 
-  def this() = this("", "", "", null, "", Calendar.getInstance(), null)
-
-  override def equals(obj: Any): Boolean = {
-    if ((obj == null) || (!obj.isInstanceOf[StaffMember]))
-      return false
-    var staffObj: StaffMember = obj.asInstanceOf[StaffMember]
-    (staffObj.staffId == this.staffId) &&
-      (staffObj.staffName == this.staffName) &&
-      (staffObj.staffSurnames == this.staffSurnames) &&
-      (staffObj.staffActivated == this.staffActivated) &&
-      (staffObj.staffAlias == this.staffAlias) &&
-      (staffObj.staffEmail == this.staffEmail) &&
-      (staffObj.staffTelephones == this.staffTelephones) &&
-      (staffObj.staffAddress == this.staffAddress) &&
-      (staffObj.staffCardId == this.staffCardId) &&
-      (staffObj.staffBirth == this.staffBirth) &&
-      (staffObj.staffTeamList == this.staffTeamList) &&
-      (staffObj.staffFederation == this.staffFederation)
-  }
-
-  override def toString = "(" + this.staffId + ") " +
-    this.staffSurnames +
-    ", " + this.staffName +
-    "\nCardId: " + this.staffCardId +
-    "\nEmail: " + this.staffEmail +
-    "\nActivated: " + this.staffActivated +
-    "\nAlias: " + this.staffAlias +
-    "\nTelephones: " + this.staffTelephones +
-    "\nAddress: " + this.staffAddress +
-    "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
-    .format(this.staffBirth.getTime()) +
-    "\nFederation: " + this.staffFederation +
-    "\nTeams: " + this.staffTeamList
-
+  def this() = this(null, null)
 }
+

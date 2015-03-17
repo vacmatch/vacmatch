@@ -12,11 +12,11 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-	<h2>Find Staff</h2>
+	<h2>Find Person</h2>
 
 	<hr/>
 
-	<form id="staffForm" class="form form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
+	<form id="staffForm" class="form form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${person}">
 	  <input th:each="h: ${hiddens}" type="hidden"
 	   th:name="${h.key}" th:value="${h.value}" />
 
@@ -31,7 +31,6 @@
 			  <li><a data-toggle="collapse" href="#byName">Name</a></li>
 		    <li><a data-toggle="collapse" href="#byCardId">Card Id</a></li>
 		    <li><a data-toggle="collapse" href="#byEmail">Email</a></li>
-			  <li><a data-toggle="collapse" href="#byActivated">Activated</a></li>
 		    <li><a data-toggle="collapse" href="#byAll">All</a></li>
 			</ul>
 		      </div><!-- /btn-group -->
@@ -67,24 +66,10 @@
 	    </div>
 	  </div>
 
-	  <div id="byActivated" class="form-group collapse">
-	    <label class="col-sm-3 control-label" for="activated">Activated</label>
-	    <div class="col-sm-9">
-	      <select class="btn btn-default" type="button" th:field="${{receiver.byActivated}}">
-		<option value="true">Yes</option>
-		<option value="false">No</option>
-	      </select>
-	      <select class="btn btn-default" type="button" th:field="${receiver.activatedValue}">
-		<option value="true">Active</option>
-		<option value="false">Inactive</option>
-	      </select>
-	    </div>
-	  </div>
-
 	  <div id="byAll" class="form-group collapse">
 	    <label class="col-sm-3 control-label" for="all">All</label>
 	    <div class="col-sm-9">
-	      <select class="btn btn-default" type="button" th:field="${receiver.byAllStaff}">
+	      <select class="btn btn-default" type="button" th:field="${receiver.byAllPerson}">
 		<option value="true">Yes</option>
 		<option value="false">No</option>
 	      </select>

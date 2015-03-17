@@ -12,46 +12,46 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group">
-  <h2 th:text="|${action} Team|">Create Team</h2>
+  <h2 th:text="|${action} Person|">Create Person</h2>
 
 	<hr/>
 
-	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${staff}">
+	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${person}">
 	  <input th:each="h: ${hiddens}" type="hidden"
 	   th:name="${h.key}" th:value="${h.value}" />
 
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="name">Name</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{staffName}" />
+	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{name}" />
 	    </div>
 	  </div>
 
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="surnames">Surnames</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:field="*{staffSurnames}" />
+	      <input class="form-control" id="surnames" type="text" placeholder="Surnames" th:field="*{surnames}" />
 	    </div>
 	  </div>
 
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="cardId">Card Id</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="*{staffCardId}" />
+	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="*{cardId}" />
 	    </div>
 	  </div>
 
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="email">Email</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{staffEmail}" />
+	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{email}" />
 	    </div>
 	  </div>
 
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="birth">Birth</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{staffBirth}" />
+	      <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{birth}" />
 	    </div>
 	  </div>
 
@@ -61,7 +61,7 @@
 	    </div>
 	    <div class="col-sm-9">
 		<label for="telephones">(ej: "678912345, 654321987")</label>
-		<input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{staffTelephones}" />
+		<input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{telephones}" />
 	    </div>
 	  </div>
 
