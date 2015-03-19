@@ -45,6 +45,7 @@ class GameController extends UrlGrabber {
         {
           val createCalendarLink: String = getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year)
           val deleteCalendarLink: String = getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
+
           val gamesMap: Map[Int, Seq[ActionableGame]] =
             gameService.findLeagueCalendar(season).map(game => new ActionableGame(game, slug, year)).groupBy(_.gameDay)
 
@@ -56,7 +57,7 @@ class GameController extends UrlGrabber {
             .addObject("createCalendarLink", createCalendarLink)
             .addObject("deleteCalendarLink", deleteCalendarLink)
         }
-    }.getOrElse(throw new NoSuchElementException("Season not found"))
+    }.getOrElse(throw new NoSuchElementException("League Season not found"))
   }
 
   def show(

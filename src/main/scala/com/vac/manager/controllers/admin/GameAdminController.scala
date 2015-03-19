@@ -99,7 +99,9 @@ class GameAdminController extends UrlGrabber {
     leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
       season =>
         {
-          gameService.removeLeagueCalendarFromSeason(season)
+          Try(gameService.removeLeagueCalendarFromSeason(season)).recover {
+            case e: IllegalArgumentException => throw new RuntimeException("League Season not found")
+          }
           new ModelAndView("redirect:" + getUrl("GameController.list", "slug" -> slug, "year" -> year))
         }
     }.getOrElse(throw new NoSuchElementException("League Season not found"))

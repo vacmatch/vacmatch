@@ -14,6 +14,8 @@ import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.ElementCollection
 import javax.persistence.FetchType
+import javax.persistence.OneToOne
+import javax.persistence.JoinColumn
 
 @Entity
 @Table(name = "ACT")
@@ -51,6 +53,11 @@ class Act {
   @BeanProperty
   @ElementCollection(fetch = FetchType.EAGER)
   var signatures: java.util.List[String] = _
+
+  @BeanProperty
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "gameId")
+  var game: Game = _
 
 }
 
