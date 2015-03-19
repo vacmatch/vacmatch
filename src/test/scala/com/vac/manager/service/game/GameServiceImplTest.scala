@@ -190,5 +190,84 @@ class GameServiceImplTest
 
   }
 
+  // Delete League Calendar for a season
+  property("A league calendar must be deleted if parameters are valid") {
+
+    gameService.gameDao = mock[GameDao]
+    gameService.leagueService = mock[LeagueService]
+
+    Given("A existing leagueSeason")
+    val leagueSeason: LeagueSeason = validLeagueSeason
+
+    Given("A existing calendar")
+    val calendar: Seq[Game] = validCalendar
+    Mockito.when(gameService.gameDao.findAllBySeason(leagueSeason.id)).thenReturn(calendar)
+
+    When("Try to remove the calendar")
+    gameService.removeLeagueCalendarFromSeason(leagueSeason)
+
+    Then("All games in calendar must be removed")
+    calendar.map(game => verify(gameService.gameDao).remove(game))
+
+  }
+
+  property("A league calendar can't be deleted if leagueSeason is null") {
+
+    gameService.gameDao = mock[GameDao]
+    gameService.leagueService = mock[LeagueService]
+
+    Given("A null leagueSeason")
+    val leagueSeason: LeagueSeason = null
+
+    When("Try to remove the calendar")
+    intercept[IllegalArgumentException] {
+      gameService.removeLeagueCalendarFromSeason(leagueSeason)
+    }
+
+    Then("An illegal argument exception must be thrown")
+
+    Then("None element must be removed")
+    verify(gameService.gameDao, never).remove(anyObject())
+
+  }
+
+  property("A league calendar can't be deleted if leagueSeason doesn't exist") {
+
+    gameService.gameDao = mock[GameDao]
+    gameService.leagueService = mock[LeagueService]
+
+    Given("A non existing leagueSeason")
+    val leagueSeason: LeagueSeason = validLeagueSeason
+
+    Given("A empty calendar for non existing leagueSeason")
+    Mockito.when(gameService.gameDao.findAllBySeason(leagueSeason.id)).thenReturn(List())
+
+    When("Try to remove the calendar")
+    gameService.removeLeagueCalendarFromSeason(leagueSeason)
+
+    Then("None element must be removed")
+    verify(gameService.gameDao, never).remove(anyObject())
+
+  }
+
+  property("A league calendar can't be deleted if doesn't exist a created leagueSeason calendar") {
+
+    gameService.gameDao = mock[GameDao]
+    gameService.leagueService = mock[LeagueService]
+
+    Given("A existing leagueSeason")
+    val leagueSeason: LeagueSeason = validLeagueSeason
+
+    Given("A non existing calendar for this leagueSeason")
+    Mockito.when(gameService.gameDao.findAllBySeason(leagueSeason.id)).thenReturn(List())
+
+    When("Try to remove the calendar")
+    gameService.removeLeagueCalendarFromSeason(leagueSeason)
+
+    Then("None element must be removed")
+    verify(gameService.gameDao, never).remove(anyObject())
+
+  }
+
 }
 
