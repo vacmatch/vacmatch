@@ -51,7 +51,6 @@ class GameController extends UrlGrabber {
 
           val sortedGamesMap: SortedMap[Int, java.util.List[ActionableGame]] =
             SortedMap(gamesMap.toSeq: _*).map(element => (element._1, element._2.asJava))
-
           new ModelAndView("calendar/list")
             .addObject("gameDayList", sortedGamesMap.asJava)
             .addObject("createCalendarLink", createCalendarLink)

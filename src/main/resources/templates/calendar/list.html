@@ -11,8 +11,11 @@
   <body>
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
+
+    <div sec:authorize="!hasRole('ROLE_ANONYMOUS')">
       <a class="btn btn-default" th:href="${deleteCalendarLink}">Delete calendar</a>
       <a class="btn btn-default" th:href="${createCalendarLink}">Create calendar</a>
+    </div>
 
       <div th:each="map : ${gameDayList}">
         <h3 th:text="${map.key}"></h3>
@@ -36,7 +39,7 @@
            <td>-</td>
            <td>
             <a class="btn btn-default" th:href="${game.getShowLink()}">Show game</a>
-            <a class="btn btn-primary" href="#">Assign game</a>
+            <a sec:authorize="!hasRole('ROLE_ANONYMOUS')" class="btn btn-primary" href="#">Assign game</a>
            </td>
           </tr>
         </table>
