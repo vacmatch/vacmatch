@@ -34,7 +34,6 @@ class ActionablePerson(person: Person)
     getUrl("TeamController.assignStaffMemberPost", "personId" -> personId)
   }
 
-  def getRemoveLink: String = ""
   def getAssignTeamLink: String = ""
   def getEditPrivacyLink: String = ""
 }

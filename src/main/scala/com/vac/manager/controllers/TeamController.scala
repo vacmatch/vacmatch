@@ -21,6 +21,7 @@ import com.vac.manager.service.staff.PersonService
 import com.vac.manager.model.staff.Person
 import com.vac.manager.util.FederationBean
 import com.vac.manager.controllers.actionable.ActionablePerson
+import com.vac.manager.controllers.actionable.ActionableStaffMember
 
 @Controller
 class TeamController()
@@ -89,15 +90,14 @@ class TeamController()
     teamService.find(teamId).map { team =>
 
       // Initialize current person list
-      val actualStaffMemberList: Seq[StaffMember] =
-        teamService.findCurrentStaffMemberListByTeam(teamId)
+      val actualStaffMemberList: Seq[ActionableStaffMember] =
+        teamService.findCurrentStaffMemberListByTeam(teamId).map(s => new ActionableStaffMember(s))
 
       // Initialize all person list
       val allPersonList: Seq[ActionablePerson] =
         personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s))
 
       // Submit parameters
-      val submitUrl = getUrl("TeamController.assignStaffMemberPost")
       val submitMethod = "POST"
       val acceptUrl = getUrl("TeamController.showTeam", "teamId" -> teamId)
 
@@ -105,7 +105,6 @@ class TeamController()
         .addObject("hiddens", Map("teamId" -> teamId).asJava.entrySet())
         .addObject("action", "assign")
         .addObject("acceptUrl", acceptUrl)
-        .addObject("submitUrl", submitUrl)
         .addObject("submitMethod", submitMethod)
         .addObject("teamStaffMemberList", actualStaffMemberList.asJava)
         .addObject("avaliablePersonList", allPersonList.asJava)
@@ -117,6 +116,17 @@ class TeamController()
     @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
 
     val staffMember: StaffMember = teamService.assignPerson(teamId, personId)
+
+    // TODO Handle errors
+
+    new ModelAndView("redirect:" + getUrl("TeamController.assignStaffMember", "teamId" -> teamId))
+  }
+
+  def unAssignStaffMemberPost(
+    @RequestParam("personId") personId: java.lang.Long,
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    val staffMember: StaffMember = teamService.unAssignStaff(teamId, personId)
 
     // TODO Handle errors
 
