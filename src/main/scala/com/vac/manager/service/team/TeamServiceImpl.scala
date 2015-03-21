@@ -17,11 +17,11 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.model.staff.StaffMember
-import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Arrays.ArrayList
 import java.util.ArrayList
 import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import javax.management.InstanceNotFoundException
 
 @Service("teamService")
 @Transactional
@@ -178,12 +178,12 @@ class TeamServiceImpl extends TeamService {
     val maybePerson: Option[Person] = personService.find(personId)
 
     if (maybePerson.isEmpty)
-      throw new InstanceNotFoundException(maybePerson, classOf[String].getName())
+      throw new InstanceNotFoundException("Person not found")
 
     val maybeTeam: Option[Team] = find(teamId)
 
     if (maybeTeam.isEmpty)
-      throw new InstanceNotFoundException(maybeTeam, classOf[String].getName())
+      throw new InstanceNotFoundException("Team not found")
 
     val team: Team = maybeTeam.get
     val person: Person = maybePerson.get
@@ -201,9 +201,22 @@ class TeamServiceImpl extends TeamService {
       }
       case Some(staffMember) => {
         // Throw
-        throw new DuplicateInstanceException()
+        throw new DuplicateInstanceException("Existing StaffMember have been found")
       }
     }
+  }
+
+  @throws[InstanceNotFoundException]("If team, person or staffMember doesn't exist")
+  def unAssignStaff(teamId: Long, personId: Long): StaffMember = {
+
+    findStaffMemberByTeamIdAndPersonId(teamId, personId).map {
+      staffMember =>
+        {
+          staffMember.exitDate = Calendar.getInstance()
+          staffMemberDao.save(staffMember)
+          staffMember
+        }
+    }.getOrElse(throw new InstanceNotFoundException("StaffMember with TeamId: " + teamId + " and PersonId: " + personId + " not found"))
   }
 
   @throws[IllegalArgumentException]("If any element in newCompetitionList doesn't exist")

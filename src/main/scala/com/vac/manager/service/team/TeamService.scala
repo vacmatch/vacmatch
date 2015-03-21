@@ -36,6 +36,8 @@ trait TeamService {
 
   def assignPerson(teamId: Long, personId: Long): StaffMember
 
+  def unAssignStaff(teamId: Long, personId: Long): StaffMember
+
   def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team]
 
   def getNumberByFederationId(fedId: Long): Long
