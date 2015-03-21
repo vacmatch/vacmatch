@@ -31,7 +31,7 @@ class ActionablePerson(person: Person)
   }
 
   def getAssignPostLink(): String = {
-    getUrl("TeamController.assignStaffMemberPost", "personId" -> personId)
+    getUrl("TeamAdminController.assignStaffMemberPost", "personId" -> personId)
   }
 
   def getAssignTeamLink: String = ""

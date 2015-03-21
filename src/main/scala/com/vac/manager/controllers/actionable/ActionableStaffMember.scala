@@ -14,7 +14,7 @@ class ActionableStaffMember(staffMember: StaffMember)
   staffTeam = staffMember.staffTeam
 
   def getUnAssignPostLink(): String = {
-    getUrl("TeamController.unAssignStaffMemberPost", "personId" -> person.personId)
+    getUrl("TeamAdminController.unAssignStaffMemberPost", "personId" -> person.personId)
   }
 
 }
