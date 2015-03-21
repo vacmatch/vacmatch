@@ -11,7 +11,6 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.util.FederationBean
-
 import javax.persistence.Entity
 import javax.persistence.Table
 
