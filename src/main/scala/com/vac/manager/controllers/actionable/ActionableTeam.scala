@@ -21,4 +21,10 @@ class ActionableTeam(team: Team, slug: String, year: String)
     getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
   }
 
+  def getShowLink(): String = getUrl("TeamController.showTeam", "teamId" -> teamId)
+
+  def getEditLink(): String = "#"
+
+  def getRemoveLink(): String = "#"
+
 }

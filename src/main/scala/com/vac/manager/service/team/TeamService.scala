@@ -12,7 +12,9 @@ trait TeamService {
 
   def find(teamId: Long): Option[Team]
 
-  def findWithTelephones(teamId: Long): Option[Team]
+  def findWithTelephonesAndAddress(teamId: Long): Option[Team]
+
+  def findAllTeams(): Seq[Team]
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 

@@ -47,17 +47,22 @@ class TeamServiceImpl extends TeamService {
   }
 
   @Transactional
-  def findWithTelephones(teamId: Long): Option[Team] = {
+  def findWithTelephonesAndAddress(teamId: Long): Option[Team] = {
     val optionTeam: Option[Team] = teamDao.findById(teamId)
 
     // Force eager load
     optionTeam.map(_.teamTelephones.size())
+    optionTeam.map(_.teamAddress.toString)
 
     optionTeam
   }
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
     teamDao.findTeamsByFederationId(fedId, startIndex, count)
+  }
+
+  def findAllTeams(): Seq[Team] = {
+    teamDao.findAll
   }
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
