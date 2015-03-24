@@ -25,6 +25,6 @@ class ActionableTeam(team: Team, slug: String, year: String)
 
   def getEditLink(): String = getUrl("TeamAdminController.edit", "teamId" -> teamId)
 
-  def getRemoveLink(): String = "#"
+  def getDeleteLink(): String = getUrl("TeamAdminController.delete", "teamId" -> teamId)
 
 }

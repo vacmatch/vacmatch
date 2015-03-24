@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller
 import javax.management.InstanceNotFoundException
 import java.util.GregorianCalendar
 import java.util.Date
+import scala.util.Try
 
 @Controller
 class TeamAdminController
@@ -177,4 +178,33 @@ class TeamAdminController
     new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
   }
 
+  def delete(
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    val fedId: Long = federation.getId
+    val submitMethod: String = "POST"
+    val submitUrl: String = getUrl("TeamAdminController.deletePost", "teamId" -> teamId)
+    val teamListLink: String = getUrl("TeamController.list")
+
+    teamService.find(teamId).map {
+      team =>
+        new ModelAndView("admin/team/delete_confirm")
+          .addObject("team", team)
+          .addObject("teamListLink", teamListLink)
+          .addObject("submitMethod", submitMethod)
+          .addObject("submitUrl", submitUrl)
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+
+  }
+
+  def deletePost(
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    Try(teamService.removeTeam(teamId)).recover {
+      case e: InstanceNotFoundException => throw new InstanceNotFoundException("Team not found")
+    }
+    new ModelAndView("redirect:" + getUrl("TeamController.list"))
+  }
+
 }
+

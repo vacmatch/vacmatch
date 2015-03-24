@@ -27,7 +27,7 @@
           </td>
           <td sec:authorize="!hasRole('ROLE_ANONYMOUS')">
             <a class="btn btn-primary" th:href="${team.getEditLink()}">Edit</a>
-            <a class="btn btn-primary" th:href="${team.getRemoveLink()}">Remove</a>
+            <a class="btn btn-primary" th:href="${team.getDeleteLink()}">Delete</a>
           </td>
         </tr>
       </table>
