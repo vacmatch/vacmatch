@@ -42,4 +42,6 @@ trait TeamService {
 
   def getNumberByFederationId(fedId: Long): Long
 
+  def removeTeam(teamId: Long)
+
 }

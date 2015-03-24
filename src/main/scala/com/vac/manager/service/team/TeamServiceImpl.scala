@@ -228,4 +228,15 @@ class TeamServiceImpl extends TeamService {
     teamDao.getNumberByFederationId(fedId)
   }
 
+  @throws[InstanceNotFoundException]("If team doesn't exist")
+  def removeTeam(teamId: Long) = {
+
+    find(teamId).map { team =>
+      {
+        teamDao.remove(team)
+      }
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+  }
+
 }
+
