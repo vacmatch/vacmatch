@@ -47,7 +47,7 @@ class TeamServiceImplTest
     Calendar.getInstance(),
     new Address,
     "wwww.elchiringuitofc.com",
-    List("699555412").asJava)
+    "699555412")
 
   before {
     validTeam.teamId = null
@@ -77,7 +77,7 @@ class TeamServiceImplTest
             validTeam.foundationDate,
             validTeam.teamAddress,
             validTeam.teamWeb,
-            validTeam.teamTelephones.asScala)
+            validTeam.teamTelephones)
 
           createdTeam should equal(expectedTeam)
 
@@ -95,7 +95,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     intercept[IllegalArgumentException] {
@@ -105,7 +105,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     verifyZeroInteractions(teamService.teamDao)
@@ -123,7 +123,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     intercept[IllegalArgumentException] {
@@ -133,7 +133,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     verifyZeroInteractions(teamService.teamDao)

@@ -13,7 +13,7 @@ import java.util.ArrayList
 @Entity
 @Table(name = "TEAM")
 class Team(name: String, publicName: String, date: Calendar, address: Address,
-  web: String, telephones: java.util.List[String]) {
+  web: String, telephones: String) {
 
   @Id
   @SequenceGenerator(name = "teamIdGenerator", sequenceName = "team_id_seq")
@@ -47,10 +47,8 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamWeb: String = web
 
   @BeanProperty
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable
-  @JoinColumn
-  var teamTelephones: java.util.List[String] = telephones
+  @Column
+  var teamTelephones: String = telephones
 
   @BeanProperty // TODO: Add @Column and model sponsors as a real thing
   // And remove @Transient

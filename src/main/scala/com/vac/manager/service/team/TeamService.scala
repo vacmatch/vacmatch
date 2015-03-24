@@ -27,10 +27,10 @@ trait TeamService {
   def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember]
 
   def createTeam(teamName: String, publicName: String, foundationalDate: Calendar,
-    address: Address, web: String, telephones: Seq[String]): Team
+    address: Address, web: String, telephones: String): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-    foundationalDate: Calendar, address: Address, web: String, telephones: Seq[String]): Option[Team]
+    foundationalDate: Calendar, address: Address, web: String, telephones: String): Option[Team]
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team]
 

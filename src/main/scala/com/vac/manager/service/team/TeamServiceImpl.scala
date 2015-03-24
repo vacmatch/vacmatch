@@ -51,7 +51,7 @@ class TeamServiceImpl extends TeamService {
     val optionTeam: Option[Team] = teamDao.findById(teamId)
 
     // Force eager load
-    optionTeam.map(_.teamTelephones.size())
+    optionTeam.map(_.teamTelephones.toString)
     optionTeam.map(_.teamAddress.toString)
 
     optionTeam
@@ -83,11 +83,11 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]
   def createTeam(teamName: String, publicName: String, foundationalDate: Calendar,
-    address: Address, web: String, telephones: Seq[String]): Team = {
+    address: Address, web: String, telephones: String): Team = {
 
     checkParameters(teamName, publicName, foundationalDate, web, telephones)
 
-    var team: Team = new Team(teamName, publicName, foundationalDate, address, web, telephones.asJava)
+    var team: Team = new Team(teamName, publicName, foundationalDate, address, web, telephones)
 
     teamDao.save(team)
     team
@@ -95,7 +95,7 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]
   def modifyTeam(teamId: Long, newName: String, newPublicName: String,
-    newDate: Calendar, newAddress: Address, newWeb: String, telephones: Seq[String]): Option[Team] = {
+    newDate: Calendar, newAddress: Address, newWeb: String, telephones: String): Option[Team] = {
 
     checkParameters(newName, newPublicName, newDate, newWeb, telephones)
 
@@ -108,7 +108,7 @@ class TeamServiceImpl extends TeamService {
       team.foundationDate = newDate
       team.teamAddress = newAddress
       team.teamWeb = newWeb
-      team.teamTelephones = telephones.asJava
+      team.teamTelephones = telephones
 
       teamDao.save(team)
       team
@@ -117,7 +117,7 @@ class TeamServiceImpl extends TeamService {
 
   @throws[IllegalArgumentException]
   private def checkParameters(teamName: String, publicName: String,
-    foundationDate: Calendar, web: String, telephones: Seq[String]) {
+    foundationDate: Calendar, web: String, telephones: String) {
 
     val checkAgainstNull = List((teamName, classOf[String]), (publicName, classOf[String]),
       (foundationDate, classOf[Calendar]), (web, classOf[String]), (telephones, classOf[String]))
