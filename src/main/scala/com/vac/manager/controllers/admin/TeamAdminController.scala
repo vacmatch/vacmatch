@@ -18,6 +18,9 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.util.FederationBean
 import org.springframework.stereotype.Controller
+import javax.management.InstanceNotFoundException
+import java.util.GregorianCalendar
+import java.util.Date
 
 @Controller
 class TeamAdminController
@@ -37,6 +40,8 @@ class TeamAdminController
 
   def create(): ModelAndView = {
 
+    val fedId: Long = federation.getId
+
     // Create receivers
     val receiverTeam = new Team()
     val receiverAddress = new Address()
@@ -45,28 +50,80 @@ class TeamAdminController
     val submitMethod = "POST"
 
     new ModelAndView("admin/team/edit")
-      .addObject("hiddens", List().asJava)
+      .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
       .addObject("action", "Create")
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", submitMethod)
-      .addObject("team", receiverTeam)
       .addObject("address", receiverAddress)
+      .addObject("team", receiverTeam)
   }
 
   def createPost(
-    @ModelAttribute("team") team: Team,
-    @RequestParam("telephones") telephones: String,
     @ModelAttribute("address") address: Address,
+    @ModelAttribute("team") team: Team,
+    @RequestParam("foundationDate") foundationDate: Date,
     result: BindingResult): ModelAndView = {
 
     // TODO Check errors
-    val telephonesList: Seq[String] = telephones.split(",").map(_.trim).filter(_.nonEmpty)
+    val date: Calendar = new GregorianCalendar()
+    date.setTime(foundationDate)
 
     val createdTeam: Team = teamService.createTeam(team.teamName,
-      team.publicTeamName, Calendar.getInstance, address, team.teamWeb,
-      telephonesList)
+      team.publicTeamName, date, address, team.teamWeb,
+      team.teamTelephones)
 
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+  }
+
+  def edit(
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    teamService.findWithTelephonesAndAddress(teamId).map {
+      team =>
+        {
+          var receiverTeam: Team = team
+          var address: Address = team.teamAddress
+
+          // Submit parameters
+          val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
+          val submitMethod: String = "POST"
+          val listLink: String = getUrl("TeamController.list")
+
+          new ModelAndView("admin/team/edit")
+            .addObject("action", "Edit")
+            .addObject("submitUrl", submitUrl)
+            .addObject("submitMethod", submitMethod)
+            .addObject("listLink", listLink)
+            .addObject("address", address)
+            .addObject("team", receiverTeam)
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+
+  }
+
+  def editPost(
+    @RequestParam("teamId") teamId: java.lang.Long,
+    @ModelAttribute("address") address: Address,
+    @ModelAttribute("team") team: Team,
+    @RequestParam("foundationDate") foundationDate: Date,
+    result: BindingResult): ModelAndView = {
+
+    // TODO Check errors
+    val date: Calendar = new GregorianCalendar()
+    date.setTime(foundationDate)
+
+    teamService.modifyTeam(teamId,
+      team.teamName,
+      team.publicTeamName,
+      date,
+      address,
+      team.teamWeb,
+      team.teamTelephones).map {
+        editedTeam =>
+          {
+            new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
+          }
+      }.getOrElse(throw new InstanceNotFoundException("Team not found"))
   }
 
   def assignStaffMember(

@@ -13,7 +13,7 @@
 			<div class="jumbotron">
 
 			  <div class="pull-right" sec:authorize="!hasRole('ROLE_ANONYMOUS')">
-			   <p><a class="btn btn-default" href="#">Edit</a></p>
+			   <p><a class="btn btn-default" th:href="${editLink}">Edit</a></p>
 			  </div>
 
 				<h2 th:text="${team.teamName}">Equipo</h2>

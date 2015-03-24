@@ -21,7 +21,7 @@
 			  <form id="teamForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${team}">
 			    <input th:each="h: ${hiddens}" type="hidden"
 			     th:name="${h.key}" th:value="${h.value}" />
-			
+
 			    <div class="form-group">
 			      <label class="col-sm-3 control-label" for="name">Name</label>
 			      <div class="col-sm-9">
@@ -45,11 +45,18 @@
 
 			    <div class="form-group">
 			      <div class="col-sm-3 control-label">
-			        <label for="telephones">Telephones</label>
+			        <label for="teamTelephones">Telephones</label>
 			      </div>
 			      <div class="col-sm-9">
-					    <label for="telephones">(ej: "678912345, 654321987")</label>
-					    <input class="form-control" id="telephones" name="telephones" type="text" placeholder="Telephones" th:text="${telephones}" />
+			    <label for="teamTelephones">(ej: "678912345, 654321987")</label>
+			    <input class="form-control" id="teamTelephones" type="text" placeholder="Telephones" th:field="*{teamTelephones}" />
+			      </div>
+			    </div>
+
+			    <div class="form-group">
+			      <label class="col-sm-3 control-label" for="foundationDate">Foundation date</label>
+			      <div class="col-sm-9">
+			        <input class="form-control" id="foundationDate" name="foundationDate" type="text" placeholder="Foundation Date" th:field="*{foundationDate}" />
 			      </div>
 			    </div>
 
@@ -90,7 +97,10 @@
 			       </div>
 			     </div>
 
-			    <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
+          <div>
+            <a class="btn btn-primary" th:href="${listLink}">Cancel</a>
+	          <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
+          </div>
 			  </form>
       </div>
     </div>

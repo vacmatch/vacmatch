@@ -23,7 +23,7 @@ class ActionableTeam(team: Team, slug: String, year: String)
 
   def getShowLink(): String = getUrl("TeamController.showTeam", "teamId" -> teamId)
 
-  def getEditLink(): String = "#"
+  def getEditLink(): String = getUrl("TeamAdminController.edit", "teamId" -> teamId)
 
   def getRemoveLink(): String = "#"
 

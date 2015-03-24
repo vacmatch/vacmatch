@@ -32,9 +32,11 @@ class TeamController()
     teamService.findWithTelephonesAndAddress(teamId).map(team => {
 
       val listLink: String = getUrl("TeamController.list")
+      val editLink: String = getUrl("TeamAdminController.edit", "teamId" -> teamId)
 
       new ModelAndView("team/showTeam")
         .addObject("team", team)
+        .addObject("editLink", editLink)
         .addObject("listLink", listLink)
     }).getOrElse(throw new InstanceNotFoundException("Team not found"))
   }
