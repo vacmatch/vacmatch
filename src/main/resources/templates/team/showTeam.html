@@ -12,11 +12,27 @@
 		<div class="container" th:fragment="content">
 			<div class="jumbotron">
 
-			  <div class="pull-right" sec:authorize="!hasRole('ROLE_ANONYMOUS')">
-			   <p><a class="btn btn-default" th:href="${editLink}">Edit</a></p>
+			  <div class="pull-right">
+			   <p>
+           <a class="btn btn-default"
+              href="#"
+              th:each="link: ${team.authorizedLinks}"
+              th:class="|btn ${link.className}|"
+              th:href="${link.href}"
+              th:text="${link.text}">Action on game</a>
+         </p>
 			  </div>
 
 				<h2 th:text="${team.teamName}">Equipo</h2>
+
+        <div>
+	        <ul class="nav nav-pills">
+	         <li role="presentation" class="active"><a th:href="${team.showLink}">Team details</a></li>
+           <li role="presentation"><a th:href="${team.showStaffMembersLink}">Staff Members</a></li>
+	        </ul>
+				</div>
+
+        <br/>
 
 				<table class="table">
           <tr>

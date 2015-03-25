@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title th:text="${action}">Create league</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet"
-    media="screen" th:href="@{/css/bootstrap.min.css}" />
-    <link href="../../static/css/core.css" rel="stylesheet" media="screen"
-    th:href="@{/css/core.css}" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="../../static/js/bootstrap.min.js"
-      th:src="@{/js/bootstrap.min.js}"></script>
-  </head>
-  <body>
-    <div class="container" th:fragment="content">
-      <div class="jumbotron">
-			  <h2>Delete Team</h2>
-			  <hr/>
+<head>
+<title th:text="${action}">Create league</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+  media="screen" th:href="@{/css/bootstrap.min.css}" />
+<link href="../../../static/css/core.css" rel="stylesheet"
+  media="screen" th:href="@{/css/core.css}" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../../static/js/bootstrap.min.js"
+  th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+  <div class="container" th:fragment="content">
+    <div class="jumbotron">
+      <h2>Delete Team</h2>
+      <hr />
 
-			  <form id="teamForm" th:action="${submitUrl}"
-			        th:method="${submitMethod}" th:object="${team}">
-			        
-			     <h3 th:text="|Do you really want to delete *{teamName} team?|">Team Name</h3>
-			
-			     <a class="btn btn-primary" th:href="${teamListLink}">Cancel</a>
-			     <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
-			  </form>
-			  <br/>
-      </div>
+      <form id="teamForm" th:action="${submitUrl}"
+        th:method="${submitMethod}" th:object="${team}">
+
+        <h3 th:text="|Do you really want to delete *{teamName} team?|">Do
+          you really want to delete this Team?</h3>
+
+        <a class="btn btn-primary" th:href="*{showLink}">Cancel</a> <input
+          class="btn btn-primary" type="submit" name="submit"
+          value="Accept" />
+      </form>
+      <br />
     </div>
-  </body>
+  </div>
+</body>
 </html>

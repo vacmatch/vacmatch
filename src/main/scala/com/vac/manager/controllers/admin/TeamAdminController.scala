@@ -22,6 +22,7 @@ import javax.management.InstanceNotFoundException
 import java.util.GregorianCalendar
 import java.util.Date
 import scala.util.Try
+import com.vac.manager.controllers.actionable.ActionableTeam
 
 @Controller
 class TeamAdminController
@@ -49,12 +50,14 @@ class TeamAdminController
     // Submit parameters
     val submitUrl = getUrl("TeamAdminController.createPost")
     val submitMethod = "POST"
+    val listLink: String = getUrl("TeamController.list")
 
     new ModelAndView("admin/team/edit")
       .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
       .addObject("action", "Create")
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", submitMethod)
+      .addObject("listLink", listLink)
       .addObject("address", receiverAddress)
       .addObject("team", receiverTeam)
   }
@@ -82,9 +85,6 @@ class TeamAdminController
     teamService.findWithTelephonesAndAddress(teamId).map {
       team =>
         {
-          var receiverTeam: Team = team
-          var address: Address = team.teamAddress
-
           // Submit parameters
           val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
           val submitMethod: String = "POST"
@@ -94,9 +94,8 @@ class TeamAdminController
             .addObject("action", "Edit")
             .addObject("submitUrl", submitUrl)
             .addObject("submitMethod", submitMethod)
-            .addObject("listLink", listLink)
-            .addObject("address", address)
-            .addObject("team", receiverTeam)
+            .addObject("address", team.teamAddress)
+            .addObject("team", new ActionableTeam(team, true))
         }
     }.getOrElse(throw new InstanceNotFoundException("Team not found"))
 
@@ -184,13 +183,11 @@ class TeamAdminController
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
     val submitUrl: String = getUrl("TeamAdminController.deletePost", "teamId" -> teamId)
-    val teamListLink: String = getUrl("TeamController.list")
 
     teamService.find(teamId).map {
       team =>
         new ModelAndView("admin/team/delete_confirm")
-          .addObject("team", team)
-          .addObject("teamListLink", teamListLink)
+          .addObject("team", new ActionableTeam(team, true))
           .addObject("submitMethod", submitMethod)
           .addObject("submitUrl", submitUrl)
     }.getOrElse(throw new InstanceNotFoundException("Team not found"))
