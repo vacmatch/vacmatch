@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="fragments/head :: head">
+    <title>Enroll Teams</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+    <div class="container" th:fragment="content">
+      <div class="jumbotron input-group">
+        <h2 class="row">Enroll Teams</h2>
+        <hr/>
+        <div class="row">
+          <div class="col-sm-5">
+            <h4>All teams</h4>
+            <table class="table">
+              <tr>
+                <td>Name</td>
+              </tr>
+              <tr th:each="f: ${fullList}">
+                <form id="${f.teamId}" class="form form-horizontal" th:action="${f.getEnrollPostLink()}" th:method="${submitMethod}">
+                  <input th:each="h: ${hiddens}" type="hidden"
+                   th:name="${h.key}" th:value="${h.value}" />
+                  <td th:text="${f.teamName}">Name</td>
+                  <td>
+                    <input class="btn btn-default" type="submit" name="submit" value="Add"/>
+                  </td>
+                </form>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-sm-offset-1 col-sm-5">
+            <h4>Current teams in competition</h4>
+            <table class="table">
+              <tr draggable="true">
+                <td>Name</td>
+              </tr>
+              <tr th:each="r: ${registeredList}">
+                <form id="${r.id}-remove" class="form form-horizontal" th:action="${r.getDeleteEnrollPostLink()}" th:method="${submitMethod}">
+                  <td th:text="${r.team.teamName}">Name</td>
+                  <td>
+                    <input class="btn btn-default" type="submit" name="submit" value="Remove"/>
+                  </td>
+                </form>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+          <a class="btn btn-default" href="/" th:href="${acceptUrl}">Accept selection</a>
+        </div>
+      </div>
+    </div>
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+  </body>
+</html>
+

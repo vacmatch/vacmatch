@@ -14,6 +14,11 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import scala.collection.JavaConverters._
+import com.vac.manager.model.competition.CompetitionMember
+import com.vac.manager.controllers.actionable.ActionableCompetitionMember
+import com.vac.manager.service.team.TeamService
+import com.vac.manager.model.team.Team
+import com.vac.manager.controllers.actionable.ActionableTeam
 
 @Controller
 @Layout("layouts/default_admin")
@@ -21,6 +26,9 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   @Autowired
   var leagueService: LeagueService = _
+
+  @Autowired
+  var teamService: TeamService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -50,6 +58,10 @@ class LeagueSeasonAdminController extends UrlGrabber {
       getUrl("LeagueSeasonAdminController.edit", "slug" -> slug, "year" -> id.seasonSlug)
     }
 
+    def getEnrollLink() = {
+      getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> id.seasonSlug)
+    }
+
     def getEditLeagueLink() = {
       getUrl("LeagueAdminController.edit", "slug" -> slug)
     }
@@ -60,8 +72,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
 
   def list(
-    @RequestParam("slug") slug: String
-  ): ModelAndView = {
+    @RequestParam("slug") slug: String): ModelAndView = {
 
     val league = leagueService.findBySlug(federation.getId, slug)
     val seasons_ = Option(league.orElse(Option(new League)).get.seasonList)
@@ -76,8 +87,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
 
   def create(
-    @RequestParam("slug") slug: String
-  ): ModelAndView = {
+    @RequestParam("slug") slug: String): ModelAndView = {
     val leagueSeason = new LeagueSeason()
 
     return new ModelAndView("admin/league/season/edit_form")
@@ -92,8 +102,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("slug") slug: String,
     @RequestParam("seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date
-  ): String = {
+    @RequestParam("endTime") endTime: Date): String = {
 
     //val df = new SimpleDateFormat("yyyy/MM/dd")
     //val startTime = df.parse(startTimeStr)
@@ -116,8 +125,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def edit(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String
-  ): ModelAndView = {
+    @RequestParam("year") year: String): ModelAndView = {
 
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Date], classOf[String]))
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Calendar], classOf[String]))
@@ -144,8 +152,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("oldSeasonSlug") oldYear: String,
     @RequestParam("seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date
-  ): String = {
+    @RequestParam("endTime") endTime: Date): String = {
 
     val fedId = federation.getId
     val start = new GregorianCalendar()
@@ -164,8 +171,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
   def delete(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String
-  ): ModelAndView = {
+    @RequestParam("year") year: String): ModelAndView = {
 
     return new ModelAndView("admin/league/season/delete_confirm")
       .addObject("hiddens", Map("slug" -> slug, "year" -> year).asJava)
@@ -173,11 +179,64 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
   def postDelete(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String
-  ): String = {
+    @RequestParam("year") year: String): String = {
 
     var result = leagueService.removeSeasonBySlug(federation.getId, slug, year)
 
     return "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
   }
+
+  def enrollTeamInSeason(
+    @RequestParam("slug") slug: String,
+    @RequestParam("year") year: String): ModelAndView = {
+
+    val fedId: Long = federation.getId
+    // TODO remove these parameters
+    val startIndex: Int = 0
+    val count: Int = 10
+
+    val leagueSeasonId = new LeagueSeasonPK
+    leagueSeasonId.league = new League
+    leagueSeasonId.seasonSlug = year
+    leagueSeasonId.league.fedId = fedId
+    leagueSeasonId.league.slug = slug
+
+    // TODO Modify accept url
+    val acceptUrl: String = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+    val submitUrl: String = getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "slug" -> slug, "year" -> year)
+    val submitMethod: String = "POST"
+
+    // TODO Modify -> find by federation (now it returns all teams)
+    val fullList: Seq[ActionableTeam] =
+      teamService.findTeamsByFederationId(fedId, startIndex, count).map(team => new ActionableTeam(team, slug, year))
+
+    // TODO Modify -> only registered elements
+    val registeredList: Seq[ActionableCompetitionMember] =
+      leagueService.findCompetitionMembersByLeagueSeasonId(leagueSeasonId).map(cm => new ActionableCompetitionMember(cm, slug, year))
+
+    new ModelAndView("admin/league/season/enrollTeam")
+      .addObject("fullList", fullList.asJava)
+      .addObject("registeredList", registeredList.asJava)
+      .addObject("submitMethod", submitMethod)
+      .addObject("submitUrl", submitUrl)
+      .addObject("acceptUrl", acceptUrl)
+
+  }
+
+  def enrollTeamInSeasonPost(
+    @RequestParam("slug") slug: String,
+    @RequestParam("year") year: String,
+    @RequestParam("teamId") teamId: Long): ModelAndView = {
+
+    val fedId: Long = federation.getId
+    val leagueSeasonId = new LeagueSeasonPK
+    leagueSeasonId.league = new League
+    leagueSeasonId.seasonSlug = year
+    leagueSeasonId.league.fedId = fedId
+    leagueSeasonId.league.slug = slug
+
+    val compMember: CompetitionMember = leagueService.registerTeamInSeason(leagueSeasonId, teamId)
+    new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+  }
+
 }
