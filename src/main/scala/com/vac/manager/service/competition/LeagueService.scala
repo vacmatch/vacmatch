@@ -29,5 +29,6 @@ trait LeagueService {
   def findCompetitionMember(leagueSeasonId: LeagueSeasonPK, teamId: Long): Option[CompetitionMember]
   def findCompetitionMembersByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[CompetitionMember]
   def registerTeamInSeason(leagueSeasonId: LeagueSeasonPK, teamId: Long): CompetitionMember
+  def removeTeamFromSeason(leagueSeasonId: LeagueSeasonPK, teamId: Long): CompetitionMember
 
 }

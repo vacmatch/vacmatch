@@ -23,8 +23,8 @@ class CompetitionMemberDaoJPA
   def findCompetitionMemberByLeagueSeasonIdAndTeamId(leagueSeasonId: LeagueSeasonPK, teamId: Long): Option[CompetitionMember] = {
     // TODO Modify to find by competition id andteamId
     var result = getEntityManager().createQuery(
-      "SELECT cm FROM CompetitionMember cm ", classOf[CompetitionMember]) /*+
-        "WHERE cm.endDate IS NULL " +
+      "SELECT cm FROM CompetitionMember cm " +
+        "WHERE cm.endDate IS NULL ", classOf[CompetitionMember]) /* +
         "AND cm.leagueSeason.id = :leagueSeasonId " +
         "AND cm.team.teamId = :teamId", classOf[CompetitionMember])
       .setParameter("leagueSeasonId", leagueSeasonId)

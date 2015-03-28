@@ -233,4 +233,16 @@ class LeagueServiceImpl extends LeagueService {
     }.getOrElse(throw new InstanceNotFoundException("Team not found"))
   }
 
+  @throws[InstanceNotFoundException]
+  def removeTeamFromSeason(leagueSeasonId: LeagueSeasonPK, teamId: Long): CompetitionMember = {
+    findCompetitionMember(leagueSeasonId, teamId).map {
+      compMember =>
+        {
+          compMember.endDate = Calendar.getInstance()
+          competitionMemberDao.save(compMember)
+          compMember
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Competition Member with SeasonId: " + leagueSeasonId + " and TeamId: " + teamId + " not found"))
+  }
+
 }
