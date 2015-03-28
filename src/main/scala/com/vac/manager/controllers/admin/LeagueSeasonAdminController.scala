@@ -239,4 +239,20 @@ class LeagueSeasonAdminController extends UrlGrabber {
     new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
   }
 
+  def disenrollTeamInSeasonPost(
+    @RequestParam("slug") slug: String,
+    @RequestParam("year") year: String,
+    @RequestParam("teamId") teamId: Long): ModelAndView = {
+
+    val fedId: Long = federation.getId
+    val leagueSeasonId = new LeagueSeasonPK
+    leagueSeasonId.league = new League
+    leagueSeasonId.seasonSlug = year
+    leagueSeasonId.league.fedId = fedId
+    leagueSeasonId.league.slug = slug
+
+    leagueService.removeTeamFromSeason(leagueSeasonId, teamId)
+    new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+  }
+
 }

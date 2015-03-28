@@ -29,8 +29,8 @@
 
 	<ul>
 	  <li th:each="season: ${seasons}">
-	    <a th:href="${season.getLink()}"
-	       th:text="${season.getName()}">2014-2015</a>
+	    <a th:href="${season.link}"
+	       th:text="${season.name}">2014-2015</a>
 
 	    <pre th:text="|XX ${season}|"></pre>
 
@@ -39,16 +39,16 @@
 	      <dd>
 		<ul>
 		  <li>
-		    <a th:href="${season.getEditLink()}">Edit season</a>
+		    <a th:href="${season.editLink}">Edit season</a>
 		  </li>
       <li>
-        <a th:href="${season.getEnrollLink()}">Enroll teams</a>
+        <a th:href="${season.enrollLink}">Enroll teams</a>
       </li>
 		  <li>
-		    <a th:href="${season.getDeleteLink()}">Delete season</a>
+		    <a th:href="${season.deleteLink}">Delete season</a>
 		  </li>
 		  <li>
-		    <a th:href="${season.getEditLeagueLink()}">Edit league</a>
+		    <a th:href="${season.editLeagueLink}">Edit league</a>
 		  </li>
 		</ul>
 	      </dd>

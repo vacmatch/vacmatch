@@ -22,7 +22,7 @@
                 <td>Name</td>
               </tr>
               <tr th:each="f: ${fullList}">
-                <form id="${f.teamId}" class="form form-horizontal" th:action="${f.getEnrollPostLink()}" th:method="${submitMethod}">
+                <form id="${f.teamId}" class="form form-horizontal" th:action="${f.enrollPostLink}" th:method="${submitMethod}">
                   <input th:each="h: ${hiddens}" type="hidden"
                    th:name="${h.key}" th:value="${h.value}" />
                   <td th:text="${f.teamName}">Name</td>
@@ -41,7 +41,7 @@
                 <td>Name</td>
               </tr>
               <tr th:each="r: ${registeredList}">
-                <form id="${r.id}-remove" class="form form-horizontal" th:action="${r.getDeleteEnrollPostLink()}" th:method="${submitMethod}">
+                <form id="${r.id}-remove" class="form form-horizontal" th:action="${r.disenrollPostLink}" th:method="${submitMethod}">
                   <td th:text="${r.team.teamName}">Name</td>
                   <td>
                     <input class="btn btn-default" type="submit" name="submit" value="Remove"/>

@@ -13,8 +13,8 @@ class ActionableCompetitionMember(cm: CompetitionMember, slug: String, year: Str
   leagueSeason = cm.leagueSeason
   team = cm.team
 
-  def getDeleteEnrollPostLink(): String = {
-    "/"
+  def getDisenrollPostLink(): String = {
+    getUrl("LeagueSeasonAdminController.disenrollTeamInSeasonPost", "teamId" -> id, "slug" -> slug, "year" -> year)
   }
 
 }
