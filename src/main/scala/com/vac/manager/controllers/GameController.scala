@@ -21,6 +21,7 @@ import java.util.ArrayList
 import java.util.HashMap
 import scala.collection.SortedMap
 import com.vac.manager.controllers.actionable.ActionableGame
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class GameController extends UrlGrabber {
@@ -36,22 +37,33 @@ class GameController extends UrlGrabber {
 
   def list(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String,
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: Long = federation.getId
 
     leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
       season =>
         {
+          // Check user permissions
+          val isAuthenticated: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+          val actions: Map[String, Boolean] =
+            Map("showMenuButtons" -> isAuthenticated, "showGameButtons" -> isAuthenticated)
+
+          // Get links for buttons
           val createCalendarLink: String = getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year)
           val deleteCalendarLink: String = getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
 
+          // Get calendar games grouped by matchDay
           val gamesMap: Map[Int, Seq[ActionableGame]] =
             gameService.findLeagueCalendar(season).map(game => new ActionableGame(game, slug, year)).groupBy(_.matchDay)
 
+          // Sort calendar by matchDay
           val sortedGamesMap: SortedMap[Int, java.util.List[ActionableGame]] =
             SortedMap(gamesMap.toSeq: _*).map(element => (element._1, element._2.asJava))
+
           new ModelAndView("calendar/list")
+            .addObject("actions", actions.asJava)
             .addObject("gameDayList", sortedGamesMap.asJava)
             .addObject("createCalendarLink", createCalendarLink)
             .addObject("deleteCalendarLink", deleteCalendarLink)
@@ -62,14 +74,21 @@ class GameController extends UrlGrabber {
   def show(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    @PathVariable("gameId") gameId: Long): ModelAndView = {
+    @PathVariable("gameId") gameId: Long,
+    request: HttpServletRequest): ModelAndView = {
 
     val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
     gameService.find(gameId).map {
       game =>
         {
+          // Check user permissions
+          val isAuthenticated: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+          val actions: Map[String, Boolean] =
+            Map("showGameButtons" -> isAuthenticated)
+
           new ModelAndView("game/show")
+            .addObject("actions", actions.asJava)
             .addObject("game", game)
             .addObject("calendarLink", calendarLink)
 

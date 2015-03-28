@@ -18,21 +18,21 @@
           <th>Date</th>
           <th>Local team</th>
           <th>Visitor team</th>
-          <th sec:authorize="!hasRole('ROLE_ANONYMOUS')">Action</th>
+          <th th:if="${actions.get('showGameButtons')}">Action</th>
         </tr>
         <tr th:if="*{act != null}">
          <td th:text="*{matchDay}"></td>
          <td th:text="*{act.date}">-</td>
          <td th:text="*{act.localStats}">-</td>
          <td th:text="*{act.visitorStats}">-</td>
-         <td sec:authorize="!hasRole('ROLE_ANONYMOUS')"><a class="btn btn-primary" href="#">Edit game</a></td>
+         <td th:if="${actions.get('showGameButtons')}"><a class="btn btn-primary" href="#">Edit game</a></td>
         </tr>
         <tr th:if="*{act == null}" th:object="${game}">
          <td th:text="*{matchDay}"></td>
          <td>-</td>
          <td>-</td>
          <td>-</td>
-         <td sec:authorize="!hasRole('ROLE_ANONYMOUS')"><a class="btn btn-primary" href="#">Assign game</a></td>
+         <td th:if="${actions.get('showGameButtons')}"><a class="btn btn-primary" href="#">Assign game</a></td>
         </tr>
       </table>
       
