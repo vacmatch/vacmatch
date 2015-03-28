@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import scala.collection.JavaConverters.asScalaBufferConverter
+import com.vac.manager.service.team.TeamService
+import com.vac.manager.model.competition.CompetitionMember
+import javax.management.InstanceNotFoundException
+import com.vac.manager.model.competition.CompetitionMemberDao
 
 @Service("leagueService")
 @Transactional
@@ -17,6 +21,12 @@ class LeagueServiceImpl extends LeagueService {
 
   @Autowired
   var leagueSeasonDao: LeagueSeasonDao = _
+
+  @Autowired
+  var competitionMemberDao: CompetitionMemberDao = _
+
+  @Autowired
+  var teamService: TeamService = _
 
   def createLeague(fedId: Long, leagueName: String, slug: String): League = {
     val l = new League
@@ -192,4 +202,35 @@ class LeagueServiceImpl extends LeagueService {
       false
     }
   }
+
+  def findCompetitionMember(compMembId: Long): Option[CompetitionMember] = {
+    competitionMemberDao.findById(compMembId)
+  }
+
+  def findCompetitionMember(leagueSeasonId: LeagueSeasonPK, teamId: Long): Option[CompetitionMember] = {
+    competitionMemberDao.findCompetitionMemberByLeagueSeasonIdAndTeamId(leagueSeasonId, teamId)
+  }
+
+  def findCompetitionMembersByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[CompetitionMember] = {
+    competitionMemberDao.findCompetitionMembersByLeagueSeasonId(leagueSeasonId)
+  }
+
+  @throws[DuplicateInstanceException]
+  @throws[InstanceNotFoundException]
+  def registerTeamInSeason(leagueSeasonId: LeagueSeasonPK, teamId: Long): CompetitionMember = {
+    teamService.find(teamId).map {
+      team =>
+        findSeasonByLeagueSlug(leagueSeasonId.league.fedId, leagueSeasonId.league.slug, leagueSeasonId.seasonSlug).map {
+          league =>
+            {
+              findCompetitionMember(leagueSeasonId, teamId).map(compMember => throw new DuplicateInstanceException("Existing Competition Member"))
+
+              val compMember = new CompetitionMember(Calendar.getInstance, league, team)
+              competitionMemberDao.save(compMember)
+              compMember
+            }
+        }.getOrElse(throw new InstanceNotFoundException("League Season not found"))
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+  }
+
 }

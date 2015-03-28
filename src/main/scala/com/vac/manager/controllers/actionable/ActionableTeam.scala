@@ -17,4 +17,8 @@ class ActionableTeam(team: Team, slug: String, year: String)
   teamTelephones = team.teamTelephones
   sponsorsList = team.sponsorsList
 
+  def getEnrollPostLink(): String = {
+    getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
+  }
+
 }
