@@ -47,7 +47,7 @@ class GameController extends UrlGrabber {
           val deleteCalendarLink: String = getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
 
           val gamesMap: Map[Int, Seq[ActionableGame]] =
-            gameService.findLeagueCalendar(season).map(game => new ActionableGame(game, slug, year)).groupBy(_.gameDay)
+            gameService.findLeagueCalendar(season).map(game => new ActionableGame(game, slug, year)).groupBy(_.matchDay)
 
           val sortedGamesMap: SortedMap[Int, java.util.List[ActionableGame]] =
             SortedMap(gamesMap.toSeq: _*).map(element => (element._1, element._2.asJava))

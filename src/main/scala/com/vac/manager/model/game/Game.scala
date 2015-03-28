@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn
 
 @Entity
 @Table(name = "GAME")
-class Game(leaSea: LeagueSeason, matchDay: Int) {
+class Game(leaSea: LeagueSeason, gameDay: Int) {
 
   @Id
   @SequenceGenerator(name = "gameIdGenerator", sequenceName = "game_id_seq")
@@ -30,7 +30,7 @@ class Game(leaSea: LeagueSeason, matchDay: Int) {
 
   @BeanProperty
   @Column(nullable = false)
-  var gameDay: Int = matchDay
+  var matchDay: Int = gameDay
 
   @BeanProperty
   @OneToOne(fetch = FetchType.LAZY)
@@ -42,7 +42,7 @@ class Game(leaSea: LeagueSeason, matchDay: Int) {
   override def toString = {
     "GameId: " + gameId +
       "\nleagueSeason: " + leagueSeason +
-      "\ngameDay: " + gameDay +
+      "\ngameDay: " + matchDay +
       "\nact: " + act
   }
 }

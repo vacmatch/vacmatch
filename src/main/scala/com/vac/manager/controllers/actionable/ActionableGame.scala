@@ -12,7 +12,7 @@ class ActionableGame(game: Game, sl: String, ye: String)
 
   gameId = game.gameId
   leagueSeason = game.leagueSeason
-  gameDay = game.gameDay
+  matchDay = game.matchDay
   act = game.act
 
   def getShowLink() = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
