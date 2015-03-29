@@ -30,7 +30,7 @@ trait TeamService {
     address: Address, web: String, telephones: String): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-    foundationalDate: Calendar, address: Address, web: String, telephones: String): Option[Team]
+    foundationalDate: Calendar, address: Address, web: String, telephones: String): Team
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team]
 

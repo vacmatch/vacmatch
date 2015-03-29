@@ -94,35 +94,31 @@ class TeamServiceImpl extends TeamService {
   }
 
   @throws[IllegalArgumentException]
+  @throws[InstanceNotFoundException]("If team doesn't exist")
   def modifyTeam(teamId: Long, newName: String, newPublicName: String,
-    newDate: Calendar, newAddress: Address, newWeb: String, telephones: String): Option[Team] = {
+    newDate: Calendar, newAddress: Address, newWeb: String, telephones: String): Team = {
 
     checkParameters(newName, newPublicName, newDate, newWeb, telephones)
 
-    val maybeTeam: Option[Team] = assignAddress(teamId, newAddress)
+    val team: Team = assignAddress(teamId, newAddress)
 
-    maybeTeam.map { team =>
+    team.teamName = newName
+    team.publicTeamName = newPublicName
+    team.foundationDate = newDate
+    team.teamAddress = newAddress
+    team.teamWeb = newWeb
+    team.teamTelephones = telephones
 
-      team.teamName = newName
-      team.publicTeamName = newPublicName
-      team.foundationDate = newDate
-      team.teamAddress = newAddress
-      team.teamWeb = newWeb
-      team.teamTelephones = telephones
-
-      teamDao.save(team)
-      team
-    }
+    teamDao.save(team)
+    team
   }
 
   @throws[IllegalArgumentException]
   private def checkParameters(teamName: String, publicName: String,
     foundationDate: Calendar, web: String, telephones: String) {
 
-    val checkAgainstNull = List((teamName, classOf[String]), (publicName, classOf[String]),
-      (foundationDate, classOf[Calendar]), (web, classOf[String]), (telephones, classOf[String]))
-    val checkAgainstEmpty = List((teamName, classOf[String]), (publicName,
-      classOf[String]), (web, classOf[String]))
+    val checkAgainstNull = List((teamName, classOf[String]), (publicName, classOf[String]))
+    val checkAgainstEmpty = List((teamName, classOf[String]), (publicName, classOf[String]))
 
     checkAgainstNull.map {
       case (elt, cls) =>
@@ -144,24 +140,26 @@ class TeamServiceImpl extends TeamService {
     team
   }
 
-  private def assignAddress(teamId: Long, newAddress: Address): Option[Team] = {
+  @throws[InstanceNotFoundException]("If team doesn't exist")
+  private def assignAddress(teamId: Long, newAddress: Address): Team = {
 
-    val maybeTeam: Option[Team] = find(teamId)
+    find(teamId).map {
+      team =>
+        {
+          if (!Option(newAddress).exists(_ == team.teamAddress)) {
+            Option(team.teamAddress).map(address => addressService.removeAddress(address.addressId))
 
-    maybeTeam.map { team =>
-      if (!Option(newAddress).exists(_ == team.teamAddress)) {
-        Option(team.teamAddress).map(address => addressService.removeAddress(address.addressId))
+            val savedAddress: Address = addressService.createAddress(
+              newAddress.firstLine, newAddress.secondLine,
+              newAddress.postCode, newAddress.locality,
+              newAddress.province, newAddress.country)
 
-        val savedAddress: Address = addressService.createAddress(
-          newAddress.firstLine, newAddress.secondLine,
-          newAddress.postCode, newAddress.locality,
-          newAddress.province, newAddress.country)
-
-        team.teamAddress = savedAddress
-        teamDao.save(team)
-      }
-    }
-    maybeTeam
+            team.teamAddress = savedAddress
+            teamDao.save(team)
+          }
+          team
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
   }
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team] = {

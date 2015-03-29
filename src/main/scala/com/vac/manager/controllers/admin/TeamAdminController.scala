@@ -112,18 +112,15 @@ class TeamAdminController
     val date: Calendar = new GregorianCalendar()
     date.setTime(foundationDate)
 
-    teamService.modifyTeam(teamId,
+    val editedTeam: Team = teamService.modifyTeam(teamId,
       team.teamName,
       team.publicTeamName,
       date,
       address,
       team.teamWeb,
-      team.teamTelephones).map {
-        editedTeam =>
-          {
-            new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
-          }
-      }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+      team.teamTelephones)
+
+    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
   }
 
   def assignStaffMember(
