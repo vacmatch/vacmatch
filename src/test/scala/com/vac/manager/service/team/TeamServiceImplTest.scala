@@ -21,9 +21,9 @@ import org.scalatest.GivenWhenThen
 import com.vac.manager.model.staff.Person
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.service.staff.PersonService
-import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.model.staff.StaffMemberDao
+import javax.management.InstanceNotFoundException
 
 class TeamServiceImplTest
   extends PropSpec
@@ -146,17 +146,17 @@ class TeamServiceImplTest
   // Assign staff
   property("A person can be assigned to a team") {
 
-    Given("An existent team")
+    Given("An existing team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
 
-    Given("An existent person")
+    Given("An existing person")
     val person: Person = validPerson
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
 
-    Given("A not existent relationship between Person and Team")
+    Given("A non existing relationship between Person and Team")
     val staffMember: StaffMember = validStaffMember
     Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId))
       .thenReturn(None)
@@ -171,12 +171,12 @@ class TeamServiceImplTest
 
   property("A person can't be assigned to a team if person was assigned before to this team") {
 
-    Given("An existent team")
+    Given("An existing team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
 
-    Given("A existent person")
+    Given("A existing person")
     val person: Person = validPerson
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
@@ -197,12 +197,12 @@ class TeamServiceImplTest
 
   property("A person can't be assigned to a team if team doesn't exist") {
 
-    Given("A not existent team")
+    Given("A non existing team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(None)
 
-    Given("An existent person")
+    Given("An existing person")
     val person: Person = validPerson
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(Some(person))
@@ -218,12 +218,12 @@ class TeamServiceImplTest
 
   property("A person can't be assigned to a team if person doesn't exist") {
 
-    Given("An existent team")
+    Given("An existing team")
     val team: Team = validTeam
     team.teamId = 1
     Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
 
-    Given("A not existent person")
+    Given("A non existing person")
     val person: Person = validPerson
     person.personId = 1
     Mockito.when(teamService.personService.find(person.personId)).thenReturn(None)
@@ -234,6 +234,124 @@ class TeamServiceImplTest
     }
 
     Then("Must return an instance not found exception")
+
+  }
+
+  // Unassign staffMember
+  property("A staffMember can be unassigned from a team if person and team exist and it's assigned to this team") {
+
+    Given("An existing team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
+
+    Given("An existing person")
+    val person: Person = validPerson
+    person.personId = 1
+
+    Given("An existing staffMember for this person and team")
+    val staffMember: StaffMember = validStaffMember
+    staffMember.staffMemberId = 1
+
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId)).thenReturn(Some(staffMember))
+
+    When("Try to unassign a staffMember from a team")
+    val assignedStaffMember: StaffMember = teamService.unAssignStaff(team.teamId, person.personId)
+
+    Then("StaffMember exit date must be set")
+    assert(Option(assignedStaffMember.getExitDate).nonEmpty)
+
+    Then("StaffMember modifications must be saved")
+    verify(teamService.staffMemberDao).save(assignedStaffMember)
+
+  }
+
+  property("A staffMember can't be unassigned from a team if team doesn't exist") {
+
+    Given("A non existing team")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("An existing person")
+    val person: Person = validPerson
+    person.personId = 1
+
+    Given("A non existing staff member for this non existing team")
+    val staffMember: StaffMember = validStaffMember
+    staffMember.staffMemberId = 1
+
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId)).thenReturn(None)
+
+    When("Try to unassign a staffMember from a team")
+    var assignedStaffMember: StaffMember = null
+    intercept[InstanceNotFoundException] {
+      assignedStaffMember = teamService.unAssignStaff(team.teamId, person.personId)
+    }
+
+    Then("Must return a not found exception")
+
+    Then("StaffMember modifications must be saved")
+    verify(teamService.staffMemberDao, never).save(assignedStaffMember)
+
+  }
+
+  property("A staffMember can't be unassigned from a team if this staffMember doesn't exist") {
+
+    Given("An existing team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
+
+    Given("An existing person")
+    val person: Person = validPerson
+    person.personId = 1
+
+    Given("An non existing staffMember for this person and team")
+    val staffMember: StaffMember = validStaffMember
+    staffMember.staffMemberId = 1
+
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId)).thenReturn(None)
+
+    When("Try to unassign a staffMember to a team")
+    var assignedStaffMember: StaffMember = null
+    intercept[InstanceNotFoundException] {
+      assignedStaffMember = teamService.unAssignStaff(team.teamId, person.personId)
+    }
+
+    Then("Must return a not found exception")
+
+    Then("StaffMember modifications must be saved")
+    verify(teamService.staffMemberDao, never).save(assignedStaffMember)
+
+  }
+
+  property("A staffMember can't be unassigned from a team if it exists but it wasn't assigned previously to this team") {
+
+    Given("An existing team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.find(team.teamId)).thenReturn(Some(team))
+
+    Given("An existing person")
+    val person: Person = validPerson
+    person.personId = 1
+
+    Given("An existing staffMember but not assigned to this team")
+    val staffMember: StaffMember = validStaffMember
+    staffMember.staffMemberId = 1
+
+    Mockito.when(teamService.findStaffMemberByTeamIdAndPersonId(team.teamId, person.personId)).thenReturn(None)
+
+    When("Try to unassign a staffMember to a team")
+    var assignedStaffMember: StaffMember = null
+    intercept[InstanceNotFoundException] {
+      assignedStaffMember = teamService.unAssignStaff(team.teamId, person.personId)
+    }
+
+    Then("Must return a not found exception")
+
+    Then("StaffMember modifications must be saved")
+    verify(teamService.staffMemberDao, never).save(assignedStaffMember)
 
   }
 
