@@ -27,6 +27,7 @@ val springTx = List("tx", "jdbc")
 
 
 val ourDeps = Seq (
+  "org.springframework" % "springloaded" % "1.2.3.RELEASE",
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
