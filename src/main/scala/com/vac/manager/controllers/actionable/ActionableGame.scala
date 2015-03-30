@@ -1,21 +1,36 @@
 package com.vac.manager.controllers.actionable
 
+import com.vac.manager.model.game.Act
 import com.vac.manager.model.game.Game
 import com.vac.manager.controllers.utils.UrlGrabber
+import scala.beans.BeanProperty
+import scala.collection.JavaConverters._
 
-class ActionableGame(game: Game, sl: String, ye: String)
+case class Hyperlink(
+  @BeanProperty text: String,
+  @BeanProperty href: String,
+  @BeanProperty className: String
+)
+
+class ActionableGame(val game: Game, val slug: String, val year: String, userCanEdit: Boolean)
   extends Game
   with UrlGrabber {
-
-  var slug: String = sl
-  var year: String = ye
 
   gameId = game.gameId
   leagueSeason = game.leagueSeason
   matchDay = game.matchDay
-  act = game.act
+  act = Option(game.act).getOrElse(new Act())
 
-  def getShowLink() = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  val showLink = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+  val editLink = "#" // TODO: getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+
+  val anonymousLinks = List(Hyperlink("Show game", showLink, "btn-primary"))
+
+  val authorizedLinks = if (!userCanEdit) List() else
+    List(Hyperlink("Edit game", editLink, "btn-default"))
+
+  @BeanProperty
+  val links = (anonymousLinks ++ authorizedLinks).asJava
 
 }
 

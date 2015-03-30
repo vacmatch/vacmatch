@@ -43,40 +43,43 @@ class GameController extends UrlGrabber {
 
     val fedId: Long = federation.getId
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
-      season =>
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year)
+      .map { season =>
         {
           // Check user permissions
-          val isAuthenticated: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
-          val actions: Map[String, Boolean] =
-            Map("showMenuButtons" -> isAuthenticated, "showGameButtons" -> isAuthenticated)
+          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
-          // Get links for buttons
-          val createCalendarLink: String = getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year)
-          val deleteCalendarLink: String = getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
+          // Authenticated actions on menu
+
+          val authenticatedActionsMenu: Map[String, String] = Map(
+            "Create calendar" -> getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year),
+            "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
+          )
+
+          val actionsMenu = if (userCanEdit) authenticatedActionsMenu else Map()
 
           // Get calendar games grouped by matchDay
           val gamesMap: Map[Int, Seq[ActionableGame]] =
-            gameService.findLeagueCalendar(season).map(game => new ActionableGame(game, slug, year)).groupBy(_.matchDay)
+            gameService.findLeagueCalendar(season).map(game =>
+              new ActionableGame(game, slug, year, userCanEdit)).groupBy(_.matchDay)
 
           // Sort calendar by matchDay
           val sortedGamesMap: SortedMap[Int, java.util.List[ActionableGame]] =
             SortedMap(gamesMap.toSeq: _*).map(element => (element._1, element._2.asJava))
 
           new ModelAndView("calendar/list")
-            .addObject("actions", actions.asJava)
+            .addObject("actionsMenu", actionsMenu.asJava.entrySet)
             .addObject("gameDayList", sortedGamesMap.asJava)
-            .addObject("createCalendarLink", createCalendarLink)
-            .addObject("deleteCalendarLink", deleteCalendarLink)
         }
-    }.getOrElse(throw new NoSuchElementException("League Season not found"))
+      }.getOrElse(throw new NoSuchElementException("League Season not found"))
   }
 
   def show(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 

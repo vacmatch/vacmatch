@@ -13,9 +13,12 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
 
-    <div th:if="${actions.get('showMenuButtons')}">
-      <a class="btn btn-default" th:href="${deleteCalendarLink}">Delete calendar</a>
-      <a class="btn btn-default" th:href="${createCalendarLink}">Create calendar</a>
+      <div>
+        <a th:each="action: ${actionsMenu}"
+           class="btn btn-default"
+           href="#"
+           th:text="${action.key}"
+           th:href="${action.value}">Action for admin</a>
     </div>
 
       <div th:each="map : ${gameDayList}">
@@ -32,8 +35,12 @@
            <td th:text="*{localStats}?: '--'">TODO: Example data</td>
            <td th:text="*{visitorStats}?: '--'">TODO: Example data</td>
            <td>
-            <a class="btn btn-default" th:href="${game.getShowLink()}">Show game</a>
-            <a th:if="${actions.get('showGameButtons')}" class="btn btn-primary" href="#">Assign game</a>
+             <a class="btn btn-default"
+                href="#"
+                th:each="link: ${game.links}"
+                th:class="|btn ${link.className}|"
+                th:href="${link.href}"
+                th:text="${link.text}">Action on game</a>
            </td>
           </tr>
         </table>
