@@ -38,7 +38,8 @@ class GameController extends UrlGrabber {
   def list(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
