@@ -12,7 +12,7 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import org.springframework.web.bind.annotation.RequestParam
 import com.vac.manager.model.competition.LeagueSeason
 import scala.collection.JavaConverters._
-import com.vac.manager.model.game.Game
+import com.vac.manager.model.game.{ Act, Game }
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
@@ -20,7 +20,7 @@ import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import java.util.ArrayList
 import java.util.HashMap
 import scala.collection.SortedMap
-import com.vac.manager.controllers.actionable.ActionableGame
+import com.vac.manager.controllers.actionable.{ ActionableGame, Hyperlink }
 import javax.servlet.http.HttpServletRequest
 
 @Controller
@@ -87,9 +87,13 @@ class GameController extends UrlGrabber {
       game =>
         {
           // Check user permissions
-          val isAuthenticated: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
-          val actions: Map[String, Boolean] =
-            Map("showGameButtons" -> isAuthenticated)
+          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+          val edit_game_title = Option(game.act).map(_ => "Edit game").getOrElse("Assign game")
+
+          val actions: Seq[Hyperlink] = List(Hyperlink(edit_game_title, "#", "btn-default"))
+
+          Option(game.act).getOrElse { game.act = new Act() }
 
           new ModelAndView("game/show")
             .addObject("actions", actions.asJava)
