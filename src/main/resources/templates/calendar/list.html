@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title th:text="#{title}">Show calendar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+            data-href="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+    <div class="container" th:fragment="content">
+
+      <div>
+        <a th:each="action: ${actionsMenu}"
+           class="btn btn-default"
+           href="#"
+           th:text="${action.key}"
+           th:href="${action.value}">Action for admin</a>
+    </div>
+
+      <div th:each="map : ${gameDayList}">
+        <h3 th:text="|Match Day #${map.key}|">Match Day #3</h3>
+        <table class="table">
+          <tr>
+	          <th>Date</th>
+	          <th>Local team</th>
+	          <th>Visitor team</th>
+	          <th>Action</th>
+          </tr>
+          <tr th:each="game : ${map.value}" th:object="${game.act}">
+           <td th:text="*{date}?: '--'">2015</td>
+           <td th:text="*{localStats}?: '--'">TODO: Example data</td>
+           <td th:text="*{visitorStats}?: '--'">TODO: Example data</td>
+           <td>
+             <a class="btn btn-default"
+                href="#"
+                th:each="link: ${game.links}"
+                th:class="|btn ${link.className}|"
+                th:href="${link.href}"
+                th:text="${link.text}">Action on game</a>
+           </td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+  </body>
+</html>
