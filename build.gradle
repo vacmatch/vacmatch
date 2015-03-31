@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	classpath("net.coacoas.gradle:gradle-ensime:0.1.8")
-	classpath("org.springframework:springloaded:1.2.0.RELEASE")
+	classpath("org.springframework:springloaded:1.2.3.RELEASE")
 	classpath("org.scoverage:gradle-scoverage:1.0.6")
   }
 }
