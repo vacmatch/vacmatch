@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title th:text="${action}">Create season games</title>
+    <title th:text="${action}">Edit calendar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
-    media="screen" th:href="@{/css/bootstrap.min.css}" />
+          media="screen" th:href="@{/css/bootstrap.min.css}" />
     <link href="../../../static/css/core.css" rel="stylesheet" media="screen"
-    th:href="@{/css/core.css}" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+          th:href="@{/css/core.css}" />
+    <script src="../../../static/js/jquery.js" th:href="@{/js/jquery.js}"
+            data-src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="../../../static/js/bootstrap.min.js"
-      th:src="@{/js/bootstrap.min.js}"></script>
+            th:src="@{/js/bootstrap.min.js}"></script>
   </head>
   <body>
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
@@ -17,16 +18,16 @@
     <div class="container" th:fragment="content">
       <h2 th:text="|${action} calendar|">Create calendar</h2>
 
-			<form id="createForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
-		    <input th:each="h: ${hiddens}" type="hidden"
-		     th:name="${h.key}" th:value="${h.value}" />
-			
-		    <div class="form-group">
-		      <label class="col-sm-3 control-label" for="teams">Number of teams</label>
-		      <div class="col-sm-2">
-		        <input class="form-control" id="teams" type="Number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}" />
-		      </div>
-		    </div>
+      <form id="createForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
+        <input th:each="h: ${hiddens}" type="hidden"
+               th:name="${h.key}" th:value="${h.value}" />
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="teams">Number of teams</label>
+          <div class="col-sm-2">
+            <input class="form-control" id="teams" type="Number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}" />
+          </div>
+        </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="rounds">Number of rounds</label>
           <div class="col-sm-2">
