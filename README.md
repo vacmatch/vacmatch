@@ -33,6 +33,35 @@ Prerequisites
 Additional dependencies should be automatically obtained via sbt,
 including Scala and Spring Framework.
 
+Due to dependencies on antifacts stored at
+https://ci.vacmatch.com/userContent/, an account in the concerning
+htpassword at https://ci.corp.vacmatch.com is needed in order to
+download the secondary artifacts to the main project.
+
+
+How to configure your credentials for sbt/ivy
+---------------------------------------------
+
+You will need an account for the HTTP Basic authentication at
+https://ci.corp.vacmatch.com, which is in Alderaan at location
+`/srv/docker/www/htpasswd`. You will need to **append** your
+credentials there using the command `htpasswd <file>
+<desired-username>`.
+
+Once you have an account set up, create a file at
+`~/.ivy2/.credentials` (create `~/.ivy2` if it didn't exist yet).
+
+In it, write the following:
+
+
+    realm=Restricted ci.vacmatch.com
+	host=ci.corp.vacmatch.com
+	user=<your username>
+	password=<your password>
+
+This information is valid at the time of writing, and it might change
+at some point.
+
 
 How to hack with your editor
 ----------------------------
