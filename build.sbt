@@ -32,11 +32,10 @@ val ourDeps = Seq (
   "org.apache.tomcat.embed" % "tomcat-embed-jasper" % "7.0.53" % "container",
   "org.springframework.boot" % "spring-boot-starter-tomcat" % "1.1.9.RELEASE" % "provided",
   "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided",
-  "com.vacmatch.util" %% "i18n-gettext" % "0.1.0",
+  "com.vacmatch.util" %% "i18n-gettext" % "0.2.0-SNAPSHOT",
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
-  "tv.cntt" %% "scaposer" % "1.5",
   "log4j" % "log4j" % "1.2.16"
 ) ++ springBoot ++ springTx ++ Seq(
   "org.xerial" % "sqlite-jdbc" % "3.8.7"
@@ -80,7 +79,7 @@ lazy val root = (project in file("."))
   addCompilerPlugin("tv.cntt" %% "xgettext" % "1.3"),
 
   scalacOptions :=
-      scalacOptions.value :+ ("-P:xgettext:com.vac.manager.i18n.I18n")
+      scalacOptions.value :+ ("-P:xgettext:com.vacmatch.util.i18n.I18n")
   )
 
 // Enable WAR packaging

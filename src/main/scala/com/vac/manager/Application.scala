@@ -28,10 +28,10 @@ import org.thymeleaf.templateresolver.TemplateResolver
 import scala.collection.JavaConverters._
 import util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
 import auth.model.FederationUserDetailsService
+import com.vacmatch.util.i18n.{ I18n, I18nScaposer }
 
 @Lazy
-@Configuration
-@ComponentScan(basePackages = Array("com.vac.manager")) // You should not use the @EnableWebMvc annotation
+@Configuration // You should not use the @EnableWebMvc annotation
 class WebAppConfig() extends RouterConfigurationSupport {
 
   override protected def isHandlerMappingReloadEnabled() = { true }
@@ -125,10 +125,38 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 }
 
+@Configuration
+class I18nableApplication {
+
+  @Bean // @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+  def i18nScaposerPo(): scaposer.Po = {
+    val lang = "en" // TODO: De-hardcode this, and make this bean per-request
+    val route = s"locale/$lang/LC_MESSAGES/messages.po"
+
+    val stream = getClass().getClassLoader.getResourceAsStream(route)
+    val pofile = org.apache.commons.io.IOUtils.toString(stream, "UTF-8")
+    stream.close
+
+    scaposer.Parser.parsePo(pofile).get
+  }
+
+  @Bean
+  def i18nTraitBean(): I18n = {
+    return new I18nScaposer(i18nScaposerPo())
+  }
+
+  @Bean
+  def thymeleafDialectForI18n(): com.vacmatch.util.i18n.thymeleaf.I18nThymeleafDialect = {
+    val dialect = new com.vacmatch.util.i18n.thymeleaf.I18nThymeleafDialect(i18nTraitBean())
+    dialect
+  }
+}
+
 @Lazy
 @EnableTransactionManagement
 @EnableAutoConfiguration
-@ComponentScan @Import(Array(classOf[WebAppConfig], classOf[WebSecurityConfig]))
+@ComponentScan(basePackages = Array("com.vac.manager"))
+@Import(Array(classOf[WebAppConfig], classOf[WebSecurityConfig]))
 class WebApplication extends Application {
   @Bean
   def multiTenantHandler(): FilterRegistrationBean = {

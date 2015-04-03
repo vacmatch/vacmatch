@@ -2,9 +2,9 @@ package com.vac.manager.auth.controllers.admin
 
 import com.vac.manager.auth.model.{ User, UserAuthService, UserRole }
 import com.vac.manager.controllers.utils.UrlGrabber
-import com.vac.manager.i18n.I18n
 import com.vac.manager.util.{ FederationBean, Layout }
 import com.vac.manager.util.Sugar.splitEither
+import com.vacmatch.util.i18n.I18n
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestParam
