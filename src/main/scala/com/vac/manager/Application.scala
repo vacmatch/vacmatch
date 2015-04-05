@@ -150,6 +150,11 @@ class I18nableApplication {
     val dialect = new com.vacmatch.util.i18n.thymeleaf.I18nThymeleafDialect(i18nTraitBean())
     dialect
   }
+
+  @Bean
+  def thymeleafDialectForExplicitI18n(): com.vacmatch.util.i18n.thymeleaf.I18nThymeleafExplicitDialect = {
+    new com.vacmatch.util.i18n.thymeleaf.I18nThymeleafExplicitDialect(i18nTraitBean())
+  }
 }
 
 @Lazy
