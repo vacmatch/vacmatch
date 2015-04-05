@@ -1,6 +1,5 @@
 package com.vac.manager.controllers.actionable
 
-import com.vac.manager.model.game.Act
 import com.vac.manager.model.game.Game
 import com.vac.manager.controllers.utils.UrlGrabber
 import scala.beans.BeanProperty
@@ -14,7 +13,6 @@ class ActionableGame(val game: Game, val slug: String, val year: String, userCan
   gameId = game.gameId
   leagueSeason = game.leagueSeason
   matchDay = game.matchDay
-  act = Option(game.act).getOrElse(new Act())
 
   val showLink = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
   val editLink = "#" // TODO: getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)

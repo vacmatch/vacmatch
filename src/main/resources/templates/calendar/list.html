@@ -13,38 +13,15 @@
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
 
-      <div>
+      <div class="pull-right">
         <a th:each="action: ${actionsMenu}"
            class="btn btn-default"
            href="#"
            th:text="${action.key}"
            th:href="${action.value}">Action for admin</a>
-    </div>
-
-      <div th:each="map : ${gameDayList}">
-        <h3 th:text="|Match Day #${map.key}|">Match Day #3</h3>
-        <table class="table">
-          <tr>
-	          <th>Date</th>
-	          <th>Local team</th>
-	          <th>Visitor team</th>
-	          <th>Action</th>
-          </tr>
-          <tr th:each="game : ${map.value}" th:object="${game.act}">
-           <td th:text="*{date}?: '--'">2015</td>
-           <td th:text="*{localStats}?: '--'">TODO: Example data</td>
-           <td th:text="*{visitorStats}?: '--'">TODO: Example data</td>
-           <td>
-             <a class="btn btn-default"
-                href="#"
-                th:each="link: ${game.links}"
-                th:class="|btn ${link.className}|"
-                th:href="${link.href}"
-                th:text="${link.text}">Action on game</a>
-           </td>
-          </tr>
-        </table>
       </div>
+
+      <div th:replace="${actFragment} :: ${actInstance}"></div>
 
     </div>
 
