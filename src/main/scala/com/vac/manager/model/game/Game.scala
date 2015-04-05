@@ -32,18 +32,12 @@ class Game(leaSea: LeagueSeason, gameDay: Int) {
   @Column(nullable = false)
   var matchDay: Int = gameDay
 
-  @BeanProperty
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "actId")
-  var act: Act = _
-
   def this() = this(null, 0)
 
   override def toString = {
     "GameId: " + gameId +
       "\nleagueSeason: " + leagueSeason +
-      "\ngameDay: " + matchDay +
-      "\nact: " + act
+      "\ngameDay: " + matchDay
   }
 }
 

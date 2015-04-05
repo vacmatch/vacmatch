@@ -6,9 +6,9 @@ import com.vac.manager.model.competition.LeagueSeasonPK
 import scala.collection.JavaConverters._
 
 @Repository("gameDao")
-class GameDaoHibernate
-    extends GenericDaoJPA[Game, java.lang.Long](classOf[Game])
-    with GameDao {
+class GameDaoJPA
+  extends GenericDaoJPA[Game, java.lang.Long](classOf[Game])
+  with GameDao {
 
   def findAllBySeason(leagueSeasonId: LeagueSeasonPK): Seq[Game] = {
     var query = getEntityManager().createQuery(
