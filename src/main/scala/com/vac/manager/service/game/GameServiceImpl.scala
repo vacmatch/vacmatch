@@ -90,7 +90,14 @@ class GameServiceImpl extends GameService {
   @throws[IllegalArgumentException]
   def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason) = {
     Option(leagueSeason).map { ls =>
-      gameDao.findAllBySeason(ls.id).map(game => gameDao.remove(game))
+      gameDao.findAllBySeason(ls.id).map {
+        game =>
+          {
+            // TODO Remove act depending on the sport
+            soccerActService.removeSoccerAct(game.gameId)
+            gameDao.remove(game)
+          }
+      }
     }.getOrElse(throw new IllegalArgumentException("Invalid league season parameter"))
   }
 

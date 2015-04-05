@@ -10,6 +10,7 @@ import com.vac.manager.model.game.Game
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.management.InstanceNotFoundException
 
 @Service("soccerActService")
 @Transactional
@@ -38,6 +39,16 @@ class SoccerActServiceImpl extends SoccerActService {
       soccerActDao.save(act)
       act
     }
+  }
+
+  @throws[InstanceNotFoundException]("If soccer act doesn't exist")
+  def removeSoccerAct(gameId: Long) {
+    findGameAct(gameId).map {
+      act =>
+        {
+          soccerActDao.remove(act)
+        }
+    }.getOrElse(throw new DuplicateInstanceException("Existing soccer act"))
   }
 
 }

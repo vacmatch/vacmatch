@@ -5,6 +5,8 @@ import com.vac.manager.model.competition.LeagueSeason
 import com.vac.manager.model.game.Game
 import javax.persistence.Entity
 import javax.persistence.Table
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import javax.management.InstanceNotFoundException
 
 trait SoccerActService {
 
@@ -12,7 +14,11 @@ trait SoccerActService {
 
   def findLeagueSoccerActs(leagueSeason: LeagueSeason): Seq[SoccerAct]
 
+  @throws[DuplicateInstanceException]("If soccer act exists before")
   def createSoccerAct(game: Game): SoccerAct
+
+  @throws[InstanceNotFoundException]("If soccer act doesn't exist")
+  def removeSoccerAct(gameId: Long)
 
 }
 
