@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome!</title>
+    <title>t("title", "Show league")</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
     <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
@@ -11,14 +11,14 @@
   <body>
 
     <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
-      <li><a th:href="${createUrl}">Create league</a></li>
-      <li class="active"><a th:href="${listUrl}">Show leagues</a></li>
+      <li><a th:href="${createUrl}">t("Create league")</a></li>
+      <li class="active"><a th:href="${listUrl}">t("Show leagues")</a></li>
     </ul>
 
     <div class="container" th:fragment="content">
-      <h2 th:text="|League ${league.leagueName}|">League Seniors</h2>
+      <h2 th:text="${leagueName}">League Seniors</h2>
 
-      <p>There are the following seasons registered in this league</p>
+      <p>t("There are the following seasons registered in this league")</p>
       <ul>
 	<li th:each="season: ${league.seasonList}" th:text="${season}">
 	  Season details

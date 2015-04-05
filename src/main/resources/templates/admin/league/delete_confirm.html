@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://tech.vacmatch.com/ns/i18n"
+      xmlns:th="http://www.thymeleaf.org">
   <head>
     <title th:text="${action}">Create league</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -7,20 +9,21 @@
 	  media="screen" th:href="@{/css/bootstrap.min.css}" />
     <link href="../../static/css/core.css" rel="stylesheet" media="screen"
 	  th:href="@{/css/core.css}" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/jquery.js" th:href="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="../../static/js/bootstrap.min.js"
 	    th:src="@{/js/bootstrap.min.js}"></script>
   </head>
   <body>
 
     <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
-      <li><a th:href="${createUrl}">Create league</a></li>
-      <li><a th:href="${listUrl}">Show leagues</a></li>
+      <li><a th:href="${createUrl}">t("Create league")</a></li>
+      <li><a th:href="${listUrl}">t("Show leagues")</a></li>
     </ul>
 
     <div class="container" th:fragment="content">
       <div class="jumbotron">
-	<h2>Delete League</h2>
+	<h2>t("Delete League %s", ${entityName})</h2>
 
 	<form id="leagueForm" th:action="${submitUrl}"
 	      th:method="${submitMethod}" th:object="${league}">
@@ -28,7 +31,8 @@
 	  <input th:each="h: ${hiddens.entrySet()}" type="hidden"
 		 th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-	  <input type="submit" name="submit" value="Confirm deletion" />
+	  <input type="submit" name="submit" value="Confirm deletion">
+	  <i18n:attr name="value">tc("button", "Confirm deletion")</i18n:attr>
 
 	</form>
       </div>

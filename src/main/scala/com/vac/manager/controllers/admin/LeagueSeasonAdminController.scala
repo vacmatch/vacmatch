@@ -90,6 +90,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
     new ModelAndView("admin/league/season/list")
       .addObject("league", league.orNull)
+      .addObject("leagueName", league.map(l => i.t("League %s", l.leagueName)).orNull)
       .addObject("seasons", seasons.asJava)
       .addObject("createUrl", getUrl("LeagueSeasonAdminController.create", "slug" -> slug))
   }
