@@ -1,0 +1,20 @@
+
+@namespace html url(http://www.w3.org/1999/xhtml);
+@namespace i18n url(http://tech.vacmatch.com/ns/i18n);
+
+body { background-color: #fff; opacity: 1; }
+
+/** REMOVE FROM COMPILED CSS */
+* > i18n\:attr, * > i18n|attr {
+    border: 2px dashed black;
+    background-color: #a55;
+    font-size: 0.75em;
+    margin:0;
+    position: relative;
+    display:inline-block;
+}
+
+*! > i18n\:attr, *! > i18n|attr {
+    border: 1px dashed black
+}
+/** ENDREMOVE */
