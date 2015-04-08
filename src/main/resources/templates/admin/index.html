@@ -15,9 +15,9 @@
 
 
     <div class="container" th:fragment="content">
-      <h2>Federation admin Quick Links</h2>
+      <h2>t("Federation admin Quick Links")</h2>
 
-      <p>Eventually this will be a dashboard or something.</p>
+      <p>t("Welcome to the Federation Administration dashboard")</p>
 
       <ul th:each="link: ${links}">
 	<li><a th:href="${link.url}" th:text="${link.name}">Link somewhere</a></li>
