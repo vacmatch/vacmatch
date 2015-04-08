@@ -5,6 +5,7 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 import com.vac.manager.controllers.utils.Hyperlink
+import com.vac.manager.controllers.utils.Hyperlink
 
 class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String, userCanEdit: Boolean)
   extends SoccerAct
@@ -33,7 +34,7 @@ class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String
 
   def getStatsLink(): String = getUrl("GameController.showStats", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
-  def getEditLink(): String = "#"
+  def getEditLink(): String = getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
 }
 

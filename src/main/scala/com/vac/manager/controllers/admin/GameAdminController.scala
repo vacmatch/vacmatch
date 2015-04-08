@@ -12,6 +12,16 @@ import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
 import org.springframework.web.servlet.ModelAndView
 import scala.collection.JavaConverters._
 import scala.util.Try
+import org.springframework.stereotype.Controller
+import com.vac.manager.service.game.soccer.SoccerActService
+import java.util.Calendar
+import com.vac.manager.model.team.Team
+import com.vac.manager.service.team.TeamService
+import com.vac.manager.model.game.Game
+import org.springframework.web.bind.annotation.ModelAttribute
+import com.vac.manager.model.game.soccer.SoccerAct
+import com.vac.manager.controllers.actionable.ActionableSoccerAct
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class GameAdminController extends UrlGrabber {
@@ -26,12 +36,17 @@ class GameAdminController extends UrlGrabber {
   var leagueService: LeagueService = _
 
   @Autowired
+  var teamService: TeamService = _
+
+  @Autowired
+  var soccerActService: SoccerActService = _
+
+  @Autowired
   var federation: FederationBean = _
 
   def createCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String
-  ): ModelAndView = {
+    @PathVariable("year") year: String): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -55,8 +70,7 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @RequestParam("teamsNumber") teamsNumber: Int,
-    @RequestParam("leagueRounds") leagueRounds: Int
-  ): ModelAndView = {
+    @RequestParam("leagueRounds") leagueRounds: Int): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -75,8 +89,7 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String
-  ): ModelAndView = {
+    @PathVariable("year") year: String): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -97,8 +110,7 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendarPost(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String
-  ): ModelAndView = {
+    @PathVariable("year") year: String): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -111,6 +123,60 @@ class GameAdminController extends UrlGrabber {
           new ModelAndView("redirect:" + getUrl("GameController.list", "slug" -> slug, "year" -> year))
         }
     }.getOrElse(throw new NoSuchElementException("League Season not found"))
+  }
+
+  def edit(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    request: HttpServletRequest): ModelAndView = {
+
+    val fedId: Long = federation.getId
+
+    // TODO select act by sport
+    soccerActService.findGameAct(gameId).map {
+      act =>
+        {
+          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+          val submitMethod: String = "POST"
+          val submitUrl: String = getUrl("GameAdminController.editPost", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+          val backLink: String = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+
+          // TODO select act by sport
+          val actFragment: String = "admin/game/soccer/edit_soccer"
+          val actInstance: String = "edit_soccer"
+
+          // TODO find by competition
+          val localTeamList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
+          val visitorTeamList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
+
+          new ModelAndView("admin/game/edit")
+            .addObject("action", "Edit")
+            .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
+            .addObject("localTeamList", localTeamList.asJava)
+            .addObject("visitorTeamList", visitorTeamList.asJava)
+            .addObject("actFragment", actFragment)
+            .addObject("actInstance", actInstance)
+            .addObject("submitMethod", submitMethod)
+            .addObject("submitUrl", submitUrl)
+            .addObject("calendarLink", backLink)
+        }
+    }.getOrElse(throw new NoSuchElementException("League Season not found"))
+  }
+
+  def editPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @ModelAttribute act: SoccerAct) = {
+
+    // TODO select act by sport
+    soccerActService.editSoccerAct(act.actId, act.date, act.location, act.referees,
+      act.localTeam.teamId, act.visitorTeam.teamId, act.incidents, act.signatures)
+
+    "redirect:" +
+      getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
   }
 
 }

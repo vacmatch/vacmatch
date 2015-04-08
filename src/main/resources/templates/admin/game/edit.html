@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="fragments/head :: head">
+    <title>Edit Act</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+            data-src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+
+      <div class="container" th:fragment="content">
+
+	      <h2 th:text="|${action} act|">Edit act</h2>
+	
+	      <hr/>
+	
+	      <div th:replace="${actFragment} :: ${actInstance}">
+	      </div>
+	      
+      </div>
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+  </body>
+</html>
