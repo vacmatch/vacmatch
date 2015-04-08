@@ -9,7 +9,7 @@ trait TeamDao extends GenericDao[Team, java.lang.Long] {
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
+  def findTeamsByCompetitionId(compId: Long, fedId: Long): Seq[Team]
 
   def hasCompetitions(id: Long): Boolean
 

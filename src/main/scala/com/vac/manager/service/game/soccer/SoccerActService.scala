@@ -7,8 +7,11 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
+import java.util.Calendar
 
 trait SoccerActService {
+
+  def find(actId: Long): Option[SoccerAct]
 
   def findGameAct(gameId: Long): Option[SoccerAct]
 
@@ -19,6 +22,9 @@ trait SoccerActService {
 
   @throws[InstanceNotFoundException]("If soccer act doesn't exist")
   def removeSoccerAct(gameId: Long)
+
+  def editSoccerAct(actId: Long, date: Calendar, location: String, referees: String,
+    localTeamId: Long, visitorTeamId: Long, incidents: String, signatures: String): SoccerAct
 
 }
 

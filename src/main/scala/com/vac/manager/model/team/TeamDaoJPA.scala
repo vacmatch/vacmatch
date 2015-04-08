@@ -27,10 +27,9 @@ class TeamDaoJPA
       "SELECT t FROM Team t ", classOf[Team]).getResultList().asScala
   }
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
-    //TODO
-    //Implementation
-    null
+  def findTeamsByCompetitionId(compId: Long, fedId: Long): Seq[Team] = {
+    getEntityManager().createQuery(
+      "SELECT t FROM Team t ", classOf[Team]).getResultList().asScala
   }
 
   def hasCompetitions(teamId: Long): Boolean = {

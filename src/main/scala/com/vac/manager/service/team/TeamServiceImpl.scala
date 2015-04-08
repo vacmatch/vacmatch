@@ -65,7 +65,7 @@ class TeamServiceImpl extends TeamService {
     teamDao.findAll
   }
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
+  def findTeamsByCompetitionId(compId: Long, fedId: Long): Seq[Team] = {
     teamDao.findTeamsByCompetitionId(compId, fedId)
   }
 

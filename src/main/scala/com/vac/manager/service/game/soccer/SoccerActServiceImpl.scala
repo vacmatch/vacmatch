@@ -11,6 +11,9 @@ import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.management.InstanceNotFoundException
+import java.util.Calendar
+import com.vac.manager.model.team.Team
+import com.vac.manager.service.team.TeamService
 
 @Service("soccerActService")
 @Transactional
@@ -18,6 +21,13 @@ class SoccerActServiceImpl extends SoccerActService {
 
   @Autowired
   var soccerActDao: SoccerActDao = _
+
+  @Autowired
+  var teamService: TeamService = _
+
+  def find(actId: Long): Option[SoccerAct] = {
+    soccerActDao.findById(actId)
+  }
 
   def findGameAct(gameId: Long): Option[SoccerAct] = {
     soccerActDao.findByGameId(gameId)
@@ -49,6 +59,31 @@ class SoccerActServiceImpl extends SoccerActService {
           soccerActDao.remove(act)
         }
     }.getOrElse(throw new DuplicateInstanceException("Existing soccer act"))
+  }
+
+  @throws[InstanceNotFoundException]("If local, visitor team or act doesn't exist")
+  def editSoccerAct(actId: Long, date: Calendar, location: String, referees: String,
+    localTeamId: Long, visitorTeamId: Long, incidents: String, signatures: String): SoccerAct = {
+
+    find(actId).map {
+      act =>
+        {
+          val localTeam: Team = teamService.find(localTeamId)
+            .getOrElse(throw new InstanceNotFoundException("Local Team not found"))
+          val visitorTeam: Team = teamService.find(visitorTeamId)
+            .getOrElse(throw new InstanceNotFoundException("Visitor Team not found"))
+
+          act.date = date
+          act.location = location
+          act.referees = referees
+          act.localTeam = localTeam
+          act.visitorTeam = visitorTeam
+          act.incidents = incidents
+          act.signatures = signatures
+          soccerActDao.save(act)
+          act
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
   }
 
 }

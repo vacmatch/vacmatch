@@ -25,6 +25,7 @@ class SoccerAct(g: Game) {
   @Id
   @SequenceGenerator(name = "soccerActIdGenerator", sequenceName = "soccerAct_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "soccerActIdGenerator")
+  @BeanProperty
   var actId: Long = _
 
   @BeanProperty
@@ -41,8 +42,7 @@ class SoccerAct(g: Game) {
 
   // TODO Create real referees
   @BeanProperty
-  @ElementCollection(fetch = FetchType.EAGER)
-  var referees: java.util.List[String] = _
+  var referees: String = _
 
   // Local stadistics
   @BeanProperty
@@ -61,10 +61,21 @@ class SoccerAct(g: Game) {
 
   // TODO Create real signatures
   @BeanProperty
-  @ElementCollection(fetch = FetchType.EAGER)
-  var signatures: java.util.List[String] = _
+  var signatures: String = _
 
   def this() = this(null)
+
+  override def toString(): String = {
+    "{SOCCER ACT (" + actId + ")" +
+      "\ndate: " + date +
+      "\nlocation: " + location +
+      "\nreferees: " + referees +
+      "\nlocalTeam: " + localTeam +
+      "\nvisitorTeam: " + visitorTeam +
+      "\nincidents: " + incidents +
+      "\nsignatures: " + signatures +
+      "}"
+  }
 
 }
 
