@@ -17,7 +17,7 @@ trait GenericDao[T, K <: Serializable] {
     * Insert a new row or update it if it has been already persisted
     * @param obj The entity object to be persisted or updated
     */
-  def save(obj: T): Unit
+  def save(obj: T): T
 
   /**
     * Delete row in DB table

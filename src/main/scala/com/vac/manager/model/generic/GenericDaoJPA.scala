@@ -40,8 +40,9 @@ abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends G
   /**
     * Save or update entity
     */
-  def save(entity: T) = {
+  def save(entity: T): T = {
     entityManager.persist(entity)
+    entity
   }
 
   /**
