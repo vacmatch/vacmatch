@@ -26,7 +26,7 @@
 
      <div class="row">
 	      <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
-	      <h1 th:text="(*{localTeam.teamName}?: 'Local') + ' - ' + (*{visitorTeam.teamName}?: 'Visitor')">Local team - Visitor team</h1>
+	      <h1 th:text="(*{localTeam}? ${act.localTeam.teamName}: 'Local') + ' - ' + (*{visitorTeam}? ${act.visitorTeam.teamName}: 'Visitor')">Local team - Visitor team</h1>
 	      <h4 th:text="(*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: 'Pending date') + ' in ' + (*{location}?: 'Pending location')"></h4>
 	      <h4 class="pull-right" th:text="'Referees: ' + (*{referees}?: '--')"></h4>
       </div>
@@ -43,7 +43,7 @@
 		         <th>Goals</th>
 		       </tr>
 		       <tr th:each="local: ${localStats}" th:object="${local}">
-		        <td th:text="*{staffMember.person.name}?: '--'"></td>
+		        <td th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
 		        <td th:text="*{firstYellowCard}?: '--'">-</td>
 		        <td th:text="*{secondYellowCard}?: '--'">-</td>
 		        <td th:text="*{redCard}?: '--'">-</td>
@@ -63,7 +63,7 @@
 		          <th>Goals</th>
 		        </tr>
 		        <tr th:each="visitor: ${visitorStats}" th:object="${visitor}">
-		         <td th:text="*{staffMember.person.name}?: '--'"></td>
+            <td th:text="*{staffMember}? ${visitor:.staffMember.person.name}: '--'"></td>
 		         <td th:text="*{firstYellowCard}?: '--'">-</td>
 		         <td th:text="*{secondYellowCard}?: '--'">-</td>
 		         <td th:text="*{redCard}?: '--'">-</td>

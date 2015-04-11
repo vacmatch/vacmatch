@@ -22,6 +22,12 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import com.vac.manager.model.game.soccer.SoccerAct
 import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import javax.servlet.http.HttpServletRequest
+import com.vac.manager.service.game.soccer.SoccerStaffStatsService
+import com.vac.manager.model.game.soccer.SoccerStaffStats
+import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
+import com.vac.manager.controllers.utils.ThymeleafList
+import com.vac.manager.model.staff.Person
 
 @Controller
 class GameAdminController extends UrlGrabber {
@@ -40,6 +46,9 @@ class GameAdminController extends UrlGrabber {
 
   @Autowired
   var soccerActService: SoccerActService = _
+
+  @Autowired
+  var soccerStaffStatsService: SoccerStaffStatsService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -147,15 +156,23 @@ class GameAdminController extends UrlGrabber {
           val actFragment: String = "admin/game/soccer/edit_soccer"
           val actInstance: String = "edit_soccer"
 
-          // TODO find by competition
-          val localTeamList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
-          val visitorTeamList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
+          val teamsList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
+
+          val localStats: ThymeleafList[ActionableSoccerStaffStats] =
+            new ThymeleafList(
+              soccerStaffStatsService.findLocalStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year)).asJava)
+          val visitorStats: ThymeleafList[ActionableSoccerStaffStats] =
+            new ThymeleafList(
+              soccerStaffStatsService.findVisitorStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year)).asJava)
 
           new ModelAndView("admin/game/edit")
             .addObject("action", "Edit")
             .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
-            .addObject("localTeamList", localTeamList.asJava)
-            .addObject("visitorTeamList", visitorTeamList.asJava)
+            .addObject("teamsList", teamsList.asJava)
+            .addObject("localStats", localStats)
+            .addObject("visitorStats", visitorStats)
             .addObject("actFragment", actFragment)
             .addObject("actInstance", actInstance)
             .addObject("submitMethod", submitMethod)
@@ -169,6 +186,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
+    @ModelAttribute("localStats") localStats: ThymeleafList[ActionableSoccerStaffStats],
+    @ModelAttribute("visitorStats") visitorStats: ThymeleafList[ActionableSoccerStaffStats],
     @ModelAttribute act: SoccerAct) = {
 
     // TODO select act by sport
@@ -176,7 +195,7 @@ class GameAdminController extends UrlGrabber {
       act.localTeam.teamId, act.visitorTeam.teamId, act.incidents, act.signatures)
 
     "redirect:" +
-      getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
   }
 
 }

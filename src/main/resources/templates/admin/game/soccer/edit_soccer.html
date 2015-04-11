@@ -7,18 +7,18 @@
             data-src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="../../../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
   <body>
-  
+
     <div class="container" th:fragment="content">
-  
+
 	    <div th:fragment="edit_soccer">
-	
+
 	      <form id="editForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${act}">
 	        <input th:each="h: ${hiddens}" type="hidden"
 	               th:name="${h.key}" th:value="${h.value}" />
           <input type="hidden" th:field="*{actId}"/>	               
 		      <div class="row">
 		        <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
-		        
+
 		        <div class="row">
                <label class="col-sm-3 control-label" for="localTeam">Local Team</label>
                <label class="col-sm-3 control-label" for="visitorTeam">Visitor Team</label>
@@ -26,14 +26,14 @@
             <div class="row">
               <div class="col-sm-3">
 	              <select class="form-control" id="localTeam" name="localTeam" th:field="*{localTeam.teamId}">
-	                <option th:each="lTeam : ${localTeamList}" 
+	                <option th:each="lTeam : ${teamsList}"
 	                        th:value="${lTeam.teamId}"
 	                        th:text="${lTeam.teamName}">Local Team</option>
 	              </select>              
               </div>
               <div class="col-sm-3">
                 <select class="form-control" id="visitorTeam" name="visitorTeam" th:field="*{visitorTeam.teamId}">
-                  <option th:each="vTeam : ${visitorTeamList}" 
+                  <option th:each="vTeam : ${teamsList}"
                           th:value="${vTeam.teamId}" 
                           th:text="${vTeam.teamName}">Local Team</option>
                 </select>              
@@ -57,7 +57,7 @@
                  <input class="form-control" id="location" type="text" placeholder="Location" th:field="*{location}" />
               </div>
             </div>
-            
+
             <div class="row">
 	           <div class="form-group pull-right">
 		           <div class="col-sm-3 control-label">
@@ -69,51 +69,57 @@
 		           </div>
 		         </div>
 	          </div>
+		      </div>
 
-		      </div>
-		
-		      <div class="row">
-		        <div class="col-md-6">
-		          <h3>Local Team</h3>
-		          <table class="table">
-		           <tr>
-		             <th>Name</th>
-		             <th>First yellow card</th>
-		              <th>Second yellow card</th>
-		              <th>Red Cards</th>
-		             <th>Goals</th>
-		           </tr>
-		           <tr th:each="local: ${localStats}">
-		            <td th:text="${local.staffMember.person.name}?: '--'"></td>
-		            <td th:text="${local.firstYellowCard}?: '--'">-</td>
-		            <td th:text="${local.secondYellowCard}?: '--'">-</td>
-		            <td th:text="${local.redCard}?: '--'">-</td>
-		            <td>--</td>
-		           </tr>
-		          </table>
-		        </div>
-		
-		        <div class="col-md-6">
-		          <h3>Visitor Team</h3>
-		          <table class="table">
-		            <tr>
-		              <th>Name</th>
-		              <th>First yellow card</th>
-		              <th>Second yellow card</th>
-		              <th>Red Cards</th>
-		              <th>Goals</th>
-		            </tr>
-		            <tr th:each="visitor: ${visitorStats}">
-		             <td th:text="${visitor.staffMember.person.name}?: '--'"></td>
-		             <td th:text="${visitor.firstYellowCard}?: '--'">-</td>
-		             <td th:text="${visitor.secondYellowCard}?: '--'">-</td>
-		             <td th:text="${visitor.redCard}?: '--'">-</td>
-		             <td>--</td>
-		            </tr>
-		          </table>
-		        </div>
-		      </div>
-		
+        <div>
+          <input type="hidden" id="localStats" name="localStats" th:value="${localStats.list}"/>
+          <input type="hidden" id="visitorStats" name="visitorStats" th:value="${visitorStats.list}"/>
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Local Team</h3>
+              <table class="table">
+               <tr>
+                 <th>Name</th>
+                 <th>First yellow card</th>
+                  <th>Second yellow card</th>
+                  <th>Red Cards</th>
+                 <th>Goals</th>
+               </tr>
+               <tr th:each="local: ${localStats.list}">
+                <td th:text="${local.staffMember.person.name}?: '--'"></td>
+                <td th:text="${local.firstYellowCard}?: '--'">-</td>
+                <td th:text="${local.secondYellowCard}?: '--'">-</td>
+                <td th:text="${local.redCard}?: '--'">-</td>
+                <td>--</td>
+               </tr>
+              </table>
+            </div>
+
+            <div class="col-md-6">
+              <h3>Visitor Team</h3>
+              <table class="table">
+                <tr>
+                  <th>Name</th>
+                  <th>First yellow card</th>
+                  <th>Second yellow card</th>
+                  <th>Red Cards</th>
+                  <th>Goals</th>
+                </tr>
+                <tr th:each="visitor: ${visitorStats.list}">
+                 <td th:text="${visitor.staffMember.person.name}?: '--'"></td>
+                 <td th:text="${visitor.firstYellowCard}?: '--'">-</td>
+                 <td th:text="${visitor.secondYellowCard}?: '--'">-</td>
+                 <td th:text="${visitor.redCard}?: '--'">-</td>
+                 <td>--</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+
+
          <div class="form-group">
            <label class="col-sm-3 control-label" for="incidents">Incidents</label>
            <div class="col-sm-9">
