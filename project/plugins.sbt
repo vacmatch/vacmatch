@@ -11,3 +11,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 // WAR
 addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "1.1.0")
+
+// Scapegaoat
+addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
+
