@@ -32,7 +32,7 @@ val ourDeps = Seq (
   "org.apache.tomcat.embed" % "tomcat-embed-jasper" % "7.0.53" % "container",
   "org.springframework.boot" % "spring-boot-starter-tomcat" % "1.1.9.RELEASE" % "provided",
   "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided",
-  "com.vacmatch.util" %% "i18n-gettext" % "0.2.0-SNAPSHOT",
+  "com.vacmatch.util" %% "i18n-gettext" % "0.2.1-SNAPSHOT",
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
