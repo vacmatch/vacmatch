@@ -8,3 +8,6 @@ addSbtPlugin("me.browder" % "sbt-spring-loaded" % "0.2.0")
 
 // Scoverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
+
+// WAR
+addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "1.1.0")

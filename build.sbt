@@ -64,3 +64,6 @@ lazy val root = (project in file("."))
     libraryDependencies ++= ourDeps ++ testDeps
   )
 
+// Enable WAR packaging
+tomcat()
+
