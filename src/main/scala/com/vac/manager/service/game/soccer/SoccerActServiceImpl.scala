@@ -23,6 +23,9 @@ class SoccerActServiceImpl extends SoccerActService {
   var soccerActDao: SoccerActDao = _
 
   @Autowired
+  var soccerStaffStatsService: SoccerStaffStatsService = _
+
+  @Autowired
   var teamService: TeamService = _
 
   def find(actId: Long): Option[SoccerAct] = {
@@ -73,6 +76,9 @@ class SoccerActServiceImpl extends SoccerActService {
           val visitorTeam: Team = teamService.find(visitorTeamId)
             .getOrElse(throw new InstanceNotFoundException("Visitor Team not found"))
 
+          val oldLocal: Option[Team] = Option(act.localTeam)
+          val oldVisitor: Option[Team] = Option(act.visitorTeam)
+
           act.date = date
           act.location = location
           act.referees = referees
@@ -81,6 +87,19 @@ class SoccerActServiceImpl extends SoccerActService {
           act.incidents = incidents
           act.signatures = signatures
           soccerActDao.save(act)
+
+          // If any team change, staff stats must be changed
+          oldLocal.map(team =>
+            if (team != localTeam) {
+              soccerStaffStatsService.removeLocalStats(actId)
+              soccerStaffStatsService.createLocalStats(actId)
+            })
+          oldVisitor.map(team =>
+            if (team != visitorTeam) {
+              soccerStaffStatsService.removeVisitorStats(actId)
+              soccerStaffStatsService.createVisitorStats(actId)
+            })
+
           act
         }
     }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))

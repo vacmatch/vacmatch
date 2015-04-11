@@ -16,7 +16,7 @@ import javax.persistence.FetchType
 
 @Entity
 @Table(name = "SOCCER_STAFF_STATS")
-class SoccerStaffStats {
+class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
 
   @Id
   @SequenceGenerator(name = "soccerStaffStatsIdGenerator", sequenceName = "soccerStaffStats_id_seq")
@@ -26,12 +26,12 @@ class SoccerStaffStats {
   @BeanProperty
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "actId")
-  var act: SoccerAct = _
+  var act: SoccerAct = soccerAct
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "staffMemberId")
-  var staffMember: StaffMember = _
+  var staffMember: StaffMember = staff
 
   // The card's timestamp
   @BeanProperty
@@ -54,5 +54,18 @@ class SoccerStaffStats {
   @MapKey
   var goals: java.util.Map[String, Int] = new java.util.HashMap[String, Int]()
   */
+
+  def this() = this(null, null)
+
+  override def toString(): String = {
+    "{SOCCER STAFF STATS (" + statsId + ")" +
+      //"\nact: " + act +
+      "\nstaffMember: " + staffMember +
+      "\nfirstYellowCard: " + firstYellowCard +
+      "\nsecondYellowCard: " + secondYellowCard +
+      "\nredCard: " + redCard +
+      "}"
+  }
+
 }
 

@@ -23,6 +23,7 @@ trait SoccerActService {
   @throws[InstanceNotFoundException]("If soccer act doesn't exist")
   def removeSoccerAct(gameId: Long)
 
+  @throws[InstanceNotFoundException]("If local, visitor team or act doesn't exist")
   def editSoccerAct(actId: Long, date: Calendar, location: String, referees: String,
     localTeamId: Long, visitorTeamId: Long, incidents: String, signatures: String): SoccerAct
 
