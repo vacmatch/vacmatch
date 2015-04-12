@@ -52,7 +52,15 @@ class TenantFilter() extends Filter {
 
       logger.trace("Successfully crafted newURI = " + newURI)
 
-      r.getRequestDispatcher(newURI).forward(req, res)
+      val forwardedRequest = new HttpServletRequestWrapper(r) {
+        override def getContextPath() = {
+          r.getContextPath() + "/a/" + fedName
+        }
+      }
+
+      logger.trace("Appended /a/" + fedName + " to the contextPath")
+
+      r.getRequestDispatcher(newURI).forward(forwardedRequest, res)
 
     } else {
 
