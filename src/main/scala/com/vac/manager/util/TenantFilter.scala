@@ -8,12 +8,17 @@ import javax.servlet.ServletException
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletRequestWrapper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class TenantFilter() extends Filter {
 
+  val logger: Logger = LoggerFactory.getLogger(classOf[TenantFilter])
+
   @throws[ServletException]()
   override def init(config: FilterConfig) = {
-    println ("**** INITIALIZING TENANTFILTER ****")
+    logger.info("Initializing the TenantFilter")
   }
 
   @throws[ServletException]()
@@ -24,8 +29,8 @@ class TenantFilter() extends Filter {
     if (uri == null)
       uri = r.getServletPath()
 
-    println ("***** TENANTFILTER ****")
-    println ("uri = " + uri)
+    logger.trace("Got TenantFilter request")
+    logger.debug("TenantFilter original request URL = " + uri)
 
     if (uri.startsWith("/a/")) {
       val mostlyAll = uri.substring("/a/".length())
@@ -33,24 +38,25 @@ class TenantFilter() extends Filter {
       val rest = mostlyAll.substring(fedName.length)
 
       r.setAttribute("com.vac.manager.request.domain", fedName)
+      logger.trace("Set fedName in com.vac.manager.request.domain request attribute")
 
       var newURI = rest
 
       val separator = if (newURI.indexOf("?") > -1) {
-          "&"
+        "&"
       } else {
-          "?"
-        }
+        "?"
+      }
 
       newURI = newURI + separator + "fedId=" + fedName
 
-      println ("NICE: GOING WITH newURI = " + newURI)
+      logger.trace("Successfully crafted newURI = " + newURI)
 
       r.getRequestDispatcher(newURI).forward(req, res)
 
     } else {
 
-      println ("Damn, not doing stuff")
+      logger.debug("Request was not for tenantFilter")
       chain.doFilter(req, res)
     }
   }
