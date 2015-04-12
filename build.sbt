@@ -65,7 +65,9 @@ lazy val root = (project in file("."))
       Resolver.sonatypeRepo("snapshots")
     ),
 
-    libraryDependencies ++= ourDeps ++ testDeps
+    libraryDependencies ++= ourDeps ++ testDeps,
+
+    webInfClasses in webapp := true
   )
 
 // Enable WAR packaging
