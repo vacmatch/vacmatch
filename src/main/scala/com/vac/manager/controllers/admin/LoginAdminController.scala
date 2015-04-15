@@ -16,12 +16,14 @@ class LoginAdminController extends UrlGrabber {
   def loginForm(param: java.util.Map[String, String]): ModelAndView = {
 
     return new ModelAndView("admin/login")
-      .addObject("loginUrl", "/admin/login/do")
+      .addObject("loginUrl", getUrl("LoginAdminController.login"))
   }
 
-  def login(@RequestParam user: String,
+  def login(
+    @RequestParam user: String,
     @RequestParam pass: String,
-    @Autowired auth: AuthenticationManager) = {
+    @Autowired auth: AuthenticationManager
+  ) = {
     var token = new UsernamePasswordAuthenticationToken(user, pass)
 
     auth.authenticate(token)
