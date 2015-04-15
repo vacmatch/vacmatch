@@ -39,7 +39,7 @@ class WebAppConfig() extends RouterConfigurationSupport {
   @Override
   def listRouteFiles(): ArrayList[String] = {
     val routeFiles = new ArrayList[String];
-    routeFiles.add("classpath:/routes.conf");
+    routeFiles.add("classpath*:/routes.conf");
     return routeFiles;
   }
 
@@ -153,7 +153,12 @@ class WebApplication extends Application {
 @EnableTransactionManagement
 @EnableAutoConfiguration
 @ComponentScan
-class Application {
+class Application extends org.springframework.boot.context.web.SpringBootServletInitializer {
+
+  override protected def configure(application: org.springframework.boot.builder.SpringApplicationBuilder): org.springframework.boot.builder.SpringApplicationBuilder = {
+    application.sources(classOf[Application])
+    application.web(true)
+  }
 
   @Bean
   @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
@@ -194,7 +199,11 @@ class Application {
 // class WebApplication
 
 object Application extends App {
-  val app = SpringApplication run classOf[WebApplication]
-  app getBean classOf[TemplateResolver] setCacheable false
+
+  override def main(args: Array[String]) = {
+    val app = SpringApplication.run(classOf[WebApplication])
+    app getBean classOf[TemplateResolver] setCacheable false
+  }
+
 }
 

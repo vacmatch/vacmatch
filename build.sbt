@@ -11,7 +11,6 @@ def getSpringBootDependencies(version:String) = {
     "thymeleaf",
     "actuator",
     "security",
-    "jetty",
     "test"
   )
     .map("spring-boot-starter-" ++ _)
@@ -28,6 +27,11 @@ val springTx = List("tx", "jdbc")
 
 val ourDeps = Seq (
   "org.springframework" % "springloaded" % "1.2.3.RELEASE",
+  "org.apache.tomcat.embed" % "tomcat-embed-core" % "7.0.53" % "container",
+  "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" % "container",
+  "org.apache.tomcat.embed" % "tomcat-embed-jasper" % "7.0.53" % "container",
+  "org.springframework.boot" % "spring-boot-starter-tomcat" % "1.1.9.RELEASE" % "provided",
+  "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided",
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
@@ -61,6 +65,11 @@ lazy val root = (project in file("."))
       Resolver.sonatypeRepo("snapshots")
     ),
 
-    libraryDependencies ++= ourDeps ++ testDeps
+    libraryDependencies ++= ourDeps ++ testDeps,
+
+    webInfClasses in webapp := true
   )
+
+// Enable WAR packaging
+tomcat()
 
