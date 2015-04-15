@@ -15,3 +15,6 @@ addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "1.1.0")
 // Scapegaoat
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
 
+// Scalariform
+addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
+
