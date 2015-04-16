@@ -23,6 +23,7 @@ import java.util.GregorianCalendar
 import java.util.Date
 import scala.util.Try
 import com.vac.manager.controllers.actionable.ActionableTeam
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class TeamAdminController
@@ -80,11 +81,15 @@ class TeamAdminController
   }
 
   def edit(
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long,
+    request: HttpServletRequest): ModelAndView = {
 
     teamService.findWithTelephonesAndAddress(teamId).map {
       team =>
         {
+          // Check user permissions
+          val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
           // Submit parameters
           val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
           val submitMethod: String = "POST"
@@ -95,7 +100,7 @@ class TeamAdminController
             .addObject("submitUrl", submitUrl)
             .addObject("submitMethod", submitMethod)
             .addObject("address", team.teamAddress)
-            .addObject("team", new ActionableTeam(team, true))
+            .addObject("team", new ActionableTeam(team, hasPermissions))
         }
     }.getOrElse(throw new InstanceNotFoundException("Team not found"))
 

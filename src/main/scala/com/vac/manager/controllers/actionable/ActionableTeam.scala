@@ -6,7 +6,7 @@ import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 import com.vac.manager.controllers.utils.Hyperlink
 
-class ActionableTeam(team: Team, slug: String, year: String, userCanEdit: Boolean)
+class ActionableTeam(val team: Team, val userCanEdit: Boolean)
   extends Team
   with UrlGrabber {
 
@@ -19,10 +19,6 @@ class ActionableTeam(team: Team, slug: String, year: String, userCanEdit: Boolea
   teamWeb = team.teamWeb
   teamTelephones = team.teamTelephones
   sponsorsList = team.sponsorsList
-
-  def getEnrollPostLink(): String = {
-    getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
-  }
 
   @BeanProperty
   val anonymousLinks = List(Hyperlink("Show team", getShowLink, "btn-primary"),
@@ -48,4 +44,15 @@ class ActionableTeam(team: Team, slug: String, year: String, userCanEdit: Boolea
 
   def getDeleteLink(): String = getUrl("TeamAdminController.delete", "teamId" -> teamId)
 
+}
+
+trait TeamEnrollLinks {
+  self: ActionableTeam =>
+  val slug: String
+  val year: String
+
+  def getEnrollPostLink(): String = {
+    getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost",
+      "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
+  }
 }
