@@ -14,7 +14,7 @@ trait TeamService {
 
   def findWithTelephones(teamId: Long): Option[Team]
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
+  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 
@@ -37,8 +37,6 @@ trait TeamService {
   def assignPerson(teamId: Long, personId: Long): StaffMember
 
   def unAssignStaff(teamId: Long, personId: Long): StaffMember
-
-  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team]
 
   def getNumberByFederationId(fedId: Long): Long
 

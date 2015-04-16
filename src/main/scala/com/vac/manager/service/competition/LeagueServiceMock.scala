@@ -5,7 +5,7 @@ import java.util.{ Calendar, Date, GregorianCalendar }
 import scala.collection.JavaConverters.asScalaBufferConverter
 
 //@Service("leagueService")
-class LeagueServiceMock extends LeagueService {
+abstract class LeagueServiceMock extends LeagueService {
 
   def createLeague(fedId: Long, leagueName: String, slug: String): League = {
     val l = new League

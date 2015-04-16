@@ -5,6 +5,7 @@ import com.vac.manager.model.generic.GenericDaoJPA
 import javax.persistence.Query
 import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.generic.exceptions.NotImplementedException
+import scala.collection.JavaConverters._
 
 @Repository("teamDao")
 class TeamDaoJPA
@@ -20,15 +21,10 @@ class TeamDaoJPA
       .asInstanceOf[Team]
   }
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team] = {
+  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
     getEntityManager().createQuery(
-      "SELECT t FROM Team t " +
-        "WHERE t.teamId IN ( SELECT tc.teamId " +
-        "FROM COMPETITION c JOIN TEAM_COMPETITION tc " +
-        "ON c.compId = tc.compId" +
-        "WHERE c.fedId = :fedId )")
-      .setParameter("fedId", fedId)
-      .asInstanceOf[List[Team]]
+      // TODO Modify this to return only teams in this federation
+      "SELECT t FROM Team t ", classOf[Team]).getResultList().asScala
   }
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
@@ -62,5 +58,4 @@ class TeamDaoJPA
   }
 
 }
-
 

@@ -7,7 +7,7 @@ trait TeamDao extends GenericDao[Team, java.lang.Long] {
 
   def findByTeamName(name: String): Team
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team]
+  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 
   def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
 

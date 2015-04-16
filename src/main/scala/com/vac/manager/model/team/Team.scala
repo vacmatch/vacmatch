@@ -58,16 +58,6 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   @Transient
   var sponsorsList: java.util.List[String] = new ArrayList()
 
-  @BeanProperty
-  @ManyToMany(fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
-  @JoinTable(
-    name = "TEAM_COMPETITION",
-    joinColumns =
-      Array(new JoinColumn(name = "compId", nullable = false, updatable = false)),
-    inverseJoinColumns =
-      Array(new JoinColumn(name = "teamId", nullable = false, updatable = false)))
-  var competitionsList: java.util.List[Competition] = new ArrayList()
-
   def this() = this(null, null, null, null, null, null)
 
   override def equals(obj: Any): Boolean = {
@@ -85,8 +75,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
         (teamObj.teamAddress == this.teamAddress) &&
         (teamObj.teamWeb == this.teamWeb) &&
         (teamObj.teamTelephones == this.teamTelephones) &&
-        (teamObj.sponsorsList == this.sponsorsList) &&
-        (teamObj.competitionsList == this.competitionsList)
+        (teamObj.sponsorsList == this.sponsorsList)
     })
   }
 
@@ -99,6 +88,5 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nWeb: " + this.teamWeb +
     "\nTelephones: " + this.teamTelephones +
     "\nSponsorsList: " + this.sponsorsList
-  //"\nCompetitionsList: " + this.competitionsList
 
 }

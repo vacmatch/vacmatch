@@ -56,7 +56,7 @@ class TeamServiceImpl extends TeamService {
     optionTeam
   }
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): List[Team] = {
+  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
     teamDao.findTeamsByFederationId(fedId, startIndex, count)
   }
 
@@ -217,17 +217,6 @@ class TeamServiceImpl extends TeamService {
           staffMember
         }
     }.getOrElse(throw new InstanceNotFoundException("StaffMember with TeamId: " + teamId + " and PersonId: " + personId + " not found"))
-  }
-
-  @throws[IllegalArgumentException]("If any element in newCompetitionList doesn't exist")
-  def modifyCompetitions(teamId: Long, newCompetitionList: List[Competition]): Option[Team] = {
-
-    //Check if all competition exists
-    newCompetitionList.map(cp =>
-      if (competitionService.find(cp.compId).isEmpty)
-        throw new IllegalArgumentException(cp.compId, cp.compId.getClass().getName()))
-
-    changeTeamDetails(teamId)(_.setCompetitionsList(newCompetitionList.asJava))
   }
 
   def getNumberByFederationId(fedId: Long): Long = {
