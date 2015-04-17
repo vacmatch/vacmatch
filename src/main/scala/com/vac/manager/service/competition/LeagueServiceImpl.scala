@@ -113,17 +113,17 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   /**
-   * It's free to return the League instead of the Seq[LeagueSeason]
-   * naturally because the JOIN must be made in the DB anyway, so all
-   * data is already fetched.
-   */
+    * It's free to return the League instead of the Seq[LeagueSeason]
+    * naturally because the JOIN must be made in the DB anyway, so all
+    * data is already fetched.
+    */
   def findSeasonsByLeague(fedId: Long, slug: String): Option[League] = {
     return leagueSeasonDao.findLeagueWithSeasonsBySlug(fedId, slug)
   }
 
   /**
-   * But we can already return just the Seq as a Scala value
-   */
+    * But we can already return just the Seq as a Scala value
+    */
   def findSeasonsByLeagueAsSeq(fedId: Long, slug: String): Seq[LeagueSeason] = {
     return leagueSeasonDao.findLeagueWithSeasonsBySlug(fedId, slug).get.getSeasonList.asScala
   }
@@ -133,8 +133,8 @@ class LeagueServiceImpl extends LeagueService {
   }
 
   /**
-   * Only deletes the league if it has no seasons
-   */
+    * Only deletes the league if it has no seasons
+    */
   def removeLeagueBySlug(fedId: Long, slug: String): Boolean = {
     val league = leagueDao findBySlug (fedId, slug)
 

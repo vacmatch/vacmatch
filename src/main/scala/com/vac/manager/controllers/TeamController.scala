@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest
 
 @Controller
 class TeamController()
-  extends UrlGrabber {
+    extends UrlGrabber {
 
   @Autowired
   var teamService: TeamService = _

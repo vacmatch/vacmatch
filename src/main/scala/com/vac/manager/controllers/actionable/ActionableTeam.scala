@@ -7,8 +7,8 @@ import scala.collection.JavaConverters._
 import com.vac.manager.controllers.utils.Hyperlink
 
 class ActionableTeam(val team: Team, val userCanEdit: Boolean)
-  extends Team
-  with UrlGrabber {
+    extends Team
+    with UrlGrabber {
 
   teamId = team.teamId
   teamName = team.teamName

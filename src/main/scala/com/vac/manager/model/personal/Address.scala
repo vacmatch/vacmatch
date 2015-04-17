@@ -14,7 +14,7 @@ import javax.persistence.GenerationType
 @Table(name = "ADDRESS")
 @PrimaryKeyJoinColumn(name = "addressId")
 class Address(fLine: String, sLine: String, argPostCod: String,
-  argLocality: String, argProvince: String, nation: String) {
+    argLocality: String, argProvince: String, nation: String) {
 
   @Id
   @SequenceGenerator(name = "addressIdGenerator", sequenceName = "address_id_seq")
@@ -66,5 +66,4 @@ class Address(fLine: String, sLine: String, argPostCod: String,
   def this() = this("", "", "", "", "", "")
 
 }
-
 

@@ -38,7 +38,7 @@ class FederationBeanImpl(req: ServletRequest) extends FederationBean {
 
       fed match {
         case None => throw new RuntimeException("No Federation registered" +
-            "at this URL in a controller depending on federation-related elements")
+          "at this URL in a controller depending on federation-related elements")
         case Some(f) => f.fedId
       }
     }

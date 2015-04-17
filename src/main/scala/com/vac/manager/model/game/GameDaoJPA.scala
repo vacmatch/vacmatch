@@ -7,8 +7,8 @@ import scala.collection.JavaConverters._
 
 @Repository("gameDao")
 class GameDaoHibernate
-  extends GenericDaoJPA[Game, java.lang.Long](classOf[Game])
-  with GameDao {
+    extends GenericDaoJPA[Game, java.lang.Long](classOf[Game])
+    with GameDao {
 
   def findAllBySeason(leagueSeasonId: LeagueSeasonPK): Seq[Game] = {
     var query = getEntityManager().createQuery(

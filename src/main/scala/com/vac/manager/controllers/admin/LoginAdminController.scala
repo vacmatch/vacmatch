@@ -22,8 +22,7 @@ class LoginAdminController extends UrlGrabber {
   def login(
     @RequestParam user: String,
     @RequestParam pass: String,
-    @Autowired auth: AuthenticationManager
-  ) = {
+    @Autowired auth: AuthenticationManager) = {
     var token = new UsernamePasswordAuthenticationToken(user, pass)
 
     auth.authenticate(token)

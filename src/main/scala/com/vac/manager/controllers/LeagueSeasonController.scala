@@ -55,8 +55,7 @@ class LeagueSeasonController extends UrlGrabber {
 
   def showSeason(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String
-  ) = {
+    @PathVariable("year") year: String) = {
     val fedId = federation.getId()
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)

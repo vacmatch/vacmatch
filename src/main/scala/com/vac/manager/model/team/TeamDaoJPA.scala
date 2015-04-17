@@ -9,8 +9,8 @@ import scala.collection.JavaConverters._
 
 @Repository("teamDao")
 class TeamDaoJPA
-  extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
-  with TeamDao {
+    extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
+    with TeamDao {
 
   def findByTeamName(teamName: String): Team = {
     getEntityManager().createQuery(

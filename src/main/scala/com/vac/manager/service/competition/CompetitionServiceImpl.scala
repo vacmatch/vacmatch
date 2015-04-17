@@ -9,5 +9,5 @@ class CompetitionServiceImpl extends CompetitionService {
   def find(compId: Long): Option[Competition] = {
     None
   }
-	
+
 }

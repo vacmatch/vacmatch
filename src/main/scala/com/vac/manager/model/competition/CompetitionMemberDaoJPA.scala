@@ -6,8 +6,8 @@ import scala.collection.JavaConverters._
 
 @Repository("competitionMemberDao")
 class CompetitionMemberDaoJPA
-  extends GenericDaoJPA[CompetitionMember, java.lang.Long](classOf[CompetitionMember])
-  with CompetitionMemberDao {
+    extends GenericDaoJPA[CompetitionMember, java.lang.Long](classOf[CompetitionMember])
+    with CompetitionMemberDao {
 
   def findCompetitionMembersByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[CompetitionMember] = {
     // TODO Modify to find by competition id

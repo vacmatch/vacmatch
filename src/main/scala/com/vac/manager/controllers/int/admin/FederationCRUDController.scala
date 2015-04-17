@@ -88,8 +88,7 @@ class FederationCRUDController extends UrlGrabber {
 
   def createPost(
     @RequestParam("fedName") fedName: String,
-    @RequestParam("dns") dnsTextArea: String
-  ): String = {
+    @RequestParam("dns") dnsTextArea: String): String = {
     val domains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
 
     federationService.createFederation(fedName, domains)
@@ -100,8 +99,7 @@ class FederationCRUDController extends UrlGrabber {
 
   def editPost(
     @ModelAttribute fed: Federation,
-    @RequestParam("dns") dnsTextArea: String
-  ): String = {
+    @RequestParam("dns") dnsTextArea: String): String = {
     federationService.modifyFederationName(fed.fedId, fed.fedName)
 
     val prevDomains = federationService.findDomainNames(fed.fedId)
@@ -146,9 +144,9 @@ class FederationCRUDController extends UrlGrabber {
   }
 
   /**
-   * Federations cannot yet create their own roles, but we can force
-   * sane defaults on a customized system
-   */
+    * Federations cannot yet create their own roles, but we can force
+    * sane defaults on a customized system
+    */
   def createDefaultRoles(@RequestParam("fedId") fedId: Long) = {
     userAuthService.createRole(fedId, "ADMINFED", "Federation administrator")
     userAuthService.createRole(fedId, "REFEREE", "Referee")

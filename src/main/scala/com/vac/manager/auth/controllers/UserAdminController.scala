@@ -47,8 +47,7 @@ class UserAdminController extends UrlGrabber {
   var fed: FederationBean = _
 
   def registerForm(
-    @RequestParam(value = "done", required = false) done: Boolean
-  ): ModelAndView = {
+    @RequestParam(value = "done", required = false) done: Boolean): ModelAndView = {
 
     val roles = userAuthService.getRoles(fed.getId)
 
@@ -69,8 +68,7 @@ class UserAdminController extends UrlGrabber {
     @RequestParam fullName: String,
     @RequestParam encPasswd: String,
     @RequestParam password: String,
-    @RequestParam textRoles: java.util.List[String]
-  ) = {
+    @RequestParam textRoles: java.util.List[String]) = {
 
     if (password != encPasswd) {
       throw new RuntimeException("Password not matching")
@@ -112,8 +110,7 @@ class UserAdminController extends UrlGrabber {
   }
   def editForm(
     @RequestParam("user") user: String,
-    @RequestParam(value = "done", required = false) done: Boolean
-  ): ModelAndView = {
+    @RequestParam(value = "done", required = false) done: Boolean): ModelAndView = {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, user)
 
@@ -142,8 +139,7 @@ class UserAdminController extends UrlGrabber {
     @RequestParam("fullName") fullName: String,
     @RequestParam("encPasswd") encPasswd: String,
     @RequestParam("password") password: String,
-    @RequestParam("textRoles") textRoles: java.util.List[String]
-  ): String = {
+    @RequestParam("textRoles") textRoles: java.util.List[String]): String = {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, username)
 
