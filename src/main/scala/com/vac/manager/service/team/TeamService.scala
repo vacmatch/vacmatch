@@ -12,7 +12,9 @@ trait TeamService {
 
   def find(teamId: Long): Option[Team]
 
-  def findWithTelephones(teamId: Long): Option[Team]
+  def findWithTelephonesAndAddress(teamId: Long): Option[Team]
+
+  def findAllTeams(): Seq[Team]
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 
@@ -25,10 +27,10 @@ trait TeamService {
   def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember]
 
   def createTeam(teamName: String, publicName: String, foundationalDate: Calendar,
-    address: Address, web: String, telephones: Seq[String]): Team
+    address: Address, web: String, telephones: String): Team
 
   def modifyTeam(teamId: Long, teamName: String, publicName: String,
-    foundationalDate: Calendar, address: Address, web: String, telephones: Seq[String]): Option[Team]
+    foundationalDate: Calendar, address: Address, web: String, telephones: String): Team
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team]
 
@@ -39,5 +41,7 @@ trait TeamService {
   def unAssignStaff(teamId: Long, personId: Long): StaffMember
 
   def getNumberByFederationId(fedId: Long): Long
+
+  def removeTeam(teamId: Long)
 
 }

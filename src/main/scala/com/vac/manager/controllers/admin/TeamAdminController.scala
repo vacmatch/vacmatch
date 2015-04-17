@@ -18,6 +18,12 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.util.FederationBean
 import org.springframework.stereotype.Controller
+import javax.management.InstanceNotFoundException
+import java.util.GregorianCalendar
+import java.util.Date
+import scala.util.Try
+import com.vac.manager.controllers.actionable.ActionableTeam
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class TeamAdminController
@@ -37,36 +43,89 @@ class TeamAdminController
 
   def create(): ModelAndView = {
 
+    val fedId: Long = federation.getId
+
     // Create receivers
     val receiverTeam = new Team()
     val receiverAddress = new Address()
     // Submit parameters
     val submitUrl = getUrl("TeamAdminController.createPost")
     val submitMethod = "POST"
+    val listLink: String = getUrl("TeamController.list")
 
     new ModelAndView("admin/team/edit")
-      .addObject("hiddens", List().asJava)
+      .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
       .addObject("action", "Create")
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", submitMethod)
-      .addObject("team", receiverTeam)
+      .addObject("listLink", listLink)
       .addObject("address", receiverAddress)
+      .addObject("team", receiverTeam)
   }
 
   def createPost(
-    @ModelAttribute("team") team: Team,
-    @RequestParam("telephones") telephones: String,
     @ModelAttribute("address") address: Address,
+    @ModelAttribute("team") team: Team,
+    @RequestParam("foundationDate") foundationDate: Date,
     result: BindingResult): ModelAndView = {
 
     // TODO Check errors
-    val telephonesList: Seq[String] = telephones.split(",").map(_.trim).filter(_.nonEmpty)
+    val date: Calendar = new GregorianCalendar()
+    date.setTime(foundationDate)
 
     val createdTeam: Team = teamService.createTeam(team.teamName,
-      team.publicTeamName, Calendar.getInstance, address, team.teamWeb,
-      telephonesList)
+      team.publicTeamName, date, address, team.teamWeb,
+      team.teamTelephones)
 
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+  }
+
+  def edit(
+    @RequestParam("teamId") teamId: java.lang.Long,
+    request: HttpServletRequest): ModelAndView = {
+
+    teamService.findWithTelephonesAndAddress(teamId).map {
+      team =>
+        {
+          // Check user permissions
+          val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+          // Submit parameters
+          val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
+          val submitMethod: String = "POST"
+          val listLink: String = getUrl("TeamController.list")
+
+          new ModelAndView("admin/team/edit")
+            .addObject("action", "Edit")
+            .addObject("submitUrl", submitUrl)
+            .addObject("submitMethod", submitMethod)
+            .addObject("address", team.teamAddress)
+            .addObject("team", new ActionableTeam(team, hasPermissions))
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+
+  }
+
+  def editPost(
+    @RequestParam("teamId") teamId: java.lang.Long,
+    @ModelAttribute("address") address: Address,
+    @ModelAttribute("team") team: Team,
+    @RequestParam("foundationDate") foundationDate: Date,
+    result: BindingResult): ModelAndView = {
+
+    // TODO Check errors
+    val date: Calendar = new GregorianCalendar()
+    date.setTime(foundationDate)
+
+    val editedTeam: Team = teamService.modifyTeam(teamId,
+      team.teamName,
+      team.publicTeamName,
+      date,
+      address,
+      team.teamWeb,
+      team.teamTelephones)
+
+    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
   }
 
   def assignStaffMember(
@@ -120,4 +179,31 @@ class TeamAdminController
     new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
   }
 
+  def delete(
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    val fedId: Long = federation.getId
+    val submitMethod: String = "POST"
+    val submitUrl: String = getUrl("TeamAdminController.deletePost", "teamId" -> teamId)
+
+    teamService.find(teamId).map {
+      team =>
+        new ModelAndView("admin/team/delete_confirm")
+          .addObject("team", new ActionableTeam(team, true))
+          .addObject("submitMethod", submitMethod)
+          .addObject("submitUrl", submitUrl)
+    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+
+  }
+
+  def deletePost(
+    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+
+    Try(teamService.removeTeam(teamId)).recover {
+      case e: InstanceNotFoundException => throw new InstanceNotFoundException("Team not found")
+    }
+    new ModelAndView("redirect:" + getUrl("TeamController.list"))
+  }
+
 }
+

@@ -19,6 +19,9 @@ import com.vac.manager.controllers.actionable.ActionableCompetitionMember
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.team.Team
 import com.vac.manager.controllers.actionable.ActionableTeam
+import javax.servlet.http.HttpServletRequest
+import javax.management.InstanceNotFoundException
+import com.vac.manager.controllers.actionable.TeamEnrollLinks
 
 @Controller
 @Layout("layouts/default_admin")
@@ -188,27 +191,33 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def enrollTeamInSeason(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String): ModelAndView = {
+    @RequestParam("year") year: String,
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: Long = federation.getId
     // TODO remove these parameters
     val startIndex: Int = 0
     val count: Int = 10
 
-    val leagueSeasonId = new LeagueSeasonPK
-    leagueSeasonId.league = new League
-    leagueSeasonId.seasonSlug = year
-    leagueSeasonId.league.fedId = fedId
-    leagueSeasonId.league.slug = slug
+    val leagueSeasonId: LeagueSeasonPK =
+      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
+        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
+
+    val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
     // TODO Modify accept url
     val acceptUrl: String = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
     val submitUrl: String = getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "slug" -> slug, "year" -> year)
     val submitMethod: String = "POST"
 
+    val sv = (slug, year)
+
     // TODO Modify -> find by federation (now it returns all teams)
-    val fullList: Seq[ActionableTeam] =
-      teamService.findTeamsByFederationId(fedId, startIndex, count).map(team => new ActionableTeam(team, slug, year))
+    val fullList: Seq[ActionableTeam with TeamEnrollLinks] =
+      teamService.findTeamsByFederationId(fedId, startIndex, count).map(team =>
+        new ActionableTeam(team, hasPermissions) with TeamEnrollLinks {
+          val (slug, year) = sv
+        })
 
     // TODO Modify -> only registered elements
     val registeredList: Seq[ActionableCompetitionMember] =
@@ -229,11 +238,10 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("teamId") teamId: Long): ModelAndView = {
 
     val fedId: Long = federation.getId
-    val leagueSeasonId = new LeagueSeasonPK
-    leagueSeasonId.league = new League
-    leagueSeasonId.seasonSlug = year
-    leagueSeasonId.league.fedId = fedId
-    leagueSeasonId.league.slug = slug
+
+    val leagueSeasonId: LeagueSeasonPK =
+      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
+        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
 
     val compMember: CompetitionMember = leagueService.registerTeamInSeason(leagueSeasonId, teamId)
     new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
@@ -245,11 +253,9 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("teamId") teamId: Long): ModelAndView = {
 
     val fedId: Long = federation.getId
-    val leagueSeasonId = new LeagueSeasonPK
-    leagueSeasonId.league = new League
-    leagueSeasonId.seasonSlug = year
-    leagueSeasonId.league.fedId = fedId
-    leagueSeasonId.league.slug = slug
+    val leagueSeasonId: LeagueSeasonPK =
+      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
+        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
 
     leagueService.removeTeamFromSeason(leagueSeasonId, teamId)
     new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))

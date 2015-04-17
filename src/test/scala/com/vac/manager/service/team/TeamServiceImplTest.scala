@@ -47,7 +47,19 @@ class TeamServiceImplTest
     Calendar.getInstance(),
     new Address,
     "wwww.elchiringuitofc.com",
-    List("699555412").asJava)
+    "699555412")
+
+  val genCalendar = for {
+    date <- arbDate.arbitrary
+  } yield {
+    val c: Calendar = Calendar.getInstance()
+    c.setTime(date)
+    c
+  }
+
+  val validAddress = new Address
+  val validPerson = new Person
+  val validStaffMember = new StaffMember
 
   before {
     validTeam.teamId = null
@@ -77,7 +89,7 @@ class TeamServiceImplTest
             validTeam.foundationDate,
             validTeam.teamAddress,
             validTeam.teamWeb,
-            validTeam.teamTelephones.asScala)
+            validTeam.teamTelephones)
 
           createdTeam should equal(expectedTeam)
 
@@ -95,7 +107,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     intercept[IllegalArgumentException] {
@@ -105,7 +117,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     verifyZeroInteractions(teamService.teamDao)
@@ -123,7 +135,7 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     intercept[IllegalArgumentException] {
@@ -133,15 +145,12 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones.asScala)
+        validTeam.teamTelephones)
     }
 
     verifyZeroInteractions(teamService.teamDao)
 
   }
-
-  var validPerson = new Person
-  var validStaffMember = new StaffMember
 
   // Assign staff
   property("A person can be assigned to a team") {
@@ -352,6 +361,204 @@ class TeamServiceImplTest
 
     Then("StaffMember modifications must be saved")
     verify(teamService.staffMemberDao, never).save(assignedStaffMember)
+
+  }
+
+  // Edit Team
+
+  property("Team can be modified if it exists") {
+
+    var existingTeam = validTeam
+    existingTeam.teamId = 1
+
+    forAll(
+      (genValidTeamId, "teamId"),
+      (genNonEmptyString, "teamName"),
+      (genNonEmptyString, "publicName"),
+      (genCalendar, "foundationDate"),
+      (genNonEmptyString, "teamWeb"),
+      (genNonEmptyString, "teamTelephones")) {
+        (teamId: Long, teamName: String, publicName: String, foundationDate: Calendar,
+        teamWeb: String, teamTelephones: String) =>
+
+          val expectedTeam = new Team(
+            teamName,
+            publicName,
+            foundationDate,
+            validAddress,
+            teamWeb, teamTelephones)
+          expectedTeam.teamId = 1
+
+          Mockito.when(teamService.teamDao.findById(teamId)).thenReturn(Some(existingTeam))
+
+          val createdTeam: Team = teamService.modifyTeam(
+            teamId,
+            teamName,
+            publicName,
+            foundationDate,
+            validAddress,
+            teamWeb,
+            teamTelephones)
+
+          createdTeam should equal(expectedTeam)
+
+      }
+  }
+
+  property("Team can't be modified it doesn't exist") {
+
+    Given("A valid Team's parameters to be modified")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("A not existing Team")
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(None)
+
+    When("Try to modify a Team")
+    intercept[InstanceNotFoundException] {
+      teamService.modifyTeam(
+        team.teamId,
+        team.teamName,
+        team.publicTeamName,
+        team.foundationDate,
+        team.teamAddress,
+        team.teamWeb,
+        team.teamTelephones)
+    }
+
+    Then("Must return an instance not found exception")
+
+  }
+
+  property("Team can't be modified with empty teamName") {
+
+    Given("A valid Team's parameters to be modified")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("An existing Team")
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(Some(team))
+
+    When("Try to modify a Team")
+    intercept[IllegalArgumentException] {
+      teamService.modifyTeam(
+        team.teamId,
+        "",
+        team.publicTeamName,
+        team.foundationDate,
+        team.teamAddress,
+        team.teamWeb,
+        team.teamTelephones)
+    }
+
+    Then("Must return an illegal argument exception")
+
+  }
+
+  property("Team can't be modified with null teamName") {
+
+    Given("A valid Team's parameters to be modified")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("An existing Team")
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(Some(team))
+
+    When("Try to modify a Team")
+    intercept[IllegalArgumentException] {
+      teamService.modifyTeam(
+        team.teamId,
+        null,
+        team.publicTeamName,
+        team.foundationDate,
+        team.teamAddress,
+        team.teamWeb,
+        team.teamTelephones)
+    }
+
+    Then("Must return an illegal argument exception")
+
+  }
+
+  property("Team can't be modified with empty pblicTeamName") {
+
+    Given("A valid Team's parameters to be modified")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("An existing Team")
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(Some(team))
+
+    When("Try to modify a Team")
+    intercept[IllegalArgumentException] {
+      teamService.modifyTeam(
+        team.teamId,
+        team.teamName,
+        "",
+        team.foundationDate,
+        team.teamAddress,
+        team.teamWeb,
+        team.teamTelephones)
+    }
+
+    Then("Must return an illegal argument exception")
+
+  }
+
+  property("Team can't be modified with null publicTeamName") {
+
+    Given("A valid Team's parameters to be modified")
+    val team: Team = validTeam
+    team.teamId = 1
+
+    Given("An existing Team")
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(Some(team))
+
+    When("Try to modify a Team")
+    intercept[IllegalArgumentException] {
+      teamService.modifyTeam(
+        team.teamId,
+        team.teamName,
+        null,
+        team.foundationDate,
+        team.teamAddress,
+        team.teamWeb,
+        team.teamTelephones)
+    }
+
+    Then("Must return an illegal argument exception")
+
+  }
+
+  // Delete Team
+  property("Team must be deleted if it exists") {
+
+    Given("An existing Team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(Some(team))
+
+    When("Try to delete a Team")
+    teamService.removeTeam(team.teamId)
+
+    Then("Must remove team")
+    verify(teamService.teamDao).remove(team)
+
+  }
+
+  property("Team can't be deleted if it doesn't exist") {
+
+    Given("A not existing Team")
+    val team: Team = validTeam
+    team.teamId = 1
+    Mockito.when(teamService.teamDao.findById(team.teamId)).thenReturn(None)
+
+    When("Try to delete a Team")
+    intercept[InstanceNotFoundException] {
+      teamService.removeTeam(team.teamId)
+    }
+
+    Then("Must throw an instance not found exception")
 
   }
 

@@ -1,99 +1,148 @@
 <!DOCTYPE html>
 <html>
-  <head th:replace="fragments/head :: head">
-    <title>Edit Staff</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
-    <link href="../../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
-    <script src="../../../static/js/jquery.js" th:src="@{/js/jquery.js}"
-            data-src="http://code.jquery.com/jquery-latest.js"></script>
-      <script src="../../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-  </head>
-  <body>
-    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+<head th:replace="fragments/head :: head">
+<title>Edit Staff</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+  media="screen" th:href="@{/css/bootstrap.min.css}" />
+<link href="../../../static/css/core.css" rel="stylesheet"
+  media="screen" th:href="@{/css/core.css}" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../../static/js/bootstrap.min.js"
+  th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+  <div th:replace="fragments/header :: header">[Here goes the
+    header]</div>
 
-    <div class="container" th:fragment="content">
-      <div class="jumbotron input-group">
-        <h2 th:text="|${action} Team|">Create Team</h2>
+  <div class="container" th:fragment="content">
+    <div class="jumbotron input-group">
 
-        <hr/>
-
-        <form id="teamForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${team}">
-          <input th:each="h: ${hiddens}" type="hidden"
-                 th:name="${h.key}" th:value="${h.value}" />
-
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="name">Name</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{teamName}" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="publicName">Public Name</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="publicName" type="text" placeholder="Public Name" th:field="*{publicTeamName}" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="web">Web</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="web" type="text" placeholder="Web" th:field="*{teamWeb}" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-sm-3 control-label">
-              <label for="telephones">Telephones</label>
-            </div>
-            <div class="col-sm-9">
-              <label for="telephones">(ej: "678912345, 654321987")</label>
-              <input class="form-control" id="telephones" name="telephones" type="text" placeholder="Telephones" th:text="${telephones}" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addFirstLine">Address First Line</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="addFirstLine" type="text" placeholder="Address first line" th:field="${address.firstLine}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addSecondLine">Address Second Line</label>
-            <div class="col-sm-9">
-              <input class="form-control" id="addSecondLine" type="text" placeholder="Address Second Line" th:field="${address.secondLine}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
-            <div class="col-sm-3">
-              <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addLocality">Locality</label>
-            <div class="col-sm-3">
-              <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addProvince">Province</label>
-            <div class="col-sm-3">
-              <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="addCountry">Country</label>
-            <div class="col-sm-3">
-              <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
-            </div>
-          </div>
-
-          <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
-        </form>
+      <div th:if="${action} == 'Edit'">
+        <p class="pull-right">
+          <a class="btn btn-default" th:href="${team.deleteLink}">Delete</a>
+          <a class="btn btn-default" th:href="${team.assignStaffLink}">Assign
+            staff</a>
+        </p>
       </div>
+
+      <h2 th:text="|${action} Team|">Create Team</h2>
+
+      <hr />
+
+      <form id="teamForm" class="form-horizontal"
+        th:action="${submitUrl}" th:method="${submitMethod}"
+        th:object="${team}">
+        <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
+               th:value="${h.value}" />
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="name">Name</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="name" type="text"
+                   placeholder="Name" th:field="*{teamName}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="publicName">Public
+            Name</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="publicName" type="text"
+                   placeholder="Public Name" th:field="*{publicTeamName}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="web">Web</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="web" type="text"
+                   placeholder="Web" th:field="*{teamWeb}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-3 control-label">
+            <label for="teamTelephones">Telephones</label>
+          </div>
+          <div class="col-sm-9">
+            <label for="teamTelephones">(ej: "678912345, 654321987")</label>
+              <input class="form-control"
+                     id="teamTelephones" type="text" placeholder="Telephones"
+                     th:field="*{teamTelephones}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="foundationDate">Foundation
+            date</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="foundationDate"
+                   name="foundationDate" type="text"
+                   placeholder="Foundation Date" th:field="*{foundationDate}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addFirstLine">Address
+            First Line</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="addFirstLine" type="text"
+                   placeholder="Address first line"
+                   th:field="${address.firstLine}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addSecondLine">Address
+            Second Line</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="addSecondLine" type="text"
+                   placeholder="Address Second Line"
+                   th:field="${address.secondLine}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addPostCode">Postal
+            Code</label>
+          <div class="col-sm-3">
+            <input class="form-control" id="addPostCode" type="number"
+                   placeholder="Postal Code" th:field="${address.postCode}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addLocality">Locality</label>
+          <div class="col-sm-3">
+            <input class="form-control" id="addLocality" type="text"
+                   placeholder="Locality" th:field="${address.locality}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addProvince">Province</label>
+          <div class="col-sm-3">
+            <input class="form-control" id="addProvince" type="text"
+                   placeholder="Province" th:field="${address.province}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="addCountry">Country</label>
+          <div class="col-sm-3">
+            <input class="form-control" id="addCountry" type="text"
+                   placeholder="Country" th:field="${address.country}" />
+          </div>
+        </div>
+
+        <div>
+          <a class="btn btn-primary" th:if="${action} == 'Edit'"
+             th:href="*{showLink}">Cancel</a> <a
+             class="btn btn-primary" th:if="${action} == 'Create'"
+             th:href="${listLink}">Cancel</a> <input
+             class="btn btn-primary" type="submit" name="submit"
+             value="Accept" />
+        </div>
+      </form>
     </div>
-    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
-  </body>
+  </div>
+  <div th:replace="fragments/footer :: footer">&copy; 2013 The
+    Static Templates</div>
+</body>
 </html>

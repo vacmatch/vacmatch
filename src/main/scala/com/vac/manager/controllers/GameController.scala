@@ -20,8 +20,9 @@ import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import java.util.ArrayList
 import java.util.HashMap
 import scala.collection.SortedMap
-import com.vac.manager.controllers.actionable.{ ActionableGame, Hyperlink }
+import com.vac.manager.controllers.actionable.ActionableGame
 import javax.servlet.http.HttpServletRequest
+import com.vac.manager.controllers.utils.Hyperlink
 
 @Controller
 class GameController extends UrlGrabber {
@@ -38,8 +39,7 @@ class GameController extends UrlGrabber {
   def list(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    request: HttpServletRequest
-  ): ModelAndView = {
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -53,8 +53,7 @@ class GameController extends UrlGrabber {
 
           val authenticatedActionsMenu: Map[String, String] = Map(
             "Create calendar" -> getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year),
-            "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
-          )
+            "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year))
 
           val actionsMenu = if (userCanEdit) authenticatedActionsMenu else Map()
 
@@ -78,8 +77,7 @@ class GameController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: Long,
-    request: HttpServletRequest
-  ): ModelAndView = {
+    request: HttpServletRequest): ModelAndView = {
 
     val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 

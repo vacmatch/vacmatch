@@ -13,9 +13,9 @@ class CompetitionMemberDaoJPA
     // TODO Modify to find by competition id
     var q = getEntityManager().createQuery(
       "SELECT cm FROM CompetitionMember cm " +
-        "WHERE cm.endDate IS NULL ", classOf[CompetitionMember]) /*+
+        "WHERE cm.endDate IS NULL " +
         "AND cm.leagueSeason.id = :leagueSeasonId", classOf[CompetitionMember])
-      .setParameter("leagueSeasonId", leagueSeasonId)*/
+      .setParameter("leagueSeasonId", leagueSeasonId)
 
     q.getResultList().asScala
   }
@@ -24,11 +24,11 @@ class CompetitionMemberDaoJPA
     // TODO Modify to find by competition id andteamId
     var result = getEntityManager().createQuery(
       "SELECT cm FROM CompetitionMember cm " +
-        "WHERE cm.endDate IS NULL ", classOf[CompetitionMember]) /* +
+        "WHERE cm.endDate IS NULL " +
         "AND cm.leagueSeason.id = :leagueSeasonId " +
         "AND cm.team.teamId = :teamId", classOf[CompetitionMember])
       .setParameter("leagueSeasonId", leagueSeasonId)
-      .setParameter("teamId", teamId)*/
+      .setParameter("teamId", teamId)
       .getResultList()
 
     if (result.isEmpty()) {

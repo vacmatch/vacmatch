@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div class="container" th:fragment="content">
+      <div class="jumbotron">
+
+        <div class="pull-right">
+         <p>
+           <a class="btn btn-default"
+              href="#"
+              th:each="link: ${team.authorizedLinks}"
+              th:class="|btn ${link.className}|"
+              th:href="${link.href}"
+              th:text="${link.text}">Action on game</a>
+         </p>
+        </div>
+
+        <h2 th:text="${team.teamName}">Team name</h2>
+
+        <div>
+          <ul class="nav nav-pills">
+           <li role="presentation"><a th:href="${team.showLink}">Team details</a></li>
+           <li role="presentation" class="active"><a th:href="${team.showStaffMembersLink}">Staff Members</a></li>
+          </ul>
+        </div>
+
+        <br/>
+
+        <table class="table">
+          <tr>
+            <th></th>
+	          <th>Name</th>
+	          <th>Surname</th>
+	          <th>Card Id</th>
+          </tr>
+          <tr th:each="staff,iterStat: ${staffMemberList}" th:object="${staff}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="*{person.name}"></td>
+            <td th:text="*{person.surnames}"></td>
+            <td th:text="*{person.cardId}"></td>
+          </tr>
+        </table>
+
+        <a class="btn btn-default" th:href="${listLink}">Back to list</a>
+
+      </div>
+    </div>
+  </body>
+</html>
+

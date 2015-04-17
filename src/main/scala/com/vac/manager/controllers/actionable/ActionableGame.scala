@@ -5,12 +5,7 @@ import com.vac.manager.model.game.Game
 import com.vac.manager.controllers.utils.UrlGrabber
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
-
-case class Hyperlink(
-  @BeanProperty text: String,
-  @BeanProperty href: String,
-  @BeanProperty className: String
-)
+import com.vac.manager.controllers.utils.Hyperlink
 
 class ActionableGame(val game: Game, val slug: String, val year: String, userCanEdit: Boolean)
   extends Game
