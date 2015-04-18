@@ -7,8 +7,8 @@ import com.vac.manager.model.team.Team
 
 @Repository("staffMemberDao")
 class StaffMemberDaoJPA
-  extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
-  with StaffMemberDao {
+    extends GenericDaoJPA[StaffMember, java.lang.Long](classOf[StaffMember])
+    with StaffMemberDao {
 
   def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(

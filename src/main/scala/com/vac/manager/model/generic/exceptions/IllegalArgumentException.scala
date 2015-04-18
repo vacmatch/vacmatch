@@ -1,8 +1,7 @@
 package com.vac.manager.model.generic.exceptions
 
-class IllegalArgumentException (
+class IllegalArgumentException(
   key: Any,
-  className: String
-)
+  className: String)
     extends ArgumentException("Illegal argument", key, className)
 

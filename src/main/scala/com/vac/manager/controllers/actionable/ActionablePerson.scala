@@ -7,8 +7,8 @@ import javax.persistence.Inheritance
 import javax.persistence.Table
 
 class ActionablePerson(person: Person)
-  extends Person()
-  with UrlGrabber {
+    extends Person()
+    with UrlGrabber {
 
   personId = person.personId
   name = person.name

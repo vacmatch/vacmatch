@@ -8,8 +8,8 @@ import scala.collection.JavaConverters._
 import com.vac.manager.controllers.utils.Hyperlink
 
 class ActionableGame(val game: Game, val slug: String, val year: String, userCanEdit: Boolean)
-  extends Game
-  with UrlGrabber {
+    extends Game
+    with UrlGrabber {
 
   gameId = game.gameId
   leagueSeason = game.leagueSeason

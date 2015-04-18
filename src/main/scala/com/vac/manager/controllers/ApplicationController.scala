@@ -10,8 +10,8 @@ class ApplicationController() {
 
   @RequestMapping(Array("/"))
   def index = {
-    var mav: ModelAndView= new ModelAndView("home");
+    var mav: ModelAndView = new ModelAndView("home");
     mav
   }
-  
+
 }

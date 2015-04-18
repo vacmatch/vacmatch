@@ -9,7 +9,7 @@ import com.vac.manager.model.personal.AddressDao
 @Service("addressService")
 @Transactional
 class AddressServiceImpl
-  extends AddressService {
+    extends AddressService {
 
   @Autowired
   var addressDao: AddressDao = _
@@ -38,6 +38,4 @@ class AddressServiceImpl
   }
 
 }
-
-
 

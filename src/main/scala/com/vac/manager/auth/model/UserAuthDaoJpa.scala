@@ -8,8 +8,8 @@ import scala.beans.BeanProperty
 @Transactional
 @Repository("userAuthDao")
 class UserAuthDaoJpa
-  extends GenericDaoJPA[User, java.lang.Long](classOf[User])
-  with UserAuthDao {
+    extends GenericDaoJPA[User, java.lang.Long](classOf[User])
+    with UserAuthDao {
 
   def loadUserByUsername(fedId: java.lang.Long, username: String): Option[User] = {
 

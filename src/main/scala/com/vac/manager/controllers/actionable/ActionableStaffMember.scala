@@ -4,8 +4,8 @@ import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.controllers.utils.UrlGrabber
 
 class ActionableStaffMember(staffMember: StaffMember)
-  extends StaffMember
-  with UrlGrabber {
+    extends StaffMember
+    with UrlGrabber {
 
   staffMemberId = staffMember.staffMemberId
   joinDate = staffMember.joinDate

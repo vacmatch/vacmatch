@@ -58,8 +58,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def show(
-    @RequestParam("slug") slug: String
-  ) = {
+    @RequestParam("slug") slug: String) = {
     val fedId = federation.getId
     val league = leagueService.findBySlug(fedId, slug)
 
@@ -98,8 +97,7 @@ class LeagueAdminController extends UrlGrabber {
 
   def postCreate(
     @RequestParam("leagueName") leagueName: String,
-    @RequestParam("slug") slug: String
-  ): ModelAndView = {
+    @RequestParam("slug") slug: String): ModelAndView = {
     val league = leagueService.createLeague(federation.getId, leagueName: String, slug)
 
     val mav = new ModelAndView("admin/league/show")
@@ -108,8 +106,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def edit(
-    @RequestParam("slug") slug: String
-  ): ModelAndView = {
+    @RequestParam("slug") slug: String): ModelAndView = {
     val league = leagueService.findBySlug(federation.getId, slug)
     val submitUrl = getUrl("LeagueAdminController.postEdit")
 
@@ -129,8 +126,7 @@ class LeagueAdminController extends UrlGrabber {
   def postEdit(
     @RequestParam("oldslug") oldSlug: String,
     @RequestParam("leagueName") leagueName: String,
-    @RequestParam("slug") slug: String
-  ): String = {
+    @RequestParam("slug") slug: String): String = {
     val fedId = federation.getId
 
     leagueService modifyLeagueName (fedId, oldSlug, leagueName)
@@ -142,8 +138,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def delete(
-    @RequestParam("slug") slug: String
-  ): ModelAndView = {
+    @RequestParam("slug") slug: String): ModelAndView = {
     val fedId = federation.getId
 
     return new ModelAndView("admin/league/delete_confirm")
@@ -155,8 +150,7 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def postDelete(
-    @RequestParam("slug") slug: String
-  ): String = {
+    @RequestParam("slug") slug: String): String = {
 
     val result = leagueService removeLeagueBySlug (federation.getId, slug)
 

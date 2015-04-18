@@ -13,8 +13,8 @@ import javax.persistence.metamodel.Metamodel
 
 @Repository("personDao")
 class PersonDaoJPA
-  extends GenericDaoJPA[Person, java.lang.Long](classOf[Person])
-  with PersonDao {
+    extends GenericDaoJPA[Person, java.lang.Long](classOf[Person])
+    with PersonDao {
 
   def findByName(name: String, startIndex: Int,
     count: Int): Seq[Person] = {

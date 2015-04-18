@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository
 
 @Repository("competitionDao")
 class CompetitionDaoJPA
-  extends GenericDaoJPA[Competition, java.lang.Long](classOf[Competition])
-  with CompetitionDao {
+    extends GenericDaoJPA[Competition, java.lang.Long](classOf[Competition])
+    with CompetitionDao {
 
 }

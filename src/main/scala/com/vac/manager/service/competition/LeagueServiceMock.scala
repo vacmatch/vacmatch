@@ -68,10 +68,10 @@ abstract class LeagueServiceMock extends LeagueService {
   }
 
   /**
-   * It's free to return the League instead of the Seq[LeagueSeason]
-   * naturally because the JOIN must be made in the DB anyway, so all
-   * data is already fetched.
-   */
+    * It's free to return the League instead of the Seq[LeagueSeason]
+    * naturally because the JOIN must be made in the DB anyway, so all
+    * data is already fetched.
+    */
   def findSeasonsByLeague(fedId: Long, slug: String): Option[League] = {
     val l1 = createLeague(fedId, "Velociraptors", "vr")
 
@@ -79,8 +79,8 @@ abstract class LeagueServiceMock extends LeagueService {
   }
 
   /**
-   * But we can already return just the Seq as a Scala value
-   */
+    * But we can already return just the Seq as a Scala value
+    */
   def findSeasonsByLeagueAsSeq(fedId: Long, slug: String): Seq[LeagueSeason] = {
     return findSeasonsByLeague(fedId, slug).get.getSeasonList.asScala
   }

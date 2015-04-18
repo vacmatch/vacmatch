@@ -15,13 +15,13 @@ import java.util.ArrayList
 @Table(name = "PERSON")
 @Inheritance(strategy = InheritanceType.JOINED)
 class Person(
-  stName: String,
-  stSurnames: String,
-  stEmail: String,
-  stTelephones: String,
-  stCardId: String,
-  stBirth: Calendar,
-  stFederation: Federation) {
+    stName: String,
+    stSurnames: String,
+    stEmail: String,
+    stTelephones: String,
+    stCardId: String,
+    stBirth: Calendar,
+    stFederation: Federation) {
 
   @Id
   @SequenceGenerator(name = "personIdGenerator", sequenceName = "person_id_seq")

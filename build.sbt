@@ -73,3 +73,12 @@ lazy val root = (project in file("."))
 // Enable WAR packaging
 tomcat()
 
+scalariformSettings
+
+import scalariform.formatter.preferences._
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+  .setPreference(PreserveDanglingCloseParenthesis, true)
+  .setPreference(DoubleIndentClassDeclaration, true)
+  .setPreference(PreserveDanglingCloseParenthesis, true)
+  .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
+

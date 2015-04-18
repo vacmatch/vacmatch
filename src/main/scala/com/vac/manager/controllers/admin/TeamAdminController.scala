@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest
 
 @Controller
 class TeamAdminController
-  extends UrlGrabber {
+    extends UrlGrabber {
 
   @Autowired
   var teamService: TeamService = _

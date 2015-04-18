@@ -53,8 +53,8 @@ abstract class GenericDaoJPA[T, K <: Serializable](entClass: Class[T]) extends G
   }
 
   /**
-   * Find entity by id
-   */
+    * Find entity by id
+    */
   def findById(id: K): Option[T] = {
     val entity = entityManager.find(entityClass, id).asInstanceOf[T];
 
