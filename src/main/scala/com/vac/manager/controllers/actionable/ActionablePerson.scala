@@ -5,10 +5,13 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import javax.persistence.Entity
 import javax.persistence.Inheritance
 import javax.persistence.Table
+import com.vac.manager.controllers.utils.Hyperlink
+import scala.beans.BeanProperty
+import scala.collection.JavaConverters._
 
-class ActionablePerson(person: Person)
-    extends Person()
-    with UrlGrabber {
+class ActionablePerson(person: Person, userCanEdit: Boolean)
+  extends Person()
+  with UrlGrabber {
 
   personId = person.personId
   name = person.name
@@ -22,12 +25,22 @@ class ActionablePerson(person: Person)
   birth = person.birth
   federation = person.federation
 
+  @BeanProperty
+  val anonymousLinks = List(Hyperlink("Show person", getShowLink, "btn-primary")).asJava
+
+  @BeanProperty
+  val authorizedLinks = if (!userCanEdit) List().asJava else
+    List(Hyperlink("Edit person", getEditLink, "btn-default")).asJava
+
+  @BeanProperty
+  val links = (anonymousLinks.asScala ++ authorizedLinks.asScala).asJava
+
   def getShowLink(): String = {
-    getUrl("PersonController.showPerson", "personId" -> person.personId)
+    getUrl("PersonAdminController.showPerson", "personId" -> person.personId)
   }
 
   def getEditLink(): String = {
-    getUrl("PersonController.edit", "personId" -> person.personId)
+    getUrl("PersonAdminController.edit", "personId" -> person.personId)
   }
 
   def getAssignPostLink(): String = {

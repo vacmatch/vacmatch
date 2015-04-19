@@ -1,38 +1,28 @@
-package com.vac.manager.controllers
+package com.vac.manager.controllers.admin
 
-import org.springframework.stereotype.Controller
 import org.springframework.beans.factory.annotation.Autowired
-import com.vac.manager.service.staff.PersonService
-import com.vac.manager.model.staff.Person
+import com.vac.manager.util.FederationBean
 import org.springframework.web.servlet.ModelAndView
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
-import com.vac.manager.controllers.utils.UrlGrabber
-import javax.validation.Valid
+import com.vac.manager.model.staff.Person
 import org.springframework.validation.BindingResult
 import com.vac.manager.model.personal.Address
-import com.vac.manager.model.federation.Federation
-import com.vac.manager.service.personal.AddressService
-import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
-import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
-import scala.beans.BeanProperty
-import com.vac.manager.service.federation.FederationService
-import scala.collection.JavaConverters._
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ModelAttribute
-import com.vac.manager.util.FederationBean
+import javax.management.InstanceNotFoundException
+import com.vac.manager.controllers.utils.UrlGrabber
+import scala.collection.JavaConverters._
+import com.vac.manager.service.staff.PersonService
+import org.springframework.stereotype.Controller
 import com.vac.manager.controllers.actionable.ActionablePerson
+import javax.servlet.http.HttpServletRequest
+import org.springframework.web.bind.annotation.PathVariable
+import scala.beans.BeanProperty
 
 @Controller
-class PersonController extends UrlGrabber {
+class PersonAdminController extends UrlGrabber {
 
   @Autowired
   var personService: PersonService = _
-
-  @Autowired
-  var addressService: AddressService = _
-
-  @Autowired
-  var federationService: FederationService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -61,10 +51,10 @@ class PersonController extends UrlGrabber {
     val receiverFind = new FindPersons
 
     // Submit params
-    val submitUrl: String = getUrl("PersonController.list")
+    val submitUrl: String = getUrl("PersonAdminController.list")
     val submitMethod: String = "POST"
 
-    new ModelAndView("person/find")
+    new ModelAndView("admin/person/find")
       .addObject("receiver", receiverFind)
       .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet())
       .addObject("submitUrl", submitUrl)
@@ -75,13 +65,21 @@ class PersonController extends UrlGrabber {
     @RequestParam("byName") byName: String,
     @RequestParam("byCardId") byCardId: String,
     @RequestParam("byEmail") byEmail: String,
-    @RequestParam("byAllPerson") byAllPerson: Boolean): ModelAndView = {
+    @RequestParam("byAllPerson") byAllPerson: Boolean,
+    request: HttpServletRequest): ModelAndView = {
 
     // TODO: Check errors
     // TODO: Check if none parameter is activated
     val fedId: Long = federation.getId
-    val createLink: String = getUrl("PersonController.create")
-    val findLink: String = getUrl("PersonController.find")
+
+    // Check user permissions
+    val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    val anonymousActionsMenu: Map[String, String] = Map(
+      "Find staff" -> getUrl("PersonAdminController.find"))
+    val authenticatedActionsMenu: Map[String, String] = Map(
+      "Create staff" -> getUrl("PersonAdminController.create"))
+    val actionsMenu = if (userCanEdit) anonymousActionsMenu ++ authenticatedActionsMenu else anonymousActionsMenu
 
     val startIndex: Int = 0
     val count: Int = 10
@@ -90,49 +88,80 @@ class PersonController extends UrlGrabber {
 
     if (byName.nonEmpty)
       personList = personService.findByName(byName,
-        startIndex, count).map(new ActionablePerson(_))
+        startIndex, count).map(new ActionablePerson(_, userCanEdit))
 
     if (byCardId.nonEmpty)
       personList = personService.findByCardId(byCardId,
-        startIndex, count).map(new ActionablePerson(_))
+        startIndex, count).map(new ActionablePerson(_, userCanEdit))
 
     if (byEmail.nonEmpty)
       personList = personService.findByEmail(byEmail,
-        startIndex, count).map(new ActionablePerson(_))
+        startIndex, count).map(new ActionablePerson(_, userCanEdit))
 
     if (byAllPerson)
-      personList = personService.findAllByFederationId(fedId) map (new ActionablePerson(_))
+      personList = personService.findAllByFederationId(fedId) map (new ActionablePerson(_, userCanEdit))
 
-    new ModelAndView("person/list")
-      .addObject("createLink", createLink)
-      .addObject("findLink", findLink)
+    new ModelAndView("admin/person/list")
+      .addObject("actionsMenu", actionsMenu.asJava)
+      .addObject("personList", personList.asJava)
+  }
+
+  def listAll(
+    request: HttpServletRequest): ModelAndView = {
+
+    // TODO: Check if none parameter is activated
+    val fedId: Long = federation.getId
+
+    // Check user permissions
+    val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    val anonymousActionsMenu: Map[String, String] = Map(
+      "Find staff" -> getUrl("PersonAdminController.find"))
+    val authenticatedActionsMenu: Map[String, String] = Map(
+      "Create staff" -> getUrl("PersonAdminController.create"))
+    val actionsMenu = if (userCanEdit) anonymousActionsMenu ++ authenticatedActionsMenu else anonymousActionsMenu
+
+    var personList: Seq[ActionablePerson] = personService.findAllByFederationId(fedId) map (new ActionablePerson(_, userCanEdit))
+
+    new ModelAndView("admin/person/list")
+      .addObject("actionsMenu", actionsMenu.asJava)
       .addObject("personList", personList.asJava)
   }
 
   def showPerson(
-    @PathVariable("personId") personId: Long): ModelAndView = {
+    @PathVariable("personId") personId: Long,
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: Long = federation.getId
 
+    // Check user permissions
+    val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    val listLink: String = getUrl("PersonAdminController.listAll")
+
     personService.find(personId).map { person =>
-      new ModelAndView("person/show")
-        .addObject("person", new ActionablePerson(person))
+      new ModelAndView("admin/person/show")
+        .addObject("person", new ActionablePerson(person, userCanEdit))
+        .addObject("listLink", listLink)
     }.getOrElse(throw new RuntimeException("Person not found"))
   }
 
-  def create(): ModelAndView = {
+  def create(request: HttpServletRequest): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
 
     // Receivers
-    val receiverPerson = new Person()
+    val receiverPerson = new Person
     val receiverAddress = new Address()
     // Submit params
-    val submitUrl: String = getUrl("PersonController.createPost")
+    val submitUrl: String = getUrl("PersonAdminController.createPost")
     val submitMethod: String = "POST"
 
-    new ModelAndView("person/edit")
+    val listLink: String = getUrl("PersonAdminController.listAll")
+
+    new ModelAndView("admin/person/edit")
       .addObject("action", "Create")
+      .addObject("listLink", listLink)
       .addObject("address", receiverAddress)
       .addObject("person", receiverPerson)
       .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
@@ -145,12 +174,6 @@ class PersonController extends UrlGrabber {
     @ModelAttribute("personReceiver") personReceiver: Person,
     result: BindingResult): ModelAndView = {
 
-    /*
-    if (result.hasErrors()) {
-      return new ModelAndView("person/edit")
-        .addObject("person", personReceiver)
-    }
-    */
     val fedId: Long = federation.getId
 
     try {
@@ -173,7 +196,7 @@ class PersonController extends UrlGrabber {
       // Assign address to created person
       val personAssigned: Option[Person] = personService.assignAddress(person.personId, personAddress)
 
-      new ModelAndView("redirect:" + getUrl("PersonController.showPerson", "personId" -> person.personId))
+      new ModelAndView("redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
     } catch {
 
       // Federation not found
@@ -182,46 +205,38 @@ class PersonController extends UrlGrabber {
   }
 
   def edit(
-    @RequestParam("personId") personId: java.lang.Long): ModelAndView = {
+    @RequestParam("personId") personId: java.lang.Long,
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
+
+    // Check user permissions
+    val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
     // Receivers
     var receiverAddress = new Address()
     // Submit params
-    val submitUrl: String = getUrl("PersonController.editPost", "personId" -> personId)
+    val submitUrl: String = getUrl("PersonAdminController.editPost", "personId" -> personId)
     val submitMethod: String = "POST"
 
-    val maybePersonMember: Option[Person] = personService.find(personId)
-
-    maybePersonMember match {
-      case None => new ModelAndView("person/notfound")
-      case Some(person) => {
+    personService.find(personId).map {
+      person =>
         receiverAddress = person.address
 
-        new ModelAndView("person/edit")
+        new ModelAndView("admin/person/edit")
           .addObject("action", "Edit")
           .addObject("address", receiverAddress)
-          .addObject("person", person)
+          .addObject("person", new ActionablePerson(person, userCanEdit))
           .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
           .addObject("submitUrl", submitUrl)
           .addObject("submitMethod", submitMethod)
-      }
-    }
+    }.getOrElse(throw new InstanceNotFoundException("Person not found"))
   }
 
   def editPost(
     @RequestParam("personId") personId: java.lang.Long,
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("person") person: Person,
-    result: BindingResult): ModelAndView = {
-
-    /*
-    if (result.hasErrors()) {
-      return new ModelAndView("person/edit")
-        .addObject("person", person)
-    }
-	*/
+    @ModelAttribute("person") person: Person): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -241,8 +256,8 @@ class PersonController extends UrlGrabber {
       case None => new ModelAndView("person/notfound")
       case Some(person) =>
         new ModelAndView(
-          "redirect:" + getUrl("PersonController.showPerson", "personId" -> person.personId))
+          "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
     }
   }
-}
 
+}

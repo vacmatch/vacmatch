@@ -129,11 +129,15 @@ class TeamAdminController
   }
 
   def assignStaffMember(
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long,
+    request: HttpServletRequest): ModelAndView = {
 
     val fedId: Long = federation.getId
 
     teamService.find(teamId).map { team =>
+
+      // Check user permissions
+      val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
       // Initialize current person list
       val actualStaffMemberList: Seq[ActionableStaffMember] =
@@ -141,7 +145,7 @@ class TeamAdminController
 
       // Initialize all person list
       val allPersonList: Seq[ActionablePerson] =
-        personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s))
+        personService.findAllByFederationId(fedId).map(s => new ActionablePerson(s, userCanEdit))
 
       // Submit parameters
       val submitMethod = "POST"

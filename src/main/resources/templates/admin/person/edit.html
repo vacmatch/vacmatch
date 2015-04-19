@@ -11,12 +11,13 @@
   <body>
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
-      <div class="jumbotron input-group">
-  <h2 th:text="|${action} Person|">Create Person</h2>
+      <div class="jumbotron input-group" th:object="${person}">
+
+        <h2 th:text="|${action} Person|">Create Person</h2>
 
 	<hr/>
 
-	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}" th:object="${person}">
+	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
 	  <input th:each="h: ${hiddens}" type="hidden"
 	   th:name="${h.key}" th:value="${h.value}" />
 
@@ -51,7 +52,7 @@
 	  <div class="form-group">
 	    <label class="col-sm-3 control-label" for="birth">Birth</label>
 	    <div class="col-sm-9">
-	      <input class="form-control" id="birth" type="date" placeholder="Birth" th:field="*{birth}" />
+	      <input class="form-control" id="birth" type="text" placeholder="Birth" th:field="*{birth}" />
 	    </div>
 	  </div>
 
@@ -102,7 +103,8 @@
 	     </div>
 	   </div>
 
-	  <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
+          <a class="btn btn-primary" th:href="${listLink}? ${listLink}: *{showLink}">Cancel</a>
+          <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
 	</form>
       </div>
     </div>
