@@ -1,32 +1,32 @@
 <!DOCTYPE html>
-<html>
-<head th:replace="fragments/head :: head">
-<title>Assign Staff</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
-  media="screen" th:href="@{/css/bootstrap.min.css}" />
-<link href="../../../static/css/core.css" rel="stylesheet" media="screen"
-  th:href="@{/css/core.css}" />
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="../../../static/js/bootstrap.min.js"
-  th:src="@{/js/bootstrap.min.js}"></script>
-</head>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://tech.vacmatch.com/ns/i18n"
+      xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/head :: head">
+    <title>t("title", "Assign Staff Member")</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js">
+      <script src="../../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
   <div th:replace="fragments/header :: header">[Here goes the
     header]</div>
   <div class="container" th:fragment="content">
     <div class="jumbotron input-group">
-      <h2 class="row">Assign Staff Member</h2>
+      <h2 class="row">t("Assign Staff Member")</h2>
       <hr />
       <div class="row">
         <div class="col-sm-5">
-          <h4>All people</h4>
+          <h4>t("All people")</h4>
           <table class="table">
             <tr>
-              <th>Name</th>
-              <th>Surnames</th>
-              <th>Card Id</th>
-              <th>Actions</th>
+              <th>t("Name")</th>
+              <th>t("Surnames")</th>
+              <th>t("Card Id")</th>
+              <th>t("Actions")</th>
             </tr>
             <tr th:each="a: ${avaliablePersonList}">
               <form id="${a.personId}" class="form form-horizontal"
@@ -34,9 +34,9 @@
                     th:method="${submitMethod}">
                 <input th:each="h: ${hiddens}" type="hidden"
                        th:name="${h.key}" th:value="${h.value}" />
-                <td th:text="${a.name}">Name</td>
-                <td th:text="${a.surnames}">Surnames</td>
-                <td th:text="${a.cardId}">Card Id</td>
+                <td th:text="${a.name}">Jane</td>
+                <td th:text="${a.surnames}">Doe</td>
+                <td th:text="${a.cardId}">123456789-Y</td>
                 <td><input class="btn btn-default" type="submit"
                   name="submit" value="Add" /></td>
               </form>
@@ -45,13 +45,13 @@
         </div>
 
         <div class="col-sm-offset-1 col-sm-5">
-          <h4>Current team staff members</h4>
+          <h4>t("Current team staff members")</h4>
           <table class="table">
             <tr>
-              <th>Name</th>
-              <th>Surnames</th>
-              <th>Card Id</th>
-              <th>Actions</th>
+              <th>t("Name")</th>
+              <th>t("Surnames")</th>
+              <th>t("Card Id")</th>
+              <th>t("Actions")</th>
             </tr>
             <tr th:each="t: ${teamStaffMemberList}">
               <form id="${t.staffMemberId}-remove"
@@ -60,22 +60,19 @@
                     th:method="${submitMethod}">
                 <input th:each="h2: ${hiddens}" type="hidden"
                        th:name="${h2.key}" th:value="${h2.value}" />
-                <td th:text="${t.person.name}">Name</td>
-                <td th:text="${t.person.surnames}">Surnames</td>
-                <td th:text="${t.person.cardId}">Card Id</td>
+                <td th:text="${t.person.name}">George R.R.</td>
+                <td th:text="${t.person.surnames}">Martin</td>
+                <td th:text="${t.person.cardId}">123456781-B</td>
                 <td><input class="btn btn-default" type="submit"
-                  name="submit" value="Remove" /></td>
+                  name="submit" value="Remove" i18n:value="Remove" /></td> <!--/* t("Remove") */-->
               </form>
             </tr>
           </table>
         </div>
       </div>
-
       <hr />
-
       <div class="row">
-        <a class="btn btn-default" href="/" th:href="${acceptUrl}">Accept
-          selection</a>
+        <a class="btn btn-default" href="/" th:href="${acceptUrl}">t("Accept selection")</a>
       </div>
     </div>
   </div>

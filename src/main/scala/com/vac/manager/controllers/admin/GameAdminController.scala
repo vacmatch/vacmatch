@@ -1,20 +1,23 @@
 package com.vac.manager.controllers.admin
 
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.servlet.ModelAndView
 import com.vac.manager.controllers.utils.UrlGrabber
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.beans.factory.annotation.Autowired
-import com.vac.manager.service.game.GameService
-import com.vac.manager.service.competition.LeagueService
-import com.vac.manager.util.FederationBean
-import scala.collection.JavaConverters._
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
-import scala.util.Try
+import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.service.game.GameService
+import com.vac.manager.util.FederationBean
+import com.vacmatch.util.i18n.I18n
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
+import org.springframework.web.servlet.ModelAndView
+import scala.collection.JavaConverters._
+import scala.util.Try
 
 @Controller
 class GameAdminController extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var gameService: GameService = _
@@ -27,7 +30,8 @@ class GameAdminController extends UrlGrabber {
 
   def createCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -38,7 +42,7 @@ class GameAdminController extends UrlGrabber {
       season =>
         {
           new ModelAndView("admin/calendar/edit")
-            .addObject("action", "Create")
+            .addObject("action", i.t("Create calendar"))
             .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet())
             .addObject("submitMethod", submitMethod)
             .addObject("submitUrl", submitUrl)
@@ -51,7 +55,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @RequestParam("teamsNumber") teamsNumber: Int,
-    @RequestParam("leagueRounds") leagueRounds: Int): ModelAndView = {
+    @RequestParam("leagueRounds") leagueRounds: Int
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -70,7 +75,8 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -81,7 +87,6 @@ class GameAdminController extends UrlGrabber {
       season =>
         {
           new ModelAndView("admin/calendar/delete")
-            .addObject("action", "Delete")
             .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet())
             .addObject("submitMethod", submitMethod)
             .addObject("submitUrl", submitUrl)
@@ -92,7 +97,8 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendarPost(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 

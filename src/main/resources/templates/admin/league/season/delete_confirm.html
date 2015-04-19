@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://tech.vacmatch.com/ns/i18n"
+      xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title th:text="${action}">Create league</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet"
+    <title>t("Delete league")</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+    <link href="../../../../static/css/bootstrap.min.css" rel="stylesheet"
 	  media="screen" th:href="@{/css/bootstrap.min.css}" />
-    <link href="../../static/css/core.css" rel="stylesheet" media="screen"
+    <link href="../../../../static/css/core.css" rel="stylesheet" media="screen"
 	  th:href="@{/css/core.css}" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="../../static/js/bootstrap.min.js"
+    <script src="../../../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../../../static/js/bootstrap.min.js"
 	    th:src="@{/js/bootstrap.min.js}"></script>
   </head>
   <body>
     <div class="container" th:fragment="content">
       <div class="jumbotron">
-	<h2>Delete Season for league</h2>
+	<h2>t("Delete Season %1$s for league %2$s", ${seasonName}, ${leagueName})</h2>
 
 	<form id="leagueForm" th:action="${submitUrl}"
 	      th:method="${submitMethod}" th:object="${leagueSeason}">
@@ -23,7 +26,8 @@
 		 th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
 	  <input
-	     type="submit" name="submit" value="Confirm deletion" />
+	     type="submit" name="submit" value="Confirm deletion">
+	  <i18n:attr name="value">t("Confirm deletion")</i18n:attr>
 
 	</form>
       </div>

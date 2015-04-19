@@ -4,6 +4,7 @@ import com.vac.manager.auth.model.{ User, UserAuthService, UserRole }
 import com.vac.manager.controllers.utils.UrlGrabber
 import com.vac.manager.util.{ FederationBean, Layout }
 import com.vac.manager.util.Sugar.splitEither
+import com.vacmatch.util.i18n.I18n
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestParam
@@ -39,6 +40,9 @@ class UserAdminController extends UrlGrabber {
     lazy val textRoles: java.util.Set[String] =
       roles.asScala.map { role => role.name }.asJava
   }
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var userAuthService: UserAuthService = _
@@ -144,7 +148,7 @@ class UserAdminController extends UrlGrabber {
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, username)
 
     maybeUser match {
-      case None => throw new RuntimeException("User does not exist")
+      case None => throw new RuntimeException(i.t("User does not exist"))
       case Some(user) =>
         val allRoles: Seq[UserRole] = userAuthService.getRoles(fed.getId)
 
@@ -154,42 +158,43 @@ class UserAdminController extends UrlGrabber {
         def addRoles(rolesToAdd: Seq[String]) = {
           rolesToAdd.map { role =>
             if (userAuthService.addAuthorityToUser(fed.getId, username, role))
-              Right("Role " + role + " added successfully")
+              Right(i.t("Role %s added successfully", role))
             else
-              Left("Role " + role + " could not be added")
+              Left(i.t("Role %s could not be added", role))
           }
         }
 
         def removeRoles(rolesToRemove: Seq[String]) = {
           rolesToRemove.map { role =>
             if (userAuthService.removeAuthorityFromUser(fed.getId, username, role))
-              Right("Role " + role + " removed successfully")
+              Right(i.t("Role %s removed successfully", role))
             else
-              Left("Role " + role + " could not be removed")
+              Left(i.t("Role %s could not be removed", role))
           }
         }
 
         def mayModifyPassword() = {
           if (encPasswd != "" && password != "") {
             if (password != encPasswd) {
-              throw new RuntimeException("Password not matching")
+              throw new RuntimeException(i.t("Passwords do not match"))
             }
             if (userAuthService.modifyPassword(fed.getId, username, encPasswd))
-              Right("User password changed successfully")
+              Right(i.t("User password changed successfully"))
           }
-          Left("Passwords do not match")
+          Left(i.t("Passwords do not match"))
         }
 
-        val addedRoles = addRoles(textRoles.asScala.filter(!savedTextRoles.contains(_)))
+        val addedRoles: Seq[Either[String, String]] = addRoles(textRoles.asScala.filter(!savedTextRoles.contains(_)))
         val removedRoles = removeRoles(savedTextRoles.toSeq.filter(!textRoles.contains(_)))
         val modifiedPassword = mayModifyPassword()
 
         // // If username changes, change it // ?? requires aditional parameter originalUsername
         val modifiedRealName =
           if (userAuthService.modifyRealName(fed.getId, username, fullName))
-            Right("Real name changed successfully")
+            Right(i.t("Real name changed successfully"))
           else
-            Left("Real name could not be changed")
+            Left(i.t("Real name changed successfully"))
+        // Left(i.t("Real name could not be changed"))
 
         val ops = addedRoles ++ removedRoles ++ List(modifiedPassword, modifiedRealName)
 

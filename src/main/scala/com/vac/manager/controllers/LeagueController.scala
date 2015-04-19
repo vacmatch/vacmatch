@@ -4,15 +4,19 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import com.vac.manager.model.competition.League
 import com.vac.manager.service.competition.LeagueService
 import com.vac.manager.util.FederationBean
+import com.vacmatch.util.i18n.I18n
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.{ PathVariable, RequestParam }
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.servlet.ModelAndView
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 @Controller
 class LeagueController {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var leagueService: LeagueService = _
@@ -56,8 +60,10 @@ class LeagueController {
     val fedId = federation.getId()
     val league = leagueService.findBySlug(fedId, slug)
 
-    val mav = new ModelAndView("league/show")
-    mav.addObject("league", league.get)
+    new ModelAndView("league/show")
+      .addObject("league", league.get)
+      .addObject("leagueName", i.t("League %s", league.map(_.leagueName).orNull))
+
   }
 
 }

@@ -1,5 +1,7 @@
 package com.vac.manager
 
+import auth.model.FederationUserDetailsService
+import com.vacmatch.util.i18n.{ I18n, I18nScaposer, I18nScaposerBean }
 import controllers.conversions.{ CalendarFormatter, DateFormatter }
 import java.util.ArrayList
 import javax.servlet.ServletRequest
@@ -27,11 +29,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
 import scala.collection.JavaConverters._
 import util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
-import auth.model.FederationUserDetailsService
 
 @Lazy
-@Configuration
-@ComponentScan(basePackages = Array("com.vac.manager")) // You should not use the @EnableWebMvc annotation
+@Configuration // You should not use the @EnableWebMvc annotation
 class WebAppConfig() extends RouterConfigurationSupport {
 
   override protected def isHandlerMappingReloadEnabled() = { true }
@@ -128,7 +128,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 @Lazy
 @EnableTransactionManagement
 @EnableAutoConfiguration
-@ComponentScan @Import(Array(classOf[WebAppConfig], classOf[WebSecurityConfig]))
+@ComponentScan(basePackages = Array("com.vac.manager"))
+@Import(Array(classOf[WebAppConfig], classOf[I18nableApplication], classOf[WebSecurityConfig]))
 class WebApplication extends Application {
   @Bean
   def multiTenantHandler(): FilterRegistrationBean = {
@@ -195,7 +196,7 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
 
 // @Configuration
 // @EnableAutoConfiguration
-// @Import(Array(classOf[WebAppConfig], classOf[Application]))))
+// @Import(Array(classOf[WebAppConfig], classOf[Application]))
 // class WebApplication
 
 object Application extends App {

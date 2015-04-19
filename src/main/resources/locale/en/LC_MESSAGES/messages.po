@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Santiago Saavedra <ssaavedra@vacmatch.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:183
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:188
+msgid "Passwords do not match"
+msgstr "Passwords don't match"
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:198
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:200
+msgid "Real name changed successfully"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:165
+msgid "Role %s added successfully"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:167
+msgid "Role %s could not be added"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:176
+msgid "Role %s could not be removed"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:174
+msgid "Role %s removed successfully"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:155
+msgid "User does not exist"
+msgstr ""
+
+#: ../../../../src/main/scala/com/vac/manager/auth/controllers/UserAdminController.scala:186
+msgid "User password changed successfully"
+msgstr ""
+

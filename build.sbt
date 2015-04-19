@@ -32,6 +32,7 @@ val ourDeps = Seq (
   "org.apache.tomcat.embed" % "tomcat-embed-jasper" % "7.0.53" % "container",
   "org.springframework.boot" % "spring-boot-starter-tomcat" % "1.1.9.RELEASE" % "provided",
   "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided",
+  "com.vacmatch.util" %% "i18n-gettext" % "0.2.1-SNAPSHOT",
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
@@ -59,15 +60,26 @@ lazy val root = (project in file("."))
     scalaVersion := "2.11.4",
     name := "manager",
 
-    resolvers ++= Seq(
-      Resolver.mavenLocal,
-      Resolver.jcenterRepo,
-      Resolver.sonatypeRepo("snapshots")
-    ),
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
 
-    libraryDependencies ++= ourDeps ++ testDeps,
+  resolvers ++= Seq(
+    Resolver.mavenLocal,
+    Resolver.url("vacmatch-https-repo") ivys "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
+    // Resolver.ssh("vacmatch-ssh-repo", "corp.vacmatch.com") as("repo", Path.userHome / ".ssh" / "id_rsa") ivys "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
+    Resolver.jcenterRepo,
+    Resolver.sonatypeRepo("snapshots")
+  ),
 
-    webInfClasses in webapp := true
+  libraryDependencies ++= ourDeps ++ testDeps,
+
+  webInfClasses in webapp := true,
+
+  autoCompilerPlugins := true,
+
+  addCompilerPlugin("tv.cntt" %% "xgettext" % "1.3"),
+
+  scalacOptions :=
+      scalacOptions.value :+ ("-P:xgettext:com.vacmatch.util.i18n.I18n")
   )
 
 // Enable WAR packaging

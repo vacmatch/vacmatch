@@ -5,6 +5,7 @@ import com.vac.manager.model.competition.League
 import com.vac.manager.service.competition.LeagueService
 import com.vac.manager.util.Layout
 import com.vac.manager.util.FederationBean
+import com.vacmatch.util.i18n.I18n
 import java.lang.Long
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -15,6 +16,9 @@ import scala.collection.JavaConverters._
 @Controller
 @Layout("layouts/default_admin")
 class LeagueAdminController extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var leagueService: LeagueService = _
@@ -50,11 +54,10 @@ class LeagueAdminController extends UrlGrabber {
     var leagues: Seq[CrudLeague] =
       leagueService findAllByFederation fedId map (new CrudLeague(_))
 
-    val mav: ModelAndView = new ModelAndView("admin/league/list")
-    mav addObject ("createUrl", getUrl("LeagueAdminController.create"))
-    mav addObject ("listUrl", getUrl("LeagueAdminController.list"))
-    mav addObject ("leagues", (leagues.asJava))
-    mav
+    new ModelAndView("admin/league/list")
+      .addObject("createUrl", getUrl("LeagueAdminController.create"))
+      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+      .addObject("leagues", (leagues.asJava))
   }
 
   def show(
@@ -62,11 +65,11 @@ class LeagueAdminController extends UrlGrabber {
     val fedId = federation.getId
     val league = leagueService.findBySlug(fedId, slug)
 
-    val mav = new ModelAndView("admin/league/show")
-    mav.addObject("league", league.get)
+    new ModelAndView("admin/league/show")
+      .addObject("league", league.get)
+      .addObject("leagueName", i.t("League %s", league.get.leagueName))
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
       .addObject("listUrl", getUrl("LeagueAdminController.list"))
-
   }
 
   def create() = {
@@ -84,13 +87,12 @@ class LeagueAdminController extends UrlGrabber {
 
     val submitUrl = getUrl("LeagueAdminController.postCreate")
 
-    val mav: ModelAndView = new ModelAndView("admin/league/edit_form")
-
-    mav.addObject("league", league)
-    mav.addObject("hiddens", Map().asJava)
-    mav.addObject("action", "Create League")
-    mav.addObject("submitUrl", submitUrl)
-    mav.addObject("submitMethod", "POST")
+    new ModelAndView("admin/league/edit_form")
+      .addObject("league", league)
+      .addObject("hiddens", Map().asJava)
+      .addObject("action", i.t("Create league"))
+      .addObject("submitUrl", submitUrl)
+      .addObject("submitMethod", "POST")
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
       .addObject("listUrl", getUrl("LeagueAdminController.list"))
   }
@@ -112,13 +114,12 @@ class LeagueAdminController extends UrlGrabber {
 
     // TODO handle notfound league (Option=None)
 
-    val mav = new ModelAndView("admin/league/edit_form")
-
-    mav.addObject("league", league.get)
-    mav.addObject("hiddens", Map("oldslug" -> slug).asJava)
-    mav.addObject("action", "Edit league")
-    mav.addObject("submitUrl", submitUrl)
-    mav.addObject("submitMethod", "POST")
+    new ModelAndView("admin/league/edit_form")
+      .addObject("league", league.get)
+      .addObject("hiddens", Map("oldslug" -> slug).asJava)
+      .addObject("action", i.t("Edit league"))
+      .addObject("submitUrl", submitUrl)
+      .addObject("submitMethod", "POST")
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
       .addObject("listUrl", getUrl("LeagueAdminController.list"))
   }
@@ -134,15 +135,17 @@ class LeagueAdminController extends UrlGrabber {
 
     val league = leagueService.findBySlug(fedId, slug)
 
-    return "redirect:" + getUrl("LeagueAdminController.list")
+    "redirect:" + getUrl("LeagueAdminController.list")
   }
 
   def delete(
     @RequestParam("slug") slug: String): ModelAndView = {
     val fedId = federation.getId
+    val league = leagueService.findBySlug(fedId, slug)
 
-    return new ModelAndView("admin/league/delete_confirm")
-      .addObject("entity", "league")
+    new ModelAndView("admin/league/delete_confirm")
+      .addObject("entityName", league)
+      .addObject("action", i.t("Delete league"))
       .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
       .addObject("hiddens", Map("slug" -> slug).asJava)
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
@@ -154,7 +157,7 @@ class LeagueAdminController extends UrlGrabber {
 
     val result = leagueService removeLeagueBySlug (federation.getId, slug)
 
-    return "redirect:" + getUrl("LeagueAdminController.list")
+    "redirect:" + getUrl("LeagueAdminController.list")
 
   }
 }
