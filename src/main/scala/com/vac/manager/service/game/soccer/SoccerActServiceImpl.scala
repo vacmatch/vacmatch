@@ -66,7 +66,8 @@ class SoccerActServiceImpl extends SoccerActService {
 
   @throws[InstanceNotFoundException]("If local, visitor team or act doesn't exist")
   def editSoccerAct(actId: Long, date: Calendar, location: String, referees: String,
-    localTeamId: Long, visitorTeamId: Long, incidents: String, signatures: String): SoccerAct = {
+    localTeamId: Long, localResult: Int, visitorTeamId: Long, visitorResult: Int,
+    incidents: String, signatures: String): SoccerAct = {
 
     find(actId).map {
       act =>
@@ -83,7 +84,9 @@ class SoccerActServiceImpl extends SoccerActService {
           act.location = location
           act.referees = referees
           act.localTeam = localTeam
+          act.localResult = localResult
           act.visitorTeam = visitorTeam
+          act.visitorResult = visitorResult
           act.incidents = incidents
           act.signatures = signatures
           soccerActDao.save(act)

@@ -1,91 +1,105 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title th:text="#{title}">Show Calendar</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
-    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
-    <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
-	    data-src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-  </head>
-  <body>
-    <div th:replace="fragments/header :: header">[Here goes the header]</div>
-    <div class="container" th:fragment="content" th:object="${act}">
+<head>
+<title th:text="#{title}">Show Calendar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../static/css/bootstrap.min.css" rel="stylesheet"
+  media="screen" th:href="@{/css/bootstrap.min.css}" />
+<link href="../../static/css/core.css" rel="stylesheet" media="screen"
+  th:href="@{/css/core.css}" />
+<script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+  data-src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../static/js/bootstrap.min.js"
+  th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+  <div th:replace="fragments/header :: header">[Here goes the
+    header]</div>
+  <div class="container" th:fragment="content" th:object="${act}">
 
-      <div class="pull-right">
-        <a class="btn btn-default"
-           href="#"
-           th:each="link: ${act.authorizedLinks}"
-           th:class="|btn ${link.className}|"
-           th:href="${link.href}"
-           th:text="${link.text}">Action on game</a>
-      </div>
-
-      <br/>
-
-     <div class="row">
-	      <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
-	      <h1 th:text="(*{localTeam}? ${act.localTeam.teamName}: 'Local') + ' - ' + (*{visitorTeam}? ${act.visitorTeam.teamName}: 'Visitor')">Local team - Visitor team</h1>
-	      <h4 th:text="(*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: 'Pending date') + ' in ' + (*{location}?: 'Pending location')"></h4>
-	      <h4 class="pull-right" th:text="'Referees: ' + (*{referees}?: '--')"></h4>
-      </div>
-
-      <div class="row">
-	      <div class="col-md-6">
-		      <h3>Local Team</h3>
-		      <table class="table">
-		       <tr>
-		         <th>Name</th>
-		         <th>First yellow card</th>
-		          <th>Second yellow card</th>
-		          <th>Red Cards</th>
-		         <th>Goals</th>
-		       </tr>
-		       <tr th:class="${local.isCalledUp?'':'alert alert-danger'}" th:each="local: ${localStats}" th:object="${local}">
-		        <td th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
-		        <td th:text="*{firstYellowCard}?: '--'">-</td>
-		        <td th:text="*{secondYellowCard}?: '--'">-</td>
-		        <td th:text="*{redCard}?: '--'">-</td>
-		        <td>--</td>
-		       </tr>
-		      </table>
-	      </div>
-
-	      <div class="col-md-6">
-		      <h3>Visitor Team</h3>
-		      <table class="table">
-		        <tr>
-		          <th>Name</th>
-		          <th>First yellow card</th>
-		          <th>Second yellow card</th>
-		          <th>Red Cards</th>
-		          <th>Goals</th>
-		        </tr>
-		        <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}" th:each="visitor: ${visitorStats}" th:object="${visitor}">
-                         <td th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
-		         <td th:text="*{firstYellowCard}?: '--'">-</td>
-		         <td th:text="*{secondYellowCard}?: '--'">-</td>
-		         <td th:text="*{redCard}?: '--'">-</td>
-		         <td>--</td>
-		        </tr>
-		      </table>
-	      </div>
-      </div>
-
-      <h4>Incidents</h4>
-      <p th:text="*{incidents}?: '--'"></p>
-
-      <h4>Signatures</h4>
-      <table class="table col-md-4">
-        <tr th:each="sign: ${signatures}">
-         <td th:text="${sign}?: '--'">-</td>
-        </tr>
-      </table>
-
-
-      <a class="btn btn-default" th:href="${calendarLink}">Back to the calendar</a>
+    <div class="pull-right">
+      <a class="btn btn-default" href="#"
+        th:each="link: ${act.authorizedLinks}"
+        th:class="|btn ${link.className}|" th:href="${link.href}"
+        th:text="${link.text}">Action on game</a>
     </div>
-    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
-  </body>
+
+    <br />
+
+    <div class="row">
+      <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
+      <h1
+        th:text="(*{localTeam}? ${act.localTeam.teamName}: 'Local') 
+         + ' ' + ${act.localResult} + ' - ' + ${act.visitorResult} + ' ' +
+         (*{visitorTeam}? ${act.visitorTeam.teamName}: 'Visitor')">Local
+        team - Visitor team</h1>
+      <h4
+        th:text="(*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: 'Pending date') + ' in ' + (*{location}?: 'Pending location')"></h4>
+      <h4 class="pull-right"
+        th:text="'Referees: ' + (*{referees}?: '--')"></h4>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Local Team</h3>
+        <table class="table">
+          <tr>
+            <th>Name</th>
+            <th>First yellow card</th>
+            <th>Second yellow card</th>
+            <th>Red Cards</th>
+            <th>Goals</th>
+          </tr>
+          <tr th:class="${local.isCalledUp?'':'alert alert-danger'}"
+            th:each="local: ${localStats}" th:object="${local}">
+            <td
+              th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
+            <td th:text="*{firstYellowCard}?: '--'">-</td>
+            <td th:text="*{secondYellowCard}?: '--'">-</td>
+            <td th:text="*{redCard}?: '--'">-</td>
+            <td>--</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Visitor Team</h3>
+        <table class="table">
+          <tr>
+            <th>Name</th>
+            <th>First yellow card</th>
+            <th>Second yellow card</th>
+            <th>Red Cards</th>
+            <th>Goals</th>
+          </tr>
+          <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}"
+            th:each="visitor: ${visitorStats}" th:object="${visitor}">
+            <td
+              th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
+            <td th:text="*{firstYellowCard}?: '--'">-</td>
+            <td th:text="*{secondYellowCard}?: '--'">-</td>
+            <td th:text="*{redCard}?: '--'">-</td>
+            <td>--</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <h4>Incidents</h4>
+    <p th:text="*{incidents}?: '--'"></p>
+
+    <h4>Signatures</h4>
+    <table class="table col-md-4">
+      <tr th:each="sign: ${signatures}">
+        <td th:text="${sign}?: '--'">-</td>
+      </tr>
+    </table>
+
+
+    <a class="btn btn-default" th:href="${calendarLink}">Back to the
+      calendar</a>
+  </div>
+  <div th:replace="fragments/footer :: footer">&copy; 2013 The
+    Static Templates</div>
+</body>
 </html>

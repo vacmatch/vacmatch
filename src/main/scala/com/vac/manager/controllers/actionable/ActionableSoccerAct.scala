@@ -15,7 +15,9 @@ class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String
   date = act.date
   location = act.location
   localTeam = act.localTeam
+  localResult = act.localResult
   visitorTeam = act.visitorTeam
+  visitorResult = act.visitorResult
   referees = act.referees
   incidents = act.incidents
   signatures = act.signatures

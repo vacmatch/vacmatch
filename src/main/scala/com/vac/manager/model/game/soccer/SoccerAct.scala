@@ -17,6 +17,7 @@ import com.vac.manager.model.game.Game
 import javax.persistence.GenerationType
 import javax.persistence.FetchType
 import javax.persistence.TemporalType
+import javax.persistence.Column
 
 @Entity
 @Table(name = "SOCCER_ACT")
@@ -34,14 +35,17 @@ class SoccerAct(g: Game) {
   var game: Game = g
 
   @BeanProperty
+  @Column
   @Temporal(TemporalType.DATE)
   var date: Calendar = _
 
   @BeanProperty
+  @Column
   var location: String = _
 
   // TODO Create real referees
   @BeanProperty
+  @Column
   var referees: String = _
 
   // Local stadistics
@@ -50,6 +54,10 @@ class SoccerAct(g: Game) {
   @JoinColumn(name = "lTeamId")
   var localTeam: Team = _
 
+  @BeanProperty
+  @Column
+  var localResult: Int = 0
+
   // Visitor stadistics
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
@@ -57,10 +65,16 @@ class SoccerAct(g: Game) {
   var visitorTeam: Team = _
 
   @BeanProperty
+  @Column
+  var visitorResult: Int = 0
+
+  @BeanProperty
+  @Column
   var incidents: String = _
 
   // TODO Create real signatures
   @BeanProperty
+  @Column
   var signatures: String = _
 
   def this() = this(null)

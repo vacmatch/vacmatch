@@ -9,7 +9,6 @@ import com.vac.manager.model.competition.LeagueSeason
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
 import com.vac.manager.model.game.Game
-import com.vac.manager.model.game.Act
 import com.vac.manager.model.game.GameDao
 import org.mockito.Mockito
 import org.mockito.Mockito._

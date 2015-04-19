@@ -192,7 +192,7 @@ class GameAdminController extends UrlGrabber {
 
     // TODO select act by sport
     soccerActService.editSoccerAct(act.actId, act.date, act.location, act.referees,
-      act.localTeam.teamId, act.visitorTeam.teamId, act.incidents, act.signatures)
+      act.localTeam.teamId, act.localResult, act.visitorTeam.teamId, act.visitorResult, act.incidents, act.signatures)
 
     "redirect:" +
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)

@@ -14,16 +14,18 @@
         <h3 th:text="|Match Day #${map.key}|">Match Day #3</h3>
         <table class="table">
           <tr>
-            <th class="col-sm-3" >Date</th>
-            <th class="col-sm-3" >Local team</th>
-            <th class="col-sm-3" >Visitor team</th>
-            <th class="col-sm-3" >Action</th>
+            <th class="text-center col-sm-2" >Date</th>
+            <th class="text-center col-sm-3" >Local team</th>
+            <th class="text-center col-sm-1" >Result</th>
+            <th class="text-center col-sm-3" >Visitor team</th>
+            <th class="text-center col-sm-4" >Action</th>
           </tr>
-          <tr th:each="act: ${map.value}" th:object="${act}">
-           <td class="col-sm-3" th:text="*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: '--'">2015</td>
+          <tr class="text-center" th:each="act: ${map.value}" th:object="${act}">
+           <td class="col-sm-2" th:text="*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: '--'">2015</td>
            <td class="col-sm-3"  th:text="*{localTeam}? *{localTeam.teamName}: '--'">Local</td>
+           <td class="col-sm-1"  th:text="*{localResult} + ' - ' +  *{visitorResult}">Result</td>
            <td class="col-sm-3"  th:text="*{visitorTeam}? *{visitorTeam.teamName}: '--'">Visitor</td>
-           <td class="col-sm-3" >
+           <td class="col-sm-4" >
              <a class="btn btn-default"
                 href="#"
                 th:each="link: ${act.links}"
