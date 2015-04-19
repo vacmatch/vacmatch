@@ -84,5 +84,23 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     }.getOrElse(throw new InstanceNotFoundException("Act not found"))
   }
 
+  def callUpStaff(statsId: Long): SoccerStaffStats = {
+    find(statsId).map {
+      stats =>
+        stats.isCalledUp = true
+        soccerStatsDao.save(stats)
+        stats
+    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+  }
+
+  def unCallUpStaff(statsId: Long): SoccerStaffStats = {
+    find(statsId).map {
+      stats =>
+        stats.isCalledUp = false
+        soccerStatsDao.save(stats)
+        stats
+    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+  }
+
 }
 

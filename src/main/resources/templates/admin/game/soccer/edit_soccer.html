@@ -79,18 +79,23 @@
               <h3>Local Team</h3>
               <table class="table">
                <tr>
-                 <th>Name</th>
-                 <th>First yellow card</th>
-                  <th>Second yellow card</th>
-                  <th>Red Cards</th>
-                 <th>Goals</th>
+                 <th class="col-sm-2" >Name</th>
+                 <th class="col-sm-3" >First yellow card</th>
+                 <th class="col-sm-3" >Second yellow card</th>
+                 <th class="col-sm-2" >Red Cards</th>
+                 <th class="col-sm-1" >Goals</th>
+                 <th class="col-sm-1" >Call</th>
                </tr>
-               <tr th:each="local: ${localStats.list}">
-                <td th:text="${local.staffMember.person.name}?: '--'"></td>
-                <td th:text="${local.firstYellowCard}?: '--'">-</td>
-                <td th:text="${local.secondYellowCard}?: '--'">-</td>
-                <td th:text="${local.redCard}?: '--'">-</td>
-                <td>--</td>
+               <tr th:class="${local.isCalledUp?'':'alert alert-danger'}" th:each="local: ${localStats.list}">
+                 <td class="col-sm-2"  th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'"></td>
+                 <td class="col-sm-3"  th:text="${local.firstYellowCard}?: '--'">-</td>
+                 <td class="col-sm-3"  th:text="${local.secondYellowCard}?: '--'">-</td>
+                 <td class="col-sm-2"  th:text="${local.redCard}?: '--'">-</td>
+                 <td class="col-sm-1"  th:text="'--'">--</td>
+                 <td class="col-sm-1" >
+                   <a th:if="${!local.isCalledUp}" class="btn btn-primary" th:href="${local.getCallUpLink()}">Call</a>
+                   <a th:if="${local.isCalledUp}" class="btn btn-primary" th:href="${local.getUnCallUpLink()}">Uncall</a>
+                 </td>
                </tr>
               </table>
             </div>
@@ -99,18 +104,23 @@
               <h3>Visitor Team</h3>
               <table class="table">
                 <tr>
-                  <th>Name</th>
-                  <th>First yellow card</th>
-                  <th>Second yellow card</th>
-                  <th>Red Cards</th>
-                  <th>Goals</th>
+                  <th class="col-sm-2" >Name</th>
+                  <th class="col-sm-3" >First yellow card</th>
+                  <th class="col-sm-3" >Second yellow card</th>
+                  <th class="col-sm-2" >Red Cards</th>
+                  <th class="col-sm-1" >Goals</th>
+                  <th class="col-sm-1" >Call</th>
                 </tr>
-                <tr th:each="visitor: ${visitorStats.list}">
-                 <td th:text="${visitor.staffMember.person.name}?: '--'"></td>
-                 <td th:text="${visitor.firstYellowCard}?: '--'">-</td>
-                 <td th:text="${visitor.secondYellowCard}?: '--'">-</td>
-                 <td th:text="${visitor.redCard}?: '--'">-</td>
-                 <td>--</td>
+                <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}" th:each="visitor: ${visitorStats.list}">
+                 <td class="col-sm-2"  th:text="${visitor.staffMember.person.name}?: '--'"></td>
+                 <td class="col-sm-3"  th:text="${visitor.firstYellowCard}?: '--'">-</td>
+                 <td class="col-sm-3"  th:text="${visitor.secondYellowCard}?: '--'">-</td>
+                 <td class="col-sm-2"  th:text="${visitor.redCard}?: '--'">-</td>
+                 <td class="col-sm-1"  th:text="'--'">--</td>
+                 <td class="col-sm-1" >
+                   <a th:if="${!visitor.isCalledUp}" class="btn btn-primary" th:href="${visitor.getCallUpLink()}">Call</a>
+                   <a th:if="${visitor.isCalledUp}" class="btn btn-primary" th:href="${visitor.getUnCallUpLink()}">Uncall</a>
+                 </td>
                 </tr>
               </table>
             </div>
@@ -134,8 +144,8 @@
            </div>
          </div>
          
-         <a class="btn btn-primary" th:href="${act.getShowLink()}">Cancel</a>
-         <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
+         <a class="btn btn-default" th:href="${act.getShowLink()}">Back to show game</a>
+         <input class="btn btn-primary" type="submit" name="submit" value="Modify act"/>
        </form>
 
       </div>

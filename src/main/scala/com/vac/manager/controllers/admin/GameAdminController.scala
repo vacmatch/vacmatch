@@ -161,11 +161,11 @@ class GameAdminController extends UrlGrabber {
           val localStats: ThymeleafList[ActionableSoccerStaffStats] =
             new ThymeleafList(
               soccerStaffStatsService.findLocalStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year)).asJava)
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId)).asJava)
           val visitorStats: ThymeleafList[ActionableSoccerStaffStats] =
             new ThymeleafList(
               soccerStaffStatsService.findVisitorStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year)).asJava)
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId)).asJava)
 
           new ModelAndView("admin/game/edit")
             .addObject("action", "Edit")
@@ -193,6 +193,30 @@ class GameAdminController extends UrlGrabber {
     // TODO select act by sport
     soccerActService.editSoccerAct(act.actId, act.date, act.location, act.referees,
       act.localTeam.teamId, act.visitorTeam.teamId, act.incidents, act.signatures)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def callUpPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @RequestParam("statsId") statsId: Long) = {
+
+    soccerStaffStatsService.callUpStaff(statsId)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def unCallUpPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @RequestParam("statsId") statsId: Long) = {
+
+    soccerStaffStatsService.unCallUpStaff(statsId)
 
     "redirect:" +
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)

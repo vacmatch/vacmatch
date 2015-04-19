@@ -42,7 +42,7 @@
 		          <th>Red Cards</th>
 		         <th>Goals</th>
 		       </tr>
-		       <tr th:each="local: ${localStats}" th:object="${local}">
+		       <tr th:class="${local.isCalledUp?'':'alert alert-danger'}" th:each="local: ${localStats}" th:object="${local}">
 		        <td th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
 		        <td th:text="*{firstYellowCard}?: '--'">-</td>
 		        <td th:text="*{secondYellowCard}?: '--'">-</td>
@@ -62,8 +62,8 @@
 		          <th>Red Cards</th>
 		          <th>Goals</th>
 		        </tr>
-		        <tr th:each="visitor: ${visitorStats}" th:object="${visitor}">
-            <td th:text="*{staffMember}? ${visitor:.staffMember.person.name}: '--'"></td>
+		        <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}" th:each="visitor: ${visitorStats}" th:object="${visitor}">
+                         <td th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
 		         <td th:text="*{firstYellowCard}?: '--'">-</td>
 		         <td th:text="*{secondYellowCard}?: '--'">-</td>
 		         <td th:text="*{redCard}?: '--'">-</td>

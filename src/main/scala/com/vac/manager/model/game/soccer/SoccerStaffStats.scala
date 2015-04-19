@@ -21,7 +21,7 @@ class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
   @Id
   @SequenceGenerator(name = "soccerStaffStatsIdGenerator", sequenceName = "soccerStaffStats_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "soccerStaffStatsIdGenerator")
-  var statsId: Long = _
+  var statsId: java.lang.Long = _
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.LAZY)
@@ -32,6 +32,10 @@ class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "staffMemberId")
   var staffMember: StaffMember = staff
+
+  @BeanProperty
+  @Column
+  var isCalledUp: Boolean = false
 
   // The card's timestamp
   @BeanProperty

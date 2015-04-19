@@ -22,5 +22,9 @@ trait SoccerStaffStatsService {
 
   def removeVisitorStats(actId: Long)
 
+  def callUpStaff(statsId: Long): SoccerStaffStats
+
+  def unCallUpStaff(statsId: Long): SoccerStaffStats
+
 }
 
