@@ -35,6 +35,14 @@ class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
 
   @BeanProperty
   @Column
+  var isStaff: Boolean = false
+
+  @BeanProperty
+  @Column
+  var staffPosition: String = _
+
+  @BeanProperty
+  @Column
   var isCalledUp: Boolean = false
 
   // The card's timestamp

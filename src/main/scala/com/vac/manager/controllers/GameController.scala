@@ -27,6 +27,7 @@ import com.vac.manager.service.game.soccer.SoccerStaffStatsService
 import com.vac.manager.model.game.soccer.SoccerStaffStats
 import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import com.vac.manager.service.game.soccer.SoccerActService
+import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
 
 @Controller
 class GameController extends UrlGrabber {
@@ -96,22 +97,33 @@ class GameController extends UrlGrabber {
 
     gameService.find(gameId).map {
       game =>
+        // Check user permissions
+        val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
         // TODO Get diferent act depending on the sport
         soccerActService.findGameAct(gameId).map {
           act =>
             {
-              val localStats: Seq[SoccerStaffStats] = soccerStatsService.findLocalStats(act.actId)
-              val visitorStats: Seq[SoccerStaffStats] = soccerStatsService.findVisitorStats(act.actId)
+              // Players stats
+              val localStats: Seq[SoccerStaffStats] = soccerStatsService.findLocalPlayersStats(act.actId)
+              val visitorStats: Seq[SoccerStaffStats] = soccerStatsService.findVisitorPlayersStats(act.actId)
 
-              // Check user permissions
-              val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+              // Staff stats
+              val localStaff: Seq[ActionableSoccerStaffStats] =
+                soccerStatsService.findLocalStaffStats(act.actId).map(
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+              val visitorStaff: Seq[ActionableSoccerStaffStats] =
+                soccerStatsService.findVisitorStaffStats(act.actId).map(
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+
               val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
               new ModelAndView("game/show")
                 .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
                 .addObject("localStats", localStats.asJava)
                 .addObject("visitorStats", visitorStats.asJava)
+                .addObject("localStaff", localStaff.asJava)
+                .addObject("visitorStaff", visitorStaff.asJava)
                 .addObject("calendarLink", calendarLink)
             }
         }.getOrElse(throw new NoSuchElementException("Act not found"))

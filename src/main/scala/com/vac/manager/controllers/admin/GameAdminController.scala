@@ -158,21 +158,34 @@ class GameAdminController extends UrlGrabber {
 
           val teamsList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
 
-          val localStats: ThymeleafList[ActionableSoccerStaffStats] =
+          val localPlayerStats: ThymeleafList[ActionableSoccerStaffStats] =
             new ThymeleafList(
-              soccerStaffStatsService.findLocalStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId)).asJava)
-          val visitorStats: ThymeleafList[ActionableSoccerStaffStats] =
+              soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+
+          val localStaffStats: ThymeleafList[ActionableSoccerStaffStats] =
             new ThymeleafList(
-              soccerStaffStatsService.findVisitorStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId)).asJava)
+              soccerStaffStatsService.findLocalStaffStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+
+          val visitorPlayerStats: ThymeleafList[ActionableSoccerStaffStats] =
+            new ThymeleafList(
+              soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+
+          val visitorStaffStats: ThymeleafList[ActionableSoccerStaffStats] =
+            new ThymeleafList(
+              soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
 
           new ModelAndView("admin/game/edit")
             .addObject("action", "Edit")
             .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
             .addObject("teamsList", teamsList.asJava)
-            .addObject("localStats", localStats)
-            .addObject("visitorStats", visitorStats)
+            .addObject("localPlayerStats", localPlayerStats)
+            .addObject("visitorPlayerStats", visitorPlayerStats)
+            .addObject("localStaffStats", localStaffStats)
+            .addObject("visitorStaffStats", visitorStaffStats)
             .addObject("actFragment", actFragment)
             .addObject("actInstance", actInstance)
             .addObject("submitMethod", submitMethod)
@@ -186,8 +199,6 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @ModelAttribute("localStats") localStats: ThymeleafList[ActionableSoccerStaffStats],
-    @ModelAttribute("visitorStats") visitorStats: ThymeleafList[ActionableSoccerStaffStats],
     @ModelAttribute act: SoccerAct) = {
 
     // TODO select act by sport
@@ -217,6 +228,31 @@ class GameAdminController extends UrlGrabber {
     @RequestParam("statsId") statsId: Long) = {
 
     soccerStaffStatsService.unCallUpStaff(statsId)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def setStaffPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @RequestParam("statsId") statsId: Long,
+    @RequestParam("staffPosition") staffPosition: String) = {
+
+    soccerStaffStatsService.setStaff(statsId, staffPosition)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def unSetStaffPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @RequestParam("statsId") statsId: Long) = {
+
+    soccerStaffStatsService.unSetStaff(statsId)
 
     "redirect:" +
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)

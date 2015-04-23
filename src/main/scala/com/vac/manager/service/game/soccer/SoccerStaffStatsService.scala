@@ -14,6 +14,14 @@ trait SoccerStaffStatsService {
 
   def findVisitorStats(actId: Long): Seq[SoccerStaffStats]
 
+  def findLocalPlayersStats(actId: Long): Seq[SoccerStaffStats]
+
+  def findVisitorPlayersStats(actId: Long): Seq[SoccerStaffStats]
+
+  def findLocalStaffStats(actId: Long): Seq[SoccerStaffStats]
+
+  def findVisitorStaffStats(actId: Long): Seq[SoccerStaffStats]
+
   def createLocalStats(actId: Long)
 
   def createVisitorStats(actId: Long)
@@ -25,6 +33,10 @@ trait SoccerStaffStatsService {
   def callUpStaff(statsId: Long): SoccerStaffStats
 
   def unCallUpStaff(statsId: Long): SoccerStaffStats
+
+  def setStaff(statsId: Long, position: String): SoccerStaffStats
+
+  def unSetStaff(statsId: Long): SoccerStaffStats
 
 }
 

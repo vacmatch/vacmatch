@@ -38,6 +38,22 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     soccerStatsDao.findVisitorStatsByActId(actId)
   }
 
+  def findLocalPlayersStats(actId: Long): Seq[SoccerStaffStats] = {
+    soccerStatsDao.findLocalStatsByActId(actId).filter(staff => !staff.isStaff)
+  }
+
+  def findVisitorPlayersStats(actId: Long): Seq[SoccerStaffStats] = {
+    soccerStatsDao.findVisitorStatsByActId(actId).filter(staff => !staff.isStaff)
+  }
+
+  def findLocalStaffStats(actId: Long): Seq[SoccerStaffStats] = {
+    soccerStatsDao.findLocalStatsByActId(actId).filter(staff => staff.isStaff)
+  }
+
+  def findVisitorStaffStats(actId: Long): Seq[SoccerStaffStats] = {
+    soccerStatsDao.findVisitorStatsByActId(actId).filter(staff => staff.isStaff)
+  }
+
   @throws[InstanceNotFoundException]("If act doesn't exist")
   def createLocalStats(actId: Long) = {
     soccerActService.find(actId).map {
@@ -97,6 +113,27 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     find(statsId).map {
       stats =>
         stats.isCalledUp = false
+        soccerStatsDao.save(stats)
+        stats
+    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+  }
+
+  def setStaff(statsId: Long, position: String): SoccerStaffStats = {
+    find(statsId).map {
+      stats =>
+        stats.isStaff = true
+        stats.staffPosition = position
+        soccerStatsDao.save(stats)
+        stats
+    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+  }
+
+  def unSetStaff(statsId: Long): SoccerStaffStats = {
+    find(statsId).map {
+      stats =>
+        stats.isStaff = false
+        stats.staffPosition = ""
+
         soccerStatsDao.save(stats)
         stats
     }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
