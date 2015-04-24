@@ -18,8 +18,9 @@
 	<h2>
 	  <a href="#"
 	     th:href="${competition.links.get(0).href}"
-	     th:alt="${competition.links.get(0).text}"
-	     th:title="${competition.title}">
+	     th:alt="|${competition.title}: ${competition.links.get(0).text}|"
+	     th:title="${competition.links.get(0).text}"
+	     th:text="${competition.title}">
 	    1st Division League
 	  </a>
 	</h2>
