@@ -125,7 +125,7 @@ class LeagueServiceImpl extends LeagueService {
     * But we can already return just the Seq as a Scala value
     */
   def findSeasonsByLeagueAsSeq(fedId: Long, slug: String): Seq[LeagueSeason] = {
-    return leagueSeasonDao.findLeagueWithSeasonsBySlug(fedId, slug).get.getSeasonList.asScala
+    return leagueSeasonDao.findLeagueWithSeasonsBySlug(fedId, slug).map(_.getSeasonList.asScala).getOrElse(List())
   }
 
   def findSeasonByLeagueSlug(fedId: Long, slug: String, seasonYear: String): Option[LeagueSeason] = {
