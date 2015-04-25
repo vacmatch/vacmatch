@@ -105,8 +105,8 @@
               th:each="lStaff: ${localStaff}">
             <td class="col-sm-2" th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'"></td>
             <td class="col-sm-2 alert alert-info" th:text="${lStaff.staffPosition}? ${lStaff.staffPosition} : '--'"></td>
-            <td class="col-sm-3" th:text="${lStaff.firstYellowCard}?: '--'">-</td>
-            <td class="col-sm-3" th:text="${lStaff.secondYellowCard}?: '--'">-</td>
+            <td class="col-sm-2" th:text="${lStaff.firstYellowCard}?: '--'">-</td>
+            <td class="col-sm-2" th:text="${lStaff.secondYellowCard}?: '--'">-</td>
             <td class="col-sm-2" th:text="${lStaff.redCard}?: '--'">-</td>
             <td class="col-sm-2" th:text="'--'">--</td>
           </tr>
