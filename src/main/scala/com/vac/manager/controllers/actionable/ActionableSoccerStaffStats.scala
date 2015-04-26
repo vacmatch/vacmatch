@@ -19,8 +19,7 @@ class ActionableSoccerStaffStats(stats: SoccerStaffStats, slug: String, year: St
   firstYellowCard = stats.firstYellowCard
   secondYellowCard = stats.secondYellowCard
   redCard = stats.redCard
-  // TODO Add goals
-  // goals = stats.goals
+  goals = stats.goals
 
   def getCallerLink(): Hyperlink =
     if (isCalledUp)
@@ -33,6 +32,9 @@ class ActionableSoccerStaffStats(stats: SoccerStaffStats, slug: String, year: St
       Hyperlink("Unset staff", getUnSetStaffLink(), "btn-default")
     else
       Hyperlink("Set staff", getSetStaffLink(), "btn-default")
+
+  def getEditLink(): String = getUrl("GameAdminController.editStatsPost", "slug" -> slug, "year" -> year,
+    "gameId" -> gameId, "statsId" -> statsId)
 
   def getCallUpLink(): String =
     getUrl("GameAdminController.callUpPost", "slug" -> slug, "year" -> year,

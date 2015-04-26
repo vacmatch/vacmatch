@@ -178,10 +178,12 @@ class GameAdminController extends UrlGrabber {
               soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
                 staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
 
+          val staffStatsReceiver: Seq[String] = List()
           new ModelAndView("admin/game/edit")
             .addObject("action", "Edit")
             .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
             .addObject("teamsList", teamsList.asJava)
+            .addObject("staffStats", staffStatsReceiver.asJava)
             .addObject("localPlayerStats", localPlayerStats)
             .addObject("visitorPlayerStats", visitorPlayerStats)
             .addObject("localStaffStats", localStaffStats)
@@ -193,6 +195,33 @@ class GameAdminController extends UrlGrabber {
             .addObject("calendarLink", backLink)
         }
     }.getOrElse(throw new NoSuchElementException("League Season not found"))
+  }
+
+  def editStatsPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @RequestParam("statsId") statsId: java.lang.Long,
+    @RequestParam("goals") goalsNumber: Int,
+    @RequestParam("staffStats") staffStats: java.util.List[String]) = {
+
+    val firstYellowCard: Calendar = if (staffStats.indexOf("firstYellowCard") >= 0) Calendar.getInstance() else null
+    val secondYellowCard: Calendar = if (staffStats.indexOf("secondYellowCard") >= 0) Calendar.getInstance() else null
+    val redCard: Calendar = if (staffStats.indexOf("redCard") >= 0) Calendar.getInstance() else null
+    val goals: Seq[Calendar] = {
+      var list: Seq[Calendar] = List()
+      for (e <- 1 to goalsNumber)
+        list = list :+ Calendar.getInstance()
+      list
+    }
+
+    // TODO select stats by sport
+    soccerStaffStatsService.editStats(statsId, firstYellowCard, secondYellowCard,
+      redCard, goals)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+
   }
 
   def editPost(

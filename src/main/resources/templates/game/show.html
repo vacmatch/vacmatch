@@ -56,10 +56,19 @@
               th:each="local: ${localStats}" th:object="${local}">
             <td class="col-sm-2"
                 th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
-            <td class="col-sm-3" th:text="*{firstYellowCard}?: '--'">-</td>
-            <td class="col-sm-3" th:text="*{secondYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="*{redCard}?: '--'">-</td>
-            <td class="col-sm-2">--</td>
+            <td class="col-sm-3">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{firstYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-3">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{secondYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{redCard}? true: false" />
+            </td>
+            <td class="col-sm-2" th:text="*{goalsNumber}">--</td>
           </tr>
         </table>
       </div>
@@ -79,11 +88,20 @@
           <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}"
               th:each="visitor: ${visitorStats}" th:object="${visitor}">
             <td class="col-sm-2"
-              th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
-            <td class="col-sm-3" th:text="*{firstYellowCard}?: '--'">-</td>
-            <td class="col-sm-3" th:text="*{secondYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="*{redCard}?: '--'">-</td>
-            <td class="col-sm-2">--</td>
+                th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
+            <td class="col-sm-3">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{firstYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-3">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{secondYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{redCard}? true: false" />
+            </td>
+            <td class="col-sm-2" th:text="*{goalsNumber}">--</td>
           </tr>
         </table>        
       </div>
@@ -102,13 +120,24 @@
             <th class="col-sm-2">Goals</th>
           </tr>
           <tr th:class="${lStaff.isCalledUp?'':'alert alert-danger'}"
-              th:each="lStaff: ${localStaff}">
-            <td class="col-sm-2" th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'"></td>
-            <td class="col-sm-2 alert alert-info" th:text="${lStaff.staffPosition}? ${lStaff.staffPosition} : '--'"></td>
-            <td class="col-sm-2" th:text="${lStaff.firstYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="${lStaff.secondYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="${lStaff.redCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="'--'">--</td>
+              th:each="lStaff: ${localStaff}" th:object="${lStaff}">
+            <td class="col-sm-2"
+                th:text="*{staffMember}? ${lStaff.staffMember.person.name}: '--'"></td>
+            <td  class="col-sm-2 alert alert-info"
+                 th:text="${lStaff.staffPosition}? ${lStaff.staffPosition} : '--'"></td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{firstYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{secondYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{redCard}? true: false" />
+            </td>
+            <td class="col-sm-2" th:text="*{goalsNumber}">--</td>
           </tr>
         </table>
       </div>
@@ -125,13 +154,24 @@
             <th class="col-sm-2">Goals</th>
           </tr>
           <tr th:class="${vStaff.isCalledUp?'':'alert alert-danger'}"
-            th:each="vStaff: ${visitorStaff}">
-            <td class="col-sm-2" th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'"></td>
-            <td class="col-sm-2 alert alert-info" th:text="${vStaff.staffPosition}? ${vStaff.staffPosition} : '--'"></td>
-            <td class="col-sm-2" th:text="${vStaff.firstYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="${vStaff.secondYellowCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="${vStaff.redCard}?: '--'">-</td>
-            <td class="col-sm-2" th:text="'--'">--</td>
+              th:each="vStaff: ${visitorStaff}" th:object="${vStaff}">
+            <td class="col-sm-2"
+                th:text="*{staffMember}? ${vStaff.staffMember.person.name}: '--'"></td>
+            <td  class="col-sm-2 alert alert-info"
+                 th:text="${vStaff.staffPosition}? ${vStaff.staffPosition} : '--'"></td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{firstYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{secondYellowCard}? true: false" />
+            </td>
+            <td class="col-sm-2">
+              <input class="checkbox" type="checkbox" disabled="true"
+                     th:checked="*{redCard}? true: false" />
+            </td>
+            <td class="col-sm-2" th:text="*{goalsNumber}">--</td>
           </tr>
         </table>
       </div>
