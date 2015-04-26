@@ -13,6 +13,9 @@ import java.util.Calendar
 import javax.persistence.ManyToOne
 import javax.persistence.GenerationType
 import javax.persistence.FetchType
+import java.util.ArrayList
+import javax.persistence.ElementCollection
+import javax.persistence.Transient
 
 @Entity
 @Table(name = "SOCCER_STAFF_STATS")
@@ -21,6 +24,7 @@ class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
   @Id
   @SequenceGenerator(name = "soccerStaffStatsIdGenerator", sequenceName = "soccerStaffStats_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "soccerStaffStatsIdGenerator")
+  @BeanProperty
   var statsId: java.lang.Long = _
 
   @BeanProperty
@@ -60,12 +64,13 @@ class SoccerStaffStats(soccerAct: SoccerAct, staff: StaffMember) {
   @Column
   var redCard: Calendar = _
 
-  /*
   @BeanProperty
-  @ElementCollection(fetch = FetchType.LAZY)
-  @MapKey
-  var goals: java.util.Map[String, Int] = new java.util.HashMap[String, Int]()
-  */
+  @ElementCollection(fetch = FetchType.EAGER)
+  @Column
+  var goals: java.util.List[Calendar] = new ArrayList[Calendar]()
+
+  @BeanProperty
+  def getGoalsNumber(): Integer = goals.size()
 
   def this() = this(null, null)
 

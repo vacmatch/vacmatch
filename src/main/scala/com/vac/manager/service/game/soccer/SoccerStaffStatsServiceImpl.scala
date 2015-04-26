@@ -12,6 +12,8 @@ import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.service.team.TeamService
 import javax.management.InstanceNotFoundException
 import com.vac.manager.model.team.Team
+import java.util.Calendar
+import scala.collection.JavaConverters._
 
 @Service("soccerStaffStatsService")
 @Transactional
@@ -87,6 +89,19 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
             soccerStatsDao.remove(stats)
         }
     }.getOrElse(throw new InstanceNotFoundException("Act not found"))
+  }
+
+  @throws[InstanceNotFoundException]("If stats doesn't exist")
+  def editStats(statsId: Long, firstYellowCard: Calendar,
+    secondYellowCard: Calendar, redCard: Calendar, goals: Seq[Calendar]) = {
+
+    find(statsId).map {
+      stats =>
+        stats.firstYellowCard = firstYellowCard
+        stats.secondYellowCard = secondYellowCard
+        stats.redCard = redCard
+        stats.goals = goals.asJava
+    }.getOrElse(throw new InstanceNotFoundException("Stats not found"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")

@@ -5,6 +5,8 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.model.team.Team
+import com.vac.manager.model.game.soccer.SoccerAct
+import java.util.Calendar
 
 trait SoccerStaffStatsService {
 
@@ -25,6 +27,9 @@ trait SoccerStaffStatsService {
   def createLocalStats(actId: Long)
 
   def createVisitorStats(actId: Long)
+
+  def editStats(statsId: Long, firstYellowCard: Calendar,
+    secondYellowCard: Calendar, redCard: Calendar, goals: Seq[Calendar])
 
   def removeLocalStats(actId: Long)
 
