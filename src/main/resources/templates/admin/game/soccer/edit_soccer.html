@@ -38,6 +38,7 @@
               <div class="col-sm-3">
                 <select class="form-control" id="localTeam"
                   name="localTeam" th:field="*{localTeam.teamId}">
+                  <option value="0">--</option>
                   <option th:each="lTeam : ${teamsList}"
                     th:value="${lTeam.teamId}" th:text="${lTeam.teamName}">Local
                     Team</option>
@@ -50,6 +51,7 @@
               <div class="col-sm-3">
                 <select class="form-control" id="visitorTeam"
                   name="visitorTeam" th:field="*{visitorTeam.teamId}">
+                  <option value="0">--</option>
                   <option th:each="vTeam : ${teamsList}"
                     th:value="${vTeam.teamId}" th:text="${vTeam.teamName}">Local
                     Team</option>

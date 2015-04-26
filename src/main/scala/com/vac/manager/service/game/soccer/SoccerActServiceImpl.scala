@@ -73,9 +73,9 @@ class SoccerActServiceImpl extends SoccerActService {
       act =>
         {
           val localTeam: Team = teamService.find(localTeamId)
-            .getOrElse(throw new InstanceNotFoundException("Local Team not found"))
+            .getOrElse(null)
           val visitorTeam: Team = teamService.find(visitorTeamId)
-            .getOrElse(throw new InstanceNotFoundException("Visitor Team not found"))
+            .getOrElse(null)
 
           val oldLocal: Option[Team] = Option(act.localTeam)
           val oldVisitor: Option[Team] = Option(act.visitorTeam)
@@ -95,12 +95,14 @@ class SoccerActServiceImpl extends SoccerActService {
           oldLocal.map(team =>
             if (team != localTeam) {
               soccerStaffStatsService.removeLocalStats(actId)
-              soccerStaffStatsService.createLocalStats(actId)
+              if (Option(localTeam).nonEmpty)
+                soccerStaffStatsService.createLocalStats(actId)
             })
           oldVisitor.map(team =>
             if (team != visitorTeam) {
               soccerStaffStatsService.removeVisitorStats(actId)
-              soccerStaffStatsService.createVisitorStats(actId)
+              if (Option(visitorTeam).nonEmpty)
+                soccerStaffStatsService.createVisitorStats(actId)
             })
 
           act

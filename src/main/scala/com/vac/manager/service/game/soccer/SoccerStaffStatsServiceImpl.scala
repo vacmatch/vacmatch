@@ -60,6 +60,9 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
   def createLocalStats(actId: Long) = {
     soccerActService.find(actId).map {
       act =>
+        if (Option(act.localTeam).isEmpty)
+          throw new InstanceNotFoundException("Local team doesn't exist")
+
         teamService.findCurrentStaffMemberListByTeam(act.localTeam.teamId).map {
           staffMember =>
             val stats = new SoccerStaffStats(act, staffMember)
@@ -72,6 +75,9 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
   def createVisitorStats(actId: Long) = {
     soccerActService.find(actId).map {
       act =>
+        if (Option(act.visitorTeam).isEmpty)
+          throw new InstanceNotFoundException("Visitor team doesn't exist")
+
         teamService.findCurrentStaffMemberListByTeam(act.visitorTeam.teamId).map {
           staffMember =>
             val stats = new SoccerStaffStats(act, staffMember)
