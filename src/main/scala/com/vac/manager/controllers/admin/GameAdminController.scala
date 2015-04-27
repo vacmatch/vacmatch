@@ -238,6 +238,19 @@ class GameAdminController extends UrlGrabber {
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
   }
 
+  def editRestPost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long,
+    @ModelAttribute act: SoccerAct) = {
+
+    // TODO select act by sport
+    soccerActService.editRestSoccerAct(gameId, act.localTeam.teamId)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
   def callUpPost(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
@@ -282,6 +295,17 @@ class GameAdminController extends UrlGrabber {
     @RequestParam("statsId") statsId: Long) = {
 
     soccerStaffStatsService.unSetStaff(statsId)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def changeRestStatePost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long) = {
+
+    soccerActService.changeRestState(gameId)
 
     "redirect:" +
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)

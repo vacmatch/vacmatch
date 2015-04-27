@@ -12,6 +12,7 @@ class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String
 
   actId = act.actId
   game = act.game
+  isRest = act.isRest
   date = act.date
   location = act.location
   localTeam = act.localTeam
@@ -31,9 +32,15 @@ class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String
   @BeanProperty
   val links = (anonymousLinks ++ authorizedLinks.asScala).asJava
 
+  def getChangeRestStateLink(): String =
+    getUrl("GameAdminController.changeRestStatePost", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+
   def getShowLink(): String = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
   def getEditLink(): String = getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+
+  def getEditRestLink(): String =
+    getUrl("GameAdminController.editRestPost", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
 }
 

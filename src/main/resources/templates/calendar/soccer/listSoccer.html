@@ -21,10 +21,16 @@
             <th class="text-center col-sm-4" >Action</th>
           </tr>
           <tr class="text-center" th:each="act: ${map.value}" th:object="${act}">
-           <td class="col-sm-2" th:text="*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: '--'">2015</td>
+           <td class="col-sm-2 info" th:if="*{isRest}"><b>Rest</b></td>
+           <td class="col-sm-2" th:unless="*{isRest}"
+               th:text="*{date}? ${#calendars.format(act.date, 'dd/MMM/yyyy HH:mm')}: '--'">2015</td>
            <td class="col-sm-3"  th:text="*{localTeam}? *{localTeam.teamName}: '--'">Local</td>
-           <td class="col-sm-1"  th:text="*{localResult} + ' - ' +  *{visitorResult}">Result</td>
-           <td class="col-sm-3"  th:text="*{visitorTeam}? *{visitorTeam.teamName}: '--'">Visitor</td>
+           <td class="col-sm-1"  th:if="*{isRest}" th:text="--">--</td>
+           <td class="col-sm-1"  th:unless="*{isRest}"
+               th:text="*{localResult} + ' - ' +  *{visitorResult}">Result</td>
+           <td class="col-sm-3"  th:if="*{isRest}" th:text="--">--</td>
+           <td class="col-sm-3"  th:unless="*{isRest}"
+               th:text="*{visitorTeam}? *{visitorTeam.teamName}: '--'">Visitor</td>
            <td class="col-sm-4" >
              <a class="btn btn-default"
                 href="#"

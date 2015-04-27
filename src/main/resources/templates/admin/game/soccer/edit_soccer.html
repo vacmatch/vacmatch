@@ -13,66 +13,97 @@
 
   <div class="container" th:fragment="content">
 
-    <div th:fragment="edit_soccer">
+    <div th:fragment="edit_soccer" th:object="${act}">
 
-      <div class="jumbotron">
-        <form id="editForm" class="form-horizontal"
-          th:action="${submitUrl}" th:method="${submitMethod}"
-          th:object="${act}">
-          <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
-            th:value="${h.value}" /> <input type="hidden"
-            th:field="*{actId}" />
-          <div class="row">
-            <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
-  
+      <div class="row">
+        <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
+        <form class="pull-right" th:action="*{changeRestStateLink}" method="POST">
+          <input class="btn btn-primary" type="submit" value="Modify rest state"/>
+        </form>
+      </div>
+
+      <br />
+
+      <div th:if="*{isRest}">
+
+        <div class="jumbotron">
+          <form id="editForm" class="form-horizontal" th:action="*{editRestLink}" method="POST">
+            <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
+              th:value="${h.value}" />
+            <input type="hidden" th:field="*{actId}" />
+
+            <h3>Rest match day</h3>
+
             <div class="row">
-              <label class="col-sm-3 control-label" for="localTeam">Local
-                Team</label> <label class="col-sm-1 control-label"
-                for="localResult">Goals</label> <label
-                class="col-sm-3 control-label" for="visitorTeam">Visitor
-                Team</label> <label class="col-sm-1 control-label"
-                for="visitorResult">Goals</label>
+              <label class="col-sm-3 control-label" for="localTeam">Team</label>
             </div>
-  
-            <div class="row">
+
+            <div class="row form-group">
               <div class="col-sm-3">
-                <select class="form-control" id="localTeam"
-                  name="localTeam" th:field="*{localTeam.teamId}">
+                <select class="form-control" id="localTeam" th:field="*{localTeam.teamId}">
                   <option value="0">--</option>
                   <option th:each="lTeam : ${teamsList}"
-                    th:value="${lTeam.teamId}" th:text="${lTeam.teamName}">Local
-                    Team</option>
+                          th:value="${lTeam.teamId}" th:text="${lTeam.teamName}">Local Team</option>
                 </select>
-              </div>
-              <div class="col-sm-1">
-                <input class="form-control" id="localResult" type="number"
-                  th:field="*{localResult}" />
-              </div>
-              <div class="col-sm-3">
-                <select class="form-control" id="visitorTeam"
-                  name="visitorTeam" th:field="*{visitorTeam.teamId}">
-                  <option value="0">--</option>
-                  <option th:each="vTeam : ${teamsList}"
-                    th:value="${vTeam.teamId}" th:text="${vTeam.teamName}">Local
-                    Team</option>
-                </select>
-              </div>
-              <div class="col-sm-1">
-                <input class="form-control" id="visitorResult"
-                  type="number" th:field="*{visitorResult}" />
               </div>
             </div>
-  
+
+            <div class="row">
+              <input class="btn btn-primary" type="submit" name="submit" value="Update act" />
+            </div>
+
+            </form>
+         </div>
+      </div>
+
+      <div th:unless="*{isRest}">
+        <div class="jumbotron">
+          <form id="editForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
+            <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
+              th:value="${h.value}" />
+            <input type="hidden" th:field="*{actId}" />
+
+            <div class="row">
+              <label class="col-sm-3 control-label" for="localTeam">Local Team</label>
+              <label class="col-sm-1 control-label" for="localResult">Goals</label>
+              <label class="col-sm-3 control-label" for="visitorTeam">Visitor Team</label>
+              <label class="col-sm-1 control-label" for="visitorResult">Goals</label>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <select class="form-control" id="localTeam" th:field="*{localTeam.teamId}">
+                  <option value="0">--</option>
+                  <option th:each="lTeam : ${teamsList}"
+                          th:value="${lTeam.teamId}" th:text="${lTeam.teamName}">Local Team</option>
+                </select>
+              </div>
+              <div class="col-sm-1">
+                <input class="form-control" id="localResult" type="number" th:field="*{localResult}" />
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control" id="visitorTeam" th:field="*{visitorTeam.teamId}">
+                  <option value="0">--</option>
+                  <option th:each="vTeam : ${teamsList}"
+                          th:value="${vTeam.teamId}" th:text="${vTeam.teamName}">Local Team</option>
+                </select>
+              </div>
+              <div class="col-sm-1">
+                <input class="form-control" id="visitorResult" type="number" th:field="*{visitorResult}" />
+              </div>
+            </div>
+
             <div class="row">
               <label class="col-sm-3 control-label" for="date">Date</label>
             </div>
+
             <div class="row">
               <div class="col-sm-3">
                 <input class="form-control" id="date" type="text"
                   placeholder="Date" th:field="*{date}" />
               </div>
             </div>
-  
+
             <div class="row">
               <label class="col-sm-3 control-label" for="location">Location</label>
             </div>
@@ -82,318 +113,317 @@
                   placeholder="Location" th:field="*{location}" />
               </div>
             </div>
-  
+
             <div class="row">
               <div class="form-group pull-right">
                 <div class="col-sm-3 control-label">
                   <label for="referees">Referees</label>
                 </div>
                 <div class="col-sm-9">
-                  <label for="referees">(ej: "Referee name,
-                    referee name")</label>
+                  <label for="referees">(ej: "Referee name, referee name")</label>
                   <textarea class="form-control" id="referees"
-                    name="referees" type="text" placeholder="Referees"
-                    th:text="*{referees}"></textarea>
+                            name="referees" type="text" placeholder="Referees"
+                            th:text="*{referees}"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label class="col-sm-3 control-label" for="incidents">Incidents</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" id="incidents" type="text"
+                    placeholder="Incidents" th:field="*{incidents}"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label class="col-sm-3 control-label" for="signatures">Signatures</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" id="signatures" type="text"
+                    placeholder="Signatures" th:field="*{signatures}"></textarea>
+                </div>
+              </div>
+            </div>
+            <input class="btn btn-primary" type="submit" name="submit"
+              value="Update act" />
+          </form>
+        </div>
+
+        <h2>Game statistics</h2>
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6 panel">
+               <div class="panel-body">
+                <h3>Local Team</h3>
+                <h4>Players</h4>
+                <div class="row">
+                  <p class="col-xs-2"><b>Name</b></p>
+                  <p class="col-xs-2"><b>First yellow card</b></p>
+                  <p class="col-xs-2"><b>Second yellow card</b></p>
+                  <p class="col-xs-2"><b>Red Cards</b></p>
+                  <p class="col-xs-2"><b>Goals</b></p>
+                  <p class="col-xs-2"><b>Action</b></p>
+                </div>
+
+                <hr/>
+
+                <div th:class="${local.isCalledUp?'alert':'alert alert-danger'}"
+                     th:each="local: ${localPlayerStats.list}">
+
+                  <div class="row well well-sm">
+                    <form th:action="${local.editLink}" method="POST">
+                      <input type="hidden" name="staffStats" value="" />
+                      <span class="col-xs-2 "
+                            th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'"></span>
+                      <div class="col-xs-2 ">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
+                               th:checked="${local.firstYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
+                               th:checked="${local.secondYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
+                               th:checked="${local.redCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="form-control input-sm" type="text" name="goals"
+                               th:value="${local.goalsNumber}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="btn btn-primary"
+                             type="submit" th:value="Modify"/>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div class="row">
+                      <form id="'lpcaller' + ${local.statsId}" class="col-sm-2"
+                            th:action="${local.callerLink.href}" method="POST">
+                        <div class="form-group">
+                          <input class="btn btn-primary"
+                               type="submit" th:value="${local.callerLink.text}"/>
+                        </div>
+                      </form>
+                      <form id="'lpsetter' + ${local.statsId}" class="form-inline col-sm-10 col-xs-12"
+                            th:action="${local.setterLink.href}" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" id="staffPosition" type="text"
+                               placeholder="Position" name="staffPosition" th:value="${local.staffPosition}" />
+                        </div>
+                        <div class="form-group">
+                          <input class="btn btn-primary form-control"
+                               type="submit" th:value="${local.setterLink.text}"/>
+                        </div>
+                      </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 panel">
+              <div class="panel-body">
+                <h3>Visitor Team</h3>
+                <h4>Players</h4>
+                <div class="row">
+                  <p class="col-xs-2"><b>Name</b></p>
+                  <p class="col-xs-2"><b>First yellow card</b></p>
+                  <p class="col-xs-2"><b>Second yellow card</b></p>
+                  <p class="col-xs-2"><b>Red Cards</b></p>
+                  <p class="col-xs-2"><b>Goals</b></p>
+                  <p class="col-xs-2"><b>Action</b></p>
+                </div>
+
+                <hr/>
+
+                <div th:class="${visitor.isCalledUp?'alert':'alert alert-danger'}"
+                     th:each="visitor: ${visitorPlayerStats.list}">
+
+                  <div class="row well well-sm">
+                    <form th:action="${visitor.editLink}" method="POST">
+                      <input type="hidden" name="staffStats" value="" />
+                      <span class="col-xs-2 "
+                            th:text="${visitor.staffMember}? ${visitor.staffMember.person.name} : '--'"></span>
+                      <div class="col-xs-2 ">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
+                               th:checked="${visitor.firstYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
+                               th:checked="${visitor.secondYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
+                               th:checked="${visitor.redCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="form-control input-sm" type="text" name="goals"
+                               th:value="${visitor.goalsNumber}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="btn btn-primary"
+                             type="submit" th:value="Modify"/>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div class="row">
+                      <form id="'vpcaller' + ${visitor.statsId}" class="col-sm-2"
+                            th:action="${visitor.callerLink.href}" method="POST">
+                        <div class="form-group">
+                          <input class="btn btn-primary"
+                               type="submit" th:value="${visitor.callerLink.text}"/>
+                        </div>
+                      </form>
+                      <form id="'vpsetter' + ${visitor.statsId}" class="form-inline col-sm-10 col-xs-12"
+                            th:action="${visitor.setterLink.href}" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" id="staffPosition" type="text"
+                               placeholder="Position" name="staffPosition" th:value="${visitor.staffPosition}" />
+                        </div>
+                        <div class="form-group">
+                          <input class="btn btn-primary form-control"
+                               type="submit" th:value="${visitor.setterLink.text}"/>
+                        </div>
+                      </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12"></div>
+
+            <div class="col-sm-6 panel">
+              <div class="panel-body">
+                <h4>Staff</h4>
+
+                <div th:class="${lStaff.isCalledUp?'':'alert alert-danger'}"
+                     th:each="lStaff: ${localStaffStats.list}">
+
+                  <div class="row well well-sm">
+                    <form th:action="${lStaff.editLink}" method="POST">
+                      <input type="hidden" name="staffStats" value="" />
+                      <span class="col-xs-2 "
+                            th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'"></span>
+                      <div class="col-xs-2 ">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
+                               th:checked="${lStaff.firstYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
+                               th:checked="${lStaff.secondYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
+                               th:checked="${lStaff.redCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="form-control input-sm" type="text" name="goals"
+                               th:value="${lStaff.goalsNumber}"/>
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="btn btn-primary"
+                             type="submit" th:value="Modify"/>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div class="row">
+                      <form id="'lscaller' + ${lStaff.statsId}" class="col-sm-2"
+                            th:action="${lStaff.callerLink.href}" method="POST">
+                        <div class="form-group">
+                          <input class="btn btn-primary"
+                               type="submit" th:value="${lStaff.callerLink.text}"/>
+                        </div>
+                      </form>
+                      <form id="'lssetter' + ${lStaff.statsId}" class="form-inline col-sm-10 col-xs-12"
+                            th:action="${lStaff.setterLink.href}" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" disabled="true" type="text"
+                               placeholder="Position" name="staffPosition" th:value="${lStaff.staffPosition}" />
+                        </div>
+                        <div class="form-group">
+                          <input class="btn btn-primary form-control"
+                               type="submit" th:value="${lStaff.setterLink.text}"/>
+                        </div>
+                      </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 panel">
+              <div class="panel-body">
+                <h4>Staff</h4>
+
+                <div th:class="${vStaff.isCalledUp?'':'alert alert-danger'}"
+                     th:each="vStaff: ${visitorStaffStats.list}">
+
+                  <div class="row well well-sm">
+                    <form th:action="${vStaff.editLink}" method="POST">
+                      <input type="hidden" name="staffStats" value="" />
+                      <span class="col-xs-2 "
+                            th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'"></span>
+                      <div class="col-xs-2 ">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
+                               th:checked="${vStaff.firstYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
+                               th:checked="${vStaff.secondYellowCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
+                               th:checked="${vStaff.redCard}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="form-control input-sm" type="text" name="goals"
+                               th:value="${vStaff.goalsNumber}" />
+                      </div>
+                      <div class="col-xs-2">
+                        <input class="btn btn-primary"
+                             type="submit" th:value="Modify"/>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div class="row">
+                      <form id="'vscaller' + ${vStaff.statsId}" class="col-sm-2"
+                            th:action="${vStaff.callerLink.href}" method="POST">
+                        <div class="form-group">
+                          <input class="btn btn-primary"
+                               type="submit" th:value="${vStaff.callerLink.text}"/>
+                        </div>
+                      </form>
+                      <form id="'vssetter' + ${vStaff.statsId}" class="form-inline col-sm-10 col-xs-12"
+                            th:action="${vStaff.setterLink.href}" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" disabled="true" type="text"
+                               placeholder="Position" name="staffPosition" th:value="${vStaff.staffPosition}" />
+                        </div>
+                        <div class="form-group">
+                          <input class="btn btn-primary form-control"
+                               type="submit" th:value="${vStaff.setterLink.text}"/>
+                        </div>
+                      </form>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-  
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="incidents">Incidents</label>
-            <div class="col-sm-9">
-              <textarea class="form-control" id="incidents" type="text"
-                placeholder="Incidents" th:field="*{incidents}"></textarea>
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="signatures">Signatures</label>
-            <div class="col-sm-9">
-              <textarea class="form-control" id="signatures" type="text"
-                placeholder="Signatures" th:field="*{signatures}"></textarea>
-            </div>
-          </div>
-  
-          <input class="btn btn-primary" type="submit" name="submit"
-            value="Update act" />
-        </form>
-        
         </div>
-        <h2>Game statistics</h2>
-      
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-sm-6 panel">
-                   <div class="panel-body">
-                    <h3>Local Team</h3>
-                    <h4>Players</h4>
-                    <div class="row">
-                      <p class="col-xs-2"><b>Name</b></p>
-                      <p class="col-xs-2"><b>First yellow card</b></p>
-                      <p class="col-xs-2"><b>Second yellow card</b></p>
-                      <p class="col-xs-2"><b>Red Cards</b></p>
-                      <p class="col-xs-2"><b>Goals</b></p>
-                      <p class="col-xs-2"><b>Action</b></p>
-                    </div>
-
-                    <hr/>
-
-                    <div th:class="${local.isCalledUp?'alert':'alert alert-danger'}"
-                      th:each="local: ${localPlayerStats.list}">
-
-                      <div class="row well well-sm">
-                        <form th:action="${local.editLink}" method="POST">
-                          <input type="hidden" name="staffStats" value="" />
-                          <span class="col-xs-2 "
-                                th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'"></span>
-                          <div class="col-xs-2 ">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
-                                   th:checked="${local.firstYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
-                                   th:checked="${local.secondYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
-                                   th:checked="${local.redCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="form-control input-sm" type="text" name="goals"
-                                   th:value="${local.goalsNumber}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="btn btn-primary"
-                                 type="submit" th:value="Modify"/>
-                          </div>
-                        </form>
-                      </div>
-
-                      <div class="row">
-                          <form id="'lpcaller' + ${local.statsId}" class="col-sm-2"
-                                th:action="${local.callerLink.href}" method="POST">
-                            <div class="form-group">
-                              <input class="btn btn-primary"
-                                   type="submit" th:value="${local.callerLink.text}"/>
-                            </div>
-                          </form>
-                          <form id="'lpsetter' + ${local.statsId}" class="form-inline col-sm-10 col-xs-12"
-                                th:action="${local.setterLink.href}" method="POST">
-                            <div class="form-group">
-                                <input class="form-control" id="staffPosition" type="text"
-                                   placeholder="Position" name="staffPosition" th:value="${local.staffPosition}" />
-                            </div>
-                            <div class="form-group">
-                              <input class="btn btn-primary form-control"
-                                   type="submit" th:value="${local.setterLink.text}"/>
-                            </div>
-                          </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-6 panel">
-                  <div class="panel-body">
-                    <h3>Visitor Team</h3>
-                    <h4>Players</h4>
-                    <div class="row">
-                      <p class="col-xs-2"><b>Name</b></p>
-                      <p class="col-xs-2"><b>First yellow card</b></p>
-                      <p class="col-xs-2"><b>Second yellow card</b></p>
-                      <p class="col-xs-2"><b>Red Cards</b></p>
-                      <p class="col-xs-2"><b>Goals</b></p>
-                      <p class="col-xs-2"><b>Action</b></p>
-                    </div>
-
-                    <hr/>
-
-                    <div th:class="${visitor.isCalledUp?'alert':'alert alert-danger'}"
-                      th:each="visitor: ${visitorPlayerStats.list}">
-
-                      <div class="row well well-sm">
-                        <form th:action="${visitor.editLink}" method="POST">
-                          <input type="hidden" name="staffStats" value="" />
-                          <span class="col-xs-2 "
-                                th:text="${visitor.staffMember}? ${visitor.staffMember.person.name} : '--'"></span>
-                          <div class="col-xs-2 ">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
-                                   th:checked="${visitor.firstYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
-                                   th:checked="${visitor.secondYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
-                                   th:checked="${visitor.redCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="form-control input-sm" type="text" name="goals"
-                                   th:value="${visitor.goalsNumber}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="btn btn-primary"
-                                 type="submit" th:value="Modify"/>
-                          </div>
-                        </form>
-                      </div>
-
-                      <div class="row">
-                          <form id="'vpcaller' + ${visitor.statsId}" class="col-sm-2"
-                                th:action="${visitor.callerLink.href}" method="POST">
-                            <div class="form-group">
-                              <input class="btn btn-primary"
-                                   type="submit" th:value="${visitor.callerLink.text}"/>
-                            </div>
-                          </form>
-                          <form id="'vpsetter' + ${visitor.statsId}" class="form-inline col-sm-10 col-xs-12"
-                                th:action="${visitor.setterLink.href}" method="POST">
-                            <div class="form-group">
-                                <input class="form-control" id="staffPosition" type="text"
-                                   placeholder="Position" name="staffPosition" th:value="${visitor.staffPosition}" />
-                            </div>
-                            <div class="form-group">
-                              <input class="btn btn-primary form-control"
-                                   type="submit" th:value="${visitor.setterLink.text}"/>
-                            </div>
-                          </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-12"></div>
-
-                <div class="col-sm-6 panel">
-                  <div class="panel-body">
-                    <h4>Staff</h4>
-
-                    <div th:class="${lStaff.isCalledUp?'':'alert alert-danger'}"
-                        th:each="lStaff: ${localStaffStats.list}">
-
-                      <div class="row well well-sm">
-                        <form th:action="${lStaff.editLink}" method="POST">
-                          <input type="hidden" name="staffStats" value="" />
-                          <span class="col-xs-2 "
-                                th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'"></span>
-                          <div class="col-xs-2 ">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
-                                   th:checked="${lStaff.firstYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
-                                   th:checked="${lStaff.secondYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
-                                   th:checked="${lStaff.redCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="form-control input-sm" type="text" name="goals"
-                                   th:value="${lStaff.goalsNumber}"/>
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="btn btn-primary"
-                                 type="submit" th:value="Modify"/>
-                          </div>
-                        </form>
-                      </div>
-
-                      <div class="row">
-                          <form id="'lscaller' + ${lStaff.statsId}" class="col-sm-2"
-                                th:action="${lStaff.callerLink.href}" method="POST">
-                            <div class="form-group">
-                              <input class="btn btn-primary"
-                                   type="submit" th:value="${lStaff.callerLink.text}"/>
-                            </div>
-                          </form>
-                          <form id="'lssetter' + ${lStaff.statsId}" class="form-inline col-sm-10 col-xs-12"
-                                th:action="${lStaff.setterLink.href}" method="POST">
-                            <div class="form-group">
-                                <input class="form-control" disabled="true" type="text"
-                                   placeholder="Position" name="staffPosition" th:value="${lStaff.staffPosition}" />
-                            </div>
-                            <div class="form-group">
-                              <input class="btn btn-primary form-control"
-                                   type="submit" th:value="${lStaff.setterLink.text}"/>
-                            </div>
-                          </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-6 panel">
-                  <div class="panel-body">
-                    <h4>Staff</h4>
-
-                    <div th:class="${vStaff.isCalledUp?'':'alert alert-danger'}"
-                        th:each="vStaff: ${visitorStaffStats.list}">
-
-                      <div class="row well well-sm">
-                        <form th:action="${vStaff.editLink}" method="POST">
-                          <input type="hidden" name="staffStats" value="" />
-                          <span class="col-xs-2 "
-                                th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'"></span>
-                          <div class="col-xs-2 ">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
-                                   th:checked="${vStaff.firstYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="secondYellowCard"
-                                   th:checked="${vStaff.secondYellowCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="checkbox" type="checkbox" name="staffStats" value="redCard"
-                                   th:checked="${vStaff.redCard}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="form-control input-sm" type="text" name="goals"
-                                   th:value="${vStaff.goalsNumber}" />
-                          </div>
-                          <div class="col-xs-2">
-                            <input class="btn btn-primary"
-                                 type="submit" th:value="Modify"/>
-                          </div>
-                        </form>
-                      </div>
-
-                      <div class="row">
-                          <form id="'vscaller' + ${vStaff.statsId}" class="col-sm-2"
-                                th:action="${vStaff.callerLink.href}" method="POST">
-                            <div class="form-group">
-                              <input class="btn btn-primary"
-                                   type="submit" th:value="${vStaff.callerLink.text}"/>
-                            </div>
-                          </form>
-                          <form id="'vssetter' + ${vStaff.statsId}" class="form-inline col-sm-10 col-xs-12"
-                                th:action="${vStaff.setterLink.href}" method="POST">
-                            <div class="form-group">
-                                <input class="form-control" disabled="true" type="text"
-                                   placeholder="Position" name="staffPosition" th:value="${vStaff.staffPosition}" />
-                            </div>
-                            <div class="form-group">
-                              <input class="btn btn-primary form-control"
-                                   type="submit" th:value="${vStaff.setterLink.text}"/>
-                            </div>
-                          </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-            </div>
-          </div>
-
-          <br />
-          <a class="btn btn-default" th:href="${act.getShowLink()}">Back
-        to show game</a>
-
       </div>
-    </div>
 
+      <br />
+      <a class="btn btn-default" th:href="${act.getShowLink()}">Back to show game</a>
+
+    </div>
+  </div>
 </body>
 </html>
 
