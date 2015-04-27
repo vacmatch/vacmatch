@@ -24,6 +24,8 @@
 
       <br />
 
+      <!-- When a team rest this match day -->
+
       <div th:if="*{isRest}">
 
         <div class="jumbotron">
@@ -56,7 +58,12 @@
          </div>
       </div>
 
+      <!-- Normal match day -->
+
       <div th:unless="*{isRest}">
+
+        <!-- Game details -->
+
         <div class="jumbotron">
           <form id="editForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
             <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
@@ -152,12 +159,17 @@
           </form>
         </div>
 
+        <!-- Game stadistics -->
+
         <h2>Game statistics</h2>
 
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-6 panel">
                <div class="panel-body">
+
+                <!-- Local players stadistics -->
+
                 <h3>Local Team</h3>
                 <h4>Players</h4>
                 <div class="row">
@@ -177,8 +189,15 @@
                   <div class="row well well-sm">
                     <form th:action="${local.editLink}" method="POST">
                       <input type="hidden" name="staffStats" value="" />
-                      <span class="col-xs-2 "
-                            th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'"></span>
+                      <span th:if="${local.isCalledUp}"
+                            class="col-xs-2"
+                            th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'">
+                      </span>
+                      <span th:unless="${local.isCalledUp}"
+                            class="col-xs-2"
+                            data-toggle="tooltip" title="Not called up"
+                            th:text="${local.staffMember}? ${local.staffMember.person.name} : '--'">
+                      </span>
                       <div class="col-xs-2 ">
                         <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
                                th:checked="${local.firstYellowCard}" />
@@ -228,6 +247,9 @@
 
             <div class="col-sm-6 panel">
               <div class="panel-body">
+
+                <!-- Visitor players stadistics -->
+
                 <h3>Visitor Team</h3>
                 <h4>Players</h4>
                 <div class="row">
@@ -247,8 +269,15 @@
                   <div class="row well well-sm">
                     <form th:action="${visitor.editLink}" method="POST">
                       <input type="hidden" name="staffStats" value="" />
-                      <span class="col-xs-2 "
-                            th:text="${visitor.staffMember}? ${visitor.staffMember.person.name} : '--'"></span>
+                      <span th:if="${visitor.isCalledUp}"
+                            class="col-xs-2"
+                            th:text="${visitor.staffMember}? ${visitor.staffMember.person.name} : '--'">
+                      </span>
+                      <span th:unless="${visitor.isCalledUp}"
+                            class="col-xs-2"
+                            data-toggle="tooltip" title="Not called up"
+                            th:text="${visitor.staffMember}? ${visitor.staffMember.person.name} : '--'">
+                      </span>
                       <div class="col-xs-2 ">
                         <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
                                th:checked="${visitor.firstYellowCard}" />
@@ -300,16 +329,26 @@
 
             <div class="col-sm-6 panel">
               <div class="panel-body">
+
+                <!-- Local staff stadistics -->
+
                 <h4>Staff</h4>
 
-                <div th:class="${lStaff.isCalledUp?'':'alert alert-danger'}"
+                <div th:class="${lStaff.isCalledUp?'alert':'alert alert-danger'}"
                      th:each="lStaff: ${localStaffStats.list}">
 
                   <div class="row well well-sm">
                     <form th:action="${lStaff.editLink}" method="POST">
                       <input type="hidden" name="staffStats" value="" />
-                      <span class="col-xs-2 "
-                            th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'"></span>
+                      <span th:if="${lStaff.isCalledUp}"
+                            class="col-xs-2"
+                            th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'">
+                      </span>
+                      <span th:unless="${lStaff.isCalledUp}"
+                            class="col-xs-2"
+                            data-toggle="tooltip" title="Not called up"
+                            th:text="${lStaff.staffMember}? ${lStaff.staffMember.person.name} : '--'">
+                      </span>
                       <div class="col-xs-2 ">
                         <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
                                th:checked="${lStaff.firstYellowCard}" />
@@ -359,16 +398,26 @@
 
             <div class="col-sm-6 panel">
               <div class="panel-body">
+
+                <!-- Visitor staff stadistics -->
+
                 <h4>Staff</h4>
 
-                <div th:class="${vStaff.isCalledUp?'':'alert alert-danger'}"
+                <div th:class="${vStaff.isCalledUp?'alert':'alert alert-danger'}"
                      th:each="vStaff: ${visitorStaffStats.list}">
 
                   <div class="row well well-sm">
                     <form th:action="${vStaff.editLink}" method="POST">
                       <input type="hidden" name="staffStats" value="" />
-                      <span class="col-xs-2 "
-                            th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'"></span>
+                      <span th:if="${vStaff.isCalledUp}"
+                            class="col-xs-2"
+                            th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'">
+                      </span>
+                      <span th:unless="${vStaff.isCalledUp}"
+                            class="col-xs-2"
+                            data-toggle="tooltip" title="Not called up"
+                            th:text="${vStaff.staffMember}? ${vStaff.staffMember.person.name} : '--'">
+                      </span>
                       <div class="col-xs-2 ">
                         <input class="checkbox" type="checkbox" name="staffStats" value="firstYellowCard"
                                th:checked="${vStaff.firstYellowCard}" />
@@ -421,6 +470,8 @@
 
       <br />
       <a class="btn btn-default" th:href="${act.getShowLink()}">Back to show game</a>
+
+    <script src="../../static/js/tooltip.js" th:src="@{/js/tooltip.js}"></script>
 
     </div>
   </div>

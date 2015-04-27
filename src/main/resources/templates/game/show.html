@@ -63,8 +63,12 @@
             </tr>
             <tr th:class="${local.isCalledUp?'':'alert alert-danger'}"
                 th:each="local: ${localStats}" th:object="${local}">
-              <td class="col-sm-2"
-                  th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></td>
+              <td class="col-sm-2">
+                <p th:if="${local.isCalledUp}"
+                   th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></p>
+                <p th:unless="${local.isCalledUp}" data-toggle="tooltip" title="Not called up"
+                   th:text="*{staffMember}? ${local.staffMember.person.name}: '--'"></p>
+              </td>
               <td class="col-sm-3">
                 <input class="checkbox" type="checkbox" disabled="true"
                        th:checked="*{firstYellowCard}? true: false" />
@@ -96,8 +100,12 @@
             </tr>
             <tr th:class="${visitor.isCalledUp?'':'alert alert-danger'}"
                 th:each="visitor: ${visitorStats}" th:object="${visitor}">
-              <td class="col-sm-2"
-                  th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></td>
+              <td class="col-sm-2">
+                <p th:if="${visitor.isCalledUp}"
+                   th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></p>
+                <p th:unless="${visitor.isCalledUp}" data-toggle="tooltip" title="Not called up"
+                   th:text="*{staffMember}? ${visitor.staffMember.person.name}: '--'"></p>
+              </td>
               <td class="col-sm-3">
                 <input class="checkbox" type="checkbox" disabled="true"
                        th:checked="*{firstYellowCard}? true: false" />
@@ -130,8 +138,12 @@
             </tr>
             <tr th:class="${lStaff.isCalledUp?'':'alert alert-danger'}"
                 th:each="lStaff: ${localStaff}" th:object="${lStaff}">
-              <td class="col-sm-2"
-                  th:text="*{staffMember}? ${lStaff.staffMember.person.name}: '--'"></td>
+              <td class="col-sm-2">
+                <p th:if="${lStaff.isCalledUp}"
+                   th:text="*{staffMember}? ${lStaff.staffMember.person.name}: '--'"></p>
+                <p th:unless="${lStaff.isCalledUp}" data-toggle="tooltip" title="Not called up"
+                   th:text="*{staffMember}? ${lStaff.staffMember.person.name}: '--'"></p>
+              </td>
               <td  class="col-sm-2 alert alert-info"
                    th:text="${lStaff.staffPosition}? ${lStaff.staffPosition} : '--'"></td>
               <td class="col-sm-2">
@@ -164,8 +176,12 @@
             </tr>
             <tr th:class="${vStaff.isCalledUp?'':'alert alert-danger'}"
                 th:each="vStaff: ${visitorStaff}" th:object="${vStaff}">
-              <td class="col-sm-2"
-                  th:text="*{staffMember}? ${vStaff.staffMember.person.name}: '--'"></td>
+              <td class="col-sm-2">
+                <p th:if="${vStaff.isCalledUp}"
+                   th:text="*{staffMember}? ${vStaff.staffMember.person.name}: '--'"></p>
+                <p th:unless="${vStaff.isCalledUp}" data-toggle="tooltip" title="Not called up"
+                   th:text="*{staffMember}? ${vStaff.staffMember.person.name}: '--'"></p>
+              </td>
               <td  class="col-sm-2 alert alert-info"
                    th:text="${vStaff.staffPosition}? ${vStaff.staffPosition} : '--'"></td>
               <td class="col-sm-2">
@@ -200,6 +216,9 @@
 
     <a class="btn btn-default" th:href="${calendarLink}">Back to the
       calendar</a>
+
+    <script src="../../static/js/tooltip.js" th:src="@{/js/tooltip.js}"></script>
+
   </div>
   <div th:replace="fragments/footer :: footer">&copy; 2013 The
     Static Templates</div>
