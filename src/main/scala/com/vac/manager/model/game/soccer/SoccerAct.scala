@@ -36,6 +36,10 @@ class SoccerAct(g: Game) {
 
   @BeanProperty
   @Column
+  var isRest: Boolean = false
+
+  @BeanProperty
+  @Column
   @Temporal(TemporalType.DATE)
   var date: Calendar = _
 

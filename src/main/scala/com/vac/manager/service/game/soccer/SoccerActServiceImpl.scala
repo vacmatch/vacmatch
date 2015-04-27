@@ -110,5 +110,45 @@ class SoccerActServiceImpl extends SoccerActService {
     }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
   }
 
+  @throws[InstanceNotFoundException]("If team or act doesn't exist")
+  def editRestSoccerAct(gameId: Long, teamId: Long): SoccerAct = {
+    findGameAct(gameId).map {
+      act =>
+        val team: Team = teamService.find(teamId)
+          .getOrElse(null)
+
+        act.localTeam = team
+
+        // Reset visitor
+        act.localResult = 0
+        act.visitorTeam = null
+        act.visitorResult = 0
+        soccerActDao.save(act)
+
+        // Staff stats must be removed
+        soccerStaffStatsService.removeVisitorStats(act.actId)
+
+        act
+    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+  }
+
+  @throws[InstanceNotFoundException]("If act doesn't exist")
+  def changeRestState(gameId: Long): SoccerAct = {
+    findGameAct(gameId).map { act =>
+      act.isRest = !act.isRest
+
+      // Reset visitor
+      act.localResult = 0
+      act.visitorTeam = null
+      act.visitorResult = 0
+      soccerActDao.save(act)
+
+      // Staff stats must be removed
+      soccerStaffStatsService.removeVisitorStats(act.actId)
+
+      act
+    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+  }
+
 }
 

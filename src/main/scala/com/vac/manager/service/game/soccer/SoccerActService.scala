@@ -28,5 +28,11 @@ trait SoccerActService {
     localTeamId: Long, localResult: Int, visitorTeamId: Long, visitorResult: Int,
     incidents: String, signatures: String): SoccerAct
 
+  @throws[InstanceNotFoundException]("If team or act doesn't exist")
+  def editRestSoccerAct(gameId: Long, teamId: Long): SoccerAct
+
+  @throws[InstanceNotFoundException]("If act doesn't exist")
+  def changeRestState(gameId: Long): SoccerAct
+
 }
 
