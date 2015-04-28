@@ -58,15 +58,24 @@ class LeagueSeasonController extends UrlGrabber {
       .getOrElse(i.t("(Not yet available)"))
 
     @BeanProperty
-    val links: java.util.List[Hyperlink] = Map(
-      i.t("Classification") -> "#classification",
-      i.t("Calendar") -> "#calendar",
-      i.t("Last matches played") -> "#matches",
-      i.t("Current match day") -> "#matchday"
-    ).toSeq.map {
-        case (text, href) =>
-          Hyperlink(text, href, "class")
-      }.asJava
+    val mainLink = latest_season.map { season =>
+      val text = i.t("Classification")
+      val href = "#classification" // TODO: Put classification here
+      Hyperlink(text, href, "")
+    }.getOrElse(Hyperlink(i.t("No action available"), "#", "disabled"))
+
+    @BeanProperty
+    val links: java.util.List[Hyperlink] = latest_season.map { season =>
+      Map(
+        i.t("Classification") -> "#classification",
+        i.t("Calendar") -> getUrl("GameController.list", "slug" -> l.slug, "year" -> season.id.seasonSlug),
+        i.t("Last matches played") -> "#matches",
+        i.t("Current match day") -> "#matchday"
+      )
+    }.toOption.toSeq.flatten.map {
+      case (text, href) =>
+        Hyperlink(text, href, "class")
+    }.asJava
 
   }
 
