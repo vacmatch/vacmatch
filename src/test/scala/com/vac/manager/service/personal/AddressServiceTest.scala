@@ -11,10 +11,10 @@ import org.mockito.Mockito
 import com.vac.manager.model.personal.AddressDao
 
 class AddressServiceTest
-  extends FeatureSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with BeforeAndAfter {
+    extends FeatureSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with BeforeAndAfter {
 
   /* Generic variables */
   var addressService: AddressServiceImpl = _
@@ -81,5 +81,4 @@ class AddressServiceTest
     }
   }
 }
-
 

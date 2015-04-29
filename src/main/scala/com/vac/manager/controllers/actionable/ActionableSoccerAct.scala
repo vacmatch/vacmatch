@@ -7,8 +7,8 @@ import scala.collection.JavaConverters._
 import com.vac.manager.controllers.utils.Hyperlink
 
 class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String, userCanEdit: Boolean)
-  extends SoccerAct
-  with UrlGrabber {
+    extends SoccerAct
+    with UrlGrabber {
 
   actId = act.actId
   game = act.game

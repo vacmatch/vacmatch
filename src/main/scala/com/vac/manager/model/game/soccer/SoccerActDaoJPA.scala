@@ -10,7 +10,7 @@ import javax.persistence.Table
 
 @Repository("teamActDao")
 class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[SoccerAct])
-  with SoccerActDao {
+    with SoccerActDao {
 
   def findByGameId(gameId: Long): Option[SoccerAct] = {
     var result = getEntityManager().createQuery(

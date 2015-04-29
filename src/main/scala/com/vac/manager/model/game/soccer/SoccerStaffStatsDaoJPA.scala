@@ -8,8 +8,8 @@ import javax.persistence.Table
 
 @Repository("soccerStaffStatsDao")
 class SoccerStaffStatsDaoJPA
-  extends GenericDaoJPA[SoccerStaffStats, java.lang.Long](classOf[SoccerStaffStats])
-  with SoccerStaffStatsDao {
+    extends GenericDaoJPA[SoccerStaffStats, java.lang.Long](classOf[SoccerStaffStats])
+    with SoccerStaffStatsDao {
 
   def findLocalStatsByActId(actId: Long): Seq[SoccerStaffStats] = {
     var query = getEntityManager().createQuery(

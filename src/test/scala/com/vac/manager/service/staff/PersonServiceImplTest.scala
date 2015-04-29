@@ -29,11 +29,11 @@ import com.vac.manager.model.staff.PersonDao
 import com.vac.manager.service.personal.AddressService
 
 class PersonServiceImplTest
-  extends FeatureSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with GeneratorDrivenPropertyChecks
-  with BeforeAndAfter {
+    extends FeatureSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with GeneratorDrivenPropertyChecks
+    with BeforeAndAfter {
 
   /* Generic variables */
   var personService: PersonServiceImpl = _
@@ -42,8 +42,8 @@ class PersonServiceImplTest
   var validFederation: Federation = _
 
   /**
-   * Generic variables initialization
-   */
+    * Generic variables initialization
+    */
   before {
     //Initialization from service to be tested
     personService = new PersonServiceImpl

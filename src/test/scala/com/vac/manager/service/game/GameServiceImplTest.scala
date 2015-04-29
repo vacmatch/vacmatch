@@ -22,11 +22,11 @@ import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.service.game.soccer.SoccerActService
 
 class GameServiceImplTest
-  extends PropSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with BeforeAndAfter
-  with GeneratorDrivenPropertyChecks {
+    extends PropSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with BeforeAndAfter
+    with GeneratorDrivenPropertyChecks {
 
   val genPositiveInts = Gen.choose(1, 50) //arbitrary[Int] suchThat (positiveInt(_))
   val genNegativeOrZeroInts = Gen.choose(-50, 0) //arbitrary[Int] suchThat (negativeInt(_))
