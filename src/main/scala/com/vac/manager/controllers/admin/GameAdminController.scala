@@ -144,48 +144,49 @@ class GameAdminController extends UrlGrabber {
     // TODO select act by sport
     soccerActService.findGameAct(gameId).map {
       act =>
-        {
-          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+        val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
-          val submitMethod: String = "POST"
-          val submitUrl: String = getUrl("GameAdminController.editPost", "slug" -> slug, "year" -> year, "gameId" -> gameId)
-          val backLink: String = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+        val submitMethod: String = "POST"
+        val submitUrl: String = getUrl("GameAdminController.editPost", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+        val backLink: String = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> gameId)
 
-          // TODO select act by sport
-          val actFragment: String = "admin/game/soccer/edit_soccer"
+        // TODO select act by sport
+        val actFragment: String = "admin/game/soccer/edit_soccer"
 
-          val teamsList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
+        leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+          leagueSeason =>
+            val teamsList: Seq[Team] = teamService.findTeamsByLeagueSeasonId(leagueSeason.id)
 
-          val localPlayerStats: Seq[ActionableSoccerStaffStats] =
-            soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
-              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+            val localPlayerStats: Seq[ActionableSoccerStaffStats] =
+              soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val localStaffStats: Seq[ActionableSoccerStaffStats] =
-            soccerStaffStatsService.findLocalStaffStats(act.actId).map(
-              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+            val localStaffStats: Seq[ActionableSoccerStaffStats] =
+              soccerStaffStatsService.findLocalStaffStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val visitorPlayerStats: Seq[ActionableSoccerStaffStats] =
-            soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
-              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+            val visitorPlayerStats: Seq[ActionableSoccerStaffStats] =
+              soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val visitorStaffStats: Seq[ActionableSoccerStaffStats] =
-            soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
-              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+            val visitorStaffStats: Seq[ActionableSoccerStaffStats] =
+              soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          new ModelAndView("admin/game/edit")
-            .addObject("action", "Edit")
-            .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
-            .addObject("teamsList", teamsList.asJava)
-            .addObject("localPlayerStats", localPlayerStats.asJava)
-            .addObject("visitorPlayerStats", visitorPlayerStats.asJava)
-            .addObject("localStaffStats", localStaffStats.asJava)
-            .addObject("visitorStaffStats", visitorStaffStats.asJava)
-            .addObject("actFragment", actFragment)
-            .addObject("submitMethod", submitMethod)
-            .addObject("submitUrl", submitUrl)
-            .addObject("calendarLink", backLink)
-        }
-    }.getOrElse(throw new NoSuchElementException("League Season not found"))
+            new ModelAndView("admin/game/edit")
+              .addObject("action", "Edit")
+              .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
+              .addObject("teamsList", teamsList.asJava)
+              .addObject("localPlayerStats", localPlayerStats.asJava)
+              .addObject("visitorPlayerStats", visitorPlayerStats.asJava)
+              .addObject("localStaffStats", localStaffStats.asJava)
+              .addObject("visitorStaffStats", visitorStaffStats.asJava)
+              .addObject("actFragment", actFragment)
+              .addObject("submitMethod", submitMethod)
+              .addObject("submitUrl", submitUrl)
+              .addObject("calendarLink", backLink)
+        }.getOrElse(throw new NoSuchElementException("League Season not found"))
+    }.getOrElse(throw new NoSuchElementException("Act not found"))
   }
 
   def editStatsPost(

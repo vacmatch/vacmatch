@@ -22,6 +22,7 @@ import java.util.ArrayList
 import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
+import com.vac.manager.model.competition.LeagueSeasonPK
 
 @Service("teamService")
 @Transactional
@@ -65,8 +66,8 @@ class TeamServiceImpl extends TeamService {
     teamDao.findAll
   }
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): Seq[Team] = {
-    teamDao.findTeamsByCompetitionId(compId, fedId)
+  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team] = {
+    teamDao.findTeamsByLeagueSeasonId(leagueSeasonId)
   }
 
   def findStaffMemberById(staffMemberId: Long): Option[StaffMember] = {
