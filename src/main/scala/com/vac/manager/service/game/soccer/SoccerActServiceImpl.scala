@@ -73,9 +73,9 @@ class SoccerActServiceImpl extends SoccerActService {
       act =>
         {
           val localTeam: Team = teamService.find(localTeamId)
-            .getOrElse(null)
+            .orNull
           val visitorTeam: Team = teamService.find(visitorTeamId)
-            .getOrElse(null)
+            .orNull
 
           val oldLocal: Option[Team] = Option(act.localTeam)
           val oldVisitor: Option[Team] = Option(act.visitorTeam)

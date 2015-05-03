@@ -76,13 +76,11 @@ class GameController extends UrlGrabber {
             SortedMap(actsMap.toSeq: _*).map(element => (element._1, element._2.asJava))
 
           val actFragment: String = "calendar/soccer/listSoccer"
-          val actInstance: String = "listSoccer"
 
           new ModelAndView("calendar/list")
             .addObject("actionsMenu", actionsMenu.asJava.entrySet)
             .addObject("matchDayList", sortedActsMap.asJava)
             .addObject("actFragment", actFragment)
-            .addObject("actInstance", actInstance)
         }
       }.getOrElse(throw new NoSuchElementException("League Season not found"))
   }

@@ -26,7 +26,6 @@ import com.vac.manager.service.game.soccer.SoccerStaffStatsService
 import com.vac.manager.model.game.soccer.SoccerStaffStats
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
-import com.vac.manager.controllers.utils.ThymeleafList
 import com.vac.manager.model.staff.Person
 
 @Controller
@@ -154,42 +153,34 @@ class GameAdminController extends UrlGrabber {
 
           // TODO select act by sport
           val actFragment: String = "admin/game/soccer/edit_soccer"
-          val actInstance: String = "edit_soccer"
 
           val teamsList: Seq[Team] = teamService.findTeamsByCompetitionId(1, fedId)
 
-          val localPlayerStats: ThymeleafList[ActionableSoccerStaffStats] =
-            new ThymeleafList(
-              soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+          val localPlayerStats: Seq[ActionableSoccerStaffStats] =
+            soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
+              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val localStaffStats: ThymeleafList[ActionableSoccerStaffStats] =
-            new ThymeleafList(
-              soccerStaffStatsService.findLocalStaffStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+          val localStaffStats: Seq[ActionableSoccerStaffStats] =
+            soccerStaffStatsService.findLocalStaffStats(act.actId).map(
+              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val visitorPlayerStats: ThymeleafList[ActionableSoccerStaffStats] =
-            new ThymeleafList(
-              soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+          val visitorPlayerStats: Seq[ActionableSoccerStaffStats] =
+            soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
+              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val visitorStaffStats: ThymeleafList[ActionableSoccerStaffStats] =
-            new ThymeleafList(
-              soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)).asJava)
+          val visitorStaffStats: Seq[ActionableSoccerStaffStats] =
+            soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
+              staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          val staffStatsReceiver: Seq[String] = List()
           new ModelAndView("admin/game/edit")
             .addObject("action", "Edit")
             .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
             .addObject("teamsList", teamsList.asJava)
-            .addObject("staffStats", staffStatsReceiver.asJava)
-            .addObject("localPlayerStats", localPlayerStats)
-            .addObject("visitorPlayerStats", visitorPlayerStats)
-            .addObject("localStaffStats", localStaffStats)
-            .addObject("visitorStaffStats", visitorStaffStats)
+            .addObject("localPlayerStats", localPlayerStats.asJava)
+            .addObject("visitorPlayerStats", visitorPlayerStats.asJava)
+            .addObject("localStaffStats", localStaffStats.asJava)
+            .addObject("visitorStaffStats", visitorStaffStats.asJava)
             .addObject("actFragment", actFragment)
-            .addObject("actInstance", actInstance)
             .addObject("submitMethod", submitMethod)
             .addObject("submitUrl", submitUrl)
             .addObject("calendarLink", backLink)

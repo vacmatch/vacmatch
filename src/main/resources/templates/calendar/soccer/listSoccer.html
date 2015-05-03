@@ -9,7 +9,7 @@
     <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
   </head>
   <body>
-    <div th:fragment="listSoccer">
+    <div th:fragment="list">
       <div th:each="map : ${matchDayList}">
         <h3 th:text="|Match Day #${map.key}|">Match Day #3</h3>
         <table class="table">

@@ -13,7 +13,7 @@
 
   <div class="container" th:fragment="content">
 
-    <div th:fragment="edit_soccer" th:object="${act}">
+    <div th:fragment="edit" th:object="${act}">
 
       <div class="row">
         <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
@@ -24,7 +24,7 @@
 
       <br />
 
-      <!-- When a team rest this match day -->
+      <!--/* When a team rest this match day */-->
 
       <div th:if="*{isRest}">
 
@@ -58,7 +58,7 @@
          </div>
       </div>
 
-      <!-- Normal match day -->
+      <!--/* Normal match day */-->
 
       <div th:unless="*{isRest}">
 
@@ -170,8 +170,9 @@
 
                 <!-- Local players stadistics -->
 
-                <h3>Local Team</h3>
-                <h4>Players</h4>
+                <h3 class="hidden-xs">Local Team</h3>
+                <h4 class="hidden-xs">Players</h4>
+                <h4 class="visible-xs-block">Local Players</h4>
                 <div class="row">
                   <p class="col-xs-2"><b>Name</b></p>
                   <p class="col-xs-2"><b>First yellow card</b></p>
@@ -184,7 +185,7 @@
                 <hr/>
 
                 <div th:class="${local.isCalledUp?'alert':'alert alert-danger'}"
-                     th:each="local: ${localPlayerStats.list}">
+                     th:each="local: ${localPlayerStats}">
 
                   <div class="row well well-sm">
                     <form th:action="${local.editLink}" method="POST">
@@ -248,10 +249,11 @@
             <div class="col-sm-6 panel">
               <div class="panel-body">
 
-                <!-- Visitor players stadistics -->
+                <!--/* Visitor players stadistics */-->
 
-                <h3>Visitor Team</h3>
-                <h4>Players</h4>
+                <h3 class="hidden-xs">Visitor Team</h3>
+                <h4 class="hidden-xs">Players</h4>
+                <h4 class="visible-xs-block">Visitor Players</h4>
                 <div class="row">
                   <p class="col-xs-2"><b>Name</b></p>
                   <p class="col-xs-2"><b>First yellow card</b></p>
@@ -264,7 +266,7 @@
                 <hr/>
 
                 <div th:class="${visitor.isCalledUp?'alert':'alert alert-danger'}"
-                     th:each="visitor: ${visitorPlayerStats.list}">
+                     th:each="visitor: ${visitorPlayerStats}">
 
                   <div class="row well well-sm">
                     <form th:action="${visitor.editLink}" method="POST">
@@ -330,12 +332,13 @@
             <div class="col-sm-6 panel">
               <div class="panel-body">
 
-                <!-- Local staff stadistics -->
+                <!--/* Local staff stadistics */-->
 
-                <h4>Staff</h4>
+                <h4 class="hidden-xs">Staff</h4>
+                <h4 class="visible-xs-block">Local Staff</h4>
 
                 <div th:class="${lStaff.isCalledUp?'alert':'alert alert-danger'}"
-                     th:each="lStaff: ${localStaffStats.list}">
+                     th:each="lStaff: ${localStaffStats}">
 
                   <div class="row well well-sm">
                     <form th:action="${lStaff.editLink}" method="POST">
@@ -399,12 +402,13 @@
             <div class="col-sm-6 panel">
               <div class="panel-body">
 
-                <!-- Visitor staff stadistics -->
+                <!--/* Visitor staff stadistics */-->
 
-                <h4>Staff</h4>
+                <h4 class="hidden-xs">Staff</h4>
+                <h4 class="visible-xs-block">Visitor Staff</h4>
 
                 <div th:class="${vStaff.isCalledUp?'alert':'alert alert-danger'}"
-                     th:each="vStaff: ${visitorStaffStats.list}">
+                     th:each="vStaff: ${visitorStaffStats}">
 
                   <div class="row well well-sm">
                     <form th:action="${vStaff.editLink}" method="POST">

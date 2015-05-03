@@ -86,17 +86,6 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     }.getOrElse(throw new InstanceNotFoundException("Act not found"))
   }
 
-  @throws[InstanceNotFoundException]("If act doesn't exist")
-  def removeLocalStats(actId: Long) = {
-    soccerActService.find(actId).map {
-      act =>
-        findLocalStats(actId).map {
-          stats =>
-            soccerStatsDao.remove(stats)
-        }
-    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
-  }
-
   @throws[InstanceNotFoundException]("If stats doesn't exist")
   def editStats(statsId: Long, firstYellowCard: Calendar,
     secondYellowCard: Calendar, redCard: Calendar, goals: Seq[Calendar]) = {
@@ -108,6 +97,17 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
         stats.redCard = redCard
         stats.goals = goals.asJava
     }.getOrElse(throw new InstanceNotFoundException("Stats not found"))
+  }
+
+  @throws[InstanceNotFoundException]("If act doesn't exist")
+  def removeLocalStats(actId: Long) = {
+    soccerActService.find(actId).map {
+      act =>
+        findLocalStats(actId).map {
+          stats =>
+            soccerStatsDao.remove(stats)
+        }
+    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
