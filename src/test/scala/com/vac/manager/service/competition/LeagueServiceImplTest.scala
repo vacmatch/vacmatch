@@ -20,11 +20,11 @@ see the documentation for `ensime-goto-test-configs'
 */
 
 class LeagueServiceImplTest
-  extends FeatureSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with Matchers
-  with BeforeAndAfter {
+    extends FeatureSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with Matchers
+    with BeforeAndAfter {
 
   // Generic variables
   var leagueService: LeagueServiceImpl = _

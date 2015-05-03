@@ -12,7 +12,8 @@ import com.vac.manager.controllers.utils.UrlGrabber
 import org.springframework.web.bind.annotation.RequestParam
 import com.vac.manager.model.competition.LeagueSeason
 import scala.collection.JavaConverters._
-import com.vac.manager.model.game.{ Act, Game }
+import com.vac.manager.model.game.{ Game }
+import com.vac.manager.model.game.soccer.SoccerAct
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
@@ -22,7 +23,11 @@ import java.util.HashMap
 import scala.collection.SortedMap
 import com.vac.manager.controllers.actionable.ActionableGame
 import javax.servlet.http.HttpServletRequest
-import com.vac.manager.controllers.utils.Hyperlink
+import com.vac.manager.service.game.soccer.SoccerStaffStatsService
+import com.vac.manager.model.game.soccer.SoccerStaffStats
+import com.vac.manager.controllers.actionable.ActionableSoccerAct
+import com.vac.manager.service.game.soccer.SoccerActService
+import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
 
 @Controller
 class GameController extends UrlGrabber {
@@ -32,6 +37,12 @@ class GameController extends UrlGrabber {
 
   @Autowired
   var leagueService: LeagueService = _
+
+  @Autowired
+  var soccerActService: SoccerActService = _
+
+  @Autowired
+  var soccerStatsService: SoccerStaffStatsService = _
 
   @Autowired
   var federation: FederationBean = _
@@ -47,28 +58,29 @@ class GameController extends UrlGrabber {
       .map { season =>
         {
           // Check user permissions
-          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+          val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
           // Authenticated actions on menu
-
           val authenticatedActionsMenu: Map[String, String] = Map(
             "Create calendar" -> getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year),
             "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year))
 
-          val actionsMenu = if (userCanEdit) authenticatedActionsMenu else Map()
+          val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
-          // Get calendar games grouped by matchDay
-          val gamesMap: Map[Int, Seq[ActionableGame]] =
-            gameService.findLeagueCalendar(season).map(game =>
-              new ActionableGame(game, slug, year, userCanEdit)).groupBy(_.matchDay)
+          // TODO Get diferent act depending on the sport
+          val actsMap: Map[Int, Seq[ActionableSoccerAct]] =
+            soccerActService.findLeagueSoccerActs(season).map(act =>
+              new ActionableSoccerAct(act, slug, year, userCanEdit)).groupBy(_.game.matchDay)
 
-          // Sort calendar by matchDay
-          val sortedGamesMap: SortedMap[Int, java.util.List[ActionableGame]] =
-            SortedMap(gamesMap.toSeq: _*).map(element => (element._1, element._2.asJava))
+          val sortedActsMap: SortedMap[Int, java.util.List[ActionableSoccerAct]] =
+            SortedMap(actsMap.toSeq: _*).map(element => (element._1, element._2.asJava))
+
+          val actFragment: String = "calendar/soccer/listSoccer"
 
           new ModelAndView("calendar/list")
             .addObject("actionsMenu", actionsMenu.asJava.entrySet)
-            .addObject("gameDayList", sortedGamesMap.asJava)
+            .addObject("matchDayList", sortedActsMap.asJava)
+            .addObject("actFragment", actFragment)
         }
       }.getOrElse(throw new NoSuchElementException("League Season not found"))
   }
@@ -83,22 +95,36 @@ class GameController extends UrlGrabber {
 
     gameService.find(gameId).map {
       game =>
-        {
-          // Check user permissions
-          val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+        // Check user permissions
+        val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
-          val edit_game_title = Option(game.act).map(_ => "Edit game").getOrElse("Assign game")
+        // TODO Get diferent act depending on the sport
+        soccerActService.findGameAct(gameId).map {
+          act =>
+            {
+              // Players stats
+              val localStats: Seq[SoccerStaffStats] = soccerStatsService.findLocalPlayersStats(act.actId)
+              val visitorStats: Seq[SoccerStaffStats] = soccerStatsService.findVisitorPlayersStats(act.actId)
 
-          val actions: Seq[Hyperlink] = List(Hyperlink(edit_game_title, "#", "btn-default"))
+              // Staff stats
+              val localStaff: Seq[ActionableSoccerStaffStats] =
+                soccerStatsService.findLocalStaffStats(act.actId).map(
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+              val visitorStaff: Seq[ActionableSoccerStaffStats] =
+                soccerStatsService.findVisitorStaffStats(act.actId).map(
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
 
-          Option(game.act).getOrElse { game.act = new Act() }
+              val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
-          new ModelAndView("game/show")
-            .addObject("actions", actions.asJava)
-            .addObject("game", game)
-            .addObject("calendarLink", calendarLink)
-
-        }
+              new ModelAndView("game/show")
+                .addObject("act", new ActionableSoccerAct(act, slug, year, userCanEdit))
+                .addObject("localStats", localStats.asJava)
+                .addObject("visitorStats", visitorStats.asJava)
+                .addObject("localStaff", localStaff.asJava)
+                .addObject("visitorStaff", visitorStaff.asJava)
+                .addObject("calendarLink", calendarLink)
+            }
+        }.getOrElse(throw new NoSuchElementException("Act not found"))
     }.getOrElse(throw new NoSuchElementException("Game not found"))
   }
 

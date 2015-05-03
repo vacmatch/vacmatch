@@ -18,6 +18,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   @Id
   @SequenceGenerator(name = "teamIdGenerator", sequenceName = "team_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "teamIdGenerator")
+  @BeanProperty
   var teamId: java.lang.Long = _
 
   @BeanProperty
@@ -82,9 +83,10 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
     "\nPublicName: " + this.publicTeamName +
     "\nTeamActivated: " + this.teamActivated +
     "\nFundation: " + this.foundationDate +
-    "\nAddress: " + this.teamAddress +
-    "\nWeb: " + this.teamWeb +
-    "\nTelephones: " + this.teamTelephones +
-    "\nSponsorsList: " + this.sponsorsList
+    //  "\nAddress: " + this.teamAddress +
+    "\nWeb: " + this.teamWeb
+  //"\nTelephones: " + this.teamTelephones +
+  //"\nSponsorsList: " + this.sponsorsList
+  //"\nCompetitionsList: " + this.competitionsList
 
 }

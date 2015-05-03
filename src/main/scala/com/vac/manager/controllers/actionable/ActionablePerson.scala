@@ -10,8 +10,8 @@ import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 class ActionablePerson(person: Person, userCanEdit: Boolean)
-  extends Person()
-  with UrlGrabber {
+    extends Person()
+    with UrlGrabber {
 
   personId = person.personId
   name = person.name

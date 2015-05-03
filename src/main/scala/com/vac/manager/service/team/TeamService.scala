@@ -7,6 +7,7 @@ import java.util.Calendar
 import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.personal.Address
 import com.vac.manager.model.staff.StaffMember
+import com.vac.manager.model.competition.LeagueSeasonPK
 
 trait TeamService {
 
@@ -18,7 +19,7 @@ trait TeamService {
 
   def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team]
+  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team]
 
   def findStaffMemberById(staffMemberId: Long): Option[StaffMember]
 

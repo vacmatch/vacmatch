@@ -43,7 +43,7 @@ class UrlGrabberTest extends FlatSpec {
   }
 
   "A two-elem param list which is already a scala type" should "be transformed into a java List" in {
-    val l:List[_] = List("world", "someone")
+    val l: List[_] = List("world", "someone")
 
     val jMap = UrlGrabber.getParams(List("hello" -> l))
 

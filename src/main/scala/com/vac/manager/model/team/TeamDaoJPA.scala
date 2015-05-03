@@ -6,6 +6,7 @@ import javax.persistence.Query
 import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.generic.exceptions.NotImplementedException
 import scala.collection.JavaConverters._
+import com.vac.manager.model.competition.LeagueSeasonPK
 
 @Repository("teamDao")
 class TeamDaoJPA
@@ -27,10 +28,12 @@ class TeamDaoJPA
       "SELECT t FROM Team t ", classOf[Team]).getResultList().asScala
   }
 
-  def findTeamsByCompetitionId(compId: Long, fedId: Long): List[Team] = {
-    //TODO
-    //Implementation
-    null
+  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team] = {
+    getEntityManager().createQuery(
+      "SELECT cm.team FROM CompetitionMember cm " +
+        "WHERE cm.leagueSeason.id = :leagueSeasonId", classOf[Team])
+      .setParameter("leagueSeasonId", leagueSeasonId)
+      .getResultList().asScala
   }
 
   def hasCompetitions(teamId: Long): Boolean = {

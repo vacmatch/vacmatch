@@ -6,7 +6,7 @@ import com.vac.manager.model.competition.LeagueSeasonPK
 import scala.collection.JavaConverters._
 
 @Repository("gameDao")
-class GameDaoHibernate
+class GameDaoJPA
     extends GenericDaoJPA[Game, java.lang.Long](classOf[Game])
     with GameDao {
 

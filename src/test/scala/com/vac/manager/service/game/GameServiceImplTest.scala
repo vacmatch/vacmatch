@@ -9,7 +9,6 @@ import com.vac.manager.model.competition.LeagueSeason
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
 import com.vac.manager.model.game.Game
-import com.vac.manager.model.game.Act
 import com.vac.manager.model.game.GameDao
 import org.mockito.Mockito
 import org.mockito.Mockito._
@@ -20,13 +19,14 @@ import com.vac.manager.model.competition.LeagueSeasonPK
 import com.vac.manager.model.competition.League
 import javax.management.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import com.vac.manager.service.game.soccer.SoccerActService
 
 class GameServiceImplTest
-  extends PropSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with BeforeAndAfter
-  with GeneratorDrivenPropertyChecks {
+    extends PropSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with BeforeAndAfter
+    with GeneratorDrivenPropertyChecks {
 
   val genPositiveInts = Gen.choose(1, 50) //arbitrary[Int] suchThat (positiveInt(_))
   val genNegativeOrZeroInts = Gen.choose(-50, 0) //arbitrary[Int] suchThat (negativeInt(_))
@@ -36,6 +36,7 @@ class GameServiceImplTest
   var gameService: GameServiceImpl = _
   var validLeagueSeason: LeagueSeason = _
   var validCalendar: Seq[Game] = _
+  var validGame: Game = _
 
   before {
     gameService = new GameServiceImpl
@@ -46,7 +47,9 @@ class GameServiceImplTest
     validLeagueSeason.id.league.slug = "domain.com"
     validLeagueSeason.id.league.fedId = 1
     validLeagueSeason.id.seasonSlug = "senior"
-    validCalendar = List(new Game)
+    validGame = new Game
+    validGame.gameId = 1
+    validCalendar = List(validGame)
   }
 
   // Create League calendar for a season
@@ -59,6 +62,7 @@ class GameServiceImplTest
 
         gameService.gameDao = mock[GameDao]
         gameService.leagueService = mock[LeagueService]
+        gameService.soccerActService = mock[SoccerActService]
 
         Mockito.when(gameService.leagueService.findSeasonByLeagueSlug(
           leagueSeason.id.league.fedId,
@@ -85,6 +89,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("Positive teamsNumber and leagueRounds")
     val teamsNumber: Int = 1
@@ -112,6 +117,7 @@ class GameServiceImplTest
 
           gameService.gameDao = mock[GameDao]
           gameService.leagueService = mock[LeagueService]
+          gameService.soccerActService = mock[SoccerActService]
 
           intercept[IllegalArgumentException] {
             gameService.createLeagueCalendar(leagueSeason, teamsNumber, leagueRounds)
@@ -129,6 +135,7 @@ class GameServiceImplTest
 
           gameService.gameDao = mock[GameDao]
           gameService.leagueService = mock[LeagueService]
+          gameService.soccerActService = mock[SoccerActService]
 
           intercept[IllegalArgumentException] {
             gameService.createLeagueCalendar(leagueSeason, teamsNumber, leagueRounds)
@@ -140,6 +147,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("Positive teamsNumber and leagueRounds")
     val teamsNumber: Int = 1
@@ -165,6 +173,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("Positive teamsNumber and leagueRounds")
     val teamsNumber: Int = 1
@@ -195,6 +204,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("A existing leagueSeason")
     val leagueSeason: LeagueSeason = validLeagueSeason
@@ -215,6 +225,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("A null leagueSeason")
     val leagueSeason: LeagueSeason = null
@@ -235,6 +246,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("A non existing leagueSeason")
     val leagueSeason: LeagueSeason = validLeagueSeason
@@ -254,6 +266,7 @@ class GameServiceImplTest
 
     gameService.gameDao = mock[GameDao]
     gameService.leagueService = mock[LeagueService]
+    gameService.soccerActService = mock[SoccerActService]
 
     Given("A existing leagueSeason")
     val leagueSeason: LeagueSeason = validLeagueSeason

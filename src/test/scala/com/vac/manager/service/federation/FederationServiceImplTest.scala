@@ -139,22 +139,22 @@ class FederationServiceImplTest extends PropSpec with MockitoSugar with Generato
       (genNonEmptyString, "domainName"),
       (validFed, "existingFederation"),
       (validFed, "anotherFederation")
-    ) { (domainName: String, existingFederation:Federation, anotherFederation: Federation) =>
-      whenever(validDns(domainName)) {
-        val fedId = existingFederation.fedId
+    ) { (domainName: String, existingFederation: Federation, anotherFederation: Federation) =>
+        whenever(validDns(domainName)) {
+          val fedId = existingFederation.fedId
 
-        service.federationDao = mock[FederationDao]
+          service.federationDao = mock[FederationDao]
 
-        when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(anotherFederation))
-        when(service.federationDao.findById(fedId)).thenReturn(Some(anotherFederation))
+          when(service.federationDao.findByDomainName(domainName)).thenReturn(Some(anotherFederation))
+          when(service.federationDao.findById(fedId)).thenReturn(Some(anotherFederation))
 
-        val r = service.addFederationDomain(fedId, domainName)
-        val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
+          val r = service.addFederationDomain(fedId, domainName)
+          val captor = ArgumentCaptor.forClass(classOf[FederationDomainName])
 
-        verify(service.federationDao, never()).saveDomainName(captor.capture())
-        assert(r == false)
+          verify(service.federationDao, never()).saveDomainName(captor.capture())
+          assert(r == false)
+        }
       }
-    }
   }
 
   property("domains can be removed from federations") {

@@ -9,6 +9,7 @@ import com.vac.manager.model.competition.LeagueSeason
 import javax.transaction.Transactional
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
+import com.vac.manager.service.game.soccer.SoccerActService
 
 @Service("gameService")
 @Transactional
@@ -19,6 +20,9 @@ class GameServiceImpl extends GameService {
 
   @Autowired
   var leagueService: LeagueService = _
+
+  @Autowired
+  var soccerActService: SoccerActService = _
 
   def find(gameId: Long): Option[Game] = {
     gameDao.findById(gameId)
@@ -34,7 +38,9 @@ class GameServiceImpl extends GameService {
       throw new RuntimeException("No games were created")
 
     games.map { game =>
+      // TODO Create act depending on the sport
       gameDao.save(game)
+      soccerActService.createSoccerAct(game)
       game
     }
   }
@@ -84,7 +90,14 @@ class GameServiceImpl extends GameService {
   @throws[IllegalArgumentException]
   def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason) = {
     Option(leagueSeason).map { ls =>
-      gameDao.findAllBySeason(ls.id).map(game => gameDao.remove(game))
+      gameDao.findAllBySeason(ls.id).map {
+        game =>
+          {
+            // TODO Remove act depending on the sport
+            soccerActService.removeSoccerAct(game.gameId)
+            gameDao.remove(game)
+          }
+      }
     }.getOrElse(throw new IllegalArgumentException("Invalid league season parameter"))
   }
 

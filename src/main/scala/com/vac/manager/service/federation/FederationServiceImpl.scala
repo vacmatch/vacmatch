@@ -22,8 +22,8 @@ class FederationServiceImpl extends FederationService {
   }
 
   /**
-   * Finds elements from pageable.start
-   */
+    * Finds elements from pageable.start
+    */
   @Transactional(readOnly = true)
   def findAll(pageable: Pageable): Seq[Federation] = {
     return federationDao.findAll.drop(pageable.start)
@@ -45,9 +45,9 @@ class FederationServiceImpl extends FederationService {
   }
 
   /**
-   * Creates a new federation with the given domains as valid entry points.
-   * In case any domain is already taken registration does not take place.
-   */
+    * Creates a new federation with the given domains as valid entry points.
+    * In case any domain is already taken registration does not take place.
+    */
   @Transactional
   def createFederation(fedName: String, domains: Seq[String]): Boolean = {
     if (fedName == null || fedName.trim == "")

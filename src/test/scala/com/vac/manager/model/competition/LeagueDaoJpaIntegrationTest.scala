@@ -23,8 +23,7 @@ import com.vac.manager.model.generic.exceptions.IncorrectNameException
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
 
-@RunWith(classOf[SpringJUnit4ClassRunner])
-//@ContextConfiguration(locations = Array("classpath:/application.xml", "classpath:/spring-config-test.xml"))
+@RunWith(classOf[SpringJUnit4ClassRunner]) //@ContextConfiguration(locations = Array("classpath:/application.xml", "classpath:/spring-config-test.xml"))
 @SpringApplicationConfiguration(classes = Array(classOf[Application]), locations = Array("classpath:/spring-config-test.xml"))
 @Transactional
 class LeagueDaoJpaIntegrationTest {
@@ -35,10 +34,9 @@ class LeagueDaoJpaIntegrationTest {
   @PersistenceContext
   private var entityManager: EntityManager = _
 
-
   @Test
   def createAndFindById() = {
-    val fedId:Long = 1
+    val fedId: Long = 1
     val leagueName = "Pepitos Volantes"
     val slug = "pepitos"
 
@@ -66,5 +64,4 @@ class LeagueDaoJpaIntegrationTest {
 
   }
 }
-
 

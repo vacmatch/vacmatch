@@ -133,11 +133,10 @@
 
         <div>
           <a class="btn btn-primary" th:if="${action} == 'Edit'"
-             th:href="*{showLink}">Cancel</a> <a
-             class="btn btn-primary" th:if="${action} == 'Create'"
-             th:href="${listLink}">Create</a> <input
-             class="btn btn-primary" type="submit" name="submit"
-             value="Accept" />
+             th:href="*{showLink}">Cancel</a>
+          <a class="btn btn-primary" th:if="${action} == 'Create'"
+             th:href="${listLink}">Cancel</a>
+          <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
         </div>
       </form>
     </div>

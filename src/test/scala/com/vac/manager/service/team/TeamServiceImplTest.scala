@@ -26,11 +26,11 @@ import com.vac.manager.model.staff.StaffMemberDao
 import javax.management.InstanceNotFoundException
 
 class TeamServiceImplTest
-  extends PropSpec
-  with GivenWhenThen
-  with MockitoSugar
-  with GeneratorDrivenPropertyChecks
-  with BeforeAndAfter {
+    extends PropSpec
+    with GivenWhenThen
+    with MockitoSugar
+    with GeneratorDrivenPropertyChecks
+    with BeforeAndAfter {
 
   def nonEmptyString(s: String) = { s != null && s.trim.nonEmpty }
   def validTeamName(s: String) = nonEmptyString(s)
