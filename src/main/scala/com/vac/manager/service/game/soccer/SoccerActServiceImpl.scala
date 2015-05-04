@@ -92,18 +92,16 @@ class SoccerActServiceImpl extends SoccerActService {
           soccerActDao.save(act)
 
           // If any team change, staff stats must be changed
-          oldLocal.map(team =>
-            if (team != localTeam) {
-              soccerStaffStatsService.removeLocalStats(actId)
-              if (Option(localTeam).nonEmpty)
-                soccerStaffStatsService.createLocalStats(actId)
-            })
-          oldVisitor.map(team =>
-            if (team != visitorTeam) {
-              soccerStaffStatsService.removeVisitorStats(actId)
-              if (Option(visitorTeam).nonEmpty)
-                soccerStaffStatsService.createVisitorStats(actId)
-            })
+          if (oldLocal != localTeam) {
+            soccerStaffStatsService.removeLocalStats(actId)
+            if (Option(localTeam).nonEmpty)
+              soccerStaffStatsService.createLocalStats(actId)
+          }
+          if (oldVisitor != visitorTeam) {
+            soccerStaffStatsService.removeVisitorStats(actId)
+            if (Option(visitorTeam).nonEmpty)
+              soccerStaffStatsService.createVisitorStats(actId)
+          }
 
           act
         }
@@ -126,6 +124,7 @@ class SoccerActServiceImpl extends SoccerActService {
         soccerActDao.save(act)
 
         // Staff stats must be removed
+        soccerStaffStatsService.removeLocalStats(act.actId)
         soccerStaffStatsService.removeVisitorStats(act.actId)
 
         act
@@ -133,9 +132,9 @@ class SoccerActServiceImpl extends SoccerActService {
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
-  def changeRestState(gameId: Long): SoccerAct = {
+  def setRestState(gameId: Long): SoccerAct = {
     findGameAct(gameId).map { act =>
-      act.isRest = !act.isRest
+      act.isRest = true
 
       // Reset visitor
       act.localResult = 0
@@ -144,6 +143,26 @@ class SoccerActServiceImpl extends SoccerActService {
       soccerActDao.save(act)
 
       // Staff stats must be removed
+      soccerStaffStatsService.removeLocalStats(act.actId)
+      soccerStaffStatsService.removeVisitorStats(act.actId)
+
+      act
+    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+  }
+
+  @throws[InstanceNotFoundException]("If act doesn't exist")
+  def unSetRestState(gameId: Long): SoccerAct = {
+    findGameAct(gameId).map { act =>
+      act.isRest = false
+
+      // Reset visitor
+      act.localResult = 0
+      act.visitorTeam = null
+      act.visitorResult = 0
+      soccerActDao.save(act)
+
+      // Staff stats must be removed
+      soccerStaffStatsService.createLocalStats(act.actId)
       soccerStaffStatsService.removeVisitorStats(act.actId)
 
       act

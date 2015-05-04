@@ -33,7 +33,10 @@ class ActionableSoccerAct(val act: SoccerAct, val slug: String, val year: String
   val links = (anonymousLinks ++ authorizedLinks.asScala).asJava
 
   def getChangeRestStateLink(): String =
-    getUrl("GameAdminController.changeRestStatePost", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+    if (isRest)
+      getUrl("GameAdminController.unSetRestStatePost", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
+    else
+      getUrl("GameAdminController.setRestStatePost", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
   def getShowLink(): String = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)
 
