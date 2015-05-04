@@ -16,13 +16,15 @@
 </head>
 
 <body>
-  <div th:replace="fragments/header :: header">Header</div>
+  <div id="content">
+    <div th:include="fragments/header :: header">Header</div>
 
-  <div class="container" th:replace="${view} :: content">Here will
-    go the content.</div>
+    <div class="container" th:include="${view} :: content">Here will
+      go the content.</div>
 
-  <div th:replace="fragments/footer :: footer">&copy; 2013 The
-    Static Templates</div>
+    <div id="footer" class="container" th:include="fragments/footer :: footer">&copy; 2013 The
+      Static Templates</div>
+  </div>
 </body>
 
 </html>

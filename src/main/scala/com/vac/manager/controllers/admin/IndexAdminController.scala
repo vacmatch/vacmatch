@@ -22,7 +22,9 @@ class IndexAdminController extends UrlGrabber {
   def index() = {
     new ModelAndView("admin/index").addObject("links", List(
       new Link(getUrl("LeagueAdminController.list"), "List/edit admin leagues"),
-      new Link(getUrl("UserAdminController.list"), "List/edit users")
+      new Link(getUrl("UserAdminController.list"), "List/edit users"),
+      new Link(getUrl("PersonAdminController.listAll"), "List/edit people"),
+      new Link(getUrl("TeamController.list"), "List/edit teams")
     ).asJava)
   }
 }

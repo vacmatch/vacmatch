@@ -14,11 +14,18 @@
 
 	<body>
 		<div class="container" th:fragment="content">
-		  <div class="jumbotron">
-		    <h2>t("Home Page")</h2>
+		  <div class="jumbotron row">
+        <a target="_blank" href="http://basic-club.com/index.php?mid=niv16">
+          <img class="col-md-12" src="http://www.asociacioncoruna.com/img/basic-2.gif" />
+        </a>
+        <a target="_blank" href="https://www.facebook.com/pages/ICOS-fisioterapia/527785873947019?fref=ts">
+          <img class="col-md-3" src="http://www.asociacioncoruna.com/img/icos%20fisioterapia.png" />
+        </a>
+        <a target="_blank" href="http://www.copy-mar.es/es/">
+          <img class="col-md-3 col-offset-md-3" src="http://www.asociacioncoruna.com/img/tarjeta%20delantera%20(3).jpg" />
+        </a>
 			</div>
 
-			<div>t("Welcome to the NoNameYet competition management system!")</div>
 		</div>
 
 		<div th:replace="fragments/footer :: footer">© 2015 The Awesome Company</div>
