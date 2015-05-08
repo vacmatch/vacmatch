@@ -11,9 +11,9 @@
   <body>
     <div class="container" th:fragment="content">
       <ul>
-	<li th:each="league: ${leagues}" th:object="${league}">
-	  <a th:text="*{leagueName}" th:href="*{getSeasonsLink()}">Alevines</a>
-	</li>
+        <li th:each="league: ${leagues}" th:object="${league}">
+          <a th:text="*{leagueName}" th:href="*{getSeasonsLink()}">Alevines</a>
+        </li>
       </ul>
     </div>
   </body>

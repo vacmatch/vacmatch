@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import scala.collection.JavaConverters._
+import com.vac.manager.controllers.actionable.CrudLeague
 
 @Controller
 @Layout("layouts/default_admin")
@@ -26,40 +27,6 @@ class LeagueAdminController extends UrlGrabber {
   @Autowired
   var federation: FederationBean = _
 
-  class CrudLeague(base: League) extends League with UrlGrabber {
-
-    fedId = base.fedId
-    leagueName = base.leagueName
-    slug = base.slug
-
-    def getUserLink() = {
-      getUrl("LeagueSeasonController.listSeasons", "slug" -> slug)
-    }
-
-    def getEditLink() = {
-      getUrl("LeagueAdminController.edit", "slug" -> slug)
-    }
-
-    def getDeleteLink() = {
-      getUrl("LeagueAdminController.delete", "slug" -> slug)
-    }
-
-    def getSeasonAdminLink() = {
-      getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
-    }
-  }
-
-  def list() = {
-    val fedId = federation.getId
-    var leagues: Seq[CrudLeague] =
-      leagueService findAllByFederation fedId map (new CrudLeague(_))
-
-    new ModelAndView("admin/league/list")
-      .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueAdminController.list"))
-      .addObject("leagues", (leagues.asJava))
-  }
-
   def show(
     @RequestParam("slug") slug: String) = {
     val fedId = federation.getId
@@ -69,7 +36,7 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("league", league.get)
       .addObject("leagueName", i.t("League %s", league.get.leagueName))
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def create() = {
@@ -94,7 +61,7 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", "POST")
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def postCreate(
@@ -121,7 +88,7 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", "POST")
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def postEdit(
@@ -149,7 +116,7 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
       .addObject("hiddens", Map("slug" -> slug).asJava)
       .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueAdminController.list"))
+      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def postDelete(
@@ -157,7 +124,7 @@ class LeagueAdminController extends UrlGrabber {
 
     val result = leagueService removeLeagueBySlug (federation.getId, slug)
 
-    "redirect:" + getUrl("LeagueAdminController.list")
+    "redirect:" + getUrl("LeagueSeasonController.listLeagues")
 
   }
 }

@@ -21,7 +21,7 @@
   	  <div th:replace="fragments/header :: header">Header</div>
   
   	  <th:block th:fragment="nav" sec:authorize="hasRole('ROLE_ADMINFED')">
-  	    <nav th:fragment="admin-navbar" role="navigation actions" class="navbar navbar-default" style="border: 2px solid red">
+        <nav th:fragment="admin-navbar" role="navigation actions" class="navbar navbar-default">
   	      <div class="navbar-header"><span class="navbar-brand">Actions available</span></div>
   	      <div class="nav navbar-nav">
   		<th:block th:include="${view} :: admin-navbar" />

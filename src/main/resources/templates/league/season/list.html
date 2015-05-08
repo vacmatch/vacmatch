@@ -16,9 +16,9 @@
       <h2 th:text="|League ${league.leagueName}|">League Alevins</h2>
 
       <ul>
-	<li th:each="season: ${seasons}">
-	  <a th:href="${season.link}" th:text="|${league.leagueName} ${season.year}|"></a>
-	</li>
+      <li th:each="season: ${seasons}">
+        <a th:href="${season.link}" th:text="|${league.leagueName} ${season.year}|"></a>
+      </li>
       </ul>
     </div>
   </body>

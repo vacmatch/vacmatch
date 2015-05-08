@@ -13,22 +13,12 @@ import org.springframework.web.servlet.ModelAndView
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 import scala.util.Try
+import com.vac.manager.controllers.actionable.LeagueWrapper
+import com.vac.manager.controllers.actionable.ActionableLeagueSeason
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class LeagueSeasonController extends UrlGrabber {
-
-  class ActionableLeagueSeason(base: LeagueSeason) extends LeagueSeason with UrlGrabber {
-    id = base.id
-    val slug = id.league.slug
-    val fedId = id.league.fedId
-
-    @BeanProperty
-    val year = id.seasonSlug
-
-    def getLink() = {
-      getUrl("LeagueSeasonController.showSeason", "slug" -> slug, "year" -> year)
-    }
-  }
 
   @Autowired
   var i: I18n = _
@@ -39,55 +29,31 @@ class LeagueSeasonController extends UrlGrabber {
   @Autowired
   var federation: FederationBean = _
 
-  class LeagueWrapper(l: League) {
-    val seasons = leagueService.findSeasonsByLeagueAsSeq(federation.getId, l.slug)
-      .map(new ActionableLeagueSeason(_))
-
-    val latest_season = Try(java.util.Collections.max(seasons.asJava, new java.util.Comparator[LeagueSeason] {
-      override def compare(a: LeagueSeason, b: LeagueSeason): Int = {
-        a.startTime.compareTo(b.startTime)
-      }
-    }))
-
-    @BeanProperty
-    val nonEmpty: Boolean = seasons.nonEmpty
-
-    @BeanProperty
-    val title: String = l.leagueName + " " +
-      latest_season.map(_.id.seasonSlug)
-      .getOrElse(i.t("(Not yet available)"))
-
-    @BeanProperty
-    val mainLink = latest_season.map { season =>
-      val text = i.t("Classification")
-      val href = "#classification" // TODO: Put classification here
-      Hyperlink(text, href, "")
-    }.getOrElse(Hyperlink(i.t("No action available"), "#", "disabled"))
-
-    @BeanProperty
-    val links: java.util.List[Hyperlink] = latest_season.map { season =>
-      Map(
-        i.t("Classification") -> "#classification",
-        i.t("Calendar") -> getUrl("GameController.list", "slug" -> l.slug, "year" -> season.id.seasonSlug),
-        i.t("Last matches played") -> "#matches",
-        i.t("Current match day") -> "#matchday"
-      )
-    }.toOption.toSeq.flatten.map {
-      case (text, href) =>
-        Hyperlink(text, href, "class")
-    }.asJava
-
-  }
-
-  def listLeagues(_model: java.util.Map[String, Object]): String = {
+  def listLeagues(
+    _model: java.util.Map[String, Object],
+    request: HttpServletRequest): String = {
     val model = _model.asScala
     val fedId = federation.getId
 
+    // Check user permissions
+    val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    // Authenticated actions on menu
+    val authenticatedActionsMenu: Map[String, String] = Map(
+      "Create league" -> getUrl("LeagueAdminController.create"))
+
+    val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
+
     val leagues = leagueService.findAllByFederation(fedId)
-      .map(new LeagueWrapper(_))
+      .map {
+        league =>
+          val seasons: Seq[ActionableLeagueSeason] = leagueService.findSeasonsByLeagueAsSeq(federation.getId, league.slug)
+            .map(new ActionableLeagueSeason(_))
+          new LeagueWrapper(league, seasons, userCanEdit)
+      }
 
     model += "competitions" -> leagues.asJavaCollection
-
+    model += "actionsMenu" -> actionsMenu.asJava.entrySet
     "league/season/listleagues"
   }
 
