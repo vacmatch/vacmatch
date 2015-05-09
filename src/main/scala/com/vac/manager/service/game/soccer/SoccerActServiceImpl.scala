@@ -136,15 +136,17 @@ class SoccerActServiceImpl extends SoccerActService {
     findGameAct(gameId).map { act =>
       act.isRest = true
 
+      // Staff stats must be removed
+      if (Option(act.localTeam).nonEmpty)
+        soccerStaffStatsService.removeLocalStats(act.actId)
+      if (Option(act.visitorTeam).nonEmpty)
+        soccerStaffStatsService.removeVisitorStats(act.actId)
+
       // Reset visitor
       act.localResult = 0
       act.visitorTeam = null
       act.visitorResult = 0
       soccerActDao.save(act)
-
-      // Staff stats must be removed
-      soccerStaffStatsService.removeLocalStats(act.actId)
-      soccerStaffStatsService.removeVisitorStats(act.actId)
 
       act
     }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
@@ -155,15 +157,17 @@ class SoccerActServiceImpl extends SoccerActService {
     findGameAct(gameId).map { act =>
       act.isRest = false
 
+      // Staff stats must be removed
+      if (Option(act.localTeam).nonEmpty)
+        soccerStaffStatsService.createLocalStats(act.actId)
+      if (Option(act.visitorTeam).nonEmpty)
+        soccerStaffStatsService.removeVisitorStats(act.actId)
+
       // Reset visitor
       act.localResult = 0
       act.visitorTeam = null
       act.visitorResult = 0
       soccerActDao.save(act)
-
-      // Staff stats must be removed
-      soccerStaffStatsService.createLocalStats(act.actId)
-      soccerStaffStatsService.removeVisitorStats(act.actId)
 
       act
     }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
