@@ -21,6 +21,14 @@
     <div class="container" th:fragment="content">
       <h2>User list</h2>
 
+      <div class="pull-right">
+        <a th:each="action: ${actionsMenu}"
+           class="btn btn-default"
+           href="#"
+           th:text="${action.key}"
+           th:href="${action.value}">Action for admin</a>
+      </div>
+
       <table class="table table-striped">
 	<thead>
 	  <tr>

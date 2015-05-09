@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.ModelAndView
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
+import com.vac.manager.controllers.utils.Hyperlink
 
 class Link(_url: String, _name: String) {
   @BeanProperty
@@ -20,11 +21,13 @@ class Link(_url: String, _name: String) {
 class IndexAdminController extends UrlGrabber {
 
   def index() = {
-    new ModelAndView("admin/index").addObject("links", List(
-      new Link(getUrl("LeagueSeasonController.listLeagues"), "List/edit admin leagues"),
-      new Link(getUrl("UserAdminController.list"), "List/edit users"),
-      new Link(getUrl("PersonAdminController.listAll"), "List/edit people"),
-      new Link(getUrl("TeamController.list"), "List/edit teams")
-    ).asJava)
+    val links = List(
+      Hyperlink("Admin leagues", getUrl("LeagueSeasonController.listLeagues"), ""),
+      Hyperlink("Admin people", getUrl("PersonAdminController.listAll"), ""),
+      Hyperlink("Admin teams", getUrl("TeamController.list"), ""),
+      Hyperlink("Admin users", getUrl("UserAdminController.list"), "")
+    )
+
+    new ModelAndView("admin/index").addObject("links", links.asJava)
   }
 }

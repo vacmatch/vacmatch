@@ -26,6 +26,14 @@
           th:each="competition: ${competitions}"
           th:class="|list-group-item ${competition.mainLink.className}|"
           th:object="${competition}">
+          <h2 class="pull-right">
+            <a class="btn btn-default"
+                  href="#"
+                  th:each="link: ${competition.authorizedLinks}"
+                  th:class="|btn ${link.className}|"
+                  th:href="${link.href}"
+                  th:text="${link.text}">Action on game</a>
+          </h2>
           <h2>
             <a href="#"
                th:href="*{mainLink.href}"
@@ -38,14 +46,6 @@
             </a>
           </h2>
 
-          <div class="pull-right">
-            <a class="btn btn-default"
-                  href="#"
-                  th:each="link: ${competition.authorizedLinks}"
-                  th:class="|btn ${link.className}|"
-                  th:href="${link.href}"
-                  th:text="${link.text}">Action on game</a>
-          </div>
 
         <ul th:remove="all-but-first" class="list-inline">
           <th:block th:each="link: *{links}">

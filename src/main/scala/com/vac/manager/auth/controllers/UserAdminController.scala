@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
+import javax.servlet.http.HttpServletRequest
 
 @Layout("layouts/default_admin")
 @Controller
@@ -104,11 +105,23 @@ class UserAdminController extends UrlGrabber {
     }
   }
 
-  def list(): ModelAndView = {
+  def list(
+    request: HttpServletRequest): ModelAndView = {
+
     val users = userAuthService.findAllUsers(fed.getId).map(new CrudUser(_)).asJava
+
+    // Check user permissions
+    val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    // Authenticated actions on menu
+    val authenticatedActionsMenu: Map[String, String] = Map(
+      "Create user" -> getUrl("UserAdminController.registerForm"))
+
+    val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
     return new ModelAndView("admin/user/list")
       .addObject("users", users)
+      .addObject("actionsMenu", actionsMenu.asJava)
       .addObject("createUrl", getUrl("UserAdminController.registerForm"))
       .addObject("listUrl", getUrl("UserAdminController.list"))
   }
