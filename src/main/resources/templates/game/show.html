@@ -15,7 +15,7 @@
 <body>
   <div th:replace="fragments/header :: header">[Here goes the
     header]</div>
-  <div class="container" th:fragment="content" th:object="${act}">
+  <div class="container" th:fragment="content">
 
     <div class="pull-right">
       <a class="btn btn-default" href="#"
@@ -26,7 +26,7 @@
 
     <br />
 
-    <div th:if="*{isRest}">
+    <div th:if="*{isRest}" th:object="${act}">
       <div class="row">
         <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
         <h3>Rested match day</h3>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div th:unless="*{isRest}">
+    <div th:unless="*{isRest}" th:object="${act}">
       <div class="row">
         <h3 th:text="|Match day *{game.matchDay}|">Match Day</h3>
         <h1

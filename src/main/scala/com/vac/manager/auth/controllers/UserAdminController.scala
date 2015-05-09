@@ -59,8 +59,11 @@ class UserAdminController extends UrlGrabber {
     val user = new EditableUser(new User)
     user.roles = new java.util.HashSet
 
+    val listLink = getUrl("UserAdminController.list")
+
     return new ModelAndView("admin/user/register")
       .addObject("roles", roles.asJava)
+      .addObject("listLink", listLink)
       .addObject("user", user)
       .addObject("createUrl", getUrl("UserAdminController.registerForm"))
       .addObject("listUrl", getUrl("UserAdminController.list"))
@@ -101,7 +104,7 @@ class UserAdminController extends UrlGrabber {
           userAuthService.addAuthorityToUser(fed.getId, username, role)
         }
 
-        "redirect:" + _registerForm(true, username)
+        "redirect:" + getUrl("UserAdminController.list")
     }
   }
 
@@ -131,6 +134,8 @@ class UserAdminController extends UrlGrabber {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, user)
 
+    val listLink = getUrl("UserAdminController.list")
+
     maybeUser match {
       case None => throw new RuntimeException("User " + user + " was not found at fedId " + fed.getId)
       case Some(u) =>
@@ -143,6 +148,7 @@ class UserAdminController extends UrlGrabber {
 
         return new ModelAndView("admin/user/register")
           .addObject("roles", roles.asJava)
+          .addObject("listLink", listLink)
           .addObject("user", user)
           .addObject("createUrl", getUrl("UserAdminController.registerForm"))
           .addObject("listUrl", getUrl("UserAdminController.list"))

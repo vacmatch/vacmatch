@@ -41,21 +41,17 @@ class LeagueAdminController extends UrlGrabber {
 
   def create() = {
     val fedId = federation.getId
-    val leagueName = "Meow"
-    val slug = "mw"
-    val foundationalDate = null
-    val sponsors: List[String] = null
 
     // Placeholder for values
     val league = new League
     league.fedId = fedId
-    league.leagueName = leagueName
-    league.slug = slug
 
     val submitUrl = getUrl("LeagueAdminController.postCreate")
+    val listLink = getUrl("LeagueSeasonController.listLeagues")
 
     new ModelAndView("admin/league/edit_form")
       .addObject("league", league)
+      .addObject("listLink", listLink)
       .addObject("hiddens", Map().asJava)
       .addObject("action", i.t("Create league"))
       .addObject("submitUrl", submitUrl)
