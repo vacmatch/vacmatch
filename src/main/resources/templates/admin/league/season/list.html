@@ -18,41 +18,34 @@
     <div class="container" th:fragment="content">
 
       <div th:if="${league} == null">
-	t("Error: The league does not exist")</div>
+        t("Error: The league does not exist")
+      </div>
+
       <div th:if="${league} != null">
+        <nav role="actions" class="nav navbar">
+          <a class="btn btn-default pull-right"
+             th:href="${createUrl}">t("Create season")</a>
+        </nav>
 
-	<nav role="actions" class="nav navbar">
-	  <a class="btn btn-default"
-	     th:href="${createUrl}">t("Create season")</a>
-	</nav>
+        <h2 th:text="${leagueName}">League Alevins</h2>
 
-	<h2 th:text="${leagueName}">League Alevins</h2>
-
-	<ul>
-	  <li th:each="season: ${seasons}">
-	    <a th:href="${season.link}"
-	       th:text="${season.name}">2014-2015</a>
-
-	    <dl th:object="${season}">
-	      <dd>
-		<ul>
-		  <li>
-		    <a th:href="${season.editLink}">t("Edit season")</a>
-		  </li>
-      <li>
-        <a th:href="${season.enrollLink}">Enroll teams</a>
-      </li>
-		  <li>
-		    <a th:href="${season.deleteLink}">t("Delete season")</a>
-		  </li>
-		  <li>
-		    <a th:href="${season.editLeagueLink}">t("Edit league")</a>
-		  </li>
-		</ul>
-	      </dd>
-	    </dl>
-	  </li>
-	</ul>
+        <table class="table">
+          <tr>
+            <th class="col-sm-3">t("Name")</th>
+            <th class="col-sm-9">t("Actions")</th>
+          </tr>
+          <tr th:each="season: ${seasons}">
+            <td class="col-sm-3">
+              <a th:href="${season.link}"
+                 th:text="${season.name}">2014-2015</a>
+            </td>
+            <td class="col-sm-9">
+              <a class="btn btn-default" th:href="${season.editLink}">t("Edit season")</a>
+              <a class="btn btn-default" th:href="${season.enrollLink}">t("Enroll teams")</a>
+              <a class="btn btn-default" th:href="${season.deleteLink}">t("Delete season")</a>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </body>

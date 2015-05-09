@@ -22,19 +22,23 @@
     </ul>
 
     <div class="container" th:fragment="content">
-      <div class="jumbotron">
-	<h2>t("Delete League %s", ${entityName})</h2>
+      <div class="jumbotron" th:object="${league}">
+        <h2>t("Delete League")</h2>
 
-	<form id="leagueForm" th:action="${submitUrl}"
-	      th:method="${submitMethod}" th:object="${league}">
+        <div class="alert alert-danger">
+          <h2>t("Are you sure to delete %s league?", ${league.leagueName})</h2>
+        </div>
 
-	  <input th:each="h: ${hiddens.entrySet()}" type="hidden"
-		 th:name="${h.getKey()}" th:value="${h.getValue()}" />
+        <form id="leagueForm" th:action="${submitUrl}"
+              th:method="${submitMethod}" th:object="${league}">
 
-	  <input type="submit" name="submit" value="Confirm deletion"/>
-	  <i18n:attr name="value">tc("button", "Confirm deletion")</i18n:attr>
+          <input th:each="h: ${hiddens.entrySet()}" type="hidden"
+           th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-	</form>
+          <a class="btn btn-primary" th:href="${listLink}">t("Cancel")</a>
+          <input class="btn btn-primary" type="submit" name="submit" value="Confirm deletion"/>
+          <i18n:attr name="value">tc("button", "Confirm deletion")</i18n:attr>
+        </form>
       </div>
     </div>
   </body>

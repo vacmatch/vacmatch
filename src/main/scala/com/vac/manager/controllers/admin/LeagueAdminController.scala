@@ -79,10 +79,12 @@ class LeagueAdminController extends UrlGrabber {
     val league = leagueService.findBySlug(federation.getId, slug)
     val submitUrl = getUrl("LeagueAdminController.postEdit")
 
+    val listLink = getUrl("LeagueSeasonController.listLeagues")
     // TODO handle notfound league (Option=None)
 
     new ModelAndView("admin/league/edit_form")
       .addObject("league", league.get)
+      .addObject("listLink", listLink)
       .addObject("hiddens", Map("oldslug" -> slug).asJava)
       .addObject("action", i.t("Edit league"))
       .addObject("submitUrl", submitUrl)
@@ -102,21 +104,25 @@ class LeagueAdminController extends UrlGrabber {
 
     val league = leagueService.findBySlug(fedId, slug)
 
-    "redirect:" + getUrl("LeagueAdminController.list")
+    "redirect:" + getUrl("LeagueSeasonController.listLeagues")
   }
 
   def delete(
     @RequestParam("slug") slug: String): ModelAndView = {
     val fedId = federation.getId
-    val league = leagueService.findBySlug(fedId, slug)
+    val listLink = getUrl("LeagueSeasonController.listLeagues")
 
-    new ModelAndView("admin/league/delete_confirm")
-      .addObject("entityName", league)
-      .addObject("action", i.t("Delete league"))
-      .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
-      .addObject("hiddens", Map("slug" -> slug).asJava)
-      .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
+    leagueService.findBySlug(fedId, slug).map {
+      league =>
+        new ModelAndView("admin/league/delete_confirm")
+          .addObject("league", league)
+          .addObject("listLink", listLink)
+          .addObject("action", i.t("Delete league"))
+          .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
+          .addObject("hiddens", Map("slug" -> slug).asJava)
+          .addObject("createUrl", getUrl("LeagueAdminController.create"))
+          .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
+    }.getOrElse(throw new NoSuchElementException("League not found"))
   }
 
   def postDelete(

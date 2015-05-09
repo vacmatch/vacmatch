@@ -6,6 +6,8 @@ import com.vac.manager.controllers.utils.UrlGrabber
 
 class ActionableLeagueSeason(base: LeagueSeason) extends LeagueSeason with UrlGrabber {
   id = base.id
+  startTime = base.startTime
+  endTime = base.endTime
   val slug = id.league.slug
   val fedId = id.league.fedId
 

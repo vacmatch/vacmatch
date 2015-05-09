@@ -18,26 +18,46 @@
     <div class="container" th:fragment="content">
       <h2 th:text="${action}">Edit Season</h2>
 
-      <form id="leagueForm" th:action="${submitUrl}"
-	    th:method="${submitMethod}" th:object="${leagueSeason}">
-	<input th:each="h: ${hiddens.entrySet()}" type="hidden"
-	       th:name="${h.getKey()}" th:value="${h.getValue()}" />
+      <div class="jumbotron">
+        <form id="leagueForm" th:action="${submitUrl}" class="form-horizontal"
+              th:method="${submitMethod}" th:object="${leagueSeason}">
+          <input th:each="h: ${hiddens.entrySet()}" type="hidden"
+                 th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-	<pre th:text="${#conversions.convert(leagueSeason.startTime, 'String')}">startTime</pre>
-	<!--  -->
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="seasonSlug">t("Season name")</label>
+            <div class="col-sm-3">
+              <input class="form-control" id="seasonSlug" type="text" placeholder="Season name" th:field="*{id.seasonSlug}" />
+              <i18n:attr name="placeholder">t("Season name")</i18n:attr>
+            </div>
+          </div>
 
-	<label for="seasonSlug">t("form-label", "Year/caption")</label>
-	<input type="text" name="seasonSlug" value="X" />
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="startTime">t("Season start")</label>
+            <div class="col-sm-3">
+              <input class="form-control" id="startTime" type="text" placeholder="Start date" th:field="*{startTime}" />
+              <i18n:attr name="placeholder">t("Start date")</i18n:attr>
+            </div>
+          </div>
 
-	<label for="startTime">t("Season start")</label>
-	<input type="text" th:field="*{startTime}" />
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="endTime">t("Season end")</label>
+            <div class="col-sm-3">
+              <input class="form-control" id="endTime" type="text" placeholder="End date" th:field="*{endTime}" />
+              <i18n:attr name="placeholder">t("End date")</i18n:attr>
+            </div>
+          </div>
 
-	<label for="endTime">t("Season end")</label>
-	<input type="text" th:field="*{endTime}" />
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <a class="btn btn-primary" th:href="${listLink}">Cancel</a>
+              <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
+              <i18n:attr name="value">t("Accept")</i18n:attr>
+            </div>
+          </div>
 
-	<input type="submit" name="submit" th:value="${action}" />
-
-      </form>
+        </form>
+      </div>
     </div>
   </body>
 </html>

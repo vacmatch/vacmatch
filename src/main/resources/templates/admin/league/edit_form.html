@@ -17,29 +17,44 @@
   <body>
 
     <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
-      <li class="active"><a href="#" th:text="${action}">Create league</a></li>
+      <li class="active"><a href="#" th:text="${action}">t("Create league")</a></li>
       <li><a th:href="${listUrl}">t("Show leagues")</a></li>
     </ul>
 
     <div class="container" th:fragment="content">
       <div class="jumbotron">
-	<h2 th:text="${action}">Create League</h2>
+        <h2 th:text="${action}">t("Create League")</h2>
 
-	<form id="leagueForm" th:action="${submitUrl}"
-	      th:method="${submitMethod}" th:object="${league}">
-	  <input th:each="h: ${hiddens.entrySet()}" type="hidden"
-		 th:name="${h.getKey()}" th:value="${h.getValue()}" />
+        <form id="leagueForm" th:action="${submitUrl}" class="form-horizontal"
+              th:method="${submitMethod}" th:object="${league}">
+          <input th:each="h: ${hiddens.entrySet()}" type="hidden"
+                 th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-	  <!--  -->
-	  <label for="name">t("League Name")</label>
-	  <input type="text" th:field="*{leagueName}" />
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="name">t("League Name")</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{leagueName}" />
+              <i18n:attr name="placeholder">t("Name")</i18n:attr>
+            </div>
+          </div>
 
-	  <label for="slug">t("League slug")</label>
-	  <input type="text" th:field="*{slug}" />
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="slug">t("League slug")</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="slug" type="text" placeholder="Slug" th:field="*{slug}" />
+              <i18n:attr name="placeholder">t("Slug")</i18n:attr>
+            </div>
+          </div>
 
-	  <input type="submit" name="submit" th:value="${action}" />
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <a class="btn btn-primary" th:href="${listLink}">Cancel</a>
+              <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
+              <i18n:attr name="value">t("Accept")</i18n:attr>
+            </div>
+          </div>
 
-	</form>
+        </form>
       </div>
     </div>
   </body>
