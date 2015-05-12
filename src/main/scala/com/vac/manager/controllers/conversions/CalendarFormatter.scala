@@ -35,8 +35,7 @@ class CalendarFormatter extends Formatter[Calendar] {
     //val format: String = messageSource.getMessage("date.format", null, locale);
     //throw new RuntimeException(format)
 
-    val format = "dd/MM/yyyy"
-
+    val format = "dd/MM/yyyy HH:mm"
     val dateFormat: SimpleDateFormat = new SimpleDateFormat(format);
     dateFormat.setLenient(false);
     dateFormat;

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+            data-href="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:fragment="show_soccer">
+      <div class="jumbotron">
+        <h2>Classification</h2>
+        <h3 th:text="${leagueSeason.id.league.leagueName}">League</h3>
+        <h4 th:text="${leagueSeason.id.seasonSlug}">Division</h4>
+        <table class="table">
+          <tr>
+            <th class="text-center col-sm-1" >Position</th>
+            <th class="text-center col-sm-3" >Team</th>
+            <th class="text-center col-sm-1" >Played</th>
+            <th class="text-center col-sm-1" >Won</th>
+            <th class="text-center col-sm-1" >Drawn</th>
+            <th class="text-center col-sm-1" >Lost</th>
+            <th class="text-center col-sm-1" >Goals For</th>
+            <th class="text-center col-sm-1" >Goals Against</th>
+            <th class="text-center col-sm-1" >Goal Difference</th>
+            <th class="text-center col-sm-1" >Points</th>
+          </tr>
+          <tr class="text-center" th:each="team, iterStat : ${leagueClassification}" th:object="${team}">
+           <td class="col-sm-1" th:text="${iterStat.count}?: '-'"><b>Pos</b></td>
+           <td class="col-sm-1" th:text="*{team}? *{team.teamName}: '-'"><b>Team</b></td>
+           <td class="col-sm-1" th:text="*{played}?: '0'">P</td>
+           <td class="col-sm-1" th:text="*{won}?: '0'">W</td>
+           <td class="col-sm-1" th:text="*{drawn}?: '0'">D</td>
+           <td class="col-sm-1" th:text="*{lost}?: '0'">L</td>
+           <td class="col-sm-1" th:text="*{goalsFor}?: '0'">GF</td>
+           <td class="col-sm-1" th:text="*{goalsAgainst}?: '0'">GA</td>
+           <td class="col-sm-1" th:text="*{goalDifference}?: '0'">GD</td>
+           <td class="col-sm-1" th:text="*{points}?: '0'"><b>Pts</b></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

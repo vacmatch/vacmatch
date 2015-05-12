@@ -40,7 +40,7 @@ class SoccerAct(g: Game) {
 
   @BeanProperty
   @Column
-  @Temporal(TemporalType.DATE)
+  @Temporal(TemporalType.TIMESTAMP)
   var date: Calendar = _
 
   @BeanProperty

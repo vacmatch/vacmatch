@@ -28,6 +28,7 @@ import com.vac.manager.model.game.soccer.SoccerStaffStats
 import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
+import com.vac.manager.model.game.SoccerClassificationEntry
 
 @Controller
 class GameController extends UrlGrabber {
@@ -126,6 +127,29 @@ class GameController extends UrlGrabber {
             }
         }.getOrElse(throw new NoSuchElementException("Act not found"))
     }.getOrElse(throw new NoSuchElementException("Game not found"))
+  }
+
+  def showClassification(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    request: HttpServletRequest): ModelAndView = {
+
+    val fedId: Long = federation.getId
+
+    val sportFragment: String = "classification/soccer/show_soccer"
+    val sportInstance: String = "show_soccer"
+
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+      leagueSeason =>
+        val leagueClassification: Seq[SoccerClassificationEntry] =
+          gameService.getLeagueClassification(leagueSeason)
+
+        new ModelAndView("classification/show")
+          .addObject("leagueClassification", leagueClassification.asJava)
+          .addObject("leagueSeason", leagueSeason)
+          .addObject("sportFragment", sportFragment)
+          .addObject("sportInstance", sportInstance)
+    }.getOrElse(throw new NoSuchElementException("Season not found"))
   }
 
 }

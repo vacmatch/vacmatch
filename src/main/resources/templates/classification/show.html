@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title th:text="#{title}">Show clasification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
+            data-href="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header">[Here goes the header]</div>
+    <div class="container" th:fragment="content">
+
+      <div class="pull-right">
+        <a th:each="action: ${actionsMenu}"
+           class="btn btn-default"
+           href="#"
+           th:text="${action.key}"
+           th:href="${action.value}">Action for admin</a>
+      </div>
+
+      <div th:replace="${sportFragment} :: ${sportInstance}"></div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+  </body>
+</html>
