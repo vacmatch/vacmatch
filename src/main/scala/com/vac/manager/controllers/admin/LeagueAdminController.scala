@@ -56,8 +56,6 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("action", i.t("Create league"))
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", "POST")
-      .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def postCreate(
@@ -85,8 +83,6 @@ class LeagueAdminController extends UrlGrabber {
       .addObject("action", i.t("Edit league"))
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", "POST")
-      .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
   }
 
   def postEdit(
@@ -116,8 +112,6 @@ class LeagueAdminController extends UrlGrabber {
           .addObject("action", i.t("Delete league"))
           .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
           .addObject("hiddens", Map("slug" -> slug).asJava)
-          .addObject("createUrl", getUrl("LeagueAdminController.create"))
-          .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
     }.getOrElse(throw new NoSuchElementException("League not found"))
   }
 

@@ -9,6 +9,9 @@
   media="screen" th:href="@{/css/bootstrap.min.css}" />
 <link href="../../static/css/core.css" rel="stylesheet" media="screen"
   th:href="@{/css/core.css}" />
+    <link href="../../static/css/sidebar.css" rel="stylesheet"
+          media="screen" th:href="@{/css/sidebar.css}" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
 <script src="../../static/js/jquery.js" th:src="@{/js/jquery.js}"
   data-src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="../../static/js/bootstrap.min.js"
@@ -16,15 +19,36 @@
 </head>
 
 <body>
-  <div id="content">
-    <div th:include="fragments/header :: header">Header</div>
 
-    <div class="container" th:include="${view} :: content">Here will
-      go the content.</div>
+    <div id="content">
 
-    <div id="footer" class="container" th:include="fragments/footer :: footer">&copy; 2013 The
-      Static Templates</div>
-  </div>
+      <th:block th:fragment="nav" sec:authorize="hasRole('ROLE_ADMINFED')">
+        <div id="wrapper">
+          <div th:replace="fragments/sidebar :: nav">Sidebar</div>
+
+          <div th:replace="fragments/header :: header">Header</div>
+
+          <div id="page-content-wrapper" class="container" th:include="${view} :: content">
+            Here will go the content.
+          </div>
+
+          <div id="footer" th:include="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+        </div>
+      </th:block>
+
+      <th:block th:fragment="nav" sec:authorize="!hasRole('ROLE_ADMINFED')">
+        <div th:replace="fragments/header :: header">Header</div>
+
+        <div class="container">
+          <div id="page-content-wrapper" th:include="${view} :: content">
+            Here will go the content.
+          </div>
+
+          <div id="footer" th:include="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+        </div>
+      </th:block>
+
+    </div>
 </body>
 
 </html>

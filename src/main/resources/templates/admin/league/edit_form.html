@@ -16,11 +16,6 @@
   </head>
   <body>
 
-    <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
-      <li class="active"><a href="#" th:text="${action}">t("Create league")</a></li>
-      <li><a th:href="${listUrl}">t("Show leagues")</a></li>
-    </ul>
-
     <div class="container" th:fragment="content">
       <div class="jumbotron">
         <h2 th:text="${action}">t("Create League")</h2>

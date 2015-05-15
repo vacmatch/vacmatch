@@ -65,8 +65,6 @@ class UserAdminController extends UrlGrabber {
       .addObject("roles", roles.asJava)
       .addObject("listLink", listLink)
       .addObject("user", user)
-      .addObject("createUrl", getUrl("UserAdminController.registerForm"))
-      .addObject("listUrl", getUrl("UserAdminController.list"))
       .addObject("action", "create")
       .addObject("submitUrl", getUrl("UserAdminController.registerPost"))
   }
@@ -125,8 +123,6 @@ class UserAdminController extends UrlGrabber {
     return new ModelAndView("admin/user/list")
       .addObject("users", users)
       .addObject("actionsMenu", actionsMenu.asJava)
-      .addObject("createUrl", getUrl("UserAdminController.registerForm"))
-      .addObject("listUrl", getUrl("UserAdminController.list"))
   }
   def editForm(
     @RequestParam("user") user: String,
