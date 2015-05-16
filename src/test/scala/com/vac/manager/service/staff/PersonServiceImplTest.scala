@@ -81,11 +81,11 @@ class PersonServiceImplTest
       val insertedPerson: Person =
         personService.createPerson(
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.cardId,
-          person.birth,
+          person.birthdate,
           person.federation.getFedId)
 
       //Set ID to be the same
@@ -112,11 +112,11 @@ class PersonServiceImplTest
         val insertedStaff: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             notExistentFedId)
       }
 
@@ -141,11 +141,11 @@ class PersonServiceImplTest
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -169,11 +169,11 @@ class PersonServiceImplTest
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -181,28 +181,28 @@ class PersonServiceImplTest
 
     }
 
-    scenario("Person cannot be created if Person surnames are empty") {
+    scenario("Person cannot be created if Person surname is empty") {
 
-      Given("Empty Person surnames")
+      Given("Empty Person surname")
       val person: Person = validPerson
-      person.surnames = ""
+      person.surname = ""
 
       Given("An existent federation")
       val federation: Federation = validFederation
       Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
 
       When("A new Person is created")
-      When("surnames parameter is empty")
+      When("surname parameter is empty")
 
       intercept[IllegalArgumentException] {
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -210,28 +210,28 @@ class PersonServiceImplTest
 
     }
 
-    scenario("Person cannot be created if Person surnames are null") {
+    scenario("Person cannot be created if Person surname is null") {
 
-      Given("Null Person surnames")
+      Given("Null Person surname")
       val person: Person = validPerson
-      person.surnames = null
+      person.surname = null
 
       Given("An existent federation")
       val federation: Federation = validFederation
       Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
 
       When("A new Person is created")
-      When("surnames parameter is null")
+      When("surname parameter is null")
 
       intercept[IllegalArgumentException] {
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -256,11 +256,11 @@ class PersonServiceImplTest
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -285,11 +285,11 @@ class PersonServiceImplTest
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -297,28 +297,28 @@ class PersonServiceImplTest
 
     }
 
-    scenario("Person cannot be created if Person birth is null") {
+    scenario("Person cannot be created if Person birthdate is null") {
 
-      Given("Null Person birth")
+      Given("Null Person birthdate")
       val person: Person = validPerson
-      person.birth = null
+      person.birthdate = null
 
       Given("An existent federation")
       val federation: Federation = validFederation
       Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
 
       When("A new Person is created")
-      When("birth parameter is null")
+      When("birthdate parameter is null")
 
       intercept[IllegalArgumentException] {
         val insertedPerson: Person =
           personService.createPerson(
             person.name,
-            person.surnames,
+            person.surname,
             person.email,
             person.telephones,
             person.cardId,
-            person.birth,
+            person.birthdate,
             person.federation.fedId)
       }
 
@@ -352,12 +352,12 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           address,
           person.cardId,
-          person.birth)
+          person.birthdate)
 
       Then("Person must be modified")
       val modifiedPerson: Person = maybePerson.get
@@ -392,12 +392,12 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
 
       Then("Person can't be modified")
       modifiedPerson should equal(None)
@@ -422,12 +422,12 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
@@ -449,66 +449,66 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
 
     }
 
-    scenario("Someone try to modify a existent Person with null surnames") {
+    scenario("Someone try to modify a existent Person with null surname") {
 
       Given("An existent Person")
-      Given("Null Person surnames")
+      Given("Null Person surname")
       val person: Person = validPerson
-      person.surnames = null
+      person.surname = null
 
       Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
 
       When("Person try to be modified")
-      When("surnames are null")
+      When("surname are null")
       intercept[IllegalArgumentException] {
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
 
     }
 
-    scenario("Someone try to modify a existent Person with empty surnames") {
+    scenario("Someone try to modify a existent Person with empty surname") {
 
       Given("An existent Person")
-      Given("Empty Person surnames")
+      Given("Empty Person surname")
       val person: Person = validPerson
-      person.surnames = ""
+      person.surname = ""
 
       Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
 
       When("Person try to be modified")
-      When("surnames are empty")
+      When("surname is empty")
       intercept[IllegalArgumentException] {
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
@@ -530,12 +530,12 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
@@ -557,39 +557,39 @@ class PersonServiceImplTest
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")
 
     }
 
-    scenario("Someone try to modify a existent Person with null birth") {
+    scenario("Someone try to modify a existent Person with null birthdate") {
 
       Given("An existent Person")
-      Given("Null Person birth")
+      Given("Null Person birthdate")
       val person: Person = validPerson
-      person.birth = null
+      person.birthdate = null
 
       Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
 
       When("Person try to be modified")
-      When("birth is null")
+      When("birthdate is null")
       intercept[IllegalArgumentException] {
         personService.modifyPerson(
           person.personId,
           person.name,
-          person.surnames,
+          person.surname,
           person.email,
           person.telephones,
           person.address,
           person.cardId,
-          person.birth)
+          person.birthdate)
       }
 
       Then("Person can't be modified")

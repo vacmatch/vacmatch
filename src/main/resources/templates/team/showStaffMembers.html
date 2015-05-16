@@ -44,7 +44,7 @@
           <tr th:each="staff,iterStat: ${staffMemberList}" th:object="${staff}">
             <td th:text="${iterStat.count}"></td>
             <td th:text="*{person.name}"></td>
-            <td th:text="*{person.surnames}"></td>
+            <td th:text="*{person.surname}"></td>
             <td th:text="*{person.cardId}"></td>
           </tr>
         </table>

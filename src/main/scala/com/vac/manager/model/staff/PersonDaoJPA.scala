@@ -20,7 +20,8 @@ class PersonDaoJPA
     count: Int): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.name LIKE :name OR s.surnames LIKE :name", classOf[Person])
+        "WHERE s.name LIKE :name OR s.surname LIKE :name", classOf[Person]
+    )
       .setParameter("name", "%" + name + "%")
 
     query.getResultList().asScala

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+s<!DOCTYPE html>
 <html>
 <head>
 <title th:text="#{title}">Person profile</title>
@@ -38,7 +38,7 @@
         <table class="table">
           <tr>
             <td><b>Name</b></td>
-            <td th:text="*{name} + ' ' + *{surnames}">Name</td>
+            <td th:text="*{name} + ' ' + *{surname}">Name</td>
           </tr>
           <tr>
             <td><b>Alias</b></td>
@@ -57,9 +57,9 @@
             <td th:text="*{telephones}">Telephone</td>
           </tr>
           <tr>
-            <td><b>Birth</b></td>
+            <td><b>Birth date</b></td>
             <td
-              th:text="${#calendars.format(person.birth, 'dd/MMM/yyyy HH:mm')}">Birth</td>
+              th:text="${#calendars.format(person.birthdate, 'dd/MM/yyyy')}">01/01/1970</td>
           </tr>
           <tr>
             <td><b>Address</b></td>
