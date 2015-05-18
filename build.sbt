@@ -36,6 +36,8 @@ val ourDeps = Seq (
   "org.thymeleaf.extras" % "thymeleaf-extras-springsecurity3" % "2.1.1.RELEASE",
   "org.resthub" % "springmvc-router" % "1.2.0",
   "com.andersen-gott" %% "scravatar" % "1.0.3",
+  "org.apache.commons" % "commons-dbcp2" % "2.1",
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   "log4j" % "log4j" % "1.2.16"
 ) ++ springBoot ++ springTx ++ Seq(
   "org.xerial" % "sqlite-jdbc" % "3.8.7"

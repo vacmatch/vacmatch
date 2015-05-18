@@ -1,34 +1,41 @@
 package com.vac.manager
 
-import auth.model.FederationUserDetailsService
-import com.vacmatch.util.i18n.{ I18n, I18nScaposer, I18nScaposerBean }
-import controllers.conversions.{ CalendarFormatter, DateFormatter }
 import java.util.ArrayList
 import javax.servlet.ServletRequest
+import javax.sql.DataSource
+
+import com.vac.manager.auth.model.FederationUserDetailsService
+import com.vac.manager.controllers.conversions.{ CalendarFormatter, DateFormatter }
+import com.vac.manager.util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
+import org.apache.commons.dbcp2._
+import org.apache.commons.pool2.impl.GenericObjectPool
+import org.apache.log4j.LogManager
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.{ Autowired, Value }
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
-import org.springframework.context.annotation.ScopedProxyMode
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope }
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope, ScopedProxyMode }
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
-import org.springframework.format.Formatter
+import org.springframework.core.env.Environment
 import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.web.filter.CharacterEncodingFilter
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
+
 import scala.collection.JavaConverters._
-import util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
+import scala.util.Try
 
 @Lazy
 @Configuration // You should not use the @EnableWebMvc annotation
@@ -66,6 +73,12 @@ class WebAppConfig() extends RouterConfigurationSupport {
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   override def configure(http: HttpSecurity) = {
+
+    val filter: CharacterEncodingFilter = new CharacterEncodingFilter()
+    filter.setEncoding("UTF-8")
+    filter.setForceEncoding(true)
+    http.addFilterBefore(filter, classOf[CsrfFilter])
+
     // In order to better understand the implications between these
     // objects, the indentation means things :)
 
@@ -101,12 +114,27 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Autowired
+  var env: Environment = _
+
+  @Autowired
   def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
 
-    auth.userDetailsService(userDetailsService())
-      .and()
-      .inMemoryAuthentication()
-      .withUser("admin").password("secret").roles("ROOT", "ADMINFED")
+    val logger = LogManager.getLogger(classOf[WebSecurityConfig])
+    val authConfig = auth.userDetailsService(userDetailsService())
+
+    val setupConfig = env.getProperty("SETUP", "")
+
+    Try(
+      if (setupConfig.nonEmpty) {
+        val Array(user, pw) = setupConfig.split(":")
+        authConfig
+          .and()
+          .inMemoryAuthentication()
+          .withUser(user).password(pw).roles("ROOT", "ADMINFED")
+      }
+    ).recover {
+        case e: Exception => logger.warn("Could not set ROOT user up", e)
+      }
 
     /*
     auth.inMemoryAuthentication()
@@ -165,6 +193,30 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
   @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
   def federationBean(req: ServletRequest): FederationBean = {
     return new FederationBeanImpl(req);
+  }
+
+  @Autowired
+  var env: Environment = _
+
+  @Value("${spring.datasource.url}")
+  var legacyDatabaseUrl: String = _
+
+  @Bean
+  def dataSource(): DataSource = {
+    val url = Option(env.getProperty("DATABASE_URL"))
+      .filter(_.nonEmpty)
+      .map("jdbc:" + _)
+      .getOrElse(legacyDatabaseUrl)
+
+    val connectionFactory: ConnectionFactory =
+      new DriverManagerConnectionFactory(url, null)
+
+    val poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory, null)
+    val connectionPool = new GenericObjectPool(poolableConnectionFactory)
+
+    poolableConnectionFactory.setPool(connectionPool)
+
+    new PoolingDataSource(connectionPool)
   }
 
   @Bean
