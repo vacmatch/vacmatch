@@ -39,7 +39,7 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var foundationDate: Calendar = date
 
   @BeanProperty
-  @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
+  @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = Array(CascadeType.ALL))
   @JoinColumn(name = "addressId")
   var teamAddress: Address = address
 

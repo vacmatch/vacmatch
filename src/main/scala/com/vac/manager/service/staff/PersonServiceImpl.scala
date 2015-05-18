@@ -142,15 +142,12 @@ class PersonServiceImpl extends PersonService {
 
     val checkAgainstNull = List(
       ("Name", stName, classOf[String]),
-      ("Surname", stSurname, classOf[String]),
-      ("Card Id", stCardId, classOf[String]),
-      ("Birthdate", stBirth, classOf[Calendar])
+      ("Surname", stSurname, classOf[String])
     )
 
     val checkAgainstEmpty = List(
       ("Name", stName, classOf[String]),
-      ("Surname", stSurname, classOf[String]),
-      ("Card Id", stCardId, classOf[String])
+      ("Surname", stSurname, classOf[String])
     )
 
     checkAgainstNull.map {

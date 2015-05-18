@@ -24,10 +24,14 @@ import java.util.Date
 import scala.util.Try
 import com.vac.manager.controllers.actionable.ActionableTeam
 import javax.servlet.http.HttpServletRequest
+import com.vacmatch.util.i18n.I18n
 
 @Controller
 class TeamAdminController
     extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var teamService: TeamService = _
@@ -66,18 +70,31 @@ class TeamAdminController
   def createPost(
     @ModelAttribute("address") address: Address,
     @ModelAttribute("team") team: Team,
-    result: BindingResult
+    result: BindingResult,
+    request: HttpServletRequest
   ): ModelAndView = {
 
     // TODO Check errors
 
-    val createdTeam: Team = teamService.createTeam(
-      team.teamName,
-      team.publicTeamName, team.foundationDate, address, team.teamWeb,
-      team.teamTelephones
-    )
+    try {
+      val createdTeam: Team = teamService.createTeam(
+        team.teamName,
+        team.publicTeamName, team.foundationDate, address, team.teamWeb,
+        team.teamTelephones
+      )
 
-    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+      new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+    } catch {
+
+      case a: IllegalArgumentException =>
+        val referrer: String = request.getHeader("Referer");
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Incorrect team name"))
+          .addObject("errorDescription", i.t("You must specify a team name and a public team name for a new team"))
+          .addObject("backLink", referrer)
+          .addObject("backText", i.t("Back to create team"))
+    }
   }
 
   def edit(

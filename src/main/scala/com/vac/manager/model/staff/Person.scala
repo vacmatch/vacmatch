@@ -10,6 +10,7 @@ import scravatar.Gravatar
 import com.vac.manager.model.federation.Federation
 import java.text.SimpleDateFormat
 import java.util.ArrayList
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "PERSON")
@@ -54,16 +55,16 @@ class Person(
   var telephones: String = stTelephones
 
   @BeanProperty
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(optional = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "addressId")
   var address: Address = _
 
   @BeanProperty
-  @Column(nullable = false)
+  @Column
   var cardId: String = stCardId
 
   @BeanProperty
-  @Column(nullable = false)
+  @Column
   var birthdate: Calendar = stBirthdate
 
   @BeanProperty

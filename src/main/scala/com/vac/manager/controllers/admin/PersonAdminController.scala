@@ -17,9 +17,15 @@ import com.vac.manager.controllers.actionable.ActionablePerson
 import javax.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.PathVariable
 import scala.beans.BeanProperty
+import com.vac.manager.model.generic.exceptions.IllegalArgumentException
+import javax.validation.Valid
+import com.vacmatch.util.i18n.I18n
 
 @Controller
 class PersonAdminController extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var personService: PersonService = _
@@ -185,6 +191,7 @@ class PersonAdminController extends UrlGrabber {
   def createPost(
     @ModelAttribute("address") address: Address,
     @ModelAttribute("personReceiver") personReceiver: Person,
+    request: HttpServletRequest,
     result: BindingResult
   ): ModelAndView = {
 
@@ -215,8 +222,22 @@ class PersonAdminController extends UrlGrabber {
       new ModelAndView("redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
     } catch {
 
-      // Federation not found
-      case e: InstanceNotFoundException => new ModelAndView("federation/notfound")
+      case a: IllegalArgumentException =>
+        val referrer: String = request.getHeader("Referer");
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Incorrect person name"))
+          .addObject("errorDescription", i.t("You must specify name and surnames for a new person"))
+          .addObject("backLink", referrer)
+          .addObject("backText", i.t("Back to create person"))
+      case e: InstanceNotFoundException =>
+        val referrer: String = request.getHeader("Referer");
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Person not found"))
+          .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+          .addObject("backLink", referrer)
+          .addObject("backText", i.t("Back to create person"))
     }
   }
 
@@ -253,30 +274,58 @@ class PersonAdminController extends UrlGrabber {
   def editPost(
     @RequestParam("personId") personId: java.lang.Long,
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("person") person: Person
+    @ModelAttribute("person") person: Person,
+    request: HttpServletRequest
   ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
-    // Modify Person
-    val modifiedPersonMember: Option[Person] =
-      personService.modifyPerson(
-        personId,
-        person.name,
-        person.surname,
-        person.email,
-        person.telephones,
-        address,
-        person.cardId,
-        person.birthdate
-      )
-
-    modifiedPersonMember match {
-      case None => new ModelAndView("person/notfound")
-      case Some(person) =>
-        new ModelAndView(
-          "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId)
+    try {
+      // Modify Person
+      val modifiedPersonMember: Option[Person] =
+        personService.modifyPerson(
+          personId,
+          person.name,
+          person.surname,
+          person.email,
+          person.telephones,
+          address,
+          person.cardId,
+          person.birthdate
         )
+
+      modifiedPersonMember match {
+        case None =>
+          val referrer: String = request.getHeader("Referer")
+
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Person not found"))
+            .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+            .addObject("backLink", referrer)
+            .addObject("backText", i.t("Back to create person"))
+        case Some(person) =>
+          new ModelAndView(
+            "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId)
+          )
+      }
+    } catch {
+      case a: IllegalArgumentException =>
+        val referrer: String = request.getHeader("Referer")
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Incorrect person name"))
+          .addObject("errorDescription", i.t("You must specify name and surnames for a new person"))
+          .addObject("backLink", referrer)
+          .addObject("backText", i.t("Back to create person"))
+
+      case e: InstanceNotFoundException =>
+        val referrer: String = request.getHeader("Referer")
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Person not found"))
+          .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+          .addObject("backLink", referrer)
+          .addObject("backText", i.t("Back to create person"))
     }
   }
 

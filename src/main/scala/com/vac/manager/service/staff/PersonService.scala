@@ -5,6 +5,7 @@ import com.vac.manager.model.team.Team
 import com.vac.manager.model.personal.Address
 import java.util.Calendar
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 
 trait PersonService {
 
