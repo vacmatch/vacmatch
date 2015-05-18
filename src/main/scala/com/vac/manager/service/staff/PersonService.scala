@@ -23,18 +23,18 @@ trait PersonService {
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
-  def createPerson(stName: String, stSurnames: String,
+  def createPerson(stName: String, stSurname: String,
     stEmail: String, stTelephones: String, stCardId: String,
     stBirth: Calendar, idFederation: Long): Person
 
   @throws[IllegalArgumentException]
-  def modifyPerson(personId: Long, stName: String, stSurnames: String,
+  def modifyPerson(personId: Long, stName: String, stSurname: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stCardId: String, stBirth: Calendar): Option[Person]
 
   def assignAddress(personId: Long, stAddress: Address): Option[Person]
 
-  protected def checkParameters(stName: String, stSurnames: String,
+  protected def checkParameters(stName: String, stSurname: String,
     stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String)
 
 }

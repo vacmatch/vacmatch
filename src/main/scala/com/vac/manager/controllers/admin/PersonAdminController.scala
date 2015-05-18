@@ -181,12 +181,13 @@ class PersonAdminController extends UrlGrabber {
       val person: Person =
         personService.createPerson(
           personReceiver.name,
-          personReceiver.surnames,
+          personReceiver.surname,
           personReceiver.email,
           personReceiver.telephones,
           personReceiver.cardId,
-          personReceiver.birth,
-          fedId)
+          personReceiver.birthdate,
+          fedId
+        )
 
       // Create address
       val personAddress = new Address(
@@ -245,18 +246,20 @@ class PersonAdminController extends UrlGrabber {
       personService.modifyPerson(
         personId,
         person.name,
-        person.surnames,
+        person.surname,
         person.email,
         person.telephones,
         address,
         person.cardId,
-        person.birth)
+        person.birthdate
+      )
 
     modifiedPersonMember match {
       case None => new ModelAndView("person/notfound")
       case Some(person) =>
         new ModelAndView(
-          "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
+          "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId)
+        )
     }
   }
 

@@ -16,12 +16,13 @@ import java.util.ArrayList
 @Inheritance(strategy = InheritanceType.JOINED)
 class Person(
     stName: String,
-    stSurnames: String,
+    stSurname: String,
     stEmail: String,
     stTelephones: String,
     stCardId: String,
-    stBirth: Calendar,
-    stFederation: Federation) {
+    stBirthdate: Calendar,
+    stFederation: Federation
+) {
 
   @Id
   @SequenceGenerator(name = "personIdGenerator", sequenceName = "person_id_seq")
@@ -34,7 +35,7 @@ class Person(
 
   @BeanProperty
   @Column(nullable = false)
-  var surnames: String = stSurnames
+  var surname: String = stSurname
 
   @BeanProperty
   @Column
@@ -63,7 +64,7 @@ class Person(
 
   @BeanProperty
   @Column(nullable = false)
-  var birth: Calendar = stBirth
+  var birthdate: Calendar = stBirthdate
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
@@ -78,26 +79,26 @@ class Person(
     var personObj: Person = obj.asInstanceOf[Person]
     (personObj.personId == this.personId) &&
       (personObj.name == this.name) &&
-      (personObj.surnames == this.surnames) &&
+      (personObj.surname == this.surname) &&
       (personObj.alias == this.alias) &&
       (personObj.email == this.email) &&
       (personObj.telephones == this.telephones) &&
       (personObj.address == this.address) &&
       (personObj.cardId == this.cardId) &&
-      (personObj.birth == this.birth) &&
+      (personObj.birthdate == this.birthdate) &&
       (personObj.federation == this.federation)
   }
 
   override def toString = "(" + this.personId + ") " +
-    this.surnames +
+    this.surname +
     ", " + this.name +
     "\nCardId: " + this.cardId +
     "\nEmail: " + this.email +
     "\nAlias: " + this.alias +
     "\nTelephones: " + this.telephones +
     "\nAddress: " + this.address +
-    "\nBirth: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
-    .format(this.birth.getTime()) +
+    "\nBirthdate: " + (new SimpleDateFormat("yyyy MMM dd HH:mm:ss"))
+    .format(this.birthdate.getTime()) +
     "\nFederation: " + this.federation
 
 }

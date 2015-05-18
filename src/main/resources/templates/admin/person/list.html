@@ -33,7 +33,7 @@
         </tr>
         <tr th:each="person : ${personList}" th:object="${person}">
           <td th:text="*{cardId}?: '--'">CardID</td>
-          <td><a  th:text="*{name} + ' ' + *{surnames}?: '--'" th:href="*{showLink}">Name</a></td>
+          <td><a  th:text="*{name} + ' ' + *{surname}?: '--'" th:href="*{showLink}">Name</a></td>
           <td>
             <a class="btn btn-default" href="#"
                th:each="link: ${person.authorizedLinks}"

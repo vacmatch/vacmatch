@@ -61,19 +61,19 @@ class PersonServiceImpl extends PersonService {
 
   @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
-  def createPerson(stName: String, stSurnames: String,
+  def createPerson(stName: String, stSurname: String,
     stEmail: String, stTelephones: String,
     stCardId: String, stBirth: Calendar, idFederation: Long): Person = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
+    checkParameters(stName, stSurname, stEmail, stTelephones, stBirth, stCardId)
 
-    var maybeFederation: Option[Federation] = federationService.find(idFederation)
+    val maybeFederation: Option[Federation] = federationService.find(idFederation)
 
     maybeFederation match {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
-        var person: Person = new Person(stName, stSurnames, stEmail, stTelephones,
+        val person: Person = new Person(stName, stSurname, stEmail, stTelephones,
           stCardId, stBirth, stFederation)
 
         personDao.save(person)
@@ -83,26 +83,26 @@ class PersonServiceImpl extends PersonService {
   }
 
   @throws[IllegalArgumentException]
-  def modifyPerson(personId: Long, stName: String, stSurnames: String,
+  def modifyPerson(personId: Long, stName: String, stSurname: String,
     stEmail: String, stTelephones: String, stAddress: Address,
     stCardId: String, stBirth: Calendar): Option[Person] = {
 
     //Check if there's an incorrect parameter
-    checkParameters(stName, stSurnames, stEmail, stTelephones, stBirth, stCardId)
+    checkParameters(stName, stSurname, stEmail, stTelephones, stBirth, stCardId)
 
     //Modify address
-    var maybePerson: Option[Person] = assignAddress(personId, stAddress)
+    val maybePerson: Option[Person] = assignAddress(personId, stAddress)
 
     maybePerson.map {
       person =>
         {
           person.name = stName
-          person.surnames = stSurnames
+          person.surname = stSurname
           person.email = stEmail
           person.avatarLink = new Gravatar(if (Option(stEmail).isEmpty) "" else stEmail).ssl(true).avatarUrl
           person.telephones = stTelephones
           person.cardId = stCardId
-          person.birth = stBirth
+          person.birthdate = stBirth
           personDao.save(person)
         }
     }
@@ -126,7 +126,8 @@ class PersonServiceImpl extends PersonService {
           val savedAddress: Address = addressService.createAddress(
             newAddress.firstLine, newAddress.secondLine,
             newAddress.postCode, newAddress.locality,
-            newAddress.province, newAddress.country)
+            newAddress.province, newAddress.country
+          )
 
           person.address = savedAddress
           personDao.save(person)
@@ -136,23 +137,29 @@ class PersonServiceImpl extends PersonService {
   }
 
   @throws[IllegalArgumentException]
-  protected def checkParameters(stName: String, stSurnames: String,
+  protected def checkParameters(stName: String, stSurname: String,
     stEmail: String, stTelephones: String, stBirth: Calendar, stCardId: String) {
 
-    val checkAgainstNull = List((stName, classOf[String]), (stSurnames, classOf[String]),
-      (stCardId, classOf[String]), (stBirth, classOf[Calendar]))
-    val checkAgainstEmpty = List((stName, classOf[String]), (stSurnames,
-      classOf[String]), (stCardId, classOf[String]))
+    val checkAgainstNull = List(
+      ("Name", stName, classOf[String]),
+      ("Surname", stSurname, classOf[String]),
+      ("Card Id", stCardId, classOf[String]),
+      ("Birthdate", stBirth, classOf[Calendar]))
+
+    val checkAgainstEmpty = List(
+      ("Name", stName, classOf[String]),
+      ("Surname", stSurname, classOf[String]),
+      ("Card Id", stCardId, classOf[String]))
 
     checkAgainstNull.map {
-      case (elt, cls) =>
+      case (eltName, elt, cls) =>
         if (Option(elt).isEmpty)
-          throw new IllegalArgumentException(elt, cls.getName())
+          throw new IllegalArgumentException(eltName + " cannot be null", cls.getName())
     }
     checkAgainstEmpty.map {
-      case (elt, cls) =>
+      case (eltName, elt, cls) =>
         if (Option(elt).exists(_.trim == ""))
-          throw new IllegalArgumentException(elt, cls.getName())
+          throw new IllegalArgumentException(eltName + " cannot be empty", cls.getName())
     }
   }
 

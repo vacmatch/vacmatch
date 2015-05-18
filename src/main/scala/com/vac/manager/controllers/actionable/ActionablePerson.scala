@@ -15,14 +15,14 @@ class ActionablePerson(person: Person, userCanEdit: Boolean)
 
   personId = person.personId
   name = person.name
-  surnames = person.surnames
+  surname = person.surname
   alias = person.alias
   email = person.email
   avatarLink = person.avatarLink
   telephones = person.telephones
   address = person.address
   cardId = person.cardId
-  birth = person.birth
+  birthdate = person.birthdate
   federation = person.federation
 
   @BeanProperty
