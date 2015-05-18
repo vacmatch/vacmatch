@@ -30,7 +30,8 @@ class PersonDaoJPA
   def findAllByFederationId(fedId: Long): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.federation.fedId = :fedId ", classOf[Person])
+        "WHERE s.federation.fedId = :fedId ", classOf[Person]
+    )
       .setParameter("fedId", fedId)
 
     query.getResultList().asScala
@@ -39,7 +40,8 @@ class PersonDaoJPA
   def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.email LIKE :email", classOf[Person])
+        "WHERE s.email LIKE :email", classOf[Person]
+    )
       .setParameter("email", "%" + email + "%")
 
     query.getResultList().asScala
@@ -48,7 +50,8 @@ class PersonDaoJPA
   def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.cardId LIKE :cardIdFirst OR s.cardId LIKE :cardIdSecond", classOf[Person])
+        "WHERE s.cardId LIKE :cardIdFirst OR s.cardId LIKE :cardIdSecond", classOf[Person]
+    )
       .setParameter("cardIdFirst", "%" + cardId)
       .setParameter("cardIdSecond", cardId + "%")
 

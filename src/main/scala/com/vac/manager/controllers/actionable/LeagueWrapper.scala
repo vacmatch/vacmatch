@@ -34,14 +34,14 @@ class LeagueWrapper(l: League, seasons: Seq[ActionableLeagueSeason], isAuthorize
   @BeanProperty
   val mainLink = latest_season.map { season =>
     val text = "Classification"
-    val href = "#classification" // TODO: Put classification here
+    val href = getUrl("GameController.showClassification", "slug" -> l.slug, "year" -> season.id.seasonSlug) // TODO: Put classification here
     Hyperlink(text, href, "")
   }.getOrElse(Hyperlink("No action available", "#", "disabled"))
 
   @BeanProperty
   val links: java.util.List[Hyperlink] = latest_season.map { season =>
     Map(
-      "Classification" -> "#classification",
+      "Classification" -> getUrl("GameController.showClassification", "slug" -> l.slug, "year" -> season.id.seasonSlug),
       "Calendar" -> getUrl("GameController.list", "slug" -> l.slug, "year" -> season.id.seasonSlug),
       "Last matches played" -> "#matches",
       "Current match day" -> "#matchday"
@@ -54,9 +54,11 @@ class LeagueWrapper(l: League, seasons: Seq[ActionableLeagueSeason], isAuthorize
   @BeanProperty
   val authorizedLinks: java.util.List[Hyperlink] =
     if (isAuthorized)
-      List(Hyperlink("Edit league", getEditLink, "btn-default"),
+      List(
+        Hyperlink("Edit league", getEditLink, "btn-default"),
         Hyperlink("Delete league", getDeleteLink, "btn-default"),
-        Hyperlink("Manage seasons", getSeasonAdminLink, "btn-default")).asJava
+        Hyperlink("Manage seasons", getSeasonAdminLink, "btn-default")
+      ).asJava
     else List().asJava
 
 }

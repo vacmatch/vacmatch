@@ -4,6 +4,7 @@ import com.vac.manager.model.game.Game
 import com.vac.manager.model.competition.LeagueSeason
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
+import com.vac.manager.model.game.SoccerClassificationEntry
 
 trait GameService {
 
@@ -31,6 +32,9 @@ trait GameService {
     */
   @throws[IllegalArgumentException]
   def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason)
+
+  @throws[IllegalArgumentException]("If league season doesn't exist")
+  def getLeagueClassification(leagueSeasson: LeagueSeason): Seq[SoccerClassificationEntry]
 
 }
 

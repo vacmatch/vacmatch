@@ -14,6 +14,8 @@ import javax.management.InstanceNotFoundException
 import java.util.Calendar
 import com.vac.manager.model.team.Team
 import com.vac.manager.service.team.TeamService
+import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.game.SoccerClassificationEntry
 
 @Service("soccerActService")
 @Transactional
@@ -38,6 +40,25 @@ class SoccerActServiceImpl extends SoccerActService {
 
   def findLeagueSoccerActs(leagueSeason: LeagueSeason): Seq[SoccerAct] = {
     soccerActDao.findAllBySeason(leagueSeason.id)
+  }
+
+  def findSoccerClassificationEntry(teamId: Long, leagueSeasonId: LeagueSeasonPK): SoccerClassificationEntry = {
+    val local: SoccerClassificationEntry = soccerActDao.getLocalEntry(teamId, leagueSeasonId)
+    val visitor: SoccerClassificationEntry = soccerActDao.getVisitorEntry(teamId, leagueSeasonId)
+
+    new SoccerClassificationEntry(
+      local.assessment + visitor.assessment,
+      local.team,
+      local.played + visitor.played,
+      local.won + visitor.won,
+      local.drawn + visitor.drawn,
+      local.lost + visitor.lost,
+      local.goalsFor + visitor.goalsFor,
+      local.goalsAgainst + visitor.goalsAgainst,
+      local.goalDifference + visitor.goalDifference,
+      local.points + visitor.points
+    )
+
   }
 
   @throws[DuplicateInstanceException]("If soccer act exists before")

@@ -35,21 +35,21 @@
       		    <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="/league/firstDivision/2014">1º division</a>
                 <ul class="dropdown-menu">
-                  <li><a href="/classification/firstDivision/2014)">Clasification</a></li>
+                  <li><a href="/classification/firstDivision/2014">Clasification</a></li>
                   <li><a href="/calendar/firstDivision/2014">Calendar</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="/league/secondDivision/2014">2º division</a>
                 <ul class="dropdown-menu">
-                  <li><a href="/classification/secondDivision/2014)">Clasification</a></li>
+                  <li><a href="/classification/secondDivision/2014">Clasification</a></li>
                   <li><a href="/calendar/secondDivision/2014">Calendar</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="/league/thirdDivision/2014">3º division</a>
                 <ul class="dropdown-menu">
-                  <li><a href="/classification/thirdDivision/2014)">Clasification</a></li>
+                  <li><a href="/classification/thirdDivision/2014">Clasification</a></li>
                   <li><a href="/calendar/thirdDivision/2014">Calendar</a></li>
                 </ul>
               </li>
@@ -79,6 +79,7 @@
       
       		      <form class="navbar-form navbar-right" role="login" id="adminLogoutForm" method="POST" action="#" th:action="@{/admin/logout}">
             			<div class="form-group">
+                    <a class="btn btn-primary" href="/admin">ADMIN</a>
             			  <input type="submit" value="Log out" class="btn btn-default" />
             			  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             			</div>

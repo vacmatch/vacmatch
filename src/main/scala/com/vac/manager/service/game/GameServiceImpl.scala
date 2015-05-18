@@ -10,6 +10,8 @@ import javax.transaction.Transactional
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
 import com.vac.manager.service.game.soccer.SoccerActService
+import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.service.team.TeamService
 
 @Service("gameService")
 @Transactional
@@ -23,6 +25,9 @@ class GameServiceImpl extends GameService {
 
   @Autowired
   var soccerActService: SoccerActService = _
+
+  @Autowired
+  var teamService: TeamService = _
 
   def find(gameId: Long): Option[Game] = {
     gameDao.findById(gameId)
@@ -59,7 +64,8 @@ class GameServiceImpl extends GameService {
       if (leagueService.findSeasonByLeagueSlug(
         leagueSeason.id.league.fedId,
         leagueSeason.id.league.slug,
-        leagueSeason.id.seasonSlug).isEmpty)
+        leagueSeason.id.seasonSlug
+      ).isEmpty)
         throw new InstanceNotFoundException("League season not found")
 
       if (findLeagueCalendar(leagueSeason).nonEmpty)
@@ -99,6 +105,17 @@ class GameServiceImpl extends GameService {
           }
       }
     }.getOrElse(throw new IllegalArgumentException("Invalid league season parameter"))
+  }
+
+  def getLeagueClassification(leagueSeason: LeagueSeason): Seq[SoccerClassificationEntry] = {
+    // TODO Get act depending on the sport
+    teamService.findTeamsByLeagueSeasonId(leagueSeason.id).map {
+      team =>
+        val entry: SoccerClassificationEntry =
+          soccerActService.findSoccerClassificationEntry(team.teamId, leagueSeason.id)
+        entry.team = team
+        entry
+    }.sortBy(_.assessment).reverse
   }
 
 }

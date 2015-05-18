@@ -13,7 +13,8 @@ class GameDaoJPA
   def findAllBySeason(leagueSeasonId: LeagueSeasonPK): Seq[Game] = {
     var query = getEntityManager().createQuery(
       "SELECT g FROM Game g " +
-        "WHERE g.leagueSeason.id = :leagueSeasonId", classOf[Game])
+        "WHERE g.leagueSeason.id = :leagueSeasonId", classOf[Game]
+    )
       .setParameter("leagueSeasonId", leagueSeasonId)
 
     query.getResultList().asScala
