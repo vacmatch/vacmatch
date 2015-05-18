@@ -66,17 +66,14 @@ class TeamAdminController
   def createPost(
     @ModelAttribute("address") address: Address,
     @ModelAttribute("team") team: Team,
-    @RequestParam("foundationDate") foundationDate: Date,
     result: BindingResult
   ): ModelAndView = {
 
     // TODO Check errors
-    val date: Calendar = new GregorianCalendar()
-    date.setTime(foundationDate)
 
     val createdTeam: Team = teamService.createTeam(
       team.teamName,
-      team.publicTeamName, date, address, team.teamWeb,
+      team.publicTeamName, team.foundationDate, address, team.teamWeb,
       team.teamTelephones
     )
 
@@ -114,19 +111,16 @@ class TeamAdminController
     @RequestParam("teamId") teamId: java.lang.Long,
     @ModelAttribute("address") address: Address,
     @ModelAttribute("team") team: Team,
-    @RequestParam("foundationDate") foundationDate: Date,
     result: BindingResult
   ): ModelAndView = {
 
     // TODO Check errors
-    val date: Calendar = new GregorianCalendar()
-    date.setTime(foundationDate)
 
     val editedTeam: Team = teamService.modifyTeam(
       teamId,
       team.teamName,
       team.publicTeamName,
-      date,
+      team.foundationDate,
       address,
       team.teamWeb,
       team.teamTelephones
