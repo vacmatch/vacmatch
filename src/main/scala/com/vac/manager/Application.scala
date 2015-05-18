@@ -5,18 +5,18 @@ import javax.servlet.ServletRequest
 import javax.sql.DataSource
 
 import com.vac.manager.auth.model.FederationUserDetailsService
-import com.vac.manager.controllers.conversions.{CalendarFormatter, DateFormatter}
-import com.vac.manager.util.{FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor}
+import com.vac.manager.controllers.conversions.{ CalendarFormatter, DateFormatter }
+import com.vac.manager.util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
 import org.apache.commons.dbcp2._
 import org.apache.commons.pool2.impl.GenericObjectPool
 import org.apache.log4j.LogManager
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
-import org.springframework.beans.factory.annotation.{Autowired, Value}
+import org.springframework.beans.factory.annotation.{ Autowired, Value }
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.embedded.{FilterRegistrationBean, ServletRegistrationBean}
+import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
-import org.springframework.context.annotation.{Bean, ComponentScan, Configuration, Import, Lazy, Scope, ScopedProxyMode}
+import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope, ScopedProxyMode }
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
 import org.springframework.core.env.Environment
@@ -26,9 +26,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.web.filter.CharacterEncodingFilter
 import org.springframework.web.servlet.DispatcherServlet
-import org.springframework.web.servlet.config.annotation.{InterceptorRegistry, ResourceHandlerRegistry}
+import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
 
@@ -71,6 +73,12 @@ class WebAppConfig() extends RouterConfigurationSupport {
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   override def configure(http: HttpSecurity) = {
+
+    val filter: CharacterEncodingFilter = new CharacterEncodingFilter()
+    filter.setEncoding("UTF-8")
+    filter.setForceEncoding(true)
+    http.addFilterBefore(filter, classOf[CsrfFilter])
+
     // In order to better understand the implications between these
     // objects, the indentation means things :)
 
