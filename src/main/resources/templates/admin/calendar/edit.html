@@ -27,21 +27,20 @@
         <div class="form-group">
           <label class="col-sm-3 control-label" for="teams">t("Number of teams")</label>
           <div class="col-sm-2">
-            <input class="form-control" id="teams" type="Number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}">
-	    <i18n:attr name="placeholder">tc("placeholder", "Number of teams")</i18n:attr>
-	    </input>
+            <input class="form-control" id="teams" type="Number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}"/>
+            <i18n:attr name="placeholder">tc("placeholder", "Number of teams")</i18n:attr>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="rounds">t("Number of rounds")</label>
           <div class="col-sm-2">
-            <input class="form-control" id="rounds" type="Number" placeholder="Number of rounds" th:name="leagueRounds" th:value="${leagueRounds}">
-	    <i18n:attr name="placeholder">tc("placeholder", "Number of rounds")</i18n:attr>
+            <input class="form-control" id="rounds" type="Number" placeholder="Number of rounds" th:name="leagueRounds" th:value="${leagueRounds}"/>
+            <i18n:attr name="placeholder">tc("placeholder", "Number of rounds")</i18n:attr>
           </div>
         </div>
         <a class="btn btn-primary" th:href="${calendarLink}">tc("button", "Cancel")</a>
-        <input class="btn btn-primary" type="submit" name="submit" value="Accept">
-	<i18n:attr name="value">t("Accept")</i18n:attr>
+        <input class="btn btn-primary" type="submit" name="submit" value="Accept"/>
+        <i18n:attr name="value">t("Accept")</i18n:attr>
       </form>
 
     </div>

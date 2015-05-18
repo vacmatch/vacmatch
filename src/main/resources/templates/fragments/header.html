@@ -6,56 +6,88 @@
 		<script src="../../static/js/bootstrap.min.js"></script>
 	</head>
 	<body>
+    <a class="sr-only" tabindex="-1" href="#content">Skip to content</a>
 	  <!-- Navbar -->
 	  <div th:fragment="header">
-	    <nav class="navbar navbar-default">
+      <img class="banner text-center img-responsive" alt="Asociación de peñas de Coruña" src="http://www.asociacioncoruna.com/img/header/header.png"/>
+      <nav class="navbar navbar-default">
 	      <div class="container">
-		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-		    <span class="icon-bar"></span>
-		    <span class="icon-bar"></span>
-		    <span class="icon-bar"></span>
-		  </button>
-		  <a class="navbar-brand" href="#">VACMatch</a>
-		</div>
-		<div class="navbar-collapse collapse">
-		  <ul class="nav navbar-nav">
-		    <li><a href="#" th:href="@{/}">Publications</a></li>
-		    <li class="dropdown">
-		      <a class="dropdown-toggle" data-toggle="dropdown">Leagues</a>
-		      <ul class="dropdown-menu">
-			<li><a href="/league/1">First Division</a></li>
-			<li><a href="/league/1">Second Division</a></li>
-			<li><a href="/league/1">Third Division</a></li>
-			<li><a href="/league/1">Cup (PDF)</a></li>
-		      </ul>
-		    </li>
-		    <li><a href="#" th:href="@{/rules}">Rules</a></li>
-		    <li><a href="#" th:href="@{/media}">Back to fed main page</a></li>
-		  </ul>
-
-		  <ul class="nav navbar-nav navbar-right">
-		    <li sec:authorize="hasRole('ROLE_ANONYMOUS')">
-		      <a href="/signin" th:href="@{/admin/login}">Sign in</a>
-		    </li>
-
-		    <li sec:authorize="!hasRole('ROLE_ANONYMOUS')">
-		      <p class="navbar-text">
-			Logged in as <a href="#" class="navbar-link"
-					th:text="${#authentication.name}">userName</a>
-		      </p>
-
-		      <form class="navbar-form navbar-right" role="login" id="adminLogoutForm" method="POST" action="#" th:action="@{/admin/logout}">
-			<div class="form-group">
-			  <input type="submit" value="Log out" class="btn btn-default" />
-			  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-			</div>
-		      </form>
-		    </li>
-		  </ul>
-
-		</div>
-		<!--/.nav-collapse -->
+      		<div class="navbar-header">
+      		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      		    <span class="icon-bar"></span>
+      		    <span class="icon-bar"></span>
+      		    <span class="icon-bar"></span>
+      		  </button>
+      		  <a href="#" th:href="@{/}">
+              <img class="navbar-brand" alt="VACmatch" src="../../static/img/logo_vacmatch.svg" th:src="@{/img/logo_vacmatch.svg}" />
+            </a>
+            <sup class="beta">Beta</sup>
+      		</div>
+      		<div class="navbar-collapse collapse">
+      		  <ul class="nav navbar-nav">
+      		    <li class="dropdown">
+      		      <a class="dropdown-toggle" data-toggle="dropdown">Association</a>
+      		      <ul class="dropdown-menu">
+            			<li><a href="http://www.asociacioncoruna.com/">Oficial web</a></li>
+                  <li><a target="_blank" href="http://www.asociacioncoruna.com/asociacion/dxt.pdf">Dxt reportage</a></li>
+      		      </ul>
+      		    </li>
+      		    <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="/league/firstDivision/2014">1º division</a>
+                <ul class="dropdown-menu">
+                  <li><a href="/classification/firstDivision/2014)">Clasification</a></li>
+                  <li><a href="/calendar/firstDivision/2014">Calendar</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="/league/secondDivision/2014">2º division</a>
+                <ul class="dropdown-menu">
+                  <li><a href="/classification/secondDivision/2014)">Clasification</a></li>
+                  <li><a href="/calendar/secondDivision/2014">Calendar</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="/league/thirdDivision/2014">3º division</a>
+                <ul class="dropdown-menu">
+                  <li><a href="/classification/thirdDivision/2014)">Clasification</a></li>
+                  <li><a href="/calendar/thirdDivision/2014">Calendar</a></li>
+                </ul>
+              </li>
+              <li><a href="http://www.asociacioncoruna.com/">Tournament</a></li>
+      		    <li><a href="/team">Teams</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">Downloads</a>
+                <ul class="dropdown-menu">
+                  <li><a target="_blank" href="http://www.asociacioncoruna.com/down/reglamento.pdf">Regulation</a></li>
+                  <li><a target="_blank" href="http://www.asociacioncoruna.com/down/solicita.pdf">Sign up request</a></li>
+                  <li><a target="_blank" href="http://www.asociacioncoruna.com/down/reserva.pdf">Sign up confirmation</a></li>
+                  <li><a target="_blank" href="http://www.asociacioncoruna.com/down/inscripcion.pdf">Team registration</a></li>
+                </ul>
+              </li>
+      		  </ul>
+      
+      		  <ul class="nav navbar-nav navbar-right">
+      		    <li sec:authorize="hasRole('ROLE_ANONYMOUS')">
+      		      <a href="/signin" th:href="@{/admin/login}">Sign in</a>
+      		    </li>
+      
+      		    <li sec:authorize="!hasRole('ROLE_ANONYMOUS')">
+      		      <p class="navbar-text">
+      			Logged in as <a href="#" class="navbar-link"
+      					th:text="${#authentication.name}">userName</a>
+      		      </p>
+      
+      		      <form class="navbar-form navbar-right" role="login" id="adminLogoutForm" method="POST" action="#" th:action="@{/admin/logout}">
+            			<div class="form-group">
+            			  <input type="submit" value="Log out" class="btn btn-default" />
+            			  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            			</div>
+      		      </form>
+        	    </li>
+      		  </ul>
+      
+      		</div>
+      		<!--/.nav-collapse -->
 	      </div>
 
 	    </nav>

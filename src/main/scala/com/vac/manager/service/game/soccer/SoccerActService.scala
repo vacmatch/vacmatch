@@ -32,7 +32,10 @@ trait SoccerActService {
   def editRestSoccerAct(gameId: Long, teamId: Long): SoccerAct
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
-  def changeRestState(gameId: Long): SoccerAct
+  def setRestState(gameId: Long): SoccerAct
+
+  @throws[InstanceNotFoundException]("If act doesn't exist")
+  def unSetRestState(gameId: Long): SoccerAct
 
 }
 

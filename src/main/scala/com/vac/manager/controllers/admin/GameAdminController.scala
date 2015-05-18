@@ -292,12 +292,23 @@ class GameAdminController extends UrlGrabber {
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
   }
 
-  def changeRestStatePost(
+  def setRestStatePost(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long) = {
 
-    soccerActService.changeRestState(gameId)
+    soccerActService.setRestState(gameId)
+
+    "redirect:" +
+      getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)
+  }
+
+  def unSetRestStatePost(
+    @PathVariable("slug") slug: String,
+    @PathVariable("year") year: String,
+    @PathVariable("gameId") gameId: java.lang.Long) = {
+
+    soccerActService.unSetRestState(gameId)
 
     "redirect:" +
       getUrl("GameAdminController.edit", "slug" -> slug, "year" -> year, "gameId" -> gameId)

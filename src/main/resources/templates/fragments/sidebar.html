@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/sidebar.css" rel="stylesheet"
+          media="screen" th:href="@{/css/sidebar.css}" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+        <!-- Sidebar -->
+        <th:block th:fragment="nav" sec:authorize="hasRole('ROLE_ADMINFED')">
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                      <img class="navbar-brand" alt="VACmatch"
+                      src="../../static/img/vacmatch_name.png"
+                      th:src="@{/img/vacmatch_name.png}" />
+                    </li>
+                  <li>
+                    <a href="/league">
+                      <i class="fa fa-tasks"></i>
+                      <span>t("Leagues")</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/admin/user">
+                      <i class="fa fa-desktop"></i>
+                      <span>t("Users")</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/admin/staff/list">
+                      <i class="fa fa-user"></i>
+                      <span>t("People")</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/team">
+                      <i class="fa fa-users"></i>
+                      <span>t("Teams")</span>
+                    </a>
+                  </li>
+                </ul>
+            </div>
+            <div class="nav navbar-nav">
+              <th:block th:include="${view} :: admin-navbar" />
+            </div>
+      </th:block>
+      <!-- /#sidebar-wrapper -->
+  </body>
+</html>

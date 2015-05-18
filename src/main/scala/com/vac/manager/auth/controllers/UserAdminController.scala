@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
+import javax.servlet.http.HttpServletRequest
 
 @Layout("layouts/default_admin")
 @Controller
@@ -58,11 +59,12 @@ class UserAdminController extends UrlGrabber {
     val user = new EditableUser(new User)
     user.roles = new java.util.HashSet
 
+    val listLink = getUrl("UserAdminController.list")
+
     return new ModelAndView("admin/user/register")
       .addObject("roles", roles.asJava)
+      .addObject("listLink", listLink)
       .addObject("user", user)
-      .addObject("createUrl", getUrl("UserAdminController.registerForm"))
-      .addObject("listUrl", getUrl("UserAdminController.list"))
       .addObject("action", "create")
       .addObject("submitUrl", getUrl("UserAdminController.registerPost"))
   }
@@ -100,23 +102,35 @@ class UserAdminController extends UrlGrabber {
           userAuthService.addAuthorityToUser(fed.getId, username, role)
         }
 
-        "redirect:" + _registerForm(true, username)
+        "redirect:" + getUrl("UserAdminController.list")
     }
   }
 
-  def list(): ModelAndView = {
+  def list(
+    request: HttpServletRequest): ModelAndView = {
+
     val users = userAuthService.findAllUsers(fed.getId).map(new CrudUser(_)).asJava
+
+    // Check user permissions
+    val userCanEdit: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+
+    // Authenticated actions on menu
+    val authenticatedActionsMenu: Map[String, String] = Map(
+      "Create user" -> getUrl("UserAdminController.registerForm"))
+
+    val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
     return new ModelAndView("admin/user/list")
       .addObject("users", users)
-      .addObject("createUrl", getUrl("UserAdminController.registerForm"))
-      .addObject("listUrl", getUrl("UserAdminController.list"))
+      .addObject("actionsMenu", actionsMenu.asJava)
   }
   def editForm(
     @RequestParam("user") user: String,
     @RequestParam(value = "done", required = false) done: Boolean): ModelAndView = {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, user)
+
+    val listLink = getUrl("UserAdminController.list")
 
     maybeUser match {
       case None => throw new RuntimeException("User " + user + " was not found at fedId " + fed.getId)
@@ -130,6 +144,7 @@ class UserAdminController extends UrlGrabber {
 
         return new ModelAndView("admin/user/register")
           .addObject("roles", roles.asJava)
+          .addObject("listLink", listLink)
           .addObject("user", user)
           .addObject("createUrl", getUrl("UserAdminController.registerForm"))
           .addObject("listUrl", getUrl("UserAdminController.list"))

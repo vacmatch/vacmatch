@@ -17,19 +17,19 @@
   <body>
     <div class="container" th:fragment="content">
       <div class="jumbotron">
-	<h2>t("Delete Season %1$s for league %2$s", ${seasonName}, ${leagueName})</h2>
+      <h2>t("Delete Season")</h2>
 
-	<form id="leagueForm" th:action="${submitUrl}"
-	      th:method="${submitMethod}" th:object="${leagueSeason}">
+      <div class="alert alert-danger">
+        <h2>t("Are you sure to delete %1$s season from this league?", ${seasonName})</h2>
+      </div>
 
-	  <input th:each="h: ${hiddens.entrySet()}" type="hidden"
-		 th:name="${h.getKey()}" th:value="${h.getValue()}" />
+      <form id="leagueForm" th:action="${submitUrl}" th:method="${submitMethod}">
 
-	  <input
-	     type="submit" name="submit" value="Confirm deletion">
-	  <i18n:attr name="value">t("Confirm deletion")</i18n:attr>
+        <a class="btn btn-primary" th:href="${listLink}">t("Cancel")</a>
+        <input class="btn btn-primary" type="submit" name="submit" value="Confirm deletion"/>
+        <i18n:attr name="value">tc("button", "Confirm deletion")</i18n:attr>
 
-	</form>
+      </form>
       </div>
     </div>
   </body>

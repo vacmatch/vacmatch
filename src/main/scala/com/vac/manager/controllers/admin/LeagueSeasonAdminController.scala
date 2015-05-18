@@ -74,7 +74,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     }
 
     def getDeleteLink() = {
-      getUrl("LeagueSeasonAdminController.delete", "slug" -> slug)
+      getUrl("LeagueSeasonAdminController.delete", "slug" -> slug, "year" -> id.seasonSlug)
     }
   }
 
@@ -97,9 +97,11 @@ class LeagueSeasonAdminController extends UrlGrabber {
   def create(
     @RequestParam("slug") slug: String): ModelAndView = {
     val leagueSeason = new LeagueSeason()
+    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
 
     new ModelAndView("admin/league/season/edit_form")
       .addObject("leagueSeason", leagueSeason)
+      .addObject("listLink", listLink)
       .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postCreate"))
       .addObject("hiddens", Map("slug" -> slug).asJava)
       .addObject("action", i.t("Create Season"))
@@ -108,24 +110,21 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def postCreate(
     @RequestParam("slug") slug: String,
-    @RequestParam("seasonSlug") year: String,
+    @RequestParam("id.seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
     @RequestParam("endTime") endTime: Date): String = {
-
-    //val df = new SimpleDateFormat("yyyy/MM/dd")
-    //val startTime = df.parse(startTimeStr)
-    //val endTime = df.parse(endTimeStr)
 
     val start: Calendar = new GregorianCalendar()
     start.setTime(startTime)
     val end: Calendar = new GregorianCalendar()
     end.setTime(endTime)
 
-    println("CREATING STUFF AT " + startTime)
-
-    leagueService.createSeason(federation.getId, slug, year, start, end)
-
-    "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+    val fedId = federation.getId
+    leagueService.findBySlug(fedId, slug).map {
+      league =>
+        leagueService.createSeason(federation.getId, slug, year, start, end)
+        "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> league.slug)
+    }.getOrElse(throw new NoSuchElementException("League not found"))
   }
 
   @Autowired
@@ -145,9 +144,11 @@ class LeagueSeasonAdminController extends UrlGrabber {
     val endTimeStr = conversionService.convert(leagueSeason.get.getEndTime(), classOf[String])
 
     println("Convertor has values = " + startTimeStr + " and " + endTimeStr)
+    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
 
     new ModelAndView("admin/league/season/edit_form")
       .addObject("leagueSeason", leagueSeason.orNull)
+      .addObject("listLink", listLink)
       .addObject("startTime", startTimeStr)
       .addObject("endTime", endTimeStr)
       .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postEdit"))
@@ -158,7 +159,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
   def postEdit(
     @RequestParam("slug") slug: String,
     @RequestParam("oldSeasonSlug") oldYear: String,
-    @RequestParam("seasonSlug") year: String,
+    @RequestParam("id.seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
     @RequestParam("endTime") endTime: Date): String = {
 
@@ -182,11 +183,17 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String): ModelAndView = {
     val leagueName = leagueService.findBySlug(federation.getId, slug).get.leagueName
+    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+    val submitUrl = getUrl("LeagueSeasonAdminController.postDelete", "slug" -> slug, "year" -> year)
+    val submitMethod = "POST"
 
     new ModelAndView("admin/league/season/delete_confirm")
       .addObject("hiddens", Map("slug" -> slug, "year" -> year).asJava)
+      .addObject("listLink", listLink)
       .addObject("seasonName", year)
       .addObject("leagueName", leagueName)
+      .addObject("submitUrl", submitUrl)
+      .addObject("submitMethod", submitMethod)
   }
 
   def postDelete(
