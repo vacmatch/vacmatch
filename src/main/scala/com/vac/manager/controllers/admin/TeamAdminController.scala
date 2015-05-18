@@ -67,22 +67,26 @@ class TeamAdminController
     @ModelAttribute("address") address: Address,
     @ModelAttribute("team") team: Team,
     @RequestParam("foundationDate") foundationDate: Date,
-    result: BindingResult): ModelAndView = {
+    result: BindingResult
+  ): ModelAndView = {
 
     // TODO Check errors
     val date: Calendar = new GregorianCalendar()
     date.setTime(foundationDate)
 
-    val createdTeam: Team = teamService.createTeam(team.teamName,
+    val createdTeam: Team = teamService.createTeam(
+      team.teamName,
       team.publicTeamName, date, address, team.teamWeb,
-      team.teamTelephones)
+      team.teamTelephones
+    )
 
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
   }
 
   def edit(
     @RequestParam("teamId") teamId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     teamService.findWithTelephonesAndAddress(teamId).map {
       team =>
@@ -111,26 +115,30 @@ class TeamAdminController
     @ModelAttribute("address") address: Address,
     @ModelAttribute("team") team: Team,
     @RequestParam("foundationDate") foundationDate: Date,
-    result: BindingResult): ModelAndView = {
+    result: BindingResult
+  ): ModelAndView = {
 
     // TODO Check errors
     val date: Calendar = new GregorianCalendar()
     date.setTime(foundationDate)
 
-    val editedTeam: Team = teamService.modifyTeam(teamId,
+    val editedTeam: Team = teamService.modifyTeam(
+      teamId,
       team.teamName,
       team.publicTeamName,
       date,
       address,
       team.teamWeb,
-      team.teamTelephones)
+      team.teamTelephones
+    )
 
     new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
   }
 
   def assignStaffMember(
     @RequestParam("teamId") teamId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -163,7 +171,8 @@ class TeamAdminController
 
   def assignStaffMemberPost(
     @RequestParam("personId") personId: java.lang.Long,
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long
+  ): ModelAndView = {
 
     val staffMember: StaffMember = teamService.assignPerson(teamId, personId)
 
@@ -174,7 +183,8 @@ class TeamAdminController
 
   def unAssignStaffMemberPost(
     @RequestParam("personId") personId: java.lang.Long,
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long
+  ): ModelAndView = {
 
     val staffMember: StaffMember = teamService.unAssignStaff(teamId, personId)
 
@@ -184,7 +194,8 @@ class TeamAdminController
   }
 
   def delete(
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -201,7 +212,8 @@ class TeamAdminController
   }
 
   def deletePost(
-    @RequestParam("teamId") teamId: java.lang.Long): ModelAndView = {
+    @RequestParam("teamId") teamId: java.lang.Long
+  ): ModelAndView = {
 
     Try(teamService.removeTeam(teamId)).recover {
       case e: InstanceNotFoundException => throw new InstanceNotFoundException("Team not found")

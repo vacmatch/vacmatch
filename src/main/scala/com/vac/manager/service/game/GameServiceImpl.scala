@@ -64,7 +64,8 @@ class GameServiceImpl extends GameService {
       if (leagueService.findSeasonByLeagueSlug(
         leagueSeason.id.league.fedId,
         leagueSeason.id.league.slug,
-        leagueSeason.id.seasonSlug).isEmpty)
+        leagueSeason.id.seasonSlug
+      ).isEmpty)
         throw new InstanceNotFoundException("League season not found")
 
       if (findLeagueCalendar(leagueSeason).nonEmpty)

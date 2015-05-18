@@ -30,7 +30,8 @@ class TeamController()
 
   def showTeam(
     @PathVariable("teamId") teamId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     teamService.findWithTelephonesAndAddress(teamId).map(team => {
 
@@ -47,7 +48,8 @@ class TeamController()
 
   def showStaffMembers(
     @PathVariable("teamId") teamId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     // Check user permissions
     val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
@@ -65,7 +67,8 @@ class TeamController()
   }
 
   def list(
-    request: HttpServletRequest) = {
+    request: HttpServletRequest
+  ) = {
 
     val fedId: Long = federation.getId
 

@@ -16,7 +16,8 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
   def findByGameId(gameId: Long): Option[SoccerAct] = {
     var result = getEntityManager().createQuery(
       "SELECT sa FROM SoccerAct sa " +
-        "WHERE sa.game.gameId = :gameId", classOf[SoccerAct])
+        "WHERE sa.game.gameId = :gameId", classOf[SoccerAct]
+    )
       .setParameter("gameId", gameId)
       .getResultList()
 
@@ -31,7 +32,8 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
 
     var query = getEntityManager().createQuery(
       "SELECT sa FROM SoccerAct sa JOIN sa.game.leagueSeason " +
-        "WHERE sa.game.leagueSeason.id = :leagueSeasonId", classOf[SoccerAct])
+        "WHERE sa.game.leagueSeason.id = :leagueSeasonId", classOf[SoccerAct]
+    )
       .setParameter("leagueSeasonId", leagueSeasonId)
 
     query.getResultList().asScala

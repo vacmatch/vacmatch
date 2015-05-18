@@ -51,7 +51,8 @@ class GameController extends UrlGrabber {
   def list(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -64,7 +65,8 @@ class GameController extends UrlGrabber {
           // Authenticated actions on menu
           val authenticatedActionsMenu: Map[String, String] = Map(
             "Create calendar" -> getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year),
-            "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year))
+            "Delete calendar" -> getUrl("GameAdminController.deleteCalendar", "slug" -> slug, "year" -> year)
+          )
 
           val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
@@ -90,7 +92,8 @@ class GameController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
@@ -110,10 +113,12 @@ class GameController extends UrlGrabber {
               // Staff stats
               val localStaff: Seq[ActionableSoccerStaffStats] =
                 soccerStatsService.findLocalStaffStats(act.actId).map(
-                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+                )
               val visitorStaff: Seq[ActionableSoccerStaffStats] =
                 soccerStatsService.findVisitorStaffStats(act.actId).map(
-                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                  staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+                )
 
               val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
@@ -132,7 +137,8 @@ class GameController extends UrlGrabber {
   def showClassification(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 

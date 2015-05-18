@@ -66,7 +66,8 @@ class PersonAdminController extends UrlGrabber {
     @RequestParam("byCardId") byCardId: String,
     @RequestParam("byEmail") byEmail: String,
     @RequestParam("byAllPerson") byAllPerson: Boolean,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     // TODO: Check errors
     // TODO: Check if none parameter is activated
@@ -76,9 +77,11 @@ class PersonAdminController extends UrlGrabber {
     val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
     val anonymousActionsMenu: Map[String, String] = Map(
-      "Find staff" -> getUrl("PersonAdminController.find"))
+      "Find staff" -> getUrl("PersonAdminController.find")
+    )
     val authenticatedActionsMenu: Map[String, String] = Map(
-      "Create staff" -> getUrl("PersonAdminController.create"))
+      "Create staff" -> getUrl("PersonAdminController.create")
+    )
     val actionsMenu = if (userCanEdit) anonymousActionsMenu ++ authenticatedActionsMenu else anonymousActionsMenu
 
     val startIndex: Int = 0
@@ -87,16 +90,22 @@ class PersonAdminController extends UrlGrabber {
     var personList: Seq[ActionablePerson] = Nil
 
     if (byName.nonEmpty)
-      personList = personService.findByName(byName,
-        startIndex, count).map(new ActionablePerson(_, userCanEdit))
+      personList = personService.findByName(
+        byName,
+        startIndex, count
+      ).map(new ActionablePerson(_, userCanEdit))
 
     if (byCardId.nonEmpty)
-      personList = personService.findByCardId(byCardId,
-        startIndex, count).map(new ActionablePerson(_, userCanEdit))
+      personList = personService.findByCardId(
+        byCardId,
+        startIndex, count
+      ).map(new ActionablePerson(_, userCanEdit))
 
     if (byEmail.nonEmpty)
-      personList = personService.findByEmail(byEmail,
-        startIndex, count).map(new ActionablePerson(_, userCanEdit))
+      personList = personService.findByEmail(
+        byEmail,
+        startIndex, count
+      ).map(new ActionablePerson(_, userCanEdit))
 
     if (byAllPerson)
       personList = personService.findAllByFederationId(fedId) map (new ActionablePerson(_, userCanEdit))
@@ -107,7 +116,8 @@ class PersonAdminController extends UrlGrabber {
   }
 
   def listAll(
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     // TODO: Check if none parameter is activated
     val fedId: Long = federation.getId
@@ -116,9 +126,11 @@ class PersonAdminController extends UrlGrabber {
     val userCanEdit = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
     val anonymousActionsMenu: Map[String, String] = Map(
-      "Find staff" -> getUrl("PersonAdminController.find"))
+      "Find staff" -> getUrl("PersonAdminController.find")
+    )
     val authenticatedActionsMenu: Map[String, String] = Map(
-      "Create staff" -> getUrl("PersonAdminController.create"))
+      "Create staff" -> getUrl("PersonAdminController.create")
+    )
     val actionsMenu = if (userCanEdit) anonymousActionsMenu ++ authenticatedActionsMenu else anonymousActionsMenu
 
     var personList: Seq[ActionablePerson] = personService.findAllByFederationId(fedId) map (new ActionablePerson(_, userCanEdit))
@@ -130,7 +142,8 @@ class PersonAdminController extends UrlGrabber {
 
   def showPerson(
     @PathVariable("personId") personId: Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -172,7 +185,8 @@ class PersonAdminController extends UrlGrabber {
   def createPost(
     @ModelAttribute("address") address: Address,
     @ModelAttribute("personReceiver") personReceiver: Person,
-    result: BindingResult): ModelAndView = {
+    result: BindingResult
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -192,7 +206,8 @@ class PersonAdminController extends UrlGrabber {
       // Create address
       val personAddress = new Address(
         address.firstLine, address.secondLine, address.postCode,
-        address.locality, address.province, address.country)
+        address.locality, address.province, address.country
+      )
 
       // Assign address to created person
       val personAssigned: Option[Person] = personService.assignAddress(person.personId, personAddress)
@@ -207,7 +222,8 @@ class PersonAdminController extends UrlGrabber {
 
   def edit(
     @RequestParam("personId") personId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
 
@@ -237,7 +253,8 @@ class PersonAdminController extends UrlGrabber {
   def editPost(
     @RequestParam("personId") personId: java.lang.Long,
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("person") person: Person): ModelAndView = {
+    @ModelAttribute("person") person: Person
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
