@@ -7,8 +7,6 @@ import javax.sql.DataSource
 import com.vac.manager.auth.model.FederationUserDetailsService
 import com.vac.manager.controllers.conversions.{ CalendarFormatter, DateFormatter }
 import com.vac.manager.util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
-import org.apache.commons.dbcp2._
-import org.apache.commons.pool2.impl.GenericObjectPool
 import org.apache.log4j.LogManager
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
 import org.springframework.beans.factory.annotation.{ Autowired, Value }
@@ -17,13 +15,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope, ScopedProxyMode }
+import org.springframework.core.annotation.Order
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
 import org.springframework.core.env.Environment
 import org.springframework.format.support.FormattingConversionServiceFactoryBean
+import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.configuration.{ EnableWebSecurity, WebSecurityConfigurerAdapter }
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.csrf.CsrfFilter
@@ -35,7 +35,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
 
 import scala.collection.JavaConverters._
-import scala.util.Try
 
 @Lazy
 @Configuration // You should not use the @EnableWebMvc annotation
@@ -45,9 +44,9 @@ class WebAppConfig() extends RouterConfigurationSupport {
 
   @Override
   def listRouteFiles(): ArrayList[String] = {
-    val routeFiles = new ArrayList[String];
-    routeFiles.add("classpath*:/routes.conf");
-    return routeFiles;
+    val routeFiles = new ArrayList[String]
+    routeFiles.add("classpath*:/routes.conf")
+    routeFiles
   }
 
   override def addResourceHandlers(registry: ResourceHandlerRegistry) = {
@@ -60,7 +59,7 @@ class WebAppConfig() extends RouterConfigurationSupport {
 
   @Bean
   def layoutInterceptor: HandlerInterceptorAdapter = {
-    return new ThymeleafLayoutInterceptor
+    new ThymeleafLayoutInterceptor
   }
 
   override def addInterceptors(registry: InterceptorRegistry) = {
@@ -70,6 +69,7 @@ class WebAppConfig() extends RouterConfigurationSupport {
 
 @Configuration
 @EnableWebMvcSecurity
+@Order(5)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   override def configure(http: HttpSecurity) = {
@@ -89,6 +89,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers("/admin/**")
         .hasRole("ADMINFED")
       .antMatchers("/_adm/**")
+        .hasRole("ROOT")
+      .antMatchers("/manage/**")
         .hasRole("ROOT")
       .anyRequest
         .permitAll
@@ -117,24 +119,26 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   var env: Environment = _
 
   @Autowired
-  def configureGlobalAuth(auth: AuthenticationManagerBuilder) = {
+  def configureGlobal(auth: AuthenticationManagerBuilder) = {
 
     val logger = LogManager.getLogger(classOf[WebSecurityConfig])
     val authConfig = auth.userDetailsService(userDetailsService())
 
     val setupConfig = env.getProperty("SETUP", "")
 
-    Try(
-      if (setupConfig.nonEmpty) {
-        val Array(user, pw) = setupConfig.split(":")
-        authConfig
-          .and()
-          .inMemoryAuthentication()
-          .withUser(user).password(pw).roles("ROOT", "ADMINFED")
-      }
-    ).recover {
-        case e: Exception => logger.warn("Could not set ROOT user up", e)
-      }
+    if (setupConfig.nonEmpty) {
+      val Array(user, pw) = setupConfig.split(":")
+      logger.info(s"We are using user=${user} and password=$pw as SETUP")
+
+      authConfig
+        .and()
+        .inMemoryAuthentication()
+        .withUser(user).password(pw).roles("ROOT", "ADMINFED")
+    } else {
+      logger.warn("We are not using any predefined SETUP variable for " +
+        "setting up the users")
+      authConfig
+    }
 
     /*
     auth.inMemoryAuthentication()
@@ -148,7 +152,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   override protected def userDetailsService(): UserDetailsService = {
-    return new FederationUserDetailsService()
+    new FederationUserDetailsService()
   }
 
 }
@@ -159,6 +163,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 @ComponentScan(basePackages = Array("com.vac.manager"))
 @Import(Array(classOf[WebAppConfig], classOf[I18nableApplication], classOf[WebSecurityConfig]))
 class WebApplication extends Application {
+
   @Bean
   def multiTenantHandler(): FilterRegistrationBean = {
     val frb = new FilterRegistrationBean
@@ -182,6 +187,7 @@ class WebApplication extends Application {
 @EnableTransactionManagement
 @EnableAutoConfiguration
 @ComponentScan
+@Order(10)
 class Application extends org.springframework.boot.context.web.SpringBootServletInitializer {
 
   override protected def configure(application: org.springframework.boot.builder.SpringApplicationBuilder): org.springframework.boot.builder.SpringApplicationBuilder = {
@@ -192,22 +198,46 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
   @Bean
   @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
   def federationBean(req: ServletRequest): FederationBean = {
-    return new FederationBeanImpl(req);
+    new FederationBeanImpl(req)
   }
 
   @Autowired
   var env: Environment = _
 
-  @Value("${spring.datasource.url}")
-  var legacyDatabaseUrl: String = _
-
   @Bean
   def dataSource(): DataSource = {
-    val url = Option(env.getProperty("DATABASE_URL"))
-      .filter(_.nonEmpty)
-      .map("jdbc:" + _)
-      .getOrElse(legacyDatabaseUrl)
 
+    val dataSource = new DriverManagerDataSource()
+
+    Option(env.getProperty("OVERRIDE_DATABASE_URL"))
+      .filter(_.nonEmpty)
+      .orElse(Option(env.getProperty("DATABASE_URL")))
+      .filter(_.nonEmpty)
+      .map(_.replace("postgres", "postgresql"))
+      .map(new java.net.URI(_))
+      .map {
+        url =>
+          val Array(user, pw) = url.getUserInfo.split(":")
+
+          val uri = "jdbc:" + url.getScheme + "://" + url.getHost + ":" +
+            url.getPort + url.getPath + s"?user=${user}&password=${pw}"
+
+          dataSource.setUrl(uri)
+
+      }.getOrElse {
+        dataSource.setUrl(env.getProperty("spring.datasource.url"))
+        dataSource.setUsername(env.getProperty("spring.datasource.username"))
+        dataSource.setPassword(env.getProperty("spring.datasource.password"))
+      }
+
+    // dataSource.setDriverClassName(env.getProperty("DATABASE_DRIVER"))
+    // dataSource.setUrl(url)
+    // dataSource.setUsername(user)
+    // dataSource.setPassword(pw)
+
+    dataSource
+
+    /*
     val connectionFactory: ConnectionFactory =
       new DriverManagerConnectionFactory(url, null)
 
@@ -217,11 +247,12 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
     poolableConnectionFactory.setPool(connectionPool)
 
     new PoolingDataSource(connectionPool)
+    */
   }
 
   @Bean
   def dateFormatter(): DateFormatter = {
-    return new DateFormatter
+    new DateFormatter
   }
 
   @Bean
@@ -229,19 +260,19 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
     val bean = new CalendarFormatter
     bean.messageSource = messageSource
 
-    return bean
+    bean
   }
 
   @Bean
   def mvcConversionService(dateFormatter: DateFormatter, calendarFormatter: CalendarFormatter): ConversionService = {
-    val bean = new FormattingConversionServiceFactoryBean();
+    val bean = new FormattingConversionServiceFactoryBean
     bean.setFormatters(Set(dateFormatter, calendarFormatter).asJava)
-    bean.afterPropertiesSet()
-    return bean.getObject()
+    bean.afterPropertiesSet
+    bean getObject
   }
 
   private def getConverters(): java.util.Set[Converter[_, _]] = {
-    return Set().asJava
+    Set().asJava
   }
 
 }

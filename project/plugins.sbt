@@ -18,3 +18,6 @@ addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
 // Scalariform
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.4.0")
 
+// Assembly (aka make fat JARs)
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")
+
