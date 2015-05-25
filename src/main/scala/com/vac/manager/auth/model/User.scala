@@ -11,6 +11,7 @@ import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
+import javax.persistence.Table
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Transient
@@ -21,6 +22,7 @@ import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 @Entity
+@Table(name="userdetails")
 class User extends UserDetails {
   @Id
   @SequenceGenerator(name = "userIdGenerator", sequenceName = "user_id_seq")
