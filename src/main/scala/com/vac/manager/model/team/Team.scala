@@ -9,6 +9,8 @@ import com.vac.manager.model.personal.Address
 import com.vac.manager.model.staff.StaffMember
 import scala.collection.JavaConverters._
 import java.util.ArrayList
+import javax.validation.constraints.Size
+import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "TEAM")
@@ -22,6 +24,8 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamId: java.lang.Long = _
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var teamName: String = name
 
@@ -30,12 +34,14 @@ class Team(name: String, publicName: String, date: Calendar, address: Address,
   var teamActivated: Boolean = false
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var publicTeamName: String = publicName
 
   @BeanProperty
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
+  @Temporal(TemporalType.DATE)
   var foundationDate: Calendar = date
 
   @BeanProperty

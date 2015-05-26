@@ -9,6 +9,6 @@ trait AddressService {
   def createAddress(firstLine: String, secondLine: String, postCode: String,
     locality: String, province: String, country: String): Address
 
-  def removeAddress(addressId: Long)
+  def removeAddress(addressId: Long): Boolean
 
 }

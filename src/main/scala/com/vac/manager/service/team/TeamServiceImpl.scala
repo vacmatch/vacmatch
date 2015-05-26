@@ -21,7 +21,7 @@ import java.util.Arrays.ArrayList
 import java.util.ArrayList
 import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.competition.LeagueSeasonPK
 
 @Service("teamService")
@@ -153,14 +153,15 @@ class TeamServiceImpl extends TeamService {
             val savedAddress: Address = addressService.createAddress(
               newAddress.firstLine, newAddress.secondLine,
               newAddress.postCode, newAddress.locality,
-              newAddress.province, newAddress.country)
+              newAddress.province, newAddress.country
+            )
 
             team.teamAddress = savedAddress
             teamDao.save(team)
           }
           team
         }
-    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+    }.getOrElse(throw new InstanceNotFoundException(teamId, "Team"))
   }
 
   def changeActivation(teamId: Long, newState: Boolean): Option[Team] = {
@@ -182,12 +183,12 @@ class TeamServiceImpl extends TeamService {
     val maybePerson: Option[Person] = personService.find(personId)
 
     if (maybePerson.isEmpty)
-      throw new InstanceNotFoundException("Person not found")
+      throw new InstanceNotFoundException(personId, "Person")
 
     val maybeTeam: Option[Team] = find(teamId)
 
     if (maybeTeam.isEmpty)
-      throw new InstanceNotFoundException("Team not found")
+      throw new InstanceNotFoundException(teamId, "Team")
 
     val team: Team = maybeTeam.get
     val person: Person = maybePerson.get
@@ -220,7 +221,7 @@ class TeamServiceImpl extends TeamService {
           staffMemberDao.save(staffMember)
           staffMember
         }
-    }.getOrElse(throw new InstanceNotFoundException("StaffMember with TeamId: " + teamId + " and PersonId: " + personId + " not found"))
+    }.getOrElse(throw new InstanceNotFoundException("TeamId: " + teamId + ", PersonId: " + personId, "StaffMember"))
   }
 
   def getNumberByFederationId(fedId: Long): Long = {
@@ -234,7 +235,7 @@ class TeamServiceImpl extends TeamService {
       {
         teamDao.remove(team)
       }
-    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+    }.getOrElse(throw new InstanceNotFoundException(teamId, "Team"))
   }
 
 }

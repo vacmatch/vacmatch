@@ -27,14 +27,12 @@ class AddressServiceImpl
     address
   }
 
-  def removeAddress(addressId: Long) = {
-
-    val maybeAddress: Option[Address] = find(addressId)
-
-    maybeAddress match {
-      case None =>
-      case Some(address) => addressDao.remove(address)
-    }
+  def removeAddress(addressId: Long): Boolean = {
+    find(addressId).map {
+      address =>
+        addressDao.remove(address)
+        true
+    }.getOrElse(false)
   }
 
 }

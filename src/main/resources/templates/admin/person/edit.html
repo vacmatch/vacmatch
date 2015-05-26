@@ -102,6 +102,9 @@
 	       <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
 	     </div>
 	   </div>
+        <div th:if="${error}" class="alert alert-danger">
+          <p>Name and surnames can't be empty.</p>
+        </div>
 
           <a class="btn btn-primary" th:href="${listLink}? ${listLink}: *{showLink}">Cancel</a>
           <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>

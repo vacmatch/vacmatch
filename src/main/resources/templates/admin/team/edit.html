@@ -18,15 +18,7 @@
   <div class="container" th:fragment="content">
     <div class="jumbotron input-group">
 
-      <div th:if="${action} == 'Edit'">
-        <p class="pull-right">
-          <a class="btn btn-default" th:href="${team.deleteLink}">Delete</a>
-          <a class="btn btn-default" th:href="${team.assignStaffLink}">Assign
-            staff</a>
-        </p>
-      </div>
-
-      <h2 th:text="|${action} Team|">Create Team</h2>
+      <h2 class="text-center" th:text="|${action} Team|">Create Team</h2>
 
       <hr />
 
@@ -36,20 +28,22 @@
         <input th:each="h: ${hiddens}" type="hidden" th:name="${h.key}"
                th:value="${h.value}" />
 
-        <div class="form-group">
+        <div class="form-group" th:classappend="${#fields.hasErrors('teamName')} ? has-error">
           <label class="col-sm-3 control-label" for="name">Name</label>
           <div class="col-sm-9">
             <input class="form-control" id="name" type="text"
                    placeholder="Name" th:field="*{teamName}" />
+            <span class="text-danger" th:if="${#fields.hasErrors('*{teamName}')}">Team name can't be empty</span>
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" th:classappend="${#fields.hasErrors('publicTeamName')} ? has-error">
           <label class="col-sm-3 control-label" for="publicName">Public
             Name</label>
           <div class="col-sm-9">
             <input class="form-control" id="publicName" type="text"
                    placeholder="Public Name" th:field="*{publicTeamName}" />
+            <span class="text-danger" th:if="${#fields.hasErrors('*{publicTeamName}')}">Public name can't be empty</span>
           </div>
         </div>
 
@@ -73,13 +67,14 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" th:classappend="${#fields.hasErrors('foundationDate')} ? has-error">
           <label class="col-sm-3 control-label" for="foundationDate">Foundation
             date</label>
           <div class="col-sm-9">
             <input class="form-control"
                    id="foundationDate" type="text" placeholder="Foundation Date"
                    th:field="*{foundationDate}" />
+            <span class="text-danger" th:if="${#fields.hasErrors('*{foundationDate}')}">Date format must be dd/mm/yyyy hh:hh</span>
           </div>
         </div>
 
@@ -131,13 +126,13 @@
           </div>
         </div>
 
-        <div>
-          <a class="btn btn-primary" th:if="${action} == 'Edit'"
-             th:href="*{showLink}">Cancel</a>
-          <a class="btn btn-primary" th:if="${action} == 'Create'"
-             th:href="${listLink}">Cancel</a>
-          <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-4">
+            <a class="btn btn-primary" th:href="${listLink}">Cancel</a>
+            <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
+          </div>
         </div>
+
       </form>
     </div>
   </div>

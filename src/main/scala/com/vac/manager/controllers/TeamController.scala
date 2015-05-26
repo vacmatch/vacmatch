@@ -17,10 +17,14 @@ import javax.management.InstanceNotFoundException
 import scala.collection.JavaConverters._
 import com.vac.manager.model.staff.StaffMember
 import javax.servlet.http.HttpServletRequest
+import com.vacmatch.util.i18n.I18n
 
 @Controller
 class TeamController()
     extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var teamService: TeamService = _
@@ -43,7 +47,11 @@ class TeamController()
       new ModelAndView("team/showTeam")
         .addObject("team", new ActionableTeam(team, hasPermissions))
         .addObject("listLink", listLink)
-    }).getOrElse(throw new InstanceNotFoundException("Team not found"))
+    }).getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Team not found"))
+        .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+    }
   }
 
   def showStaffMembers(
@@ -63,7 +71,11 @@ class TeamController()
         .addObject("staffMemberList", staffMemberList.asJava)
         .addObject("team", new ActionableTeam(team, hasPermissions))
         .addObject("listLink", listLink)
-    }).getOrElse(throw new InstanceNotFoundException("Team not found"))
+    }).getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Team not found"))
+        .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+    }
   }
 
   def list(

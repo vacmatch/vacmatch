@@ -41,22 +41,24 @@
         <tr>
           <td><b>Web</b></td>
           <td><a th:text="${team.teamWeb}"
-            th:href="|https://${team.teamWeb}|"></a></td>
+            th:href="|http://${team.teamWeb}|"></a></td>
         </tr>
         <tr>
           <td><b>Foundation date</b></td>
           <td
-            th:text="${#calendars.format(team.foundationDate, 'dd/MMM/yyyy HH:mm')}"></td>
+            th:text="${team.foundationDate} ? ${#calendars.format(team.foundationDate, 'dd/MMM/yyyy HH:mm')} : '-'"></td>
         </tr>
         <tr>
           <td><b>Telephones</b></td>
-          <td th:each="t,iterStat: ${team.teamTelephones}"><span
-            th:text="${t}"></span> <span th:unless="${iterStat.last}">,
-          </span></td>
+          <td>
+            <span th:text="${team.teamTelephones} ? ${team.teamTelephones} : '-'"></span>
+          </td>
         </tr>
-        <tr>
+        <tr th:object="${team.teamAddress}">
           <td><b>Address</b></td>
-          <td th:text="${team.teamAddress}"></td>
+          <td th:text="${team.teamAddress} ? *{firstLine} + ' ' +
+           *{secondLine} + ' ' + *{postCode} + ' ' + *{locality} + ' ' +
+           *{province} + ' ' + *{country} : '-'"></td>
         </tr>
       </table>
 
