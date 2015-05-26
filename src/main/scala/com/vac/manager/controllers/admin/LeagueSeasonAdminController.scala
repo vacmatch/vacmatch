@@ -79,7 +79,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
 
   def list(
-    @RequestParam("slug") slug: String): ModelAndView = {
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
 
     val league = leagueService.findBySlug(federation.getId, slug)
     val seasons_ = Option(league.orElse(Option(new League)).get.seasonList)
@@ -95,7 +96,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
 
   def create(
-    @RequestParam("slug") slug: String): ModelAndView = {
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
     val leagueSeason = new LeagueSeason()
     val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
 
@@ -112,7 +114,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("slug") slug: String,
     @RequestParam("id.seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date): String = {
+    @RequestParam("endTime") endTime: Date
+  ): String = {
 
     val start: Calendar = new GregorianCalendar()
     start.setTime(startTime)
@@ -132,7 +135,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def edit(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String): ModelAndView = {
+    @RequestParam("year") year: String
+  ): ModelAndView = {
 
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Date], classOf[String]))
     println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Calendar], classOf[String]))
@@ -161,7 +165,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
     @RequestParam("oldSeasonSlug") oldYear: String,
     @RequestParam("id.seasonSlug") year: String,
     @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date): String = {
+    @RequestParam("endTime") endTime: Date
+  ): String = {
 
     val fedId = federation.getId
     val start = new GregorianCalendar()
@@ -181,7 +186,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def delete(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String): ModelAndView = {
+    @RequestParam("year") year: String
+  ): ModelAndView = {
     val leagueName = leagueService.findBySlug(federation.getId, slug).get.leagueName
     val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
     val submitUrl = getUrl("LeagueSeasonAdminController.postDelete", "slug" -> slug, "year" -> year)
@@ -198,7 +204,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
   def postDelete(
     @RequestParam("slug") slug: String,
-    @RequestParam("year") year: String): String = {
+    @RequestParam("year") year: String
+  ): String = {
 
     var result = leagueService.removeSeasonBySlug(federation.getId, slug, year)
 
@@ -208,7 +215,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   def enrollTeamInSeason(
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     // TODO remove these parameters
@@ -251,7 +259,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   def enrollTeamInSeasonPost(
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String,
-    @RequestParam("teamId") teamId: Long): ModelAndView = {
+    @RequestParam("teamId") teamId: Long
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -266,7 +275,8 @@ class LeagueSeasonAdminController extends UrlGrabber {
   def disenrollTeamInSeasonPost(
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String,
-    @RequestParam("teamId") teamId: Long): ModelAndView = {
+    @RequestParam("teamId") teamId: Long
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val leagueSeasonId: LeagueSeasonPK =

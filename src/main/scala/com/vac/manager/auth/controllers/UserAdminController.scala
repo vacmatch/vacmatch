@@ -52,7 +52,8 @@ class UserAdminController extends UrlGrabber {
   var fed: FederationBean = _
 
   def registerForm(
-    @RequestParam(value = "done", required = false) done: Boolean): ModelAndView = {
+    @RequestParam(value = "done", required = false) done: Boolean
+  ): ModelAndView = {
 
     val roles = userAuthService.getRoles(fed.getId)
 
@@ -108,7 +109,8 @@ class UserAdminController extends UrlGrabber {
   }
 
   def list(
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val users = userAuthService.findAllUsers(fed.getId).map(new CrudUser(_)).asJava
 
@@ -117,7 +119,8 @@ class UserAdminController extends UrlGrabber {
 
     // Authenticated actions on menu
     val authenticatedActionsMenu: Map[String, String] = Map(
-      "Create user" -> getUrl("UserAdminController.registerForm"))
+      "Create user" -> getUrl("UserAdminController.registerForm")
+    )
 
     val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
@@ -127,7 +130,8 @@ class UserAdminController extends UrlGrabber {
   }
   def editForm(
     @RequestParam("user") user: String,
-    @RequestParam(value = "done", required = false) done: Boolean): ModelAndView = {
+    @RequestParam(value = "done", required = false) done: Boolean
+  ): ModelAndView = {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, user)
 

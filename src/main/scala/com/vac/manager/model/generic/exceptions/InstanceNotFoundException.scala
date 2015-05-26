@@ -2,6 +2,7 @@ package com.vac.manager.model.generic.exceptions
 
 class InstanceNotFoundException(
   key: Any,
-  className: String)
+  className: String
+)
     extends InstanceException("Instance not found", key, className)
 

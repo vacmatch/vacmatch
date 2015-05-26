@@ -33,7 +33,8 @@ class CompetitionMember(start: Calendar, league: LeagueSeason, te: Team) {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumns(Array(
     new JoinColumn(name = "league.id"),
-    new JoinColumn(name = "seasonSlug")))
+    new JoinColumn(name = "seasonSlug")
+  ))
   var leagueSeason: LeagueSeason = league
 
   @BeanProperty

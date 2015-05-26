@@ -31,7 +31,8 @@ class LeagueSeasonController extends UrlGrabber {
 
   def listLeagues(
     _model: java.util.Map[String, Object],
-    request: HttpServletRequest): String = {
+    request: HttpServletRequest
+  ): String = {
     val model = _model.asScala
     val fedId = federation.getId
 
@@ -40,7 +41,8 @@ class LeagueSeasonController extends UrlGrabber {
 
     // Authenticated actions on menu
     val authenticatedActionsMenu: Map[String, String] = Map(
-      "Create league" -> getUrl("LeagueAdminController.create"))
+      "Create league" -> getUrl("LeagueAdminController.create")
+    )
 
     val actionsMenu: Map[String, String] = if (userCanEdit) authenticatedActionsMenu else Map()
 
@@ -79,7 +81,8 @@ class LeagueSeasonController extends UrlGrabber {
 
   def showSeason(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String) = {
+    @PathVariable("year") year: String
+  ) = {
     val fedId = federation.getId()
 
     val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)

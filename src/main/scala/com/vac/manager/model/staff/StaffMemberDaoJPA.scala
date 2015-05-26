@@ -13,7 +13,8 @@ class StaffMemberDaoJPA
   def findCurrentStaffMemberListByTeam(teamId: Long): Seq[StaffMember] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM StaffMember s " +
-        "WHERE s.exitDate IS NULL AND s.staffTeam.teamId = :teamId", classOf[StaffMember])
+        "WHERE s.exitDate IS NULL AND s.staffTeam.teamId = :teamId", classOf[StaffMember]
+    )
       .setParameter("teamId", teamId)
 
     query.getResultList().asScala
@@ -24,7 +25,8 @@ class StaffMemberDaoJPA
       "SELECT s FROM StaffMember s " +
         "WHERE s.person.id = :personId " +
         "AND s.staffTeam.teamId = :teamId " +
-        "AND s.exitDate IS NULL", classOf[StaffMember])
+        "AND s.exitDate IS NULL", classOf[StaffMember]
+    )
       .setParameter("teamId", teamId)
       .setParameter("personId", personId)
       .getResultList()

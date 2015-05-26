@@ -54,7 +54,8 @@ class GameAdminController extends UrlGrabber {
 
   def createCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -78,7 +79,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @RequestParam("teamsNumber") teamsNumber: Int,
-    @RequestParam("leagueRounds") leagueRounds: Int): ModelAndView = {
+    @RequestParam("leagueRounds") leagueRounds: Int
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -97,7 +99,8 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendar(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
     val submitMethod: String = "POST"
@@ -118,7 +121,8 @@ class GameAdminController extends UrlGrabber {
 
   def deleteCalendarPost(
     @PathVariable("slug") slug: String,
-    @PathVariable("year") year: String): ModelAndView = {
+    @PathVariable("year") year: String
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -137,7 +141,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    request: HttpServletRequest): ModelAndView = {
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
@@ -159,19 +164,23 @@ class GameAdminController extends UrlGrabber {
 
             val localPlayerStats: Seq[ActionableSoccerStaffStats] =
               soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+              )
 
             val localStaffStats: Seq[ActionableSoccerStaffStats] =
               soccerStaffStatsService.findLocalStaffStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+              )
 
             val visitorPlayerStats: Seq[ActionableSoccerStaffStats] =
               soccerStaffStatsService.findVisitorPlayersStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+              )
 
             val visitorStaffStats: Seq[ActionableSoccerStaffStats] =
               soccerStaffStatsService.findVisitorStaffStats(act.actId).map(
-                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit))
+                staffStats => new ActionableSoccerStaffStats(staffStats, slug, year, gameId, userCanEdit)
+              )
 
             new ModelAndView("admin/game/edit")
               .addObject("action", "Edit")
@@ -195,7 +204,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("gameId") gameId: java.lang.Long,
     @RequestParam("statsId") statsId: java.lang.Long,
     @RequestParam("goals") goalsNumber: Int,
-    @RequestParam("staffStats") staffStats: java.util.List[String]) = {
+    @RequestParam("staffStats") staffStats: java.util.List[String]
+  ) = {
 
     val firstYellowCard: Calendar = if (staffStats.indexOf("firstYellowCard") >= 0) Calendar.getInstance() else null
     val secondYellowCard: Calendar = if (staffStats.indexOf("secondYellowCard") >= 0) Calendar.getInstance() else null
@@ -220,7 +230,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @ModelAttribute act: SoccerAct) = {
+    @ModelAttribute act: SoccerAct
+  ) = {
 
     // TODO select act by sport
     soccerActService.editSoccerAct(act.actId, act.date, act.location, act.referees,
@@ -234,7 +245,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @ModelAttribute act: SoccerAct) = {
+    @ModelAttribute act: SoccerAct
+  ) = {
 
     // TODO select act by sport
     soccerActService.editRestSoccerAct(gameId, act.localTeam.teamId)
@@ -247,7 +259,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @RequestParam("statsId") statsId: Long) = {
+    @RequestParam("statsId") statsId: Long
+  ) = {
 
     soccerStaffStatsService.callUpStaff(statsId)
 
@@ -259,7 +272,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @RequestParam("statsId") statsId: Long) = {
+    @RequestParam("statsId") statsId: Long
+  ) = {
 
     soccerStaffStatsService.unCallUpStaff(statsId)
 
@@ -272,7 +286,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
     @RequestParam("statsId") statsId: Long,
-    @RequestParam("staffPosition") staffPosition: String) = {
+    @RequestParam("staffPosition") staffPosition: String
+  ) = {
 
     soccerStaffStatsService.setStaff(statsId, staffPosition)
 
@@ -284,7 +299,8 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @PathVariable("gameId") gameId: java.lang.Long,
-    @RequestParam("statsId") statsId: Long) = {
+    @RequestParam("statsId") statsId: Long
+  ) = {
 
     soccerStaffStatsService.unSetStaff(statsId)
 
@@ -295,7 +311,8 @@ class GameAdminController extends UrlGrabber {
   def setRestStatePost(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    @PathVariable("gameId") gameId: java.lang.Long) = {
+    @PathVariable("gameId") gameId: java.lang.Long
+  ) = {
 
     soccerActService.setRestState(gameId)
 
@@ -306,7 +323,8 @@ class GameAdminController extends UrlGrabber {
   def unSetRestStatePost(
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
-    @PathVariable("gameId") gameId: java.lang.Long) = {
+    @PathVariable("gameId") gameId: java.lang.Long
+  ) = {
 
     soccerActService.unSetRestState(gameId)
 

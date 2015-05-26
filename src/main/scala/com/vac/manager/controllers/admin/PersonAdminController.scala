@@ -165,7 +165,10 @@ class PersonAdminController extends UrlGrabber {
     }.getOrElse(throw new RuntimeException("Person not found"))
   }
 
-  def create(request: HttpServletRequest): ModelAndView = {
+  def create(
+    @RequestParam(required = false, value = "error") error: String,
+    request: HttpServletRequest
+  ): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
 
@@ -180,6 +183,7 @@ class PersonAdminController extends UrlGrabber {
 
     new ModelAndView("admin/person/edit")
       .addObject("action", "Create")
+      .addObject("error", error)
       .addObject("listLink", listLink)
       .addObject("address", receiverAddress)
       .addObject("person", receiverPerson)
@@ -190,10 +194,18 @@ class PersonAdminController extends UrlGrabber {
 
   def createPost(
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("personReceiver") personReceiver: Person,
-    request: HttpServletRequest,
-    result: BindingResult
+    @Valid @ModelAttribute("personReceiver") personReceiver: Person,
+    result: BindingResult,
+    request: HttpServletRequest
   ): ModelAndView = {
+
+    if (result.hasErrors()) {
+      println("\n\n\nERRROOOO" + result.getAllErrors())
+      return new ModelAndView("redirect:" + getUrl(
+        "PersonAdminController.create",
+        "error" -> "Name"
+      ))
+    }
 
     val fedId: Long = federation.getId
 
@@ -222,14 +234,6 @@ class PersonAdminController extends UrlGrabber {
       new ModelAndView("redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
     } catch {
 
-      case a: IllegalArgumentException =>
-        val referrer: String = request.getHeader("Referer");
-
-        new ModelAndView("error/show")
-          .addObject("errorTitle", i.t("Incorrect person name"))
-          .addObject("errorDescription", i.t("You must specify name and surnames for a new person"))
-          .addObject("backLink", referrer)
-          .addObject("backText", i.t("Back to create person"))
       case e: InstanceNotFoundException =>
         val referrer: String = request.getHeader("Referer");
 
@@ -242,6 +246,7 @@ class PersonAdminController extends UrlGrabber {
   }
 
   def edit(
+    @RequestParam(required = false, value = "error") error: String,
     @RequestParam("personId") personId: java.lang.Long,
     request: HttpServletRequest
   ): ModelAndView = {
@@ -263,6 +268,7 @@ class PersonAdminController extends UrlGrabber {
 
         new ModelAndView("admin/person/edit")
           .addObject("action", "Edit")
+          .addObject("error", error)
           .addObject("address", receiverAddress)
           .addObject("person", new ActionablePerson(person, userCanEdit))
           .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
@@ -274,9 +280,18 @@ class PersonAdminController extends UrlGrabber {
   def editPost(
     @RequestParam("personId") personId: java.lang.Long,
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("person") person: Person,
+    @Valid @ModelAttribute("person") person: Person,
+    result: BindingResult,
     request: HttpServletRequest
   ): ModelAndView = {
+
+    if (result.hasErrors()) {
+      return new ModelAndView("redirect:" + getUrl(
+        "PersonAdminController.edit",
+        "personId" -> personId,
+        "error" -> "Name"
+      ))
+    }
 
     val fedId: Long = federation.getId
 

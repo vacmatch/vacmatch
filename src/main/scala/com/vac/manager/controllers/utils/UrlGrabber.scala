@@ -17,7 +17,8 @@ object UrlGrabber {
   @tailrec
   def getParams(
     params: Seq[(String, Object)],
-    map: MuMap[String, List[Object]] = MuMap()): java.util.Map[String, Object] = {
+    map: MuMap[String, List[Object]] = MuMap()
+  ): java.util.Map[String, Object] = {
     params match {
       case x :: xs => {
         x match {
