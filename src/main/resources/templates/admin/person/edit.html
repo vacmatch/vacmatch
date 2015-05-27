@@ -13,102 +13,106 @@
     <div class="container" th:fragment="content">
       <div class="jumbotron input-group" th:object="${person}">
 
-        <h2 th:text="|${action} Person|">Create Person</h2>
+        <h2 class="text-center" th:text="|${action} Person|">Create Person</h2>
 
-	<hr/>
+      	<hr/>
+      
+      	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
+      	  <input th:each="h: ${hiddens}" type="hidden"
+      	   th:name="${h.key}" th:value="${h.value}" />
+      
+      	  <div class="form-group" th:classappend="${#fields.hasErrors('name')} ? has-error">
+      	    <label class="col-sm-3 control-label" for="name">Name</label>
+      	    <div class="col-sm-9">
+      	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{name}" />
+              <span class="text-danger" th:if="${#fields.hasErrors('*{name}')}">Staff name can't be empty</span>
+      	    </div>
+      	  </div>
+      
+      	  <div class="form-group" th:classappend="${#fields.hasErrors('surname')} ? has-error">
+      	    <label class="col-sm-3 control-label" for="surname">Surname</label>
+      	    <div class="col-sm-9">
+      	      <input class="form-control" id="surname" type="text" placeholder="Surname" th:field="*{surname}" />
+              <span class="text-danger" th:if="${#fields.hasErrors('*{surname}')}">Staff surnames can't be empty</span>
+      	    </div>
+      	  </div>
+      
+      	  <div class="form-group">
+      	    <label class="col-sm-3 control-label" for="cardId">Card Id</label>
+      	    <div class="col-sm-9">
+      	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="*{cardId}" />
+      	    </div>
+      	  </div>
+      
+      	  <div class="form-group">
+      	    <label class="col-sm-3 control-label" for="email">Email</label>
+      	    <div class="col-sm-9">
+      	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{email}" />
+      	    </div>
+      	  </div>
+      
+      	  <div class="form-group" th:classappend="${#fields.hasErrors('birthdate')} ? has-error">
+      	    <label class="col-sm-3 control-label" for="birthdate">Birth date</label>
+      	    <div class="col-sm-9">
+      	      <input class="form-control" id="birthdate" type="text" placeholder="Birth date" th:field="*{birthdate}" />
+              <span class="text-danger" th:if="${#fields.hasErrors('*{birthdate}')}">Date format must be dd/mm/yyyy hh:hh</span>
+      	    </div>
+      	  </div>
+      
+      	  <div class="form-group">
+      	    <div class="col-sm-3 control-label">
+      		    <label for="telephones">Telephones</label>
+      	    </div>
+      	    <div class="col-sm-9">
+      		<label for="telephones">(ej: "678912345, 654321987")</label>
+      		<input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{telephones}" />
+      	    </div>
+      	  </div>
+      
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addFirstLine">Address First Line</label>
+      	     <div class="col-sm-9">
+      	       <input class="form-control" id="addFirstLine" type="text" placeholder="Address first line" th:field="${address.firstLine}"/>
+      	     </div>
+      	   </div>
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addSecondLine">Address Second Line</label>
+      	     <div class="col-sm-9">
+      	       <input class="form-control" id="addSecondLine" type="text" placeholder="Address Second Line" th:field="${address.secondLine}"/>
+      	     </div>
+      	   </div>
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
+      	    <div class="col-sm-3">
+      	      <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
+      	    </div>
+      	   </div>
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addLocality">Locality</label>
+      	     <div class="col-sm-3">
+      	       <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
+      	     </div>
+      	   </div>
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addProvince">Province</label>
+      	     <div class="col-sm-3">
+      	       <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
+      	     </div>
+      	   </div>
+      	   <div class="form-group">
+      	     <label class="col-sm-3 control-label" for="addCountry">Country</label>
+      	     <div class="col-sm-3">
+      	       <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
+      	     </div>
+      	   </div>
 
-	<form id="staffForm" class="form-horizontal" th:action="${submitUrl}" th:method="${submitMethod}">
-	  <input th:each="h: ${hiddens}" type="hidden"
-	   th:name="${h.key}" th:value="${h.value}" />
-
-	  <div class="form-group">
-	    <label class="col-sm-3 control-label" for="name">Name</label>
-	    <div class="col-sm-9">
-	      <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{name}" />
-	    </div>
-	  </div>
-
-	  <div class="form-group">
-	    <label class="col-sm-3 control-label" for="surname">Surname</label>
-	    <div class="col-sm-9">
-	      <input class="form-control" id="surname" type="text" placeholder="Surname" th:field="*{surname}" />
-	    </div>
-	  </div>
-
-	  <div class="form-group">
-	    <label class="col-sm-3 control-label" for="cardId">Card Id</label>
-	    <div class="col-sm-9">
-	      <input class="form-control" id="cardId" type="text" placeholder="Card Id" th:field="*{cardId}" />
-	    </div>
-	  </div>
-
-	  <div class="form-group">
-	    <label class="col-sm-3 control-label" for="email">Email</label>
-	    <div class="col-sm-9">
-	      <input class="form-control" id="email" type="text" placeholder="Email" th:field="*{email}" />
-	    </div>
-	  </div>
-
-	  <div class="form-group">
-	    <label class="col-sm-3 control-label" for="birthdate">Birth date</label>
-	    <div class="col-sm-9">
-	      <input class="form-control" id="birthdate" type="text" placeholder="01/01/1970" th:field="*{birthdate}" />
-	    </div>
-	  </div>
-
-	  <div class="form-group">
-	    <div class="col-sm-3 control-label">
-		    <label for="telephones">Telephones</label>
-	    </div>
-	    <div class="col-sm-9">
-		<label for="telephones">(ej: "678912345, 654321987")</label>
-		<input class="form-control" id="telephones" type="text" placeholder="Telephones" th:field="*{telephones}" />
-	    </div>
-	  </div>
-
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addFirstLine">Address First Line</label>
-	     <div class="col-sm-9">
-	       <input class="form-control" id="addFirstLine" type="text" placeholder="Address first line" th:field="${address.firstLine}"/>
-	     </div>
-	   </div>
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addSecondLine">Address Second Line</label>
-	     <div class="col-sm-9">
-	       <input class="form-control" id="addSecondLine" type="text" placeholder="Address Second Line" th:field="${address.secondLine}"/>
-	     </div>
-	   </div>
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addPostCode">Postal Code</label>
-	    <div class="col-sm-3">
-	      <input class="form-control" id="addPostCode" type="number" placeholder="Postal Code" th:field="${address.postCode}"/>
-	    </div>
-	   </div>
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addLocality">Locality</label>
-	     <div class="col-sm-3">
-	       <input class="form-control" id="addLocality" type="text" placeholder="Locality" th:field="${address.locality}"/>
-	     </div>
-	   </div>
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addProvince">Province</label>
-	     <div class="col-sm-3">
-	       <input class="form-control" id="addProvince" type="text" placeholder="Province" th:field="${address.province}"/>
-	     </div>
-	   </div>
-	   <div class="form-group">
-	     <label class="col-sm-3 control-label" for="addCountry">Country</label>
-	     <div class="col-sm-3">
-	       <input class="form-control" id="addCountry" type="text" placeholder="Country" th:field="${address.country}"/>
-	     </div>
-	   </div>
-        <div th:if="${error}" class="alert alert-danger">
-          <p>Name and surnames can't be empty.</p>
-        </div>
-
-          <a class="btn btn-primary" th:href="${listLink}? ${listLink}: *{showLink}">Cancel</a>
-          <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
-	</form>
+           <div class="form-group">
+             <div class="col-sm-offset-3 col-sm-4">
+               <a class="btn btn-primary" th:href="${listLink}? ${listLink}: *{showLink}">Cancel</a>
+               <input class="btn btn-primary " type="submit" name="submit" value="Accept"/>
+             </div>
+           </div>
+      	</form>
       </div>
     </div>
     <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>

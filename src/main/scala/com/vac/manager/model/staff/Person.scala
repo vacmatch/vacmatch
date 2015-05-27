@@ -11,6 +11,8 @@ import com.vac.manager.model.federation.Federation
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size
+import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "PERSON")
@@ -31,10 +33,14 @@ class Person(
   var personId: java.lang.Long = _
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var name: String = stName
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var surname: String = stSurname
 
@@ -65,6 +71,7 @@ class Person(
 
   @BeanProperty
   @Column
+  @Temporal(TemporalType.DATE)
   var birthdate: Calendar = stBirthdate
 
   @BeanProperty
@@ -72,7 +79,7 @@ class Person(
   @JoinColumn(name = "fedId")
   var federation: Federation = stFederation
 
-  def this() = this("", "", "", null, "", Calendar.getInstance(), null)
+  def this() = this("", "", "", null, "", null, null)
 
   override def equals(obj: Any): Boolean = {
     if ((obj == null) || (!obj.isInstanceOf[Person]))

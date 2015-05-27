@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult
 import com.vac.manager.model.personal.Address
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ModelAttribute
-import javax.management.InstanceNotFoundException
 import com.vac.manager.controllers.utils.UrlGrabber
 import scala.collection.JavaConverters._
 import com.vac.manager.service.staff.PersonService
@@ -18,8 +17,12 @@ import javax.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.PathVariable
 import scala.beans.BeanProperty
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import javax.validation.Valid
 import com.vacmatch.util.i18n.I18n
+import scala.util.Success
+import scala.util.Failure
+import scala.util.Try
 
 @Controller
 class PersonAdminController extends UrlGrabber {
@@ -162,18 +165,21 @@ class PersonAdminController extends UrlGrabber {
       new ModelAndView("admin/person/show")
         .addObject("person", new ActionablePerson(person, userCanEdit))
         .addObject("listLink", listLink)
-    }.getOrElse(throw new RuntimeException("Person not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Person not found"))
+        .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+    }
   }
 
   def create(
-    @RequestParam(required = false, value = "error") error: String,
     request: HttpServletRequest
   ): ModelAndView = {
 
     val fedId: java.lang.Long = federation.getId
 
     // Receivers
-    val receiverPerson = new Person
+    val receiverPerson = new Person()
     val receiverAddress = new Address()
     // Submit params
     val submitUrl: String = getUrl("PersonAdminController.createPost")
@@ -183,70 +189,67 @@ class PersonAdminController extends UrlGrabber {
 
     new ModelAndView("admin/person/edit")
       .addObject("action", "Create")
-      .addObject("error", error)
       .addObject("listLink", listLink)
       .addObject("address", receiverAddress)
       .addObject("person", receiverPerson)
-      .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
       .addObject("submitUrl", submitUrl)
       .addObject("submitMethod", submitMethod)
   }
 
   def createPost(
     @ModelAttribute("address") address: Address,
-    @Valid @ModelAttribute("personReceiver") personReceiver: Person,
+    @Valid @ModelAttribute("person") person: Person,
     result: BindingResult,
     request: HttpServletRequest
   ): ModelAndView = {
 
     if (result.hasErrors()) {
-      println("\n\n\nERRROOOO" + result.getAllErrors())
-      return new ModelAndView("redirect:" + getUrl(
-        "PersonAdminController.create",
-        "error" -> "Name"
-      ))
+      return new ModelAndView("admin/person/edit")
+        .addObject("action", "Create")
+        .addObject("listLink", getUrl("PersonAdminController.listAll"))
     }
 
     val fedId: Long = federation.getId
 
-    try {
-      // Save new person
-      val person: Person =
-        personService.createPerson(
-          personReceiver.name,
-          personReceiver.surname,
-          personReceiver.email,
-          personReceiver.telephones,
-          personReceiver.cardId,
-          personReceiver.birthdate,
-          fedId
+    Try(personService.createPerson(
+      person.name,
+      person.surname,
+      person.email,
+      person.telephones,
+      person.cardId,
+      person.birthdate,
+      fedId
+    )) match {
+      case Success(createdPerson) =>
+        // Create address
+        val personAddress = new Address(
+          address.firstLine, address.secondLine, address.postCode,
+          address.locality, address.province, address.country
         )
 
-      // Create address
-      val personAddress = new Address(
-        address.firstLine, address.secondLine, address.postCode,
-        address.locality, address.province, address.country
-      )
+        // Assign address to created person
+        val personAssigned: Option[Person] = personService.assignAddress(createdPerson.personId, personAddress)
 
-      // Assign address to created person
-      val personAssigned: Option[Person] = personService.assignAddress(person.personId, personAddress)
+        new ModelAndView("redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> createdPerson.personId))
 
-      new ModelAndView("redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId))
-    } catch {
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
 
-      case e: InstanceNotFoundException =>
-        val referrer: String = request.getHeader("Referer");
-
-        new ModelAndView("error/show")
-          .addObject("errorTitle", i.t("Person not found"))
-          .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
-          .addObject("backLink", referrer)
-          .addObject("backText", i.t("Back to create person"))
+        cause match {
+          case e: IllegalArgumentException =>
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Incorrect person values"))
+              .addObject("errorDescription", i.t("You must specify name and surnames " +
+                "for a new person or maybe birth date format isn't valid"))
+          case _ =>
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Unexpected error"))
+              .addObject("errorDescription", cause)
+        }
     }
   }
 
   def edit(
-    @RequestParam(required = false, value = "error") error: String,
     @RequestParam("personId") personId: java.lang.Long,
     request: HttpServletRequest
   ): ModelAndView = {
@@ -261,6 +264,7 @@ class PersonAdminController extends UrlGrabber {
     // Submit params
     val submitUrl: String = getUrl("PersonAdminController.editPost", "personId" -> personId)
     val submitMethod: String = "POST"
+    val listLink: String = getUrl("PersonAdminController.listAll")
 
     personService.find(personId).map {
       person =>
@@ -268,13 +272,18 @@ class PersonAdminController extends UrlGrabber {
 
         new ModelAndView("admin/person/edit")
           .addObject("action", "Edit")
-          .addObject("error", error)
+          .addObject("listLink", listLink)
           .addObject("address", receiverAddress)
           .addObject("person", new ActionablePerson(person, userCanEdit))
           .addObject("hiddens", Map("fedId" -> fedId).asJava.entrySet)
           .addObject("submitUrl", submitUrl)
           .addObject("submitMethod", submitMethod)
-    }.getOrElse(throw new InstanceNotFoundException("Person not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Person not found"))
+        .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+    }
+
   }
 
   def editPost(
@@ -286,61 +295,48 @@ class PersonAdminController extends UrlGrabber {
   ): ModelAndView = {
 
     if (result.hasErrors()) {
-      return new ModelAndView("redirect:" + getUrl(
-        "PersonAdminController.edit",
-        "personId" -> personId,
-        "error" -> "Name"
-      ))
+      return new ModelAndView("admin/person/edit")
+        .addObject("action", "Edit")
+        .addObject("listLink", getUrl("PersonAdminController.listAll"))
     }
 
     val fedId: Long = federation.getId
 
-    try {
-      // Modify Person
-      val modifiedPersonMember: Option[Person] =
-        personService.modifyPerson(
-          personId,
-          person.name,
-          person.surname,
-          person.email,
-          person.telephones,
-          address,
-          person.cardId,
-          person.birthdate
-        )
-
-      modifiedPersonMember match {
-        case None =>
-          val referrer: String = request.getHeader("Referer")
-
+    Try(personService.modifyPerson(
+      personId,
+      person.name,
+      person.surname,
+      person.email,
+      person.telephones,
+      address,
+      person.cardId,
+      person.birthdate
+    )) match {
+      case Success(maybePerson) =>
+        maybePerson.map {
+          editedPerson =>
+            new ModelAndView(
+              "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> editedPerson.personId)
+            )
+        }.getOrElse {
           new ModelAndView("error/show")
             .addObject("errorTitle", i.t("Person not found"))
             .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
-            .addObject("backLink", referrer)
-            .addObject("backText", i.t("Back to create person"))
-        case Some(person) =>
-          new ModelAndView(
-            "redirect:" + getUrl("PersonAdminController.showPerson", "personId" -> person.personId)
-          )
-      }
-    } catch {
-      case a: IllegalArgumentException =>
-        val referrer: String = request.getHeader("Referer")
+        }
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
 
-        new ModelAndView("error/show")
-          .addObject("errorTitle", i.t("Incorrect person name"))
-          .addObject("errorDescription", i.t("You must specify name and surnames for a new person"))
-          .addObject("backLink", referrer)
-          .addObject("backText", i.t("Back to create person"))
-
-      case e: InstanceNotFoundException =>
-        val referrer: String = request.getHeader("Referer")
-
-        new ModelAndView("error/show")
-          .addObject("errorTitle", i.t("Person not found"))
-          .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
-          .addObject("backLink", referrer)
-          .addObject("backText", i.t("Back to create person"))
+        cause match {
+          case e: IllegalArgumentException =>
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Incorrect person values"))
+              .addObject("errorDescription", i.t("You must specify name and surnames " +
+                "for a new person or maybe birth date format isn't valid"))
+          case _ =>
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Unexpected error"))
+              .addObject("errorDescription", cause)
+        }
     }
   }
 

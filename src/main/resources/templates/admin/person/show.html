@@ -1,4 +1,4 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title th:text="#{title}">Person profile</title>
@@ -42,28 +42,30 @@ s<!DOCTYPE html>
           </tr>
           <tr>
             <td><b>Alias</b></td>
-            <td th:text="*{alias}">Alias</td>
+            <td th:text="*{alias} ? *{alias} : '-'">Alias</td>
           </tr>
           <tr>
             <td><b>Card Id</b></td>
-            <td th:text="*{cardId}">Cardid</td>
+            <td th:text="*{cardId} ? *{cardId} : '-'">Card id</td>
           </tr>
           <tr>
             <td><b>Email</b></td>
-            <td th:text="*{email}">Email</td>
+            <td th:text="*{email} ? *{email} : '-'">Email</td>
           </tr>
           <tr>
             <td><b>Telephones</b></td>
-            <td th:text="*{telephones}">Telephone</td>
+            <td th:text="*{telephones} ? *{telephones} : '-'">Telephone</td>
           </tr>
           <tr>
             <td><b>Birth date</b></td>
             <td
-              th:text="${#calendars.format(person.birthdate, 'dd/MM/yyyy')}">01/01/1970</td>
+              th:text="*{birthdate} ? ${#calendars.format(person.birthdate, 'dd/MM/yyyy')} : '-'">01/01/1970</td>
           </tr>
-          <tr>
+          <tr th:object="${person.address}">
             <td><b>Address</b></td>
-            <td th:text="*{address}"></td>
+            <td th:text="${person.address} ? *{firstLine} + ' ' +
+             *{secondLine} + ' ' + *{postCode} + ' ' + *{locality} + ' ' +
+             *{province} + ' ' + *{country} : '-'"></td>
           </tr>
         </table>
       </div>
