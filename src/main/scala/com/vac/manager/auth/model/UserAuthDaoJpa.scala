@@ -15,7 +15,7 @@ class UserAuthDaoJpa
 
     val user = entityManager
       .createQuery(
-        "SELECT u FROM User u JOIN FETCH u.roles " +
+        "SELECT u FROM User u " +
           "WHERE u.federation.fedId = :fedId " +
           "AND u.username = :username",
         classOf[User]

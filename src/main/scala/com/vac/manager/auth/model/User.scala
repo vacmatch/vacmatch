@@ -22,7 +22,7 @@ import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 @Entity
-@Table(name="userdetails")
+@Table(name = "userdetails")
 class User extends UserDetails {
   @Id
   @SequenceGenerator(name = "userIdGenerator", sequenceName = "user_id_seq")
