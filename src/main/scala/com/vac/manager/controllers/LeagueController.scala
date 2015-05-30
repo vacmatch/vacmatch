@@ -58,12 +58,16 @@ class LeagueController {
 
   def show(@PathVariable("slug") slug: String) = {
     val fedId = federation.getId()
-    val league = leagueService.findBySlug(fedId, slug)
-
-    new ModelAndView("league/show")
-      .addObject("league", league.get)
-      .addObject("leagueName", i.t("League %s", league.map(_.leagueName).orNull))
-
+    leagueService.findBySlug(fedId, slug).map {
+      league =>
+        new ModelAndView("league/show")
+          .addObject("league", league)
+          .addObject("leagueName", i.t("League %s", league.leagueName))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
 }

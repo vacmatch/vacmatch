@@ -17,9 +17,10 @@
   <body>
 
     <div class="container" th:fragment="content">
-      <div class="jumbotron" th:object="${league}">
+      <div class="jumbotron text-center" th:object="${league}">
         <h2>t("Delete League")</h2>
 
+        <hr/>
         <div class="alert alert-danger">
           <h2>t("Are you sure to delete %s league?", ${league.leagueName})</h2>
         </div>
