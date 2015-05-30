@@ -70,11 +70,12 @@ class UserAdminController extends UrlGrabber {
   }
 
   def registerPost(
-    @RequestParam username: String,
-    @RequestParam fullName: String,
-    @RequestParam encPasswd: String,
-    @RequestParam password: String,
-    @RequestParam textRoles: java.util.List[String]) = {
+    @RequestParam("username") username: String,
+    @RequestParam("fullName") fullName: String,
+    @RequestParam("encPasswd") encPasswd: String,
+    @RequestParam("password") password: String,
+    @RequestParam(value = "textRoles", defaultValue = "") textRoles: java.util.List[String]
+  ) = {
 
     if (password != encPasswd) {
       throw new RuntimeException("Password not matching")
@@ -158,7 +159,8 @@ class UserAdminController extends UrlGrabber {
     @RequestParam("fullName") fullName: String,
     @RequestParam("encPasswd") encPasswd: String,
     @RequestParam("password") password: String,
-    @RequestParam("textRoles") textRoles: java.util.List[String]): String = {
+    @RequestParam(value = "textRoles", defaultValue = "") textRoles: java.util.List[String]
+  ): String = {
 
     val maybeUser = userAuthService.loadUserByUsername(fed.getId, username)
 
