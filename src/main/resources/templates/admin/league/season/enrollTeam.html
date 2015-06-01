@@ -11,42 +11,52 @@
   <body>
     <div th:replace="fragments/header :: header">[Here goes the header]</div>
     <div class="container" th:fragment="content">
-      <div class="jumbotron input-group">
-        <h2 class="row">Enroll Teams</h2>
+      <div class="jumbotron">
+        <h2 class="page-header text-center">Enroll Teams</h2>
+        <h4>
+          <span class="label label-primary"
+                th:text="${leagueSeason.id.league}? ${leagueSeason.id.league.leagueName} + ', ' + ${leagueSeason.id.seasonSlug} : '-'">
+                Division, season
+          </span>
+        </h4>
         <hr/>
         <div class="row">
-          <div class="col-sm-5">
-            <h4>All teams</h4>
+          <div class="col-md-5 panel panel-default">
+            <h4 class="text-center">All teams</h4>
             <table class="table">
               <tr>
-                <td>Name</td>
+                <th class="col-md-1">Nº</th>
+                <th class="col-md-9">Name</th>
+                <th class="col-md-2">Actions</th>
               </tr>
-              <tr th:each="f: ${fullList}">
-                <form id="${f.teamId}" class="form form-horizontal" th:action="${f.enrollPostLink}" th:method="${submitMethod}">
-                  <input th:each="h: ${hiddens}" type="hidden"
-                   th:name="${h.key}" th:value="${h.value}" />
-                  <td th:text="${f.teamName}">Name</td>
-                  <td>
+              <tr th:each="team, iterStat: ${fullList}">
+                <td class="col-md-1" th:text="${iterStat.count}">Nº</td>
+                <td class="col-md-9" th:text="${team.teamName}">Name</td>
+                <td class="col-md-2">
+                  <form id="${team.teamId}" class="form form-horizontal" th:action="${team.enrollPostLink}" th:method="${submitMethod}" th:object="${team}">
                     <input class="btn btn-default" type="submit" name="submit" value="Add"/>
-                  </td>
-                </form>
+                  </form>
+                </td>
               </tr>
             </table>
           </div>
 
-          <div class="col-sm-offset-1 col-sm-5">
-            <h4>Current teams in competition</h4>
+          <div class="col-md-offset-1 col-md-5 panel panel-default">
+            <h4 class="text-center">Current teams in competition</h4>
             <table class="table">
-              <tr draggable="true">
-                <td>Name</td>
+              <tr>
+                <th class="col-md-1">Nº</th>
+                <th class="col-md-9">Name</th>
+                <th class="col-md-2">Actions</th>
               </tr>
-              <tr th:each="r: ${registeredList}">
-                <form id="${r.id}-remove" class="form form-horizontal" th:action="${r.disenrollPostLink}" th:method="${submitMethod}">
-                  <td th:text="${r.team.teamName}">Name</td>
-                  <td>
+              <tr th:each="competitionMember, iterStat: ${registeredList}">
+                <td class="col-md-1" th:text="${iterStat.count}">Nº</td>
+                <td class="col-md-9" th:text="${competitionMember.team.teamName}">Name</td>
+                <td class="col-md-2">
+                  <form id="${competitionMember.id}-remove" class="form form-horizontal" th:action="${competitionMember.disenrollPostLink}" th:method="${submitMethod}">
                     <input class="btn btn-default" type="submit" name="submit" value="Remove"/>
-                  </td>
-                </form>
+                  </form>
+                </td>
               </tr>
             </table>
           </div>
@@ -54,9 +64,9 @@
 
         <hr/>
 
-        <div class="row">
-          <a class="btn btn-default" href="/" th:href="${acceptUrl}">Accept selection</a>
-        </div>
+        <h4>
+          <a class="btn btn-primary" href="/" th:href="${acceptUrl}">Accept selection</a>
+        </h4>
       </div>
     </div>
     <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>

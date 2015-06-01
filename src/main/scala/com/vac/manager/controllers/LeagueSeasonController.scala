@@ -62,21 +62,22 @@ class LeagueSeasonController extends UrlGrabber {
   def listSeasons(@PathVariable("slug") slug: String) = {
     val fedId = federation.getId()
 
-    val league = leagueService.findSeasonsByLeague(fedId, slug)
-    var seasons = null: java.util.Collection[ActionableLeagueSeason]
+    leagueService.findSeasonsByLeague(fedId, slug).map {
+      league =>
 
-    val mav = league match {
-      case None => new ModelAndView("league/season/notfound")
-      case Some(league) => new ModelAndView("league/season/list")
+        val seasons: java.util.Collection[ActionableLeagueSeason] =
+          league.getSeasonList.asScala.map(new ActionableLeagueSeason(_)).asJava
+
+        new ModelAndView("league/season/list")
+          .addObject("league", league)
+          .addObject("listLink", getUrl("LeagueSeasonController.listLeagues"))
+          .addObject("seasons", seasons)
+
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
     }
-
-    if (league.nonEmpty)
-      seasons = league.get.getSeasonList.asScala.map(new ActionableLeagueSeason(_)).asJava
-
-    mav
-      .addObject("league", league.orNull)
-      .addObject("listLink", getUrl("LeagueController.list", "fedId" -> fedId))
-      .addObject("seasons", seasons)
   }
 
   def showSeason(
@@ -85,12 +86,16 @@ class LeagueSeasonController extends UrlGrabber {
   ) = {
     val fedId = federation.getId()
 
-    val season = leagueService.findSeasonByLeagueSlug(fedId, slug, year)
-
-    val mav: ModelAndView = new ModelAndView("league/season/show")
-    mav
-      .addObject("season", season.get)
-      .addObject("teams", new java.util.ArrayList[AnyRef])
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+      season =>
+        new ModelAndView("league/season/show")
+          .addObject("season", season)
+          .addObject("teams", new java.util.ArrayList[AnyRef])
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
 
 }

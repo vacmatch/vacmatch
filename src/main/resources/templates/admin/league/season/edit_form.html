@@ -16,27 +16,32 @@
   </head>
   <body>
     <div class="container" th:fragment="content">
-      <h2 th:text="${action}">Edit Season</h2>
+        <div class="jumbotron">
 
-      <div class="jumbotron">
+        <h2 class="text-center" th:text="${action}">Edit Season</h2>
+
+        <hr/>
+
         <form id="leagueForm" th:action="${submitUrl}" class="form-horizontal"
               th:method="${submitMethod}" th:object="${leagueSeason}">
-          <input th:each="h: ${hiddens.entrySet()}" type="hidden"
+          <input th:each="h: ${hiddens}" type="hidden"
                  th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-          <div class="form-group">
+          <div class="form-group" th:classappend="${#fields.hasErrors('id.seasonSlug')} ? has-error">
             <label class="col-sm-3 control-label" for="seasonSlug">t("Season name")</label>
             <div class="col-sm-3">
               <input class="form-control" id="seasonSlug" type="text" placeholder="Season name" th:field="*{id.seasonSlug}" />
               <i18n:attr name="placeholder">t("Season name")</i18n:attr>
+              <span class="text-danger" th:if="${#fields.hasErrors('*{id.seasonSlug}')}">t("League name can\'t be empty")</span>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" th:classappend="${#fields.hasErrors('startTime')} ? has-error">
             <label class="col-sm-3 control-label" for="startTime">t("Season start")</label>
             <div class="col-sm-3">
               <input class="form-control" id="startTime" type="text" placeholder="Start date" th:field="*{startTime}" />
               <i18n:attr name="placeholder">t("Start date")</i18n:attr>
+              <span class="text-danger" th:if="${#fields.hasErrors('*{startTime}')}">t("Date format must be dd/mm/yyyy hh:hh")</span>
             </div>
           </div>
 
@@ -49,8 +54,8 @@
           </div>
 
           <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-              <a class="btn btn-primary" th:href="${listLink}">Cancel</a>
+            <div class="col-sm-offset-3 col-sm-2">
+              <a class="btn btn-primary" th:href="${listLink}">t("Cancel")</a>
               <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
               <i18n:attr name="value">t("Accept")</i18n:attr>
             </div>

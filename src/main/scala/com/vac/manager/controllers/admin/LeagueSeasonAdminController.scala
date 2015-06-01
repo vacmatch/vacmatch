@@ -21,8 +21,15 @@ import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.team.Team
 import com.vac.manager.controllers.actionable.ActionableTeam
 import javax.servlet.http.HttpServletRequest
-import javax.management.InstanceNotFoundException
 import com.vac.manager.controllers.actionable.TeamEnrollLinks
+import javax.validation.Valid
+import org.springframework.validation.BindingResult
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import org.springframework.validation.FieldError
 
 @Controller
 @Layout("layouts/default_admin")
@@ -54,7 +61,7 @@ class LeagueSeasonAdminController extends UrlGrabber {
     }
 
     def getLink() = {
-      getUrl("LeagueSeasonController.listSeasons", "slug" -> slug)
+      getUrl("GameController.showClassification", "slug" -> slug, "year" -> id.seasonSlug)
     }
 
     def getUserLink() = {
@@ -96,120 +103,158 @@ class LeagueSeasonAdminController extends UrlGrabber {
   }
 
   def create(
-    @RequestParam("slug") slug: String
+    @RequestParam("slug") leagueSlug: String
   ): ModelAndView = {
-    val leagueSeason = new LeagueSeason()
-    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
 
-    new ModelAndView("admin/league/season/edit_form")
-      .addObject("leagueSeason", leagueSeason)
-      .addObject("listLink", listLink)
-      .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postCreate"))
-      .addObject("hiddens", Map("slug" -> slug).asJava)
-      .addObject("action", i.t("Create Season"))
-      .addObject("submitMethod", "POST")
+    val fedId = federation.getId
+
+    leagueService.findBySlug(fedId, leagueSlug).map {
+      l =>
+        val leagueSeason = new LeagueSeason()
+        val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug)
+
+        new ModelAndView("admin/league/season/edit_form")
+          .addObject("leagueSeason", leagueSeason)
+          .addObject("listLink", listLink)
+          .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postCreate"), "slug" -> leagueSlug)
+          .addObject("action", i.t("Create Season"))
+          .addObject("submitMethod", "POST")
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
   def postCreate(
-    @RequestParam("slug") slug: String,
-    @RequestParam("id.seasonSlug") year: String,
-    @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date
-  ): String = {
+    @RequestParam("slug") leagueSlug: String,
+    @Valid leagueSeason: LeagueSeason,
+    result: BindingResult
+  ): ModelAndView = {
 
-    val start: Calendar = new GregorianCalendar()
-    start.setTime(startTime)
-    val end: Calendar = new GregorianCalendar()
-    end.setTime(endTime)
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/league/season/edit_form")
+        .addObject("action", i.t("Create Season"))
+        .addObject("listLink", getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug))
+    }
 
     val fedId = federation.getId
-    leagueService.findBySlug(fedId, slug).map {
-      league =>
-        leagueService.createSeason(federation.getId, slug, year, start, end)
-        "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> league.slug)
-    }.getOrElse(throw new NoSuchElementException("League not found"))
+
+    Try(leagueService.createSeason(federation.getId, leagueSlug, leagueSeason.id.seasonSlug,
+      leagueSeason.startTime, leagueSeason.endTime)) match {
+      case Success(ls) =>
+        new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug))
+      case Failure(e) =>
+        if (e.getCause().isInstanceOf[IllegalArgumentException])
+          return new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Incorrect parameters"))
+            .addObject("errorDescription", i.t("Start time and season slug aren't valid"))
+
+        if (e.getCause().isInstanceOf[InstanceNotFoundException])
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("League not found"))
+            .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Unexpected error"))
+          .addObject("errorDescription", e.getCause())
+    }
   }
 
   @Autowired
   var conversionService: ConversionService = _
 
   def edit(
-    @RequestParam("slug") slug: String,
+    @RequestParam("slug") leagueSlug: String,
     @RequestParam("year") year: String
   ): ModelAndView = {
 
-    println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Date], classOf[String]))
-    println("Convertor is installed correctly == " + conversionService.canConvert(classOf[Calendar], classOf[String]))
-    println("Convertor is installed correctly == " + conversionService.canConvert(classOf[GregorianCalendar], classOf[String]))
+    leagueService.findSeasonByLeagueSlug(federation.getId, leagueSlug, year).map {
+      leagueSeason =>
 
-    val leagueSeason = leagueService.findSeasonByLeagueSlug(federation.getId, slug, year)
+        val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug)
 
-    val startTimeStr = conversionService.convert(leagueSeason.get.getStartTime(), classOf[String])
-    val endTimeStr = conversionService.convert(leagueSeason.get.getEndTime(), classOf[String])
+        new ModelAndView("admin/league/season/edit_form")
+          .addObject("leagueSeason", leagueSeason)
+          .addObject("listLink", listLink)
+          .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postEdit", "slug" -> leagueSlug, "oldSeasonSlug" -> year))
+          .addObject("action", i.t("Edit Season"))
+          .addObject("submitMethod", "POST")
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
 
-    println("Convertor has values = " + startTimeStr + " and " + endTimeStr)
-    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
-
-    new ModelAndView("admin/league/season/edit_form")
-      .addObject("leagueSeason", leagueSeason.orNull)
-      .addObject("listLink", listLink)
-      .addObject("startTime", startTimeStr)
-      .addObject("endTime", endTimeStr)
-      .addObject("submitUrl", getUrl("LeagueSeasonAdminController.postEdit"))
-      .addObject("hiddens", Map("slug" -> slug, "oldSeasonSlug" -> year).asJava)
-      .addObject("action", i.t("Edit Season"))
-      .addObject("submitMethod", "POST")
   }
+
   def postEdit(
-    @RequestParam("slug") slug: String,
+    @RequestParam("slug") leagueSlug: String,
     @RequestParam("oldSeasonSlug") oldYear: String,
-    @RequestParam("id.seasonSlug") year: String,
-    @RequestParam("startTime") startTime: Date,
-    @RequestParam("endTime") endTime: Date
-  ): String = {
+    @Valid leagueSeason: LeagueSeason,
+    result: BindingResult
+  ): ModelAndView = {
+
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/league/season/edit_form")
+        .addObject("action", i.t("Edit Season"))
+        .addObject("listLink", getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug))
+    }
 
     val fedId = federation.getId
-    val start = new GregorianCalendar()
-    start.setTime(startTime)
-    val end = new GregorianCalendar()
-    end.setTime(endTime)
 
-    leagueService.modifySeasonStartTimeBySlug(fedId, slug, oldYear, start)
-    leagueService.modifySeasonEndTimeBySlug(fedId, slug, oldYear, end)
-    val r = leagueService.modifySeasonYearBySlug(fedId, slug, oldYear, year)
+    leagueService.findSeasonByLeagueSlug(fedId, leagueSlug, oldYear).map {
+      leagueSeason =>
+        leagueService.modifySeasonStartTimeBySlug(fedId, leagueSlug, oldYear, leagueSeason.startTime)
+        leagueService.modifySeasonEndTimeBySlug(fedId, leagueSlug, oldYear, leagueSeason.endTime)
+        leagueService.modifySeasonYearBySlug(fedId, leagueSlug, oldYear, leagueSeason.id.seasonSlug)
 
-    println("MODIFIED SEASON PREV = " + oldYear + " NOW IS " + r.orNull + r.get.id.getSeasonSlug() + " / " + year)
-
-    return "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
-    return "redirect:" + getUrl("LeagueSeasonAdminController.edit", "slug" -> slug, "year" -> year)
+        new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> leagueSlug))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
 
   def delete(
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String
   ): ModelAndView = {
-    val leagueName = leagueService.findBySlug(federation.getId, slug).get.leagueName
-    val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
-    val submitUrl = getUrl("LeagueSeasonAdminController.postDelete", "slug" -> slug, "year" -> year)
-    val submitMethod = "POST"
 
-    new ModelAndView("admin/league/season/delete_confirm")
-      .addObject("hiddens", Map("slug" -> slug, "year" -> year).asJava)
-      .addObject("listLink", listLink)
-      .addObject("seasonName", year)
-      .addObject("leagueName", leagueName)
-      .addObject("submitUrl", submitUrl)
-      .addObject("submitMethod", submitMethod)
+    leagueService.findBySlug(federation.getId, slug).map {
+      leagueSeason =>
+        val listLink = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+        val submitUrl = getUrl("LeagueSeasonAdminController.postDelete", "slug" -> slug, "year" -> year)
+        val submitMethod = "POST"
+
+        new ModelAndView("admin/league/season/delete_confirm")
+          .addObject("hiddens", Map("slug" -> slug, "year" -> year).asJava)
+          .addObject("listLink", listLink)
+          .addObject("seasonName", year)
+          .addObject("leagueName", leagueSeason.leagueName)
+          .addObject("submitUrl", submitUrl)
+          .addObject("submitMethod", submitMethod)
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
 
   def postDelete(
     @RequestParam("slug") slug: String,
     @RequestParam("year") year: String
-  ): String = {
+  ): ModelAndView = {
 
     var result = leagueService.removeSeasonBySlug(federation.getId, slug, year)
 
-    "redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+    if (result)
+      new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.list", "slug" -> slug))
+    else
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
   }
 
   def enrollTeamInSeason(
@@ -219,40 +264,41 @@ class LeagueSeasonAdminController extends UrlGrabber {
   ): ModelAndView = {
 
     val fedId: Long = federation.getId
-    // TODO remove these parameters
-    val startIndex: Int = 0
-    val count: Int = 10
 
-    val leagueSeasonId: LeagueSeasonPK =
-      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
-        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+      season =>
+        val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
-    val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+        val acceptUrl: String = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+        val submitUrl: String = getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "slug" -> slug, "year" -> year)
+        val submitMethod: String = "POST"
 
-    // TODO Modify accept url
-    val acceptUrl: String = getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
-    val submitUrl: String = getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost", "slug" -> slug, "year" -> year)
-    val submitMethod: String = "POST"
+        val sv = (slug, year)
 
-    val sv = (slug, year)
+        // TODO Modify -> find by federation (now it returns all teams)
+        // All teams in federation
+        val fullList: Seq[ActionableTeam with TeamEnrollLinks] =
+          teamService.findTeamsByFederationId(fedId).map(team =>
+            new ActionableTeam(team, hasPermissions) with TeamEnrollLinks {
+              val (slug, year) = sv
+            })
 
-    // TODO Modify -> find by federation (now it returns all teams)
-    val fullList: Seq[ActionableTeam with TeamEnrollLinks] =
-      teamService.findTeamsByFederationId(fedId, startIndex, count).map(team =>
-        new ActionableTeam(team, hasPermissions) with TeamEnrollLinks {
-          val (slug, year) = sv
-        })
+        // Only registered elements in league season
+        val registeredList: Seq[ActionableCompetitionMember] =
+          leagueService.findCompetitionMembersByLeagueSeasonId(season.id).map(cm => new ActionableCompetitionMember(cm, slug, year))
 
-    // TODO Modify -> only registered elements
-    val registeredList: Seq[ActionableCompetitionMember] =
-      leagueService.findCompetitionMembersByLeagueSeasonId(leagueSeasonId).map(cm => new ActionableCompetitionMember(cm, slug, year))
-
-    new ModelAndView("admin/league/season/enrollTeam")
-      .addObject("fullList", fullList.asJava)
-      .addObject("registeredList", registeredList.asJava)
-      .addObject("submitMethod", submitMethod)
-      .addObject("submitUrl", submitUrl)
-      .addObject("acceptUrl", acceptUrl)
+        new ModelAndView("admin/league/season/enrollTeam")
+          .addObject("leagueSeason", season)
+          .addObject("fullList", fullList.asJava)
+          .addObject("registeredList", registeredList.asJava)
+          .addObject("submitMethod", submitMethod)
+          .addObject("submitUrl", submitUrl)
+          .addObject("acceptUrl", acceptUrl)
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
 
   }
 
@@ -264,12 +310,39 @@ class LeagueSeasonAdminController extends UrlGrabber {
 
     val fedId: Long = federation.getId
 
-    val leagueSeasonId: LeagueSeasonPK =
-      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
-        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+      leagueSeason =>
+        Try(leagueService.registerTeamInSeason(leagueSeason.id, teamId)) match {
+          case Success(cm) =>
+            new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+          case Failure(e) =>
+            val cause: Throwable = e.getCause()
 
-    val compMember: CompetitionMember = leagueService.registerTeamInSeason(leagueSeasonId, teamId)
-    new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+            if (cause.isInstanceOf[DuplicateInstanceException])
+              return new ModelAndView("redirect:" +
+                getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+
+            if ((cause.isInstanceOf[InstanceNotFoundException])) {
+              if (e.asInstanceOf[InstanceNotFoundException].getClassName == "LeagueSeason")
+                return new ModelAndView("error/show")
+                  .addObject("errorTitle", i.t("League season not found"))
+                  .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+
+              if (e.asInstanceOf[InstanceNotFoundException].getClassName == "Team")
+                return new ModelAndView("error/show")
+                  .addObject("errorTitle", i.t("Team not found"))
+                  .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+
+            }
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Unexpected error"))
+              .addObject("errorDescription", e.getCause())
+        }
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
 
   def disenrollTeamInSeasonPost(
@@ -279,12 +352,22 @@ class LeagueSeasonAdminController extends UrlGrabber {
   ): ModelAndView = {
 
     val fedId: Long = federation.getId
-    val leagueSeasonId: LeagueSeasonPK =
-      leagueService.findSeasonByLeagueSlug(fedId, slug, year).map(season => season.id)
-        .getOrElse(throw new InstanceNotFoundException("League Season not found"))
-
-    leagueService.removeTeamFromSeason(leagueSeasonId, teamId)
-    new ModelAndView("redirect:" + getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+      leagueSeason =>
+        Try(leagueService.removeTeamFromSeason(leagueSeason.id, teamId)) match {
+          case Success(cm) =>
+            new ModelAndView("redirect:" +
+              getUrl("LeagueSeasonAdminController.enrollTeamInSeason", "slug" -> slug, "year" -> year))
+          case Failure(e) =>
+            new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Competition member not found"))
+              .addObject("errorDescription", i.t("Sorry!, this competition member doesn't exist"))
+        }
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
-
 }
+
