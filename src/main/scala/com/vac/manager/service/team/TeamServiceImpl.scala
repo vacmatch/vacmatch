@@ -58,8 +58,8 @@ class TeamServiceImpl extends TeamService {
     optionTeam
   }
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
-    teamDao.findTeamsByFederationId(fedId, startIndex, count)
+  def findTeamsByFederationId(fedId: Long): Seq[Team] = {
+    teamDao.findTeamsByFederationId(fedId)
   }
 
   def findAllTeams(): Seq[Team] = {

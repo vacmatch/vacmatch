@@ -16,11 +16,10 @@ class PersonDaoJPA
     extends GenericDaoJPA[Person, java.lang.Long](classOf[Person])
     with PersonDao {
 
-  def findByName(name: String, startIndex: Int,
-    count: Int): Seq[Person] = {
+  def findByName(name: String): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.name LIKE :name OR s.surname LIKE :name", classOf[Person]
+        "WHERE LOWER(s.name) LIKE LOWER(:name) OR LOWER(s.surname) LIKE LOWER(:name)", classOf[Person]
     )
       .setParameter("name", "%" + name + "%")
 
@@ -37,20 +36,20 @@ class PersonDaoJPA
     query.getResultList().asScala
   }
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
+  def findByEmail(email: String): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.email LIKE :email", classOf[Person]
+        "WHERE LOWER(s.email) LIKE LOWER(:email)", classOf[Person]
     )
       .setParameter("email", "%" + email + "%")
 
     query.getResultList().asScala
   }
 
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person] = {
+  def findByCardId(cardId: String): Seq[Person] = {
     var query = getEntityManager().createQuery(
       "SELECT s FROM Person s " +
-        "WHERE s.cardId LIKE :cardIdFirst OR s.cardId LIKE :cardIdSecond", classOf[Person]
+        "WHERE LOWER(s.cardId) LIKE LOWER(:cardIdFirst) OR LOWER(s.cardId) LIKE LOWER(:cardIdSecond)", classOf[Person]
     )
       .setParameter("cardIdFirst", "%" + cardId)
       .setParameter("cardIdSecond", cardId + "%")

@@ -13,11 +13,11 @@ trait PersonService {
 
   def findAllByFederationId(fedId: Long): Seq[Person]
 
-  def findByName(name: String, startIndex: Int, count: Int): Seq[Person]
+  def findByName(name: String): Seq[Person]
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person]
+  def findByEmail(email: String): Seq[Person]
 
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person]
+  def findByCardId(cardId: String): Seq[Person]
 
   @throws[InstanceNotFoundException]
   def changePrivacy(personId: Long, newState: Boolean, newAlias: String): Person

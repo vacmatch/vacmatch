@@ -23,7 +23,7 @@ class TeamDaoJPA
       .asInstanceOf[Team]
   }
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
+  def findTeamsByFederationId(fedId: Long): Seq[Team] = {
     getEntityManager().createQuery(
       // TODO Modify this to return only teams in this federation
       "SELECT t FROM Team t ", classOf[Team]

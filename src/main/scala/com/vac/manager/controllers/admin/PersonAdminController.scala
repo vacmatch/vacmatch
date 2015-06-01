@@ -93,27 +93,21 @@ class PersonAdminController extends UrlGrabber {
     )
     val actionsMenu = if (userCanEdit) anonymousActionsMenu ++ authenticatedActionsMenu else anonymousActionsMenu
 
-    val startIndex: Int = 0
-    val count: Int = 10
-
     var personList: Seq[ActionablePerson] = Nil
 
     if (byName.nonEmpty)
       personList = personService.findByName(
-        byName,
-        startIndex, count
+        byName
       ).map(new ActionablePerson(_, userCanEdit))
 
     if (byCardId.nonEmpty)
       personList = personService.findByCardId(
-        byCardId,
-        startIndex, count
+        byCardId
       ).map(new ActionablePerson(_, userCanEdit))
 
     if (byEmail.nonEmpty)
       personList = personService.findByEmail(
-        byEmail,
-        startIndex, count
+        byEmail
       ).map(new ActionablePerson(_, userCanEdit))
 
     if (byAllPerson)

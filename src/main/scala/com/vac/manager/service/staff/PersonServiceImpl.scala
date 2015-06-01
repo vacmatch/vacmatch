@@ -38,16 +38,16 @@ class PersonServiceImpl extends PersonService {
     personDao.findAllByFederationId(fedId)
   }
 
-  def findByName(name: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByName(name, startIndex, count)
+  def findByName(name: String): Seq[Person] = {
+    personDao.findByName(name)
   }
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByEmail(email, startIndex, count)
+  def findByEmail(email: String): Seq[Person] = {
+    personDao.findByEmail(email)
   }
 
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByCardId(cardId, startIndex, count)
+  def findByCardId(cardId: String): Seq[Person] = {
+    personDao.findByCardId(cardId)
   }
 
   @throws[InstanceNotFoundException]
