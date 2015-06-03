@@ -10,7 +10,7 @@ import com.vac.manager.model.game.Game
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.persistence.Entity
 import javax.persistence.Table
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Calendar
 import com.vac.manager.model.team.Team
 import com.vac.manager.service.team.TeamService
@@ -66,7 +66,7 @@ class SoccerActServiceImpl extends SoccerActService {
     findGameAct(game.gameId).map {
       act =>
         {
-          throw new DuplicateInstanceException("Existing soccer act")
+          throw new DuplicateInstanceException(act, "SoccerAct")
         }
     }.getOrElse {
       val act = new SoccerAct(game)
@@ -82,7 +82,7 @@ class SoccerActServiceImpl extends SoccerActService {
         {
           soccerActDao.remove(act)
         }
-    }.getOrElse(throw new DuplicateInstanceException("Existing soccer act"))
+    }.getOrElse(throw new InstanceNotFoundException(gameId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If local, visitor team or act doesn't exist")
@@ -98,8 +98,8 @@ class SoccerActServiceImpl extends SoccerActService {
           val visitorTeam: Team = teamService.find(visitorTeamId)
             .orNull
 
-          val oldLocal: Option[Team] = Option(act.localTeam)
-          val oldVisitor: Option[Team] = Option(act.visitorTeam)
+          val oldLocal: Team = act.localTeam
+          val oldVisitor: Team = act.visitorTeam
 
           act.date = date
           act.location = location
@@ -126,7 +126,7 @@ class SoccerActServiceImpl extends SoccerActService {
 
           act
         }
-    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(actId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If team or act doesn't exist")
@@ -149,7 +149,7 @@ class SoccerActServiceImpl extends SoccerActService {
         soccerStaffStatsService.removeVisitorStats(act.actId)
 
         act
-    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(gameId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
@@ -170,7 +170,7 @@ class SoccerActServiceImpl extends SoccerActService {
       soccerActDao.save(act)
 
       act
-    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(gameId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
@@ -191,7 +191,7 @@ class SoccerActServiceImpl extends SoccerActService {
       soccerActDao.save(act)
 
       act
-    }.getOrElse(throw new InstanceNotFoundException("Soccer act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(gameId, "SoccerAct"))
   }
 
 }

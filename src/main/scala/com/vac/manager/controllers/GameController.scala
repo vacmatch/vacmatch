@@ -29,9 +29,13 @@ import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
 import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vacmatch.util.i18n.I18n
 
 @Controller
 class GameController extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var gameService: GameService = _
@@ -85,7 +89,11 @@ class GameController extends UrlGrabber {
             .addObject("matchDayList", sortedActsMap.asJava)
             .addObject("actFragment", actFragment)
         }
-      }.getOrElse(throw new NoSuchElementException("League Season not found"))
+      }.getOrElse {
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("League season not found"))
+          .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+      }
   }
 
   def show(
@@ -130,8 +138,16 @@ class GameController extends UrlGrabber {
                 .addObject("visitorStaff", visitorStaff.asJava)
                 .addObject("calendarLink", calendarLink)
             }
-        }.getOrElse(throw new NoSuchElementException("Act not found"))
-    }.getOrElse(throw new NoSuchElementException("Game not found"))
+        }.getOrElse {
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Soccer act not found"))
+            .addObject("errorDescription", i.t("Sorry!, this soccer act doesn't exist"))
+        }
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Game not found"))
+        .addObject("errorDescription", i.t("Sorry!, this game doesn't exist"))
+    }
   }
 
   def showClassification(
@@ -155,7 +171,11 @@ class GameController extends UrlGrabber {
           .addObject("leagueSeason", leagueSeason)
           .addObject("sportFragment", sportFragment)
           .addObject("sportInstance", sportInstance)
-    }.getOrElse(throw new NoSuchElementException("Season not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+    }
   }
 
 }

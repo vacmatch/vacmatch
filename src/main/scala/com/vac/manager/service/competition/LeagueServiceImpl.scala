@@ -35,7 +35,7 @@ class LeagueServiceImpl extends LeagueService {
     l.slug = slug
 
     if (leagueDao.findBySlug(fedId, slug).isDefined)
-      throw new DuplicateInstanceException("Duplicated slug for league")
+      throw new DuplicateInstanceException(slug, "Slug")
 
     leagueDao.save(l)
 
@@ -226,7 +226,7 @@ class LeagueServiceImpl extends LeagueService {
         findSeasonByLeagueSlug(leagueSeasonId.league.fedId, leagueSeasonId.league.slug, leagueSeasonId.seasonSlug).map {
           league =>
             {
-              findCompetitionMember(leagueSeasonId, teamId).map(compMember => throw new DuplicateInstanceException("Existing Competition Member"))
+              findCompetitionMember(leagueSeasonId, teamId).map(compMember => throw new DuplicateInstanceException(compMember, "CompetitionMember"))
 
               val compMember = new CompetitionMember(Calendar.getInstance, league, team)
               competitionMemberDao.save(compMember)

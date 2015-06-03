@@ -206,7 +206,7 @@ class TeamServiceImpl extends TeamService {
       }
       case Some(staffMember) => {
         // Throw
-        throw new DuplicateInstanceException("Existing StaffMember have been found")
+        throw new DuplicateInstanceException(staffMember, "StaffMember")
       }
     }
   }

@@ -10,7 +10,7 @@ import javax.persistence.Table
 import com.vac.manager.service.game.soccer.SoccerStaffStatsService
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.service.team.TeamService
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.team.Team
 import java.util.Calendar
 import scala.collection.JavaConverters._
@@ -61,14 +61,14 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     soccerActService.find(actId).map {
       act =>
         if (Option(act.localTeam).isEmpty)
-          throw new InstanceNotFoundException("Local team doesn't exist")
+          throw new InstanceNotFoundException(act.localTeam, "Team")
 
         teamService.findCurrentStaffMemberListByTeam(act.localTeam.teamId).map {
           staffMember =>
             val stats = new SoccerStaffStats(act, staffMember)
             soccerStatsDao.save(stats)
         }
-    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(actId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
@@ -76,14 +76,14 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
     soccerActService.find(actId).map {
       act =>
         if (Option(act.visitorTeam).isEmpty)
-          throw new InstanceNotFoundException("Visitor team doesn't exist")
+          throw new InstanceNotFoundException(act.visitorTeam, "Team")
 
         teamService.findCurrentStaffMemberListByTeam(act.visitorTeam.teamId).map {
           staffMember =>
             val stats = new SoccerStaffStats(act, staffMember)
             soccerStatsDao.save(stats)
         }
-    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(actId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If stats doesn't exist")
@@ -96,7 +96,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
         stats.secondYellowCard = secondYellowCard
         stats.redCard = redCard
         stats.goals = goals.asJava
-    }.getOrElse(throw new InstanceNotFoundException("Stats not found"))
+    }.getOrElse(throw new InstanceNotFoundException(statsId, "SoccerStaffStats"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
@@ -107,7 +107,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
           stats =>
             soccerStatsDao.remove(stats)
         }
-    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(actId, "SoccerAct"))
   }
 
   @throws[InstanceNotFoundException]("If act doesn't exist")
@@ -118,7 +118,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
           stats =>
             soccerStatsDao.remove(stats)
         }
-    }.getOrElse(throw new InstanceNotFoundException("Act not found"))
+    }.getOrElse(throw new InstanceNotFoundException(actId, "SoccerAct"))
   }
 
   def callUpStaff(statsId: Long): SoccerStaffStats = {
@@ -127,7 +127,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
         stats.isCalledUp = true
         soccerStatsDao.save(stats)
         stats
-    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+    }.getOrElse(throw new InstanceNotFoundException(statsId, "SoccerStaffStats"))
   }
 
   def unCallUpStaff(statsId: Long): SoccerStaffStats = {
@@ -136,7 +136,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
         stats.isCalledUp = false
         soccerStatsDao.save(stats)
         stats
-    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+    }.getOrElse(throw new InstanceNotFoundException(statsId, "SoccerStaffStats"))
   }
 
   def setStaff(statsId: Long, position: String): SoccerStaffStats = {
@@ -146,7 +146,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
         stats.staffPosition = position
         soccerStatsDao.save(stats)
         stats
-    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+    }.getOrElse(throw new InstanceNotFoundException(statsId, "SoccerStaffStats"))
   }
 
   def unSetStaff(statsId: Long): SoccerStaffStats = {
@@ -157,7 +157,7 @@ class SoccerStaffStatsServiceImpl extends SoccerStaffStatsService {
 
         soccerStatsDao.save(stats)
         stats
-    }.getOrElse(throw new InstanceNotFoundException("Soccer Staff Stats not found"))
+    }.getOrElse(throw new InstanceNotFoundException(statsId, "SoccerStaffStats"))
   }
 
 }
