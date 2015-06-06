@@ -3,15 +3,14 @@ package com.vac.manager.model.team
 import org.springframework.stereotype.Repository
 import com.vac.manager.model.generic.GenericDaoJPA
 import javax.persistence.Query
-import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.generic.exceptions.NotImplementedException
 import scala.collection.JavaConverters._
 import com.vac.manager.model.competition.LeagueSeasonPK
 
 @Repository("teamDao")
 class TeamDaoJPA
-    extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
-    with TeamDao {
+  extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
+  with TeamDao {
 
   def findByTeamName(teamName: String): Team = {
     getEntityManager().createQuery(

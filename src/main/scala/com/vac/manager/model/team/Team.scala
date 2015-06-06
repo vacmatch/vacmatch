@@ -3,7 +3,6 @@ package com.vac.manager.model.team
 import javax.persistence._
 import scala.beans.BeanProperty
 import java.util.Calendar
-import com.vac.manager.model.competition.Competition
 import javax.persistence.metamodel.StaticMetamodel
 import com.vac.manager.model.personal.Address
 import com.vac.manager.model.staff.StaffMember
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "TEAM")
 class Team(name: String, publicName: String, date: Calendar, address: Address,
-    web: String, telephones: String) {
+  web: String, telephones: String) {
 
   @Id
   @SequenceGenerator(name = "teamIdGenerator", sequenceName = "team_id_seq")

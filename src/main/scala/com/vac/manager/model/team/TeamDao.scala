@@ -1,7 +1,6 @@
 package com.vac.manager.model.team
 
 import com.vac.manager.model.generic.GenericDao
-import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.competition.LeagueSeasonPK
 
 trait TeamDao extends GenericDao[Team, java.lang.Long] {

@@ -8,14 +8,12 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import java.util.Calendar
 import com.vac.manager.model.staff.Person
-import com.vac.manager.model.competition.Competition
 import scala.collection.JavaConverters._
 import com.vac.manager.model.personal.Address
 import org.springframework.transaction.annotation.Transactional
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
-import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.model.staff.StaffMember
 import java.util.Arrays.ArrayList
 import java.util.ArrayList
@@ -39,9 +37,6 @@ class TeamServiceImpl extends TeamService {
 
   @Autowired
   var personService: PersonService = _
-
-  @Autowired
-  var competitionService: CompetitionService = _
 
   def find(teamId: Long): Option[Team] = {
     teamDao.findById(teamId)
