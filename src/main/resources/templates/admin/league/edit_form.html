@@ -22,22 +22,24 @@
 
         <form id="leagueForm" th:action="${submitUrl}" class="form-horizontal"
               th:method="${submitMethod}" th:object="${league}">
-          <input th:each="h: ${hiddens.entrySet()}" type="hidden"
+          <input th:each="h: ${hiddens}" type="hidden"
                  th:name="${h.getKey()}" th:value="${h.getValue()}" />
 
-          <div class="form-group">
+          <div class="form-group" th:classappend="${#fields.hasErrors('leagueName')} ? has-error">
             <label class="col-sm-3 control-label" for="name">t("League Name")</label>
             <div class="col-sm-9">
               <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{leagueName}" />
               <i18n:attr name="placeholder">t("Name")</i18n:attr>
+              <span class="text-danger" th:if="${#fields.hasErrors('*{leagueName}')}">t("League name not valid")</span>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" th:classappend="${#fields.hasErrors('slug')} ? has-error">
             <label class="col-sm-3 control-label" for="slug">t("League slug")</label>
             <div class="col-sm-9">
               <input class="form-control" id="slug" type="text" placeholder="Slug" th:field="*{slug}" />
               <i18n:attr name="placeholder">t("Slug")</i18n:attr>
+              <span class="text-danger" th:errors="*{slug}">t("Slug not valid")</span>
             </div>
           </div>
 

@@ -1,11 +1,11 @@
 package com.vac.manager.model.generic.exceptions
 
-class DuplicateInstanceException(message: String, nestedException: Throwable) extends Exception(message, nestedException) {
-
-  def this() = this("DuplicateInstanceException", null)
-
-  def this(message: String) = this(message, null)
-
-  def this(nestedException: Throwable) = this("", nestedException)
-
+class DuplicateInstanceException(
+  key: Any,
+  className: String
+)
+    extends InstanceException("Duplicate instance", key, className) {
+  def getKey = key
+  def getClassName = className
 }
+

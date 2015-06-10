@@ -27,14 +27,14 @@
         <div class="form-group">
           <label class="col-sm-3 control-label" for="teams">t("Number of teams")</label>
           <div class="col-sm-2">
-            <input class="form-control" id="teams" type="Number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}"/>
+            <input class="form-control" id="teams" type="number" placeholder="Number of teams" th:name="teamsNumber" th:value="${teamsNumber}?:1" min="1"/>
             <i18n:attr name="placeholder">tc("placeholder", "Number of teams")</i18n:attr>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="rounds">t("Number of rounds")</label>
           <div class="col-sm-2">
-            <input class="form-control" id="rounds" type="Number" placeholder="Number of rounds" th:name="leagueRounds" th:value="${leagueRounds}"/>
+            <input class="form-control" id="rounds" type="number" placeholder="Number of rounds" th:name="leagueRounds" th:value="${leagueRounds}?:1" min="1"/>
             <i18n:attr name="placeholder">tc("placeholder", "Number of rounds")</i18n:attr>
           </div>
         </div>

@@ -21,14 +21,18 @@ class ActionableTeam(val team: Team, val userCanEdit: Boolean)
   sponsorsList = team.sponsorsList
 
   @BeanProperty
-  val anonymousLinks = List(Hyperlink("Show team", getShowLink, "btn-primary"),
-    Hyperlink("Show staff members", getShowStaffMembersLink, "btn-default")).asJava
+  val anonymousLinks = List(
+    Hyperlink("Show team", getShowLink, "btn-primary"),
+    Hyperlink("Show staff members", getShowStaffMembersLink, "btn-default")
+  ).asJava
 
   @BeanProperty
   val authorizedLinks = if (!userCanEdit) List().asJava else {
-    List(Hyperlink("Edit team", getEditLink, "btn-default"),
+    List(
+      Hyperlink("Edit team", getEditLink, "btn-default"),
       Hyperlink("Assing staff", getAssignStaffLink, "btn-default"),
-      Hyperlink("Delete team", getDeleteLink, "btn-default")).asJava
+      Hyperlink("Delete team", getDeleteLink, "btn-default")
+    ).asJava
   }
 
   @BeanProperty
@@ -52,7 +56,9 @@ trait TeamEnrollLinks {
   val year: String
 
   def getEnrollPostLink(): String = {
-    getUrl("LeagueSeasonAdminController.enrollTeamInSeasonPost",
-      "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
+    getUrl(
+      "LeagueSeasonAdminController.enrollTeamInSeasonPost",
+      "teamId" -> team.teamId, "slug" -> slug, "year" -> year
+    )
   }
 }

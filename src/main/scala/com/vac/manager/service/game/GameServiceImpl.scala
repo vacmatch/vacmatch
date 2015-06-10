@@ -8,7 +8,8 @@ import com.vac.manager.service.competition.LeagueService
 import com.vac.manager.model.competition.LeagueSeason
 import javax.transaction.Transactional
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.model.game.SoccerClassificationEntry
 import com.vac.manager.service.team.TeamService
@@ -39,8 +40,6 @@ class GameServiceImpl extends GameService {
 
   def createCalendar[A](teamsNumber: Int, creator: ((Int, A) => Seq[Game]), args: A): Seq[Game] = {
     val games: Seq[Game] = creator(teamsNumber, args)
-    if (games.isEmpty)
-      throw new RuntimeException("No games were created")
 
     games.map { game =>
       // TODO Create act depending on the sport
@@ -66,10 +65,10 @@ class GameServiceImpl extends GameService {
         leagueSeason.id.league.slug,
         leagueSeason.id.seasonSlug
       ).isEmpty)
-        throw new InstanceNotFoundException("League season not found")
+        throw new InstanceNotFoundException(leagueSeason.id, "LeagueSeason")
 
       if (findLeagueCalendar(leagueSeason).nonEmpty)
-        throw new DuplicateInstanceException("Existent calendar for this league season")
+        throw new DuplicateInstanceException(leagueSeason.id, "LeagueCalendar")
 
       // Calculate the total number of games
       var gamesNumber: Int = ((leagueRounds * teamsNumber) - leagueRounds) * teamsNumber / 2
@@ -89,11 +88,17 @@ class GameServiceImpl extends GameService {
         .map(game => (game - 1) / gameDaySize)
         .map(gameDay => new Game(leagueSeason, gameDay + 1))
     } else {
-      throw new IllegalArgumentException()
+      if (Option(leagueSeason).isEmpty)
+        throw new IllegalArgumentException(leagueSeason, "LeagueSeason")
+      if (teamsNumber <= 0)
+        throw new IllegalArgumentException(teamsNumber, "TeamsNumber")
+      //if (leagueRounds <= 0)
+      throw new IllegalArgumentException(leagueRounds, "LeagueRounds")
+
     }
   }
 
-  @throws[IllegalArgumentException]
+  @throws[InstanceNotFoundException]
   def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason) = {
     Option(leagueSeason).map { ls =>
       gameDao.findAllBySeason(ls.id).map {
@@ -104,7 +109,7 @@ class GameServiceImpl extends GameService {
             gameDao.remove(game)
           }
       }
-    }.getOrElse(throw new IllegalArgumentException("Invalid league season parameter"))
+    }.getOrElse(throw new InstanceNotFoundException(leagueSeason, "LeagueSeason"))
   }
 
   def getLeagueClassification(leagueSeason: LeagueSeason): Seq[SoccerClassificationEntry] = {

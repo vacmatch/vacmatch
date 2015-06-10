@@ -3,6 +3,8 @@ package com.vac.manager.model.competition
 import java.util.Calendar
 import javax.persistence._
 import scala.beans.BeanProperty
+import javax.validation.constraints.Size
+import javax.validation.constraints.NotNull
 
 @Entity
 @Table(
@@ -23,10 +25,14 @@ class League {
   var fedId: java.lang.Long = _
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var leagueName: String = _
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var slug: String = _
 

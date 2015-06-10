@@ -2,7 +2,6 @@ package com.vac.manager.service.game
 
 import com.vac.manager.model.game.Game
 import com.vac.manager.model.competition.LeagueSeason
-import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import javax.management.InstanceNotFoundException
 import com.vac.manager.model.game.SoccerClassificationEntry
 
@@ -23,7 +22,6 @@ trait GameService {
     * @return The full list of matches for the season
     */
   @throws[IllegalArgumentException]
-  @throws[DuplicateInstanceException]
   @throws[InstanceNotFoundException]
   def createLeagueCalendar(leagueSeason: LeagueSeason, teamsNumber: Int, leagueRounds: Int): Seq[Game]
 

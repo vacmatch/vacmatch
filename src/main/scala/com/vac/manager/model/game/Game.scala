@@ -25,7 +25,8 @@ class Game(leaSea: LeagueSeason, gameDay: Int) {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumns(Array(
     new JoinColumn(name = "league.id"),
-    new JoinColumn(name = "seasonSlug")))
+    new JoinColumn(name = "seasonSlug")
+  ))
   var leagueSeason: LeagueSeason = leaSea
 
   @BeanProperty

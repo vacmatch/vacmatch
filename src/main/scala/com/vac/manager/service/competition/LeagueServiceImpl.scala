@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 import scala.collection.JavaConverters.asScalaBufferConverter
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.competition.CompetitionMember
-import javax.management.InstanceNotFoundException
 import com.vac.manager.model.competition.CompetitionMemberDao
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 @Service("leagueService")
 @Transactional
@@ -35,7 +35,7 @@ class LeagueServiceImpl extends LeagueService {
     l.slug = slug
 
     if (leagueDao.findBySlug(fedId, slug).isDefined)
-      throw new DuplicateInstanceException("Duplicated slug for league")
+      throw new DuplicateInstanceException(slug, "Slug")
 
     leagueDao.save(l)
 
@@ -98,7 +98,10 @@ class LeagueServiceImpl extends LeagueService {
 
   def createSeason(fedId: Long, slug: String, year: String, startTime: Calendar, endTime: Calendar): LeagueSeason = {
     val l = findBySlug(fedId, slug)
-    if (l.isEmpty) throw new NoSuchFieldError()
+    if (l.isEmpty) throw new InstanceNotFoundException("FedId: " + fedId + " Slug: " + slug, "League")
+
+    if (Option(startTime).isEmpty)
+      throw new com.vac.manager.model.generic.exceptions.IllegalArgumentException(startTime, "startTime")
 
     val s = new LeagueSeason()
     s.id = new LeagueSeasonPK()
@@ -223,14 +226,14 @@ class LeagueServiceImpl extends LeagueService {
         findSeasonByLeagueSlug(leagueSeasonId.league.fedId, leagueSeasonId.league.slug, leagueSeasonId.seasonSlug).map {
           league =>
             {
-              findCompetitionMember(leagueSeasonId, teamId).map(compMember => throw new DuplicateInstanceException("Existing Competition Member"))
+              findCompetitionMember(leagueSeasonId, teamId).map(compMember => throw new DuplicateInstanceException(compMember, "CompetitionMember"))
 
               val compMember = new CompetitionMember(Calendar.getInstance, league, team)
               competitionMemberDao.save(compMember)
               compMember
             }
-        }.getOrElse(throw new InstanceNotFoundException("League Season not found"))
-    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+        }.getOrElse(throw new InstanceNotFoundException(leagueSeasonId, "LeagueSeason"))
+    }.getOrElse(throw new InstanceNotFoundException(teamId, "Team"))
   }
 
   @throws[InstanceNotFoundException]
@@ -242,7 +245,7 @@ class LeagueServiceImpl extends LeagueService {
           competitionMemberDao.save(compMember)
           compMember
         }
-    }.getOrElse(throw new InstanceNotFoundException("Competition Member with SeasonId: " + leagueSeasonId + " and TeamId: " + teamId + " not found"))
+    }.getOrElse(throw new InstanceNotFoundException("leagueSeasonId:" + leagueSeasonId + "teamId: " + teamId, "CompetitionMember"))
   }
 
 }

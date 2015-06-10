@@ -88,7 +88,8 @@ class FederationCRUDController extends UrlGrabber {
 
   def createPost(
     @RequestParam("fedName") fedName: String,
-    @RequestParam("dns") dnsTextArea: String): String = {
+    @RequestParam("dns") dnsTextArea: String
+  ): String = {
     val domains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
 
     federationService.createFederation(fedName, domains)
@@ -99,7 +100,8 @@ class FederationCRUDController extends UrlGrabber {
 
   def editPost(
     @ModelAttribute fed: Federation,
-    @RequestParam("dns") dnsTextArea: String): String = {
+    @RequestParam("dns") dnsTextArea: String
+  ): String = {
     federationService.modifyFederationName(fed.fedId, fed.fedName)
 
     val prevDomains = federationService.findDomainNames(fed.fedId)

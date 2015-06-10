@@ -16,7 +16,8 @@ class SoccerStaffStatsDaoJPA
       "SELECT s FROM SoccerStaffStats s " +
         "WHERE s.act.id = :actId " +
         "AND s.act.localTeam = s.staffMember.staffTeam " +
-        "ORDER BY s.isCalledUp DESC", classOf[SoccerStaffStats])
+        "ORDER BY s.isCalledUp DESC", classOf[SoccerStaffStats]
+    )
       .setParameter("actId", actId)
 
     query.getResultList().asScala
@@ -27,7 +28,8 @@ class SoccerStaffStatsDaoJPA
       "SELECT s FROM SoccerStaffStats s " +
         "WHERE s.act.id = :actId " +
         "AND s.act.visitorTeam = s.staffMember.staffTeam " +
-        "ORDER BY s.isCalledUp DESC", classOf[SoccerStaffStats])
+        "ORDER BY s.isCalledUp DESC", classOf[SoccerStaffStats]
+    )
       .setParameter("actId", actId)
 
     query.getResultList().asScala

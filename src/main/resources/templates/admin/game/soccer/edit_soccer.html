@@ -86,7 +86,7 @@
                 </select>
               </div>
               <div class="col-sm-1">
-                <input class="form-control" id="localResult" type="number" th:field="*{localResult}" />
+                <input class="form-control" id="localResult" type="number" th:field="*{localResult}" min="0" />
               </div>
               <div class="col-sm-3">
                 <select class="form-control" id="visitorTeam" th:field="*{visitorTeam.teamId}">
@@ -96,7 +96,7 @@
                 </select>
               </div>
               <div class="col-sm-1">
-                <input class="form-control" id="visitorResult" type="number" th:field="*{visitorResult}" />
+                <input class="form-control" id="visitorResult" type="number" th:field="*{visitorResult}" min="0" />
               </div>
             </div>
 

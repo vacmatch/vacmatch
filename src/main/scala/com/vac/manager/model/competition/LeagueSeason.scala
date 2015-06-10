@@ -3,6 +3,9 @@ package com.vac.manager.model.competition
 import java.util.Calendar
 import javax.persistence._
 import scala.beans.BeanProperty
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
+import javax.validation.Valid
 
 @Embeddable
 class LeagueSeasonPK extends Serializable {
@@ -12,6 +15,8 @@ class LeagueSeasonPK extends Serializable {
   var league: League = _
 
   @BeanProperty
+  @NotNull
+  @Size(min = 1)
   @Column(nullable = false)
   var seasonSlug: String = _ // Something like: 2012, or maybe "XIII"
 
@@ -26,10 +31,12 @@ class LeagueSeasonPK extends Serializable {
 class LeagueSeason extends Serializable {
 
   @EmbeddedId
+  @Valid
   @BeanProperty
   var id: LeagueSeasonPK = _
 
   @BeanProperty
+  @NotNull
   @Column(nullable = false)
   @Temporal(TemporalType.DATE)
   var startTime: Calendar = _

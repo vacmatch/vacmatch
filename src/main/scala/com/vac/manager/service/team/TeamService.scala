@@ -17,7 +17,7 @@ trait TeamService {
 
   def findAllTeams(): Seq[Team]
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team]
+  def findTeamsByFederationId(fedId: Long): Seq[Team]
 
   def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team]
 

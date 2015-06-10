@@ -6,7 +6,7 @@ import com.vac.manager.model.game.Game
 import javax.persistence.Entity
 import javax.persistence.Table
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Calendar
 import com.vac.manager.model.game.SoccerClassificationEntry
 import com.vac.manager.model.competition.LeagueSeasonPK

@@ -11,7 +11,8 @@ class FederationDaoJpa extends GenericDaoJPA[Federation, java.lang.Long](classOf
   def findByName(fedName: String): Option[Federation] = {
     val fed = getEntityManager.createQuery(
       "SELECT f FROM Federation f " +
-        "WHERE f.fedName = :fedName", classOf[Federation])
+        "WHERE f.fedName = :fedName", classOf[Federation]
+    )
       .setParameter("fedName", fedName)
       .getResultList
 
@@ -25,7 +26,8 @@ class FederationDaoJpa extends GenericDaoJPA[Federation, java.lang.Long](classOf
   def findByDomainName(dns: String): Option[Federation] = {
     val fed = getEntityManager.createQuery(
       "SELECT dns.fed FROM FederationDomainName dns " +
-        "WHERE dns.dns = :servername ")
+        "WHERE dns.dns = :servername "
+    )
       .setParameter("servername", dns)
       .getResultList
 

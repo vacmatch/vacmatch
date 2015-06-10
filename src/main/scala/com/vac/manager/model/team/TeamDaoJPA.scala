@@ -16,22 +16,25 @@ class TeamDaoJPA
   def findByTeamName(teamName: String): Team = {
     getEntityManager().createQuery(
       "SELECT t FROM Team t " +
-        "WHERE t.teamName LIKE :teamName ")
+        "WHERE t.teamName LIKE :teamName "
+    )
       .setParameter("teamName", teamName)
       .getSingleResult()
       .asInstanceOf[Team]
   }
 
-  def findTeamsByFederationId(fedId: Long, startIndex: Int, count: Int): Seq[Team] = {
+  def findTeamsByFederationId(fedId: Long): Seq[Team] = {
     getEntityManager().createQuery(
       // TODO Modify this to return only teams in this federation
-      "SELECT t FROM Team t ", classOf[Team]).getResultList().asScala
+      "SELECT t FROM Team t ", classOf[Team]
+    ).getResultList().asScala
   }
 
   def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team] = {
     getEntityManager().createQuery(
       "SELECT cm.team FROM CompetitionMember cm " +
-        "WHERE cm.leagueSeason.id = :leagueSeasonId", classOf[Team])
+        "WHERE cm.leagueSeason.id = :leagueSeasonId", classOf[Team]
+    )
       .setParameter("leagueSeasonId", leagueSeasonId)
       .getResultList().asScala
   }
@@ -41,7 +44,8 @@ class TeamDaoJPA
       "SELECT count(tc.compId) FROM TEAM t " +
         "JOIN TEAM_COMPETITION tc " +
         "ON t.teamId = tc.teamId" +
-        "WHERE t.teamId = :teamId")
+        "WHERE t.teamId = :teamId"
+    )
       .setParameter("teamId", teamId)
       .getFirstResult()
 
@@ -54,7 +58,8 @@ class TeamDaoJPA
         "WHERE t.teamId IN ( SELECT tc.teamId " +
         "FROM COMPETITION c JOIN TEAM_COMPETITION tc " +
         "ON c.compId = tc.compId" +
-        "WHERE c.fedId = :fedId )")
+        "WHERE c.fedId = :fedId )"
+    )
       .setParameter("fedId", fedId)
       .getFirstResult()
       .asInstanceOf[Long]

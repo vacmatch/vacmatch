@@ -38,16 +38,16 @@ class PersonServiceImpl extends PersonService {
     personDao.findAllByFederationId(fedId)
   }
 
-  def findByName(name: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByName(name, startIndex, count)
+  def findByName(name: String): Seq[Person] = {
+    personDao.findByName(name)
   }
 
-  def findByEmail(email: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByEmail(email, startIndex, count)
+  def findByEmail(email: String): Seq[Person] = {
+    personDao.findByEmail(email)
   }
 
-  def findByCardId(cardId: String, startIndex: Int, count: Int): Seq[Person] = {
-    personDao.findByCardId(cardId, startIndex, count)
+  def findByCardId(cardId: String): Seq[Person] = {
+    personDao.findByCardId(cardId)
   }
 
   @throws[InstanceNotFoundException]
@@ -142,15 +142,12 @@ class PersonServiceImpl extends PersonService {
 
     val checkAgainstNull = List(
       ("Name", stName, classOf[String]),
-      ("Surname", stSurname, classOf[String]),
-      ("Card Id", stCardId, classOf[String]),
-      ("Birthdate", stBirth, classOf[Calendar])
+      ("Surname", stSurname, classOf[String])
     )
 
     val checkAgainstEmpty = List(
       ("Name", stName, classOf[String]),
-      ("Surname", stSurname, classOf[String]),
-      ("Card Id", stCardId, classOf[String])
+      ("Surname", stSurname, classOf[String])
     )
 
     checkAgainstNull.map {

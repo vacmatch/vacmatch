@@ -13,6 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import scala.collection.JavaConverters._
 import com.vac.manager.controllers.actionable.CrudLeague
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import org.springframework.validation.BindingResult
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.ModelAttribute
+import javax.validation.Valid
 
 @Controller
 @Layout("layouts/default_admin")
@@ -28,15 +36,21 @@ class LeagueAdminController extends UrlGrabber {
   var federation: FederationBean = _
 
   def show(
-    @RequestParam("slug") slug: String) = {
+    @RequestParam("slug") slug: String
+  ) = {
     val fedId = federation.getId
-    val league = leagueService.findBySlug(fedId, slug)
-
-    new ModelAndView("admin/league/show")
-      .addObject("league", league.get)
-      .addObject("leagueName", i.t("League %s", league.get.leagueName))
-      .addObject("createUrl", getUrl("LeagueAdminController.create"))
-      .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
+    leagueService.findBySlug(fedId, slug).map {
+      league =>
+        new ModelAndView("admin/league/show")
+          .addObject("league", league)
+          .addObject("leagueName", i.t("League %s", league.leagueName))
+          .addObject("createUrl", getUrl("LeagueAdminController.create"))
+          .addObject("listUrl", getUrl("LeagueSeasonController.listLeagues"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
   def create() = {
@@ -59,48 +73,82 @@ class LeagueAdminController extends UrlGrabber {
   }
 
   def postCreate(
-    @RequestParam("leagueName") leagueName: String,
-    @RequestParam("slug") slug: String): ModelAndView = {
-    val league = leagueService.createLeague(federation.getId, leagueName: String, slug)
+    @Valid @ModelAttribute("league") league: League,
+    result: BindingResult
+  ): ModelAndView = {
 
-    val mav = new ModelAndView("admin/league/show")
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/league/edit_form")
+        .addObject("action", i.t("Create league"))
+        .addObject("listLink", getUrl("LeagueSeasonController.listLeagues"))
+    }
 
-    mav.addObject("league", league)
+    Try(leagueService.createLeague(federation.getId, league.leagueName, league.slug)) match {
+      case Success(l) =>
+        new ModelAndView("redirect:" + getUrl("LeagueSeasonController.listLeagues"))
+      case Failure(e) =>
+        result.addError(new FieldError("league", "slug", league.slug, true, Array(), Array(), "Duplicate slug"))
+        new ModelAndView("admin/league/edit_form")
+          .addObject("action", i.t("Create league"))
+          .addObject("result", result)
+          .addObject("league", league)
+          .addObject("listLink", getUrl("LeagueSeasonController.listLeagues"))
+    }
   }
 
   def edit(
-    @RequestParam("slug") slug: String): ModelAndView = {
-    val league = leagueService.findBySlug(federation.getId, slug)
-    val submitUrl = getUrl("LeagueAdminController.postEdit")
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
 
-    val listLink = getUrl("LeagueSeasonController.listLeagues")
-    // TODO handle notfound league (Option=None)
+    leagueService.findBySlug(federation.getId, slug).map {
+      league =>
+        val submitUrl = getUrl("LeagueAdminController.postEdit", "oldSlug" -> slug)
 
-    new ModelAndView("admin/league/edit_form")
-      .addObject("league", league.get)
-      .addObject("listLink", listLink)
-      .addObject("hiddens", Map("oldslug" -> slug).asJava)
-      .addObject("action", i.t("Edit league"))
-      .addObject("submitUrl", submitUrl)
-      .addObject("submitMethod", "POST")
+        val listLink = getUrl("LeagueSeasonController.listLeagues")
+        // TODO handle notfound league (Option=None)
+
+        new ModelAndView("admin/league/edit_form")
+          .addObject("league", league)
+          .addObject("listLink", listLink)
+          .addObject("action", i.t("Edit league"))
+          .addObject("submitUrl", submitUrl)
+          .addObject("submitMethod", "POST")
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
   def postEdit(
-    @RequestParam("oldslug") oldSlug: String,
-    @RequestParam("leagueName") leagueName: String,
-    @RequestParam("slug") slug: String): String = {
+    @RequestParam("oldSlug") slug: String,
+    @Valid @ModelAttribute("league") league: League,
+    result: BindingResult
+  ): ModelAndView = {
+
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/league/edit_form")
+        .addObject("action", i.t("Edit league"))
+        .addObject("listLink", getUrl("LeagueSeasonController.listLeagues"))
+    }
+
     val fedId = federation.getId
 
-    leagueService modifyLeagueName (fedId, oldSlug, leagueName)
-    leagueService modifyLeagueSlug (fedId, oldSlug, slug)
+    val l1 = leagueService.modifyLeagueName(fedId, slug, league.leagueName)
+    val l2 = leagueService.modifyLeagueSlug(fedId, slug, league.slug)
 
-    val league = leagueService.findBySlug(fedId, slug)
-
-    "redirect:" + getUrl("LeagueSeasonController.listLeagues")
+    if (l1.nonEmpty && l2.nonEmpty) {
+      new ModelAndView("redirect:" + getUrl("LeagueSeasonController.listLeagues"))
+    } else {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
   def delete(
-    @RequestParam("slug") slug: String): ModelAndView = {
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
     val fedId = federation.getId
     val listLink = getUrl("LeagueSeasonController.listLeagues")
 
@@ -112,15 +160,24 @@ class LeagueAdminController extends UrlGrabber {
           .addObject("action", i.t("Delete league"))
           .addObject("submitUrl", getUrl("LeagueAdminController.postDelete"))
           .addObject("hiddens", Map("slug" -> slug).asJava)
-    }.getOrElse(throw new NoSuchElementException("League not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League not found"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist"))
+    }
   }
 
   def postDelete(
-    @RequestParam("slug") slug: String): String = {
+    @RequestParam("slug") slug: String
+  ): ModelAndView = {
 
-    val result = leagueService removeLeagueBySlug (federation.getId, slug)
+    val result: Boolean = leagueService removeLeagueBySlug (federation.getId, slug)
 
-    "redirect:" + getUrl("LeagueSeasonController.listLeagues")
-
+    if (!result) {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("League can't be removed"))
+        .addObject("errorDescription", i.t("Sorry!, this league doesn't exist or has some attached seasons"))
+    } else
+      new ModelAndView("redirect:" + getUrl("LeagueSeasonController.listLeagues"))
   }
 }

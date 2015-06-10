@@ -18,16 +18,24 @@ import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.util.FederationBean
 import org.springframework.stereotype.Controller
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.GregorianCalendar
 import java.util.Date
 import scala.util.Try
 import com.vac.manager.controllers.actionable.ActionableTeam
 import javax.servlet.http.HttpServletRequest
+import com.vacmatch.util.i18n.I18n
+import javax.validation.Valid
+import scala.util.Success
+import scala.util.Failure
+import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 
 @Controller
 class TeamAdminController
     extends UrlGrabber {
+
+  @Autowired
+  var i: I18n = _
 
   @Autowired
   var teamService: TeamService = _
@@ -65,19 +73,40 @@ class TeamAdminController
 
   def createPost(
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("team") team: Team,
-    result: BindingResult
+    @Valid @ModelAttribute("team") team: Team,
+    result: BindingResult,
+    request: HttpServletRequest
   ): ModelAndView = {
 
-    // TODO Check errors
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/team/edit")
+        .addObject("action", "Create")
+        .addObject("listLink", getUrl("TeamController.list"))
+    }
 
-    val createdTeam: Team = teamService.createTeam(
+    Try(teamService.createTeam(
       team.teamName,
       team.publicTeamName, team.foundationDate, address, team.teamWeb,
       team.teamTelephones
-    )
+    )) match {
+      case Success(createdTeam) =>
+        new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
 
-    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> createdTeam.teamId))
+        if (cause.isInstanceOf[IllegalArgumentException]) {
+          val referrer: String = request.getHeader("Referer");
+
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Incorrect team name"))
+            .addObject("errorDescription", i.t("You must specify a team name and a public team name for a new team"))
+            .addObject("backLink", referrer)
+            .addObject("backText", i.t("Back to create team"))
+        } else
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Unexpected error"))
+            .addObject("errorDescription", cause)
+    }
   }
 
   def edit(
@@ -87,36 +116,43 @@ class TeamAdminController
 
     teamService.findWithTelephonesAndAddress(teamId).map {
       team =>
-        {
-          // Check user permissions
-          val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
+        // Check user permissions
+        val hasPermissions: Boolean = request.isUserInRole("ROLE_ADMINFED") || request.isUserInRole("ROLE_ROOT")
 
-          // Submit parameters
-          val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
-          val submitMethod: String = "POST"
-          val listLink: String = getUrl("TeamController.list")
+        // Submit parameters
+        val submitUrl: String = getUrl("TeamAdminController.editPost", "teamId" -> teamId)
+        val submitMethod: String = "POST"
+        val listLink: String = getUrl("TeamController.list")
 
-          new ModelAndView("admin/team/edit")
-            .addObject("action", "Edit")
-            .addObject("submitUrl", submitUrl)
-            .addObject("submitMethod", submitMethod)
-            .addObject("address", team.teamAddress)
-            .addObject("team", new ActionableTeam(team, hasPermissions))
-        }
-    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+        new ModelAndView("admin/team/edit")
+          .addObject("action", "Edit")
+          .addObject("submitUrl", submitUrl)
+          .addObject("submitMethod", submitMethod)
+          .addObject("listLink", listLink)
+          .addObject("address", team.teamAddress)
+          .addObject("team", new ActionableTeam(team, hasPermissions))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Team not found"))
+        .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+    }
 
   }
 
   def editPost(
     @RequestParam("teamId") teamId: java.lang.Long,
     @ModelAttribute("address") address: Address,
-    @ModelAttribute("team") team: Team,
+    @Valid @ModelAttribute("team") team: Team,
     result: BindingResult
   ): ModelAndView = {
 
-    // TODO Check errors
+    if (result.hasErrors()) {
+      return new ModelAndView("admin/team/edit")
+        .addObject("action", "Edit")
+        .addObject("listLink", getUrl("TeamController.list"))
+    }
 
-    val editedTeam: Team = teamService.modifyTeam(
+    Try(teamService.modifyTeam(
       teamId,
       team.teamName,
       team.publicTeamName,
@@ -124,9 +160,27 @@ class TeamAdminController
       address,
       team.teamWeb,
       team.teamTelephones
-    )
+    )) match {
+      case Success(editedTeam) =>
+        new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
 
-    new ModelAndView("redirect:" + getUrl("TeamController.showTeam", "teamId" -> editedTeam.teamId))
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
+        if (cause.isInstanceOf[IllegalArgumentException])
+          return new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Incorrect team name"))
+            .addObject("errorDescription", i.t("You must specify a team name and a public team name for a new team"))
+
+        if (cause.isInstanceOf[InstanceNotFoundException])
+          return new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Team not found"))
+            .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Unexpected error"))
+          .addObject("errorDescription", cause)
+    }
+
   }
 
   def assignStaffMember(
@@ -160,7 +214,11 @@ class TeamAdminController
         .addObject("submitMethod", submitMethod)
         .addObject("teamStaffMemberList", actualStaffMemberList.asJava)
         .addObject("avaliablePersonList", allPersonList.asJava)
-    }.getOrElse(throw new RuntimeException("Team not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Team not found"))
+        .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+    }
   }
 
   def assignStaffMemberPost(
@@ -168,11 +226,36 @@ class TeamAdminController
     @RequestParam("teamId") teamId: java.lang.Long
   ): ModelAndView = {
 
-    val staffMember: StaffMember = teamService.assignPerson(teamId, personId)
+    Try(teamService.assignPerson(teamId, personId)) match {
+      case Success(staffMember) =>
+        new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
 
-    // TODO Handle errors
+        if (cause.isInstanceOf[DuplicateInstanceException])
+          return new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
 
-    new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
+        if (cause.isInstanceOf[IllegalArgumentException])
+          return new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Incorrect team name"))
+            .addObject("errorDescription", i.t("You must specify a team name and a public team name for a new team"))
+
+        if (cause.isInstanceOf[InstanceNotFoundException]) {
+          if (cause.asInstanceOf[InstanceNotFoundException].getClassName == "Person")
+            return new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Person not found"))
+              .addObject("errorDescription", i.t("Sorry!, this person doesn't exist"))
+
+          if (cause.asInstanceOf[InstanceNotFoundException].getClassName == "Team")
+            return new ModelAndView("error/show")
+              .addObject("errorTitle", i.t("Team not found"))
+              .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+        }
+
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Unexpected error"))
+          .addObject("errorDescription", cause)
+    }
   }
 
   def unAssignStaffMemberPost(
@@ -180,11 +263,21 @@ class TeamAdminController
     @RequestParam("teamId") teamId: java.lang.Long
   ): ModelAndView = {
 
-    val staffMember: StaffMember = teamService.unAssignStaff(teamId, personId)
+    Try(teamService.unAssignStaff(teamId, personId)) match {
+      case Success(staffMember) =>
+        new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
+      case Failure(e) =>
+        val cause: Throwable = e.getCause()
 
-    // TODO Handle errors
-
-    new ModelAndView("redirect:" + getUrl("TeamAdminController.assignStaffMember", "teamId" -> teamId))
+        if (cause.isInstanceOf[InstanceNotFoundException])
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Staff member not found"))
+            .addObject("errorDescription", i.t("Sorry!, this staff member doesn't exist"))
+        else
+          new ModelAndView("error/show")
+            .addObject("errorTitle", i.t("Unexpected error"))
+            .addObject("errorDescription", cause)
+    }
   }
 
   def delete(
@@ -201,7 +294,11 @@ class TeamAdminController
           .addObject("team", new ActionableTeam(team, true))
           .addObject("submitMethod", submitMethod)
           .addObject("submitUrl", submitUrl)
-    }.getOrElse(throw new InstanceNotFoundException("Team not found"))
+    }.getOrElse {
+      new ModelAndView("error/show")
+        .addObject("errorTitle", i.t("Team not found"))
+        .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
+    }
 
   }
 
@@ -209,10 +306,14 @@ class TeamAdminController
     @RequestParam("teamId") teamId: java.lang.Long
   ): ModelAndView = {
 
-    Try(teamService.removeTeam(teamId)).recover {
-      case e: InstanceNotFoundException => throw new InstanceNotFoundException("Team not found")
+    Try(teamService.removeTeam(teamId)) match {
+      case Success(_) =>
+        new ModelAndView("redirect:" + getUrl("TeamController.list"))
+      case Failure(e) =>
+        new ModelAndView("error/show")
+          .addObject("errorTitle", i.t("Team not found"))
+          .addObject("errorDescription", i.t("Sorry!, this team doesn't exist"))
     }
-    new ModelAndView("redirect:" + getUrl("TeamController.list"))
   }
 
 }
