@@ -22,7 +22,7 @@ class IndexAdminController extends UrlGrabber {
 
   def index() = {
     val links = List(
-      Hyperlink("Admin leagues", getUrl("LeagueSeasonController.listLeagues"), ""),
+      Hyperlink("Admin competitions", getUrl("CompetitionSeasonController.listCompetitions"), ""),
       Hyperlink("Admin people", getUrl("PersonAdminController.listAll"), ""),
       Hyperlink("Admin teams", getUrl("TeamController.list"), ""),
       Hyperlink("Admin users", getUrl("UserAdminController.list"), "")

@@ -1,27 +1,27 @@
 package com.vac.manager.controllers.actionable
 
 import com.vac.manager.controllers.utils.UrlGrabber
-import com.vac.manager.model.competition.League
+import com.vac.manager.model.competition.Competition
 
-class CrudLeague(base: League) extends League with UrlGrabber {
+class CrudCompetition(base: Competition) extends Competition with UrlGrabber {
 
   fedId = base.fedId
-  leagueName = base.leagueName
+  competitionName = base.competitionName
   slug = base.slug
 
   def getUserLink() = {
-    getUrl("LeagueSeasonController.listSeasons", "slug" -> slug)
+    getUrl("CompetitionSeasonController.listSeasons", "slug" -> slug)
   }
 
   def getEditLink() = {
-    getUrl("LeagueAdminController.edit", "slug" -> slug)
+    getUrl("CompetitionAdminController.edit", "slug" -> slug)
   }
 
   def getDeleteLink() = {
-    getUrl("LeagueAdminController.delete", "slug" -> slug)
+    getUrl("CompetitionAdminController.delete", "slug" -> slug)
   }
 
   def getSeasonAdminLink() = {
-    getUrl("LeagueSeasonAdminController.list", "slug" -> slug)
+    getUrl("CompetitionSeasonAdminController.list", "slug" -> slug)
   }
 }

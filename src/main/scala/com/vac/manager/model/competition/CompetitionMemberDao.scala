@@ -4,8 +4,8 @@ import com.vac.manager.model.generic.GenericDao
 
 trait CompetitionMemberDao extends GenericDao[CompetitionMember, java.lang.Long] {
 
-  def findCompetitionMembersByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[CompetitionMember]
+  def findCompetitionMembersByCompetitionSeasonId(competitionSeasonId: CompetitionSeasonPK): Seq[CompetitionMember]
 
-  def findCompetitionMemberByLeagueSeasonIdAndTeamId(leagueSeasonId: LeagueSeasonPK, teamId: Long): Option[CompetitionMember]
+  def findCompetitionMemberByCompetitionSeasonIdAndTeamId(competitionSeasonId: CompetitionSeasonPK, teamId: Long): Option[CompetitionMember]
 
 }

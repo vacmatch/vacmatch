@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://tech.vacmatch.com/ns/i18n"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:text="${action}">Create competition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet"
+	  media="screen" th:href="@{/css/bootstrap.min.css}" />
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen"
+	  th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:href="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js"
+	    th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+
+    <div class="container" th:fragment="content">
+      <div class="jumbotron">
+        <h2 th:text="${action}">t("Create Competition")</h2>
+
+        <form id="competitionForm" th:action="${submitUrl}" class="form-horizontal"
+              th:method="${submitMethod}" th:object="${competition}">
+          <input th:each="h: ${hiddens}" type="hidden"
+                 th:name="${h.getKey()}" th:value="${h.getValue()}" />
+
+          <div class="form-group" th:classappend="${#fields.hasErrors('competitionName')} ? has-error">
+            <label class="col-sm-3 control-label" for="name">t("Competition Name")</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="name" type="text" placeholder="Name" th:field="*{competitionName}" />
+              <i18n:attr name="placeholder">t("Name")</i18n:attr>
+              <span class="text-danger" th:if="${#fields.hasErrors('*{competitionName}')}">t("Competition name not valid")</span>
+            </div>
+          </div>
+
+          <div class="form-group" th:classappend="${#fields.hasErrors('slug')} ? has-error">
+            <label class="col-sm-3 control-label" for="slug">t("Competition slug")</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="slug" type="text" placeholder="Slug" th:field="*{slug}" />
+              <i18n:attr name="placeholder">t("Slug")</i18n:attr>
+              <span class="text-danger" th:errors="*{slug}">t("Slug not valid")</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <a class="btn btn-primary" th:href="${listLink}">t("Cancel")</a>
+              <input class="btn btn-primary" type="submit" name="submit" value="Accept" />
+              <i18n:attr name="value">t("Accept")</i18n:attr>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

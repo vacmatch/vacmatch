@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import scala.beans.BeanProperty
 import javax.persistence.Column
-import com.vac.manager.model.competition.LeagueSeason
+import com.vac.manager.model.competition.CompetitionSeason
 import javax.persistence._
 import javax.persistence.JoinColumn
 
 @Entity
 @Table(name = "GAME")
-class Game(leaSea: LeagueSeason, gameDay: Int) {
+class Game(leaSea: CompetitionSeason, gameDay: Int) {
 
   @Id
   @SequenceGenerator(name = "gameIdGenerator", sequenceName = "game_id_seq")
@@ -24,10 +24,10 @@ class Game(leaSea: LeagueSeason, gameDay: Int) {
   @BeanProperty
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumns(Array(
-    new JoinColumn(name = "league.id"),
+    new JoinColumn(name = "competition.id"),
     new JoinColumn(name = "seasonSlug")
   ))
-  var leagueSeason: LeagueSeason = leaSea
+  var competitionSeason: CompetitionSeason = leaSea
 
   @BeanProperty
   @Column(nullable = false)
@@ -37,7 +37,7 @@ class Game(leaSea: LeagueSeason, gameDay: Int) {
 
   override def toString = {
     "GameId: " + gameId +
-      "\nleagueSeason: " + leagueSeason +
+      "\ncompetitionSeason: " + competitionSeason +
       "\ngameDay: " + matchDay
   }
 }

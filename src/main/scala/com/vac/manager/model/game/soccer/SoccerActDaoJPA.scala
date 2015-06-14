@@ -2,7 +2,7 @@ package com.vac.manager.model.game.soccer
 
 import org.springframework.stereotype.Repository
 import com.vac.manager.model.generic.GenericDaoJPA
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 import scala.collection.JavaConverters._
 import javax.persistence.Embeddable
 import javax.persistence.Entity
@@ -28,18 +28,18 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
     }
   }
 
-  def findAllBySeason(leagueSeasonId: LeagueSeasonPK): Seq[SoccerAct] = {
+  def findAllBySeason(competitionSeasonId: CompetitionSeasonPK): Seq[SoccerAct] = {
 
     var query = getEntityManager().createQuery(
-      "SELECT sa FROM SoccerAct sa JOIN sa.game.leagueSeason " +
-        "WHERE sa.game.leagueSeason.id = :leagueSeasonId", classOf[SoccerAct]
+      "SELECT sa FROM SoccerAct sa JOIN sa.game.competitionSeason " +
+        "WHERE sa.game.competitionSeason.id = :competitionSeasonId", classOf[SoccerAct]
     )
-      .setParameter("leagueSeasonId", leagueSeasonId)
+      .setParameter("competitionSeasonId", competitionSeasonId)
 
     query.getResultList().asScala
   }
 
-  def getLocalEntry(teamId: Long, leagueSeasonId: LeagueSeasonPK): SoccerClassificationEntry = {
+  def getLocalEntry(teamId: Long, competitionSeasonId: CompetitionSeasonPK): SoccerClassificationEntry = {
     var result = getEntityManager().createQuery(
       "SELECT NEW com.vac.manager.model.game.SoccerClassificationEntry(" +
         /*Position*/ "COUNT(*), " +
@@ -56,10 +56,10 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
         "FROM SoccerAct sa " +
         "WHERE sa.localTeam IS NOT NULL " +
         "AND sa.localTeam.teamId = :teamId " +
-        "AND sa.game.leagueSeason.id = :leagueSeasonId", classOf[SoccerClassificationEntry]
+        "AND sa.game.competitionSeason.id = :competitionSeasonId", classOf[SoccerClassificationEntry]
     )
       .setParameter("teamId", teamId)
-      .setParameter("leagueSeasonId", leagueSeasonId)
+      .setParameter("competitionSeasonId", competitionSeasonId)
       .getResultList()
 
     val element = result.get(0)
@@ -67,7 +67,7 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
     element
   }
 
-  def getVisitorEntry(teamId: Long, leagueSeasonId: LeagueSeasonPK): SoccerClassificationEntry = {
+  def getVisitorEntry(teamId: Long, competitionSeasonId: CompetitionSeasonPK): SoccerClassificationEntry = {
     var result = getEntityManager().createQuery(
       "SELECT NEW com.vac.manager.model.game.SoccerClassificationEntry(" +
         /*Position*/ "COUNT(*), " +
@@ -84,10 +84,10 @@ class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[S
         "FROM SoccerAct sa " +
         "WHERE sa.visitorTeam IS NOT NULL " +
         "AND sa.visitorTeam.teamId = :teamId " +
-        "AND sa.game.leagueSeason.id = :leagueSeasonId", classOf[SoccerClassificationEntry]
+        "AND sa.game.competitionSeason.id = :competitionSeasonId", classOf[SoccerClassificationEntry]
     )
       .setParameter("teamId", teamId)
-      .setParameter("leagueSeasonId", leagueSeasonId)
+      .setParameter("competitionSeasonId", competitionSeasonId)
       .getResultList()
 
     val element = result.get(0)

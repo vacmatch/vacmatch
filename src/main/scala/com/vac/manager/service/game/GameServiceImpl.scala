@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 import com.vac.manager.model.game.GameDao
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.model.game.Game
-import com.vac.manager.service.competition.LeagueService
-import com.vac.manager.model.competition.LeagueSeason
+import com.vac.manager.service.competition.CompetitionService
+import com.vac.manager.model.competition.CompetitionSeason
 import javax.transaction.Transactional
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
@@ -22,7 +22,7 @@ class GameServiceImpl extends GameService {
   var gameDao: GameDao = _
 
   @Autowired
-  var leagueService: LeagueService = _
+  var competitionService: CompetitionService = _
 
   @Autowired
   var soccerActService: SoccerActService = _
@@ -34,8 +34,8 @@ class GameServiceImpl extends GameService {
     gameDao.findById(gameId)
   }
 
-  def findLeagueCalendar(leagueSeason: LeagueSeason): Seq[Game] = {
-    gameDao.findAllBySeason(leagueSeason.id)
+  def findCompetitionCalendar(competitionSeason: CompetitionSeason): Seq[Game] = {
+    gameDao.findAllBySeason(competitionSeason.id)
   }
 
   def createCalendar[A](teamsNumber: Int, creator: ((Int, A) => Seq[Game]), args: A): Seq[Game] = {
@@ -49,35 +49,35 @@ class GameServiceImpl extends GameService {
     }
   }
 
-  def createLeagueCalendar(leagueSeason: LeagueSeason, teamsNumber: Int, leagueRounds: Int): Seq[Game] = {
-    createCalendar(teamsNumber, leagueCalendarCreator, (leagueSeason, leagueRounds))
+  def createCompetitionCalendar(competitionSeason: CompetitionSeason, teamsNumber: Int, competitionRounds: Int): Seq[Game] = {
+    createCalendar(teamsNumber, competitionCalendarCreator, (competitionSeason, competitionRounds))
   }
 
   @throws[IllegalArgumentException]
   @throws[DuplicateInstanceException]
   @throws[InstanceNotFoundException]
-  def leagueCalendarCreator(teamsNumber: Int, args: (LeagueSeason, Int)): Seq[Game] = {
-    val (leagueSeason, leagueRounds) = args
-    if ((Option(leagueSeason).nonEmpty) && (teamsNumber > 0) && (leagueRounds > 0)) {
+  def competitionCalendarCreator(teamsNumber: Int, args: (CompetitionSeason, Int)): Seq[Game] = {
+    val (competitionSeason, competitionRounds) = args
+    if ((Option(competitionSeason).nonEmpty) && (teamsNumber > 0) && (competitionRounds > 0)) {
 
-      if (leagueService.findSeasonByLeagueSlug(
-        leagueSeason.id.league.fedId,
-        leagueSeason.id.league.slug,
-        leagueSeason.id.seasonSlug
+      if (competitionService.findSeasonByCompetitionSlug(
+        competitionSeason.id.competition.fedId,
+        competitionSeason.id.competition.slug,
+        competitionSeason.id.seasonSlug
       ).isEmpty)
-        throw new InstanceNotFoundException(leagueSeason.id, "LeagueSeason")
+        throw new InstanceNotFoundException(competitionSeason.id, "CompetitionSeason")
 
-      if (findLeagueCalendar(leagueSeason).nonEmpty)
-        throw new DuplicateInstanceException(leagueSeason.id, "LeagueCalendar")
+      if (findCompetitionCalendar(competitionSeason).nonEmpty)
+        throw new DuplicateInstanceException(competitionSeason.id, "CompetitionCalendar")
 
       // Calculate the total number of games
-      var gamesNumber: Int = ((leagueRounds * teamsNumber) - leagueRounds) * teamsNumber / 2
+      var gamesNumber: Int = ((competitionRounds * teamsNumber) - competitionRounds) * teamsNumber / 2
       // Gets the number of games that form a gameDay
       var gameDaySize: Int = teamsNumber./(2)
 
       // When the game's number is odd, this adds some places for the team who rest every gameDay
       if ((teamsNumber.%(2) != 0)) {
-        gamesNumber += teamsNumber * leagueRounds
+        gamesNumber += teamsNumber * competitionRounds
         gameDaySize += 1
       }
 
@@ -86,21 +86,21 @@ class GameServiceImpl extends GameService {
 
       (1 to gamesNumber)
         .map(game => (game - 1) / gameDaySize)
-        .map(gameDay => new Game(leagueSeason, gameDay + 1))
+        .map(gameDay => new Game(competitionSeason, gameDay + 1))
     } else {
-      if (Option(leagueSeason).isEmpty)
-        throw new IllegalArgumentException(leagueSeason, "LeagueSeason")
+      if (Option(competitionSeason).isEmpty)
+        throw new IllegalArgumentException(competitionSeason, "CompetitionSeason")
       if (teamsNumber <= 0)
         throw new IllegalArgumentException(teamsNumber, "TeamsNumber")
-      //if (leagueRounds <= 0)
-      throw new IllegalArgumentException(leagueRounds, "LeagueRounds")
+      //if (competitionRounds <= 0)
+      throw new IllegalArgumentException(competitionRounds, "CompetitionRounds")
 
     }
   }
 
   @throws[InstanceNotFoundException]
-  def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason) = {
-    Option(leagueSeason).map { ls =>
+  def removeCompetitionCalendarFromSeason(competitionSeason: CompetitionSeason) = {
+    Option(competitionSeason).map { ls =>
       gameDao.findAllBySeason(ls.id).map {
         game =>
           {
@@ -109,15 +109,15 @@ class GameServiceImpl extends GameService {
             gameDao.remove(game)
           }
       }
-    }.getOrElse(throw new InstanceNotFoundException(leagueSeason, "LeagueSeason"))
+    }.getOrElse(throw new InstanceNotFoundException(competitionSeason, "CompetitionSeason"))
   }
 
-  def getLeagueClassification(leagueSeason: LeagueSeason): Seq[SoccerClassificationEntry] = {
+  def getCompetitionClassification(competitionSeason: CompetitionSeason): Seq[SoccerClassificationEntry] = {
     // TODO Get act depending on the sport
-    teamService.findTeamsByLeagueSeasonId(leagueSeason.id).map {
+    teamService.findTeamsByCompetitionSeasonId(competitionSeason.id).map {
       team =>
         val entry: SoccerClassificationEntry =
-          soccerActService.findSoccerClassificationEntry(team.teamId, leagueSeason.id)
+          soccerActService.findSoccerClassificationEntry(team.teamId, competitionSeason.id)
         entry.team = team
         entry
     }.sortBy(_.assessment).reverse

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "TEAM")
 class Team(name: String, publicName: String, date: Calendar, address: Address,
-  web: String, telephones: String) {
+    web: String, telephones: String) {
 
   @Id
   @SequenceGenerator(name = "teamIdGenerator", sequenceName = "team_id_seq")

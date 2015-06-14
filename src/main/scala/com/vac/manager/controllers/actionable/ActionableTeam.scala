@@ -57,7 +57,7 @@ trait TeamEnrollLinks {
 
   def getEnrollPostLink(): String = {
     getUrl(
-      "LeagueSeasonAdminController.enrollTeamInSeasonPost",
+      "CompetitionSeasonAdminController.enrollTeamInSeasonPost",
       "teamId" -> team.teamId, "slug" -> slug, "year" -> year
     )
   }

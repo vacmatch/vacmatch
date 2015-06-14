@@ -5,12 +5,12 @@ import com.vac.manager.model.generic.GenericDaoJPA
 import javax.persistence.Query
 import com.vac.manager.model.generic.exceptions.NotImplementedException
 import scala.collection.JavaConverters._
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 
 @Repository("teamDao")
 class TeamDaoJPA
-  extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
-  with TeamDao {
+    extends GenericDaoJPA[Team, java.lang.Long](classOf[Team])
+    with TeamDao {
 
   def findByTeamName(teamName: String): Team = {
     getEntityManager().createQuery(
@@ -29,12 +29,12 @@ class TeamDaoJPA
     ).getResultList().asScala
   }
 
-  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team] = {
+  def findTeamsByCompetitionSeasonId(competitionSeasonId: CompetitionSeasonPK): Seq[Team] = {
     getEntityManager().createQuery(
       "SELECT cm.team FROM CompetitionMember cm " +
-        "WHERE cm.leagueSeason.id = :leagueSeasonId", classOf[Team]
+        "WHERE cm.competitionSeason.id = :competitionSeasonId", classOf[Team]
     )
-      .setParameter("leagueSeasonId", leagueSeasonId)
+      .setParameter("competitionSeasonId", competitionSeasonId)
       .getResultList().asScala
   }
 

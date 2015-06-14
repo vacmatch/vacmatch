@@ -47,7 +47,8 @@ class TeamServiceImplTest
     Calendar.getInstance(),
     new Address,
     "wwww.elchiringuitofc.com",
-    "699555412")
+    "699555412"
+  )
 
   val genCalendar = for {
     date <- arbDate.arbitrary
@@ -66,7 +67,6 @@ class TeamServiceImplTest
     teamService = new TeamServiceImpl
     teamService.teamDao = mock[TeamDao]
     teamService.addressService = mock[AddressService]
-    teamService.competitionService = mock[CompetitionService]
     teamService.personService = mock[PersonService]
     teamService.staffMemberDao = mock[StaffMemberDao]
   }
@@ -75,7 +75,8 @@ class TeamServiceImplTest
     forAll(
       (genValidTeamId, "teamId"),
       (genNonEmptyString, "teamName"),
-      (genNonEmptyString, "publicName")) {
+      (genNonEmptyString, "publicName")
+    ) {
         (teamId: Long, teamName: String, publicName: String) =>
           Mockito.when(teamService.teamDao.findById(teamId)).thenReturn(None)
 
@@ -89,7 +90,8 @@ class TeamServiceImplTest
             validTeam.foundationDate,
             validTeam.teamAddress,
             validTeam.teamWeb,
-            validTeam.teamTelephones)
+            validTeam.teamTelephones
+          )
 
           createdTeam should equal(expectedTeam)
 
@@ -107,7 +109,8 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones)
+        validTeam.teamTelephones
+      )
     }
 
     intercept[IllegalArgumentException] {
@@ -117,7 +120,8 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones)
+        validTeam.teamTelephones
+      )
     }
 
     verifyZeroInteractions(teamService.teamDao)
@@ -135,7 +139,8 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones)
+        validTeam.teamTelephones
+      )
     }
 
     intercept[IllegalArgumentException] {
@@ -145,7 +150,8 @@ class TeamServiceImplTest
         validTeam.foundationDate,
         validTeam.teamAddress,
         validTeam.teamWeb,
-        validTeam.teamTelephones)
+        validTeam.teamTelephones
+      )
     }
 
     verifyZeroInteractions(teamService.teamDao)
@@ -377,7 +383,8 @@ class TeamServiceImplTest
       (genNonEmptyString, "publicName"),
       (genCalendar, "foundationDate"),
       (genNonEmptyString, "teamWeb"),
-      (genNonEmptyString, "teamTelephones")) {
+      (genNonEmptyString, "teamTelephones")
+    ) {
         (teamId: Long, teamName: String, publicName: String, foundationDate: Calendar,
         teamWeb: String, teamTelephones: String) =>
 
@@ -386,7 +393,8 @@ class TeamServiceImplTest
             publicName,
             foundationDate,
             validAddress,
-            teamWeb, teamTelephones)
+            teamWeb, teamTelephones
+          )
           expectedTeam.teamId = 1
 
           Mockito.when(teamService.teamDao.findById(teamId)).thenReturn(Some(existingTeam))
@@ -398,7 +406,8 @@ class TeamServiceImplTest
             foundationDate,
             validAddress,
             teamWeb,
-            teamTelephones)
+            teamTelephones
+          )
 
           createdTeam should equal(expectedTeam)
 
@@ -423,7 +432,8 @@ class TeamServiceImplTest
         team.foundationDate,
         team.teamAddress,
         team.teamWeb,
-        team.teamTelephones)
+        team.teamTelephones
+      )
     }
 
     Then("Must return an instance not found exception")
@@ -448,7 +458,8 @@ class TeamServiceImplTest
         team.foundationDate,
         team.teamAddress,
         team.teamWeb,
-        team.teamTelephones)
+        team.teamTelephones
+      )
     }
 
     Then("Must return an illegal argument exception")
@@ -473,7 +484,8 @@ class TeamServiceImplTest
         team.foundationDate,
         team.teamAddress,
         team.teamWeb,
-        team.teamTelephones)
+        team.teamTelephones
+      )
     }
 
     Then("Must return an illegal argument exception")
@@ -498,7 +510,8 @@ class TeamServiceImplTest
         team.foundationDate,
         team.teamAddress,
         team.teamWeb,
-        team.teamTelephones)
+        team.teamTelephones
+      )
     }
 
     Then("Must return an illegal argument exception")
@@ -523,7 +536,8 @@ class TeamServiceImplTest
         team.foundationDate,
         team.teamAddress,
         team.teamWeb,
-        team.teamTelephones)
+        team.teamTelephones
+      )
     }
 
     Then("Must return an illegal argument exception")

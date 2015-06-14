@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>t("%s not found", t("Competition"))</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}" />
+    <script src="../../static/js/jquery.js" th:href="@{/js/jquery.js}"
+	    data-src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  </head>
+  <body>
+
+    <ul th:fragment="admin-navbar" role="navigation actions" class="nav navbar-nav">
+      <li><a th:href="${createUrl}">t("Create competition")</a></li>
+      <li><a th:href="${listUrl}">t("Show competitions")</a></li>
+    </ul>
+
+    <div class="container" th:fragment="container">
+      <h2>t("%s not found", t("Competition"))</h2>
+
+      <p>t("The requested %s could not be found.", t("competition"))</p>
+
+    </div>
+  </body>
+</html>

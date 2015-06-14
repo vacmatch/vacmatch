@@ -12,8 +12,8 @@
     <div th:fragment="show_soccer">
       <div class="jumbotron">
         <h2>Classification</h2>
-        <h3 th:text="${leagueSeason.id.league.leagueName}">League</h3>
-        <h4 th:text="${leagueSeason.id.seasonSlug}">Division</h4>
+        <h3 th:text="${competitionSeason.id.competition.competitionName}">Competition</h3>
+        <h4 th:text="${competitionSeason.id.seasonSlug}">Division</h4>
         <table class="table">
           <tr>
             <th class="text-center col-sm-1" >Position</th>
@@ -27,7 +27,7 @@
             <th class="text-center col-sm-1" >Goal Difference</th>
             <th class="text-center col-sm-1" >Points</th>
           </tr>
-          <tr class="text-center" th:each="team, iterStat : ${leagueClassification}" th:object="${team}">
+          <tr class="text-center" th:each="team, iterStat : ${competitionClassification}" th:object="${team}">
            <td class="col-sm-1" th:text="${iterStat.count}?: '-'"><b>Pos</b></td>
            <td class="col-sm-1" th:text="*{team}? *{team.teamName}: '-'"><b>Team</b></td>
            <td class="col-sm-1" th:text="*{played}?: '0'">P</td>

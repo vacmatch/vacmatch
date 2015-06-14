@@ -3,7 +3,7 @@ package com.vac.manager.service.game.soccer
 import com.vac.manager.model.game.soccer.SoccerAct
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.model.game.soccer.SoccerActDao
-import com.vac.manager.model.competition.LeagueSeason
+import com.vac.manager.model.competition.CompetitionSeason
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 import com.vac.manager.model.game.Game
@@ -14,7 +14,7 @@ import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import java.util.Calendar
 import com.vac.manager.model.team.Team
 import com.vac.manager.service.team.TeamService
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 import com.vac.manager.model.game.SoccerClassificationEntry
 
 @Service("soccerActService")
@@ -38,13 +38,13 @@ class SoccerActServiceImpl extends SoccerActService {
     soccerActDao.findByGameId(gameId)
   }
 
-  def findLeagueSoccerActs(leagueSeason: LeagueSeason): Seq[SoccerAct] = {
-    soccerActDao.findAllBySeason(leagueSeason.id)
+  def findCompetitionSoccerActs(competitionSeason: CompetitionSeason): Seq[SoccerAct] = {
+    soccerActDao.findAllBySeason(competitionSeason.id)
   }
 
-  def findSoccerClassificationEntry(teamId: Long, leagueSeasonId: LeagueSeasonPK): SoccerClassificationEntry = {
-    val local: SoccerClassificationEntry = soccerActDao.getLocalEntry(teamId, leagueSeasonId)
-    val visitor: SoccerClassificationEntry = soccerActDao.getVisitorEntry(teamId, leagueSeasonId)
+  def findSoccerClassificationEntry(teamId: Long, competitionSeasonId: CompetitionSeasonPK): SoccerClassificationEntry = {
+    val local: SoccerClassificationEntry = soccerActDao.getLocalEntry(teamId, competitionSeasonId)
+    val visitor: SoccerClassificationEntry = soccerActDao.getVisitorEntry(teamId, competitionSeasonId)
 
     new SoccerClassificationEntry(
       local.assessment + visitor.assessment,
