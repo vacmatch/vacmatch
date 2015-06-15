@@ -22,8 +22,8 @@ import com.vac.manager.model.staff.Person
 import com.vac.manager.model.staff.StaffMember
 import com.vac.manager.service.staff.PersonService
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.staff.StaffMemberDao
-import javax.management.InstanceNotFoundException
 
 class TeamServiceImplTest
     extends PropSpec

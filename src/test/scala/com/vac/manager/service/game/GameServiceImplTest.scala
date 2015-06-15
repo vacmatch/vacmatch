@@ -17,7 +17,8 @@ import com.vac.manager.service.competition.CompetitionService
 import org.scalatest.Matchers._
 import com.vac.manager.model.competition.CompetitionSeasonPK
 import com.vac.manager.model.competition.Competition
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.IllegalArgumentException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.service.game.soccer.SoccerActService
 

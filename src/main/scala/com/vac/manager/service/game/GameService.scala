@@ -27,7 +27,10 @@ trait GameService {
 
   /**
     * Remove all games from a season
+    * @throws IllegalArgumentException if competitionSeason is null
+    * @throws InstanceNotFoundException if it tries to remove a not existent act
     */
+  @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
   def removeCompetitionCalendarFromSeason(competitionSeason: CompetitionSeason)
 

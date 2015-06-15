@@ -12,7 +12,7 @@ import com.vac.manager.model.competition._
 import com.vac.manager.model.team.Team
 import com.vac.manager.service.team.TeamService
 import org.scalatest.BeforeAndAfter
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 
 /*
    This is a stub test class. To learn how to customize it,

@@ -99,6 +99,7 @@ class GameServiceImpl extends GameService {
   }
 
   @throws[InstanceNotFoundException]
+  @throws[IllegalArgumentException]
   def removeCompetitionCalendarFromSeason(competitionSeason: CompetitionSeason) = {
     Option(competitionSeason).map { ls =>
       gameDao.findAllBySeason(ls.id).map {
@@ -109,7 +110,7 @@ class GameServiceImpl extends GameService {
             gameDao.remove(game)
           }
       }
-    }.getOrElse(throw new InstanceNotFoundException(competitionSeason, "CompetitionSeason"))
+    }.getOrElse(throw new IllegalArgumentException(competitionSeason, "CompetitionSeason"))
   }
 
   def getCompetitionClassification(competitionSeason: CompetitionSeason): Seq[SoccerClassificationEntry] = {
