@@ -7,7 +7,7 @@ import scala.collection.JavaConverters._
 import javax.persistence.Embeddable
 import javax.persistence.Entity
 import javax.persistence.Table
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.soccer.SoccerClassificationEntry
 
 @Repository("teamActDao")
 class SoccerActDaoJPA extends GenericDaoJPA[SoccerAct, java.lang.Long](classOf[SoccerAct])

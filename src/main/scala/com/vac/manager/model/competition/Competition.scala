@@ -25,6 +25,11 @@ class Competition {
   var fedId: java.lang.Long = _
 
   @BeanProperty
+  @Column
+  @Enumerated(EnumType.STRING)
+  var sport: Sport = Sport.SOCCER
+
+  @BeanProperty
   @NotNull
   @Size(min = 1)
   @Column(nullable = false)

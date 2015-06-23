@@ -2,14 +2,10 @@ package com.vac.manager.service.game
 
 import com.vac.manager.model.game.Game
 import com.vac.manager.model.competition.CompetitionSeason
-import javax.management.InstanceNotFoundException
+import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
 import com.vac.manager.model.game.ClassificationEntry
 
-trait GameService {
-
-  def find(gameId: Long): Option[Game]
-
-  def findCompetitionCalendar(competitionSeason: CompetitionSeason): Seq[Game]
+trait CompetitionStrategyService {
 
   /**
     * Create needed matches for a season
@@ -38,4 +34,3 @@ trait GameService {
   def getCompetitionClassification(competitionSeasson: CompetitionSeason): Seq[ClassificationEntry]
 
 }
-

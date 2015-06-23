@@ -28,7 +28,7 @@ import com.vac.manager.model.game.soccer.SoccerStaffStats
 import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.ClassificationEntry
 import com.vacmatch.util.i18n.I18n
 
 @Controller
@@ -163,7 +163,7 @@ class GameController extends UrlGrabber {
 
     competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
       competitionSeason =>
-        val competitionClassification: Seq[SoccerClassificationEntry] =
+        val competitionClassification: Seq[ClassificationEntry] =
           gameService.getCompetitionClassification(competitionSeason)
 
         new ModelAndView("classification/show")

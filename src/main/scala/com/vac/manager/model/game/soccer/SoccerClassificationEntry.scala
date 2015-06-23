@@ -1,10 +1,13 @@
-package com.vac.manager.model.game
+package com.vac.manager.model.game.soccer
 
 import com.vac.manager.model.team.Team
 import scala.beans.BeanProperty
-import java.lang.Long
+import javax.persistence.Entity
+import javax.persistence.Table
+import com.vac.manager.model.game.ClassificationEntry
 
-class SoccerClassificationEntry(ass: Long, t: Team, p: Long, w: Long, d: Long, l: Long, gf: Long, ga: Long, gd: Long, pts: Long) {
+class SoccerClassificationEntry(ass: Long, t: Team, p: Long, w: Long, d: Long, l: Long, gf: Long, ga: Long, gd: Long, pts: Long)
+    extends ClassificationEntry {
 
   @BeanProperty
   var assessment: Long = ass

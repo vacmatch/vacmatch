@@ -5,7 +5,7 @@ import com.vac.manager.model.competition.CompetitionSeasonPK
 import javax.persistence.Embeddable
 import javax.persistence.Entity
 import javax.persistence.Table
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.soccer.SoccerClassificationEntry
 
 trait SoccerActDao extends GenericDao[SoccerAct, java.lang.Long] {
 

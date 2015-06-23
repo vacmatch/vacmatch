@@ -15,7 +15,7 @@ import java.util.Calendar
 import com.vac.manager.model.team.Team
 import com.vac.manager.service.team.TeamService
 import com.vac.manager.model.competition.CompetitionSeasonPK
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.soccer.SoccerClassificationEntry
 
 @Service("soccerActService")
 @Transactional
