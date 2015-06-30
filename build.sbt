@@ -26,6 +26,7 @@ val springTx = List("tx", "jdbc")
 
 
 val ourDeps = Seq (
+  "com.typesafe.slick" %% "slick" % "3.0.0",
   "org.springframework" % "springloaded" % "1.2.3.RELEASE",
   "org.apache.tomcat.embed" % "tomcat-embed-core" % "7.0.53" % "container",
   "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" % "container",
