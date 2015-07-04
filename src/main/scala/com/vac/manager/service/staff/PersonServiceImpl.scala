@@ -1,5 +1,6 @@
 package com.vac.manager.service.staff
 
+import com.vac.manager.model.federation.daojpa.FederationDaoJpa
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.model.staff.PersonDao
@@ -29,6 +30,9 @@ class PersonServiceImpl extends PersonService {
 
   @Autowired
   var personDao: PersonDao = _
+
+  @Autowired // TODO: Remove this concrete dependency by abstracting things
+  var federationDao: FederationDaoJpa = _
 
   def find(personId: Long): Option[Person] = {
     personDao.findById(personId)
@@ -73,8 +77,9 @@ class PersonServiceImpl extends PersonService {
     maybeFederation match {
       case None => throw new InstanceNotFoundException(idFederation, classOf[Federation].getName())
       case Some(stFederation) => {
+        // TODO: Not make "new" DAO/DTO objects, but pass info to DAO/Repository
         val person: Person = new Person(stName, stSurname, stEmail, stTelephones,
-          stCardId, stBirth, stFederation)
+          stCardId, stBirth, federationDao.fromDomain(stFederation))
 
         personDao.save(person)
         person

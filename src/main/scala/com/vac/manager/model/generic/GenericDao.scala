@@ -1,12 +1,11 @@
 package com.vac.manager.model.generic
 
 import scala.collection.mutable.Buffer
-import java.io.Serializable
 
 /**
   * Data Access Object (DAO) interface.
   */
-trait GenericDao[T, K <: Serializable] {
+trait GenericDao[T, K] {
 
   /**
     * Find all items from DB table

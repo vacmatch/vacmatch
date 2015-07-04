@@ -18,7 +18,7 @@ class FederationServiceImpl extends FederationService {
 
   @Transactional(readOnly = true)
   def find(id: Long): Option[Federation] = {
-    return federationDao.findById(id)
+    federationDao.findById(id)
   }
 
   /**
@@ -26,22 +26,22 @@ class FederationServiceImpl extends FederationService {
     */
   @Transactional(readOnly = true)
   def findAll(pageable: Pageable): Seq[Federation] = {
-    return federationDao.findAll.drop(pageable.start)
+    federationDao.findAll.drop(pageable.start)
   }
 
   @Transactional(readOnly = true)
   def findByName(fedName: String): Option[Federation] = {
-    return federationDao.findByName(fedName)
+    federationDao.findByName(fedName)
   }
 
   @Transactional(readOnly = true)
   def findByDomain(domainName: String): Option[Federation] = {
-    return federationDao findByDomainName domainName
+    federationDao findByDomainName domainName
   }
 
   @Transactional
   def findDomainNames(fedId: Long): Seq[String] = {
-    return federationDao findDomainNames fedId
+    federationDao findDomainNames fedId
   }
 
   /**
@@ -53,7 +53,7 @@ class FederationServiceImpl extends FederationService {
     if (fedName == null || fedName.trim == "")
       return false
 
-    if (domains.filter(d => federationDao.findByDomainName(d).isDefined).size > 0) {
+    if (domains.count(d => federationDao.findByDomainName(d).isDefined) > 0) {
       return false
     }
 
@@ -69,16 +69,13 @@ class FederationServiceImpl extends FederationService {
       throw new RuntimeException("One or more domains were not possible to register")
     }
 
-    return true
+    true
   }
 
   @Transactional(propagation = Propagation.NESTED)
   protected def _createFederationInTransaction(fedName: String): Federation = {
-    val f = new Federation()
-    f.fedName = fedName.trim
+    val f = Federation(None, fedName.trim)
     federationDao.save(f)
-
-    return f
   }
 
   @Transactional
@@ -98,8 +95,8 @@ class FederationServiceImpl extends FederationService {
     find(fedId) match {
       case None => false
       case Some(fed) => {
-        fed.fedName = newName
-        federationDao save fed
+        val f = fed.copy(fedName = newName)
+        federationDao save f
 
         true
       }
@@ -108,25 +105,19 @@ class FederationServiceImpl extends FederationService {
 
   @Transactional
   def addFederationDomain(fedId: Long, domainName: String): Boolean = {
-    find(fedId) match {
-      case None => false
-      case Some(fed) => {
-        return _addFederationDomain(fed, domainName)
+    find(fedId)
+      .flatMap(_ => federationDao.findByDomainName(domainName)) match {
+        case Some(_) => false
+        case None => {
+          federationDao.saveDomainName(FederationDomainName(domainName, fedId))
+          true
+        }
       }
-    }
   }
 
-  def _addFederationDomain(fed: Federation, domainName: String): Boolean = {
-    val existing = federationDao findByDomainName domainName
-    if (existing.isDefined)
-      return false
-
-    val dns = new FederationDomainName
-    dns.fed = fed
-    dns.dns = domainName
-
-    federationDao saveDomainName dns
-    return true
+  def _addFederationDomain(federation: Federation, domainName: String): Boolean = {
+    federation.fedId.exists(fedId =>
+      addFederationDomain(fedId, domainName))
   }
 
   def removeFederationDomain(fedId: Long, domainName: String): Boolean = {
@@ -134,9 +125,9 @@ class FederationServiceImpl extends FederationService {
 
     if (matching.size > 0) {
       federationDao.removeDomainName(matching(0))
-      return true
+      true
     } else {
-      return false
+      false
     }
   }
 }

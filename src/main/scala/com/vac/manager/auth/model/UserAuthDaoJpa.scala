@@ -1,6 +1,7 @@
 package com.vac.manager.auth.model
 
 import com.vac.manager.model.generic.GenericDaoJPA
+import javax.persistence.EntityManager
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import scala.beans.BeanProperty

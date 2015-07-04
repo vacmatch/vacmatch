@@ -2,6 +2,8 @@ package com.vac.manager.model.competition
 
 import java.util.Calendar
 import javax.persistence._
+import com.vac.manager.model.federation.daojpa.Federations
+
 import scala.beans.BeanProperty
 import javax.validation.constraints.Size
 import javax.validation.constraints.NotNull
@@ -11,7 +13,8 @@ import javax.validation.constraints.NotNull
   name = "COMPETITION",
   uniqueConstraints = Array(new UniqueConstraint(columnNames = Array("fedId", "slug")))
 ) //@BatchSize(size=10)
-class Competition {
+class Competition(compName: String, fed: Federations) {
+  def this() = this("", None.orNull)
 
   @Id
   @Column(name = "competition_id")
@@ -25,15 +28,20 @@ class Competition {
   var fedId: java.lang.Long = _
 
   @BeanProperty
+  @Column(nullable = false)
+  @NotNull
+  @Size(min = 1)
+  var competitionName: String = _
+
+  @BeanProperty
   @Column
   @Enumerated(EnumType.STRING)
   var sport: Sport = Sport.SOCCER
 
   @BeanProperty
-  @NotNull
-  @Size(min = 1)
-  @Column(nullable = false)
-  var competitionName: String = _
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "fedId")
+  var federation: Federations = fed
 
   @BeanProperty
   @NotNull

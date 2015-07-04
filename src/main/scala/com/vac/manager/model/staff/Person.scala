@@ -1,13 +1,14 @@
 package com.vac.manager.model.staff
 
 import javax.persistence._
+import com.vac.manager.model.federation.daojpa.Federations
+
 import scala.beans.BeanProperty
 import com.vac.manager.model.team.Team
 import java.util.Calendar
 import com.vac.manager.model.personal.Address
 import scala.collection.JavaConverters._
 import scravatar.Gravatar
-import com.vac.manager.model.federation.Federation
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import javax.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ class Person(
     stTelephones: String,
     stCardId: String,
     stBirthdate: Calendar,
-    stFederation: Federation
+    stFederation: Federations
 ) {
 
   @Id
@@ -77,7 +78,7 @@ class Person(
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "fedId")
-  var federation: Federation = stFederation
+  var federation: Federations = stFederation
 
   def this() = this("", "", "", null, "", null, null)
 
@@ -94,7 +95,7 @@ class Person(
       (personObj.address == this.address) &&
       (personObj.cardId == this.cardId) &&
       (personObj.birthdate == this.birthdate) &&
-      (personObj.federation == this.federation)
+      (this.federation.equals(personObj.federation))
   }
 
   override def toString = "(" + this.personId + ") " +

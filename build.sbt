@@ -1,3 +1,12 @@
+name := "manager"
+
+organization := "com.vacmatch"
+
+version := "0.0.1"
+
+scalaVersion := "2.11.4"
+
+mainClass in Compile := Some("com.vac.manager.Application")
 
 
 val spring = "org.springframework"
@@ -55,35 +64,25 @@ val testDeps = Seq(
   "org.scoverage" %% "scalac-scoverage-runtime" % "1.0.2" % "test"
 )
 
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
-lazy val root = (project in file("."))
-  .settings(
-    organization := "com.vac",
-    version := "0.0.1",
-    scalaVersion := "2.11.4",
-    name := "manager",
+resolvers ++= Seq(
+  Resolver.mavenLocal,
+  Resolver.url("vacmatch-https-repo") ivys "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
+  // Resolver.ssh("vacmatch-ssh-repo", "corp.vacmatch.com") as("repo", Path.userHome / ".ssh" / "id_rsa") ivys "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
+  Resolver.jcenterRepo,
+  Resolver.sonatypeRepo("snapshots")
+)
 
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+libraryDependencies ++= ourDeps ++ testDeps
 
-  resolvers ++= Seq(
-    Resolver.mavenLocal,
-    Resolver.url("vacmatch-https-repo") ivys "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "https://ci.corp.vacmatch.com/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
-    // Resolver.ssh("vacmatch-ssh-repo", "corp.vacmatch.com") as("repo", Path.userHome / ".ssh" / "id_rsa") ivys "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/ivy-[revision].xml" artifacts "ssh://corp.vacmatch.com:/srv/docker/jenkins/home/userContent/ivy-repo/com/vacmatch/util/[module](_[scalaVersion])/[revision]/[artifact](_[scalaVersion])(-[revision]).[ext]",
-    Resolver.jcenterRepo,
-    Resolver.sonatypeRepo("snapshots")
-  ),
+webInfClasses in webapp := true
 
-  libraryDependencies ++= ourDeps ++ testDeps,
+autoCompilerPlugins := true
 
-  webInfClasses in webapp := true,
+addCompilerPlugin("tv.cntt" %% "xgettext" % "1.3")
 
-  autoCompilerPlugins := true,
-
-  addCompilerPlugin("tv.cntt" %% "xgettext" % "1.3"),
-
-  scalacOptions :=
-      scalacOptions.value :+ ("-P:xgettext:com.vacmatch.util.i18n.I18n")
-  )
+scalacOptions := scalacOptions.value :+ ("-P:xgettext:com.vacmatch.util.i18n.I18n")
 
 // Enable WAR packaging
 tomcat()

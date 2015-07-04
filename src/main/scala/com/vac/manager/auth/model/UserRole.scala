@@ -1,6 +1,6 @@
 package com.vac.manager.auth.model
 
-import com.vac.manager.model.federation.Federation
+import com.vac.manager.model.federation.daojpa._
 import javax.persistence.FetchType
 import javax.persistence.{ Column, Entity, Id }
 import javax.persistence.ManyToOne
@@ -18,5 +18,5 @@ class UserRole {
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  var federation: Federation = _
+  var federation: Federations = _
 }

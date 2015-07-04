@@ -46,9 +46,8 @@ class FederationBeanImplTest extends FeatureSpec with MockitoSugar with GivenWhe
       Given("A mock DAO returning a valid federation for such a serverName")
       val federationDao = mock[FederationDao]
 
-      val fed = new Federation
-      fed.fedId = 77
-      fed.fedName = "TestFed"
+      val fed = Federation(Some(77), "TestFed")
+
       Mockito.when(federationDao findByDomainName "testfed.example") thenReturn Some(fed)
 
       When("The FederationBean gets instantiated with such a servlet")
@@ -56,7 +55,7 @@ class FederationBeanImplTest extends FeatureSpec with MockitoSugar with GivenWhe
       bean.federationDao = federationDao
 
       Then("it should return the fedId as the result")
-      Assert.assertEquals(fed.fedId, bean.getId)
+      Assert.assertEquals(fed.fedId.get, bean.getId)
 
       Then("The mock should have been called once to find the domain name")
       verify(federationDao) findByDomainName "testfed.example"

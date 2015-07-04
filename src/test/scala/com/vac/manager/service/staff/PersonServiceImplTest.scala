@@ -1,5 +1,7 @@
 package test.scala.com.vac.manager.service.StaffService
 
+import com.vac.manager.model.federation.daojpa.FederationDaoJpa
+import com.vac.manager.model.federation.daojpa.Federations
 import com.vac.manager.model.staff.Person
 import scala.collection.JavaConverters._
 import com.vac.manager.service.staff.PersonService
@@ -52,14 +54,17 @@ class PersonServiceImplTest
     personService.addressService = mock[AddressService]
 
     //Initialization of a valid Person
-    validFederation = new Federation
-    validFederation.fedId = 1
+    validFederation = Federation(Some(1), "")
     validAddress = new Address
     validAddress.addressId = 1
 
+    val validFederation_s = new Federations
+    validFederation_s.fedId = validFederation.fedId.get
+    validFederation_s.fedName = validFederation.fedName
+
     validPerson = new Person(
       "Jose", "López Castro", "jlcastro@email.com", "666555444",
-      "33442212X", Calendar.getInstance(), validFederation
+      "33442212X", Calendar.getInstance(), validFederation_s
     )
     validPerson.address = validAddress
     validPerson.personId = 1
@@ -76,7 +81,9 @@ class PersonServiceImplTest
       person.address = null
       val federation: Federation = validFederation
 
-      Mockito.when(personService.federationService.find(federation.fedId)).thenReturn(Some(federation))
+      Mockito.when(personService.federationService.find(federation.fedId.get)).thenReturn(Some(federation))
+
+      personService.federationDao = new FederationDaoJpa
 
       When("A new Person is created")
       val insertedPerson: Person =
@@ -87,7 +94,7 @@ class PersonServiceImplTest
           person.telephones,
           person.cardId,
           person.birthdate,
-          person.federation.getFedId
+          person.federation.fedId
         )
 
       //Set ID to be the same
@@ -135,7 +142,7 @@ class PersonServiceImplTest
 
       Given("An existent federation")
       val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
+      Mockito.when(personService.federationService find (federation.fedId.get)).thenReturn(Some(federation))
 
       When("A new Person is created")
       When("name parameter is empty")
@@ -164,7 +171,7 @@ class PersonServiceImplTest
 
       Given("An existent federation")
       val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
+      Mockito.when(personService.federationService find (federation.fedId.get)).thenReturn(Some(federation))
 
       When("A new Person is created")
       When("name parameter is null")
@@ -194,7 +201,7 @@ class PersonServiceImplTest
 
       Given("An existent federation")
       val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
+      Mockito.when(personService.federationService find (federation.fedId.get)).thenReturn(Some(federation))
 
       When("A new Person is created")
       When("surname parameter is empty")
@@ -224,7 +231,7 @@ class PersonServiceImplTest
 
       Given("An existent federation")
       val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
+      Mockito.when(personService.federationService find (federation.fedId.get)).thenReturn(Some(federation))
 
       When("A new Person is created")
       When("surname parameter is null")

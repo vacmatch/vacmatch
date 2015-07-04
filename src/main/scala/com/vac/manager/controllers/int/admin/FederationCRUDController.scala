@@ -20,10 +20,7 @@ import scala.collection.JavaConverters._
 @Layout("layouts/default_int")
 class FederationCRUDController extends UrlGrabber {
 
-  class FederationCRUD(base: Federation, dns: String) extends Federation {
-    fedId = base.fedId
-    fedName = base.fedName
-
+  class FederationCRUD(base: Federation, dns: String) extends Federation(base.fedId, base.fedName) {
     def getEditLink(): String = getUrl("FederationCRUDController.edit", "fedId" -> fedId)
     def getUserLink(): String = dns
     def getDeleteLink(): String = getUrl("FederationCRUDController.delete", "fedId" -> fedId)
@@ -51,7 +48,7 @@ class FederationCRUDController extends UrlGrabber {
     val raw_federations = federationService.findAll(pageable)
 
     val federations: Seq[FederationCRUD] = raw_federations.map(fed => {
-      val dnslist = federationService findDomainNames fed.fedId
+      val dnslist = fed.fedId.map(federationService findDomainNames _).getOrElse(List())
       val dns = if (dnslist.size > 0) dnslist(0) else "#"
 
       new FederationCRUD(fed, dns)
@@ -63,7 +60,7 @@ class FederationCRUDController extends UrlGrabber {
   }
 
   def create(): ModelAndView = {
-    val fed = new Federation()
+    val fed = Federation(None, "")
 
     return new ModelAndView("int/admin/federation/edit_form")
       .addObject("submitUrl", getUrl("FederationCRUDController.createPost"))
@@ -93,7 +90,7 @@ class FederationCRUDController extends UrlGrabber {
     val domains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
 
     federationService.createFederation(fedName, domains)
-    federationService.findByName(fedName).map(f => createDefaultRoles(f.fedId))
+    federationService.findByName(fedName).flatMap(_.fedId).map(fedId => createDefaultRoles(fedId))
 
     return "redirect:" + getUrl("FederationCRUDController.list")
   }
@@ -102,9 +99,13 @@ class FederationCRUDController extends UrlGrabber {
     @ModelAttribute fed: Federation,
     @RequestParam("dns") dnsTextArea: String
   ): String = {
-    federationService.modifyFederationName(fed.fedId, fed.fedName)
 
-    val prevDomains = federationService.findDomainNames(fed.fedId)
+    fed.fedId.getOrElse {
+      throw new RuntimeException("The federation does not exist")
+    }
+    federationService.modifyFederationName(fed.fedId.get, fed.fedName)
+
+    val prevDomains = federationService.findDomainNames(fed.fedId.get)
     val curDomains = dnsTextArea.split("\n").map(_.trim).filter(_.nonEmpty)
 
     // Add = x in curr / x not in prev
@@ -113,8 +114,8 @@ class FederationCRUDController extends UrlGrabber {
     // Del = x in prev / x not in curr
     val toDel = prevDomains.filterNot { curDomains.contains(_) }
 
-    val added = toAdd.map { dns => (dns, federationService.addFederationDomain(fed.fedId, dns)) }
-    val removed = toDel.map { dns => (dns, federationService.removeFederationDomain(fed.fedId, dns)) }
+    val added = toAdd.map { dns => (dns, federationService.addFederationDomain(fed.fedId.get, dns)) }
+    val removed = toDel.map { dns => (dns, federationService.removeFederationDomain(fed.fedId.get, dns)) }
 
     val tra = added.map {
       case (dns, state) =>

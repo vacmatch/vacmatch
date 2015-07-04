@@ -1,7 +1,12 @@
 package com.vac.manager
 
+import javax.persistence.EntityManager
+
 import com.vac.manager.auth.model.FederationUserDetailsService
 import com.vac.manager.controllers.conversions.{ CalendarFormatter, DateFormatter }
+import com.vac.manager.model.federation.FederationDao
+import com.vac.manager.model.federation.daojpa.FederationDaoJpa
+import com.vac.manager.model.federation.daoslick.FederationDaoSlick
 import com.vac.manager.util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
 import com.vacmatch.support.springscala.ScalaFutureHandlerConfiguration
 import java.util.ArrayList
@@ -14,7 +19,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
 import org.springframework.context.MessageSource
-import org.springframework.context.annotation.{ Bean, ComponentScan, Configuration, Import, Lazy, Scope, ScopedProxyMode }
+import org.springframework.context.annotation._
 import org.springframework.core.annotation.Order
 import org.springframework.core.convert.ConversionService
 import org.springframework.core.convert.converter.Converter
@@ -33,6 +38,9 @@ import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
+import slick.driver.JdbcDriver
+import slick.jdbc.JdbcBackend
+import slick.jdbc.JdbcBackend.DatabaseDef
 import scala.collection.JavaConverters._
 
 @Lazy
@@ -254,6 +262,22 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
     */
   }
 
+  @Bean(name = Array("federationDao", "federationDaoSlick"))
+  @Primary
+  def federationDaoSlick(): FederationDao = {
+    new FederationDaoSlick(slickDriver(), slickDb(dataSource()))
+  }
+
+  @Bean
+  def slickDriver(): JdbcDriver = {
+    slick.driver.SQLiteDriver
+  }
+
+  @Bean
+  def slickDb(dataSource: DataSource): JdbcBackend.DatabaseDef = {
+    slick.jdbc.JdbcBackend.Database.forDataSource(dataSource)
+  }
+
   @Bean
   def dateFormatter(): DateFormatter = {
     new DateFormatter
@@ -276,7 +300,7 @@ class Application extends org.springframework.boot.context.web.SpringBootServlet
   }
 
   private def getConverters(): java.util.Set[Converter[_, _]] = {
-    Set().asJava
+    Set.empty.asInstanceOf[Set[Converter[_, _]]].asJava
   }
 
 }

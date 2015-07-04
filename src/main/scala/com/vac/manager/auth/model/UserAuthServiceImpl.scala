@@ -1,5 +1,7 @@
 package com.vac.manager.auth.model
 
+import com.vac.manager.model.federation.daojpa._
+import com.vac.manager.model.federation.FederationDao
 import com.vac.manager.service.federation.FederationService
 import com.vac.manager.util.FederationBean
 import java.util.Date
@@ -17,9 +19,6 @@ class UserAuthServiceImpl extends UserAuthService {
 
   @Autowired
   var userAuthDao: UserAuthDao = _
-
-  @Autowired
-  var federationService: FederationService = _
 
   def loadUserByUsername(fedId: Long, user: String): Option[User] = {
     userAuthDao.loadUserByUsername(fedId, user)
@@ -48,8 +47,7 @@ class UserAuthServiceImpl extends UserAuthService {
 
   def _createUser(fedId: Long, username: String, password: String, email: String, fullName: String, roles: List[UserRole]): Option[UserDetails] = {
     val u = new User
-    val mfed = federationService.find(fedId)
-    val fed = mfed.get
+    val fed = userAuthDao.entityManager.find(classOf[Federations], fedId.asInstanceOf[java.lang.Long])
 
     try {
       val existing = loadUserByUsername(fedId, username)
@@ -172,7 +170,7 @@ class UserAuthServiceImpl extends UserAuthService {
     if (getRoles(fedId).find(role => role.name equals role_id).nonEmpty)
       return None
 
-    val fed = federationService.find(fedId).get // Not getting the fed is a RuntimeException
+    val fed = userAuthDao.entityManager.find(classOf[Federations], fedId.asInstanceOf[java.lang.Long]) // Not getting the fed is a RuntimeException
     val newRole = new UserRole
     newRole.federation = fed
     newRole.name = role_id

@@ -1,5 +1,6 @@
 package com.vac.manager.auth.model
 
+import com.vac.manager.model.federation.daojpa._
 import com.vac.manager.model.federation.Federation
 import java.util.Calendar
 import java.util.Date
@@ -47,7 +48,7 @@ class User extends UserDetails {
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @BeanProperty
-  var federation: Federation = _
+  var federation: Federations = _
 
   @BeanProperty
   @ManyToMany(fetch = FetchType.EAGER)
