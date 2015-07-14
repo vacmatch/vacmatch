@@ -22,19 +22,19 @@ class UserAuthServiceImpl extends UserAuthService {
   var federationService: FederationService = _
 
   def loadUserByUsername(fedId: Long, user: String): Option[User] = {
-    return userAuthDao.loadUserByUsername(fedId, user)
+    userAuthDao.loadUserByUsername(fedId, user)
   }
 
   def findAllUsers(fedId: Long): Seq[User] = {
-    return userAuthDao.findAllByFed(fedId).asScala
+    userAuthDao.findAllByFed(fedId).asScala
   }
 
   def getFederationAuthorities(fedId: Long): Seq[_ >: GrantedAuthority] = {
-    return userAuthDao.findAllRoles(fedId).asScala
+    userAuthDao.findAllRoles(fedId).asScala
   }
 
   def createUser(fedId: Long, username: String, password: String, email: String, fullName: String): Option[UserDetails] = {
-    return createUser(fedId, username, password, email, fullName, List())
+    createUser(fedId, username, password, email, fullName, List())
   }
 
   def createUser(fedId: Long, username: String, password: String, email: String, fullName: String, textRoles: List[String]): Option[UserDetails] = {
@@ -43,7 +43,7 @@ class UserAuthServiceImpl extends UserAuthService {
 
     val roles = textRoles.map { s => allRoles(s) }
 
-    return _createUser(fedId, username, password, email, fullName, roles)
+    _createUser(fedId, username, password, email, fullName, roles)
   }
 
   def _createUser(fedId: Long, username: String, password: String, email: String, fullName: String, roles: List[UserRole]): Option[UserDetails] = {
@@ -53,139 +53,118 @@ class UserAuthServiceImpl extends UserAuthService {
 
     try {
       val existing = loadUserByUsername(fedId, username)
-      if (existing != null && !existing.isEmpty) throw new Exception("User already exists" + existing.get);
+
+      // if existing is not null and exists
+      Option(existing).flatten
+        .map(e => throw new RuntimeException("User already exists" + e));
+
+      u.federation = fed
+      u.username = username
+      u.encPasswd = password
+      u.email = email
+      u.fullName = fullName
+      u.enabled = true
+      u.lastPasswordChange = new GregorianCalendar()
+      u.lastPasswordChange.setTime(new Date())
+      u.locked = false
+      u.roles = new java.util.HashSet(roles.asJava)
+
+      userAuthDao.save(u)
+
+      Some(u)
+
     } catch {
-      case e: Exception =>
+      case e: RuntimeException =>
         println("Something weird happened due to " + e)
-        return None
+        None
     }
 
-    u.federation = fed
-    u.username = username
-    u.encPasswd = password
-    u.email = email
-    u.fullName = fullName
-    u.enabled = true
-    u.lastPasswordChange = new GregorianCalendar()
-    u.lastPasswordChange.setTime(new Date())
-    u.locked = false
-    u.roles = new java.util.HashSet(roles.asJava)
-
-    userAuthDao.save(u)
-
-    return Some(u)
   }
 
   def addAuthorityToUser(fedId: Long, username: String, role_id: String): Boolean = {
     val roles = userAuthDao.findAllRoles(fedId)
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
-
-    if (maybeUser.isEmpty)
-      return false
-
-    val u = maybeUser.get
-
     val role_to_add = roles.asScala.find { role => role.name equals role_id }
 
-    // Test if user already has that role
-    val existing_role = u.roles.asScala.find { role => role.name equals role_id }
+    maybeUser.exists {
+      u =>
 
-    (existing_role, role_to_add) match {
-      case (None, Some(role)) => {
-        u.roles.add(role_to_add.get)
-        userAuthDao.save(u)
-        return true
-      }
-      case _ => return false
+        // Test if user already has that role
+        val existing_role = u.roles.asScala.find { role => role.name equals role_id }
+
+        (existing_role, role_to_add) match {
+          case (None, Some(role)) => {
+            u.roles.add(role)
+            userAuthDao.save(u)
+            true
+          }
+          case _ => false
+        }
     }
   }
 
   def userHasAuthority(fedId: Long, username: String, role_id: String): Option[UserRole] = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    maybeUser match {
-      case Some(u) =>
-        u.roles.asScala.find { role => role.name equals role_id } match {
-          case Some(role) =>
-            return Some(role)
-          case None => return None
-        }
-      case None => return None
-    }
+    maybeUser.flatMap(_.roles.asScala.find { role => role.name equals role_id })
   }
 
   def removeAuthorityFromUser(fedId: Long, username: String, role_id: String): Boolean = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    return maybeUser match {
-      case Some(u) =>
-        val maybeRole = u.roles.asScala.find { role => role.name equals role_id }
-        maybeRole match {
-          case Some(role) =>
-            u.roles.remove(role)
-            userAuthDao.save(u)
-            return true
-          case _ => false
-        }
-      case _ => false
+    maybeUser.exists { u =>
+      val role = u.roles.asScala.find { role => role.name equals role_id }
+
+      role.exists { role =>
+        u.roles.remove(role)
+        userAuthDao.save(u)
+        true
+      }
     }
   }
 
   def modifyUserName(fedId: Long, username: String, new_username: String): Boolean = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    return maybeUser match {
-      case Some(u) =>
-        if (u.username == new_username)
-          return false
-
+    maybeUser.filterNot(_.username == new_username).exists {
+      u =>
         u.username = new_username
         userAuthDao.save(u)
-        return true
-      case _ => false
+        true
     }
   }
 
   def modifyRealName(fedId: Long, username: String, new_realname: String): Boolean = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    return maybeUser match {
-      case Some(u) =>
-        if (u.fullName == new_realname)
-          return false
-
+    maybeUser.filterNot(_.fullName == new_realname).exists {
+      u =>
         u.fullName = new_realname
         userAuthDao.save(u)
-        return true
-      case None => false
+        true
     }
   }
 
   def modifyEmail(fedId: Long, username: String, new_email: String): Boolean = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    return maybeUser match {
-      case Some(u) =>
-        if (u.email == new_email)
-          return false
-
-        u.email = new_email
-        userAuthDao.save(u)
-        return true
-      case None => false
-    }
+    maybeUser.filterNot(_.email == new_email)
+      .exists {
+        u =>
+          u.email = new_email
+          userAuthDao.save(u)
+          true
+      }
 
   }
 
   def modifyPassword(fedId: Long, username: String, new_password: String): Boolean = {
     val maybeUser = userAuthDao.loadUserByUsername(fedId, username)
 
-    return maybeUser match {
-      case Some(u) =>
-        u.encPasswd = new_password
-        userAuthDao.save(u)
-        return true
-      case None => false
+    maybeUser.exists { u =>
+      u.encPasswd = new_password
+      userAuthDao.save(u)
+      true
     }
   }
 
@@ -200,10 +179,10 @@ class UserAuthServiceImpl extends UserAuthService {
     newRole.humanName = role_name
 
     userAuthDao.saveRole(newRole)
-    return Some(newRole)
+    Some(newRole)
   }
 
   def getRoles(fedId: Long): Seq[UserRole] = {
-    return userAuthDao.findAllRoles(fedId).asScala
+    userAuthDao.findAllRoles(fedId).asScala
   }
 }
