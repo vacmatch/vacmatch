@@ -5,12 +5,12 @@ import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.beans.factory.annotation.Autowired
 import com.vac.manager.service.game.GameService
-import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.util.FederationBean
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 import com.vac.manager.controllers.utils.UrlGrabber
 import org.springframework.web.bind.annotation.RequestParam
-import com.vac.manager.model.competition.LeagueSeason
+import com.vac.manager.model.competition.CompetitionSeason
 import scala.collection.JavaConverters._
 import com.vac.manager.model.game.{ Game }
 import com.vac.manager.model.game.soccer.SoccerAct
@@ -28,7 +28,7 @@ import com.vac.manager.model.game.soccer.SoccerStaffStats
 import com.vac.manager.controllers.actionable.ActionableSoccerAct
 import com.vac.manager.service.game.soccer.SoccerActService
 import com.vac.manager.controllers.actionable.ActionableSoccerStaffStats
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.ClassificationEntry
 import com.vacmatch.util.i18n.I18n
 
 @Controller
@@ -41,7 +41,7 @@ class GameController extends UrlGrabber {
   var gameService: GameService = _
 
   @Autowired
-  var leagueService: LeagueService = _
+  var competitionService: CompetitionService = _
 
   @Autowired
   var soccerActService: SoccerActService = _
@@ -60,7 +60,7 @@ class GameController extends UrlGrabber {
 
     val fedId: Long = federation.getId
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year)
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year)
       .map { season =>
         {
           // Check user permissions
@@ -76,7 +76,7 @@ class GameController extends UrlGrabber {
 
           // TODO Get diferent act depending on the sport
           val actsMap: Map[Int, Seq[ActionableSoccerAct]] =
-            soccerActService.findLeagueSoccerActs(season).map(act =>
+            soccerActService.findCompetitionSoccerActs(season).map(act =>
               new ActionableSoccerAct(act, slug, year, userCanEdit)).groupBy(_.game.matchDay)
 
           val sortedActsMap: SortedMap[Int, java.util.List[ActionableSoccerAct]] =
@@ -91,8 +91,8 @@ class GameController extends UrlGrabber {
         }
       }.getOrElse {
         new ModelAndView("error/show")
-          .addObject("errorTitle", i.t("League season not found"))
-          .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+          .addObject("errorTitle", i.t("Competition season not found"))
+          .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
       }
   }
 
@@ -161,20 +161,20 @@ class GameController extends UrlGrabber {
     val sportFragment: String = "classification/soccer/show_soccer"
     val sportInstance: String = "show_soccer"
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
-      leagueSeason =>
-        val leagueClassification: Seq[SoccerClassificationEntry] =
-          gameService.getLeagueClassification(leagueSeason)
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
+      competitionSeason =>
+        val competitionClassification: Seq[ClassificationEntry] =
+          gameService.getCompetitionClassification(competitionSeason)
 
         new ModelAndView("classification/show")
-          .addObject("leagueClassification", leagueClassification.asJava)
-          .addObject("leagueSeason", leagueSeason)
+          .addObject("competitionClassification", competitionClassification.asJava)
+          .addObject("competitionSeason", competitionSeason)
           .addObject("sportFragment", sportFragment)
           .addObject("sportInstance", sportInstance)
     }.getOrElse {
       new ModelAndView("error/show")
-        .addObject("errorTitle", i.t("League season not found"))
-        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+        .addObject("errorTitle", i.t("Competition season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
     }
   }
 

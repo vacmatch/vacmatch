@@ -16,7 +16,7 @@ import javax.persistence.JoinColumns
 
 @Entity
 @Table(name = "COMPETITION_MEMBER")
-class CompetitionMember(start: Calendar, league: LeagueSeason, te: Team) {
+class CompetitionMember(start: Calendar, competition: CompetitionSeason, te: Team) {
 
   @Id
   @SequenceGenerator(name = "competitionMemberIdGenerator", sequenceName = "competitionMember_id_seq")
@@ -32,10 +32,10 @@ class CompetitionMember(start: Calendar, league: LeagueSeason, te: Team) {
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumns(Array(
-    new JoinColumn(name = "league.id"),
+    new JoinColumn(name = "competition.id"),
     new JoinColumn(name = "seasonSlug")
   ))
-  var leagueSeason: LeagueSeason = league
+  var competitionSeason: CompetitionSeason = competition
 
   @BeanProperty
   @ManyToOne(fetch = FetchType.EAGER)

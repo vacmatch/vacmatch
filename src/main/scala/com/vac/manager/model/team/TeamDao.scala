@@ -1,8 +1,7 @@
 package com.vac.manager.model.team
 
 import com.vac.manager.model.generic.GenericDao
-import com.vac.manager.model.competition.Competition
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 
 trait TeamDao extends GenericDao[Team, java.lang.Long] {
 
@@ -10,7 +9,7 @@ trait TeamDao extends GenericDao[Team, java.lang.Long] {
 
   def findTeamsByFederationId(fedId: Long): Seq[Team]
 
-  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team]
+  def findTeamsByCompetitionSeasonId(competitionSeasonId: CompetitionSeasonPK): Seq[Team]
 
   def hasCompetitions(id: Long): Boolean
 

@@ -1,38 +1,41 @@
 package com.vac.manager.service.game
 
 import com.vac.manager.model.game.Game
-import com.vac.manager.model.competition.LeagueSeason
+import com.vac.manager.model.competition.CompetitionSeason
 import javax.management.InstanceNotFoundException
-import com.vac.manager.model.game.SoccerClassificationEntry
+import com.vac.manager.model.game.ClassificationEntry
 
 trait GameService {
 
   def find(gameId: Long): Option[Game]
 
-  def findLeagueCalendar(leagueSeason: LeagueSeason): Seq[Game]
+  def findCompetitionCalendar(competitionSeason: CompetitionSeason): Seq[Game]
 
   /**
     * Create needed matches for a season
-    * @param leagueSeason The season
+    * @param competitionSeason The season
     * @param teamsNumber The number of teams which are going to compete that season
-    * @param leagueRounds The number of rounds that this league will have
-    * @throws IllegalArgumentException if teamsNumber or leagueRound are <= 0 or if leagueSeason is null
+    * @param competitionRounds The number of rounds that this competition will have
+    * @throws IllegalArgumentException if teamsNumber or competitionRound are <= 0 or if competitionSeason is null
     * @throws DuplicateInstanceException if exists another calendar created for this season
-    * @throws InstanceNotFoundException if leagueSeason doesn't exist
+    * @throws InstanceNotFoundException if competitionSeason doesn't exist
     * @return The full list of matches for the season
     */
   @throws[IllegalArgumentException]
   @throws[InstanceNotFoundException]
-  def createLeagueCalendar(leagueSeason: LeagueSeason, teamsNumber: Int, leagueRounds: Int): Seq[Game]
+  def createCompetitionCalendar(competitionSeason: CompetitionSeason, teamsNumber: Int, competitionRounds: Int): Seq[Game]
 
   /**
     * Remove all games from a season
+    * @throws IllegalArgumentException if competitionSeason is null
+    * @throws InstanceNotFoundException if it tries to remove a not existent act
     */
+  @throws[InstanceNotFoundException]
   @throws[IllegalArgumentException]
-  def removeLeagueCalendarFromSeason(leagueSeason: LeagueSeason)
+  def removeCompetitionCalendarFromSeason(competitionSeason: CompetitionSeason)
 
-  @throws[IllegalArgumentException]("If league season doesn't exist")
-  def getLeagueClassification(leagueSeasson: LeagueSeason): Seq[SoccerClassificationEntry]
+  @throws[IllegalArgumentException]("If competition season doesn't exist")
+  def getCompetitionClassification(competitionSeasson: CompetitionSeason): Seq[ClassificationEntry]
 
 }
 

@@ -8,21 +8,19 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import java.util.Calendar
 import com.vac.manager.model.staff.Person
-import com.vac.manager.model.competition.Competition
 import scala.collection.JavaConverters._
 import com.vac.manager.model.personal.Address
 import org.springframework.transaction.annotation.Transactional
 import com.vac.manager.model.generic.exceptions.IllegalArgumentException
 import com.vac.manager.service.personal.AddressService
 import com.vac.manager.service.staff.PersonService
-import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.model.staff.StaffMember
 import java.util.Arrays.ArrayList
 import java.util.ArrayList
 import com.vac.manager.model.staff.StaffMemberDao
 import com.vac.manager.model.generic.exceptions.DuplicateInstanceException
 import com.vac.manager.model.generic.exceptions.InstanceNotFoundException
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 
 @Service("teamService")
 @Transactional
@@ -39,9 +37,6 @@ class TeamServiceImpl extends TeamService {
 
   @Autowired
   var personService: PersonService = _
-
-  @Autowired
-  var competitionService: CompetitionService = _
 
   def find(teamId: Long): Option[Team] = {
     teamDao.findById(teamId)
@@ -66,8 +61,8 @@ class TeamServiceImpl extends TeamService {
     teamDao.findAll
   }
 
-  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team] = {
-    teamDao.findTeamsByLeagueSeasonId(leagueSeasonId)
+  def findTeamsByCompetitionSeasonId(competitionSeasonId: CompetitionSeasonPK): Seq[Team] = {
+    teamDao.findTeamsByCompetitionSeasonId(competitionSeasonId)
   }
 
   def findStaffMemberById(staffMemberId: Long): Option[StaffMember] = {

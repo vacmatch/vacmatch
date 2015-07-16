@@ -1,7 +1,7 @@
 package com.vac.manager.controllers.admin
 
 import com.vac.manager.controllers.utils.UrlGrabber
-import com.vac.manager.service.competition.LeagueService
+import com.vac.manager.service.competition.CompetitionService
 import com.vac.manager.service.game.GameService
 import com.vac.manager.util.FederationBean
 import com.vacmatch.util.i18n.I18n
@@ -44,7 +44,7 @@ class GameAdminController extends UrlGrabber {
   var gameService: GameService = _
 
   @Autowired
-  var leagueService: LeagueService = _
+  var competitionService: CompetitionService = _
 
   @Autowired
   var teamService: TeamService = _
@@ -68,7 +68,7 @@ class GameAdminController extends UrlGrabber {
     val submitUrl: String = getUrl("GameAdminController.createCalendarPost", "slug" -> slug, "year" -> year)
     val showCalendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
       season =>
         {
           new ModelAndView("admin/calendar/edit")
@@ -79,8 +79,8 @@ class GameAdminController extends UrlGrabber {
         }
     }.getOrElse {
       new ModelAndView("error/show")
-        .addObject("errorTitle", i.t("League season not found"))
-        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+        .addObject("errorTitle", i.t("Competition season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
     }
   }
 
@@ -88,15 +88,15 @@ class GameAdminController extends UrlGrabber {
     @PathVariable("slug") slug: String,
     @PathVariable("year") year: String,
     @RequestParam(value = "teamsNumber", defaultValue = "0") teamsNumber: Int,
-    @RequestParam(value = "leagueRounds", defaultValue = "0") leagueRounds: Int
+    @RequestParam(value = "competitionRounds", defaultValue = "0") competitionRounds: Int
   ): ModelAndView = {
 
     val fedId: Long = federation.getId
 
     // Gets the season
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
       season =>
-        Try(gameService.createLeagueCalendar(season, teamsNumber, leagueRounds)) match {
+        Try(gameService.createCompetitionCalendar(season, teamsNumber, competitionRounds)) match {
           case Success(g) =>
             new ModelAndView("redirect:" + getUrl("GameController.list", "slug" -> slug, "year" -> year))
 
@@ -105,8 +105,8 @@ class GameAdminController extends UrlGrabber {
             val cause: Throwable = e.getCause()
             cause match {
               case inf: InstanceNotFoundException =>
-                mv.addObject("errorTitle", i.t("League season not found"))
-                  .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+                mv.addObject("errorTitle", i.t("Competition season not found"))
+                  .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
               case iae: IllegalArgumentException =>
                 mv.addObject("errorTitle", i.t("Incorrect values"))
                   .addObject("errorDescription", i.t("Values not valid for create calendar."))
@@ -114,7 +114,7 @@ class GameAdminController extends UrlGrabber {
                   .addObject("backLink", getUrl("GameAdminController.createCalendar", "slug" -> slug, "year" -> year))
               case die: DuplicateInstanceException =>
                 mv.addObject("errorTitle", i.t("Duplicate calendar"))
-                  .addObject("errorDescription", i.t("There's a calendar for this league season."))
+                  .addObject("errorDescription", i.t("There's a calendar for this competition season."))
                   .addObject("backText", i.t("Go to calendar"))
                   .addObject("backLink", getUrl("GameController.list", "slug" -> slug, "year" -> year))
               case _ =>
@@ -124,8 +124,8 @@ class GameAdminController extends UrlGrabber {
         }
     }.getOrElse {
       new ModelAndView("error/show")
-        .addObject("errorTitle", i.t("League season not found"))
-        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+        .addObject("errorTitle", i.t("Competition season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
     }
   }
 
@@ -139,7 +139,7 @@ class GameAdminController extends UrlGrabber {
     val submitUrl: String = getUrl("GameAdminController.deleteCalendarPost", "slug" -> slug, "year" -> year)
     val calendarLink: String = getUrl("GameController.list", "slug" -> slug, "year" -> year)
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
       season =>
         {
           new ModelAndView("admin/calendar/delete")
@@ -149,8 +149,8 @@ class GameAdminController extends UrlGrabber {
         }
     }.getOrElse {
       new ModelAndView("error/show")
-        .addObject("errorTitle", i.t("League season not found"))
-        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+        .addObject("errorTitle", i.t("Competition season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
     }
   }
 
@@ -161,9 +161,9 @@ class GameAdminController extends UrlGrabber {
 
     val fedId: Long = federation.getId
 
-    leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
+    competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
       season =>
-        Try(gameService.removeLeagueCalendarFromSeason(season)) match {
+        Try(gameService.removeCompetitionCalendarFromSeason(season)) match {
           case Success(_) =>
             new ModelAndView("redirect:" + getUrl("GameController.list", "slug" -> slug, "year" -> year))
 
@@ -171,18 +171,12 @@ class GameAdminController extends UrlGrabber {
             val mv = new ModelAndView("error/show")
             val cause: Throwable = e.getCause()
             cause match {
+              case e: IllegalArgumentException =>
+                mv.addObject("errorTitle", i.t("Incorrect values"))
+                  .addObject("errorDescription", i.t("This competition season isn't valid for remove calendar."))
               case e: InstanceNotFoundException =>
-                e.getClassName match {
-                  case "LeagueSeason" =>
-                    mv.addObject("errorTitle", i.t("League season not found"))
-                      .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
-                  case "SoccerAct" =>
-                    mv.addObject("errorTitle", i.t("Soccer act not found"))
-                      .addObject("errorDescription", i.t("Sorry!, a soccer act from this calendar doesn't exist"))
-                  case _ =>
-                    mv.addObject("errorTitle", i.t("Unexpected error"))
-                      .addObject("errorDescription", cause)
-                }
+                mv.addObject("errorTitle", i.t("Soccer act not found"))
+                  .addObject("errorDescription", i.t("Sorry!, a soccer act from this calendar doesn't exist"))
               case _ =>
                 mv.addObject("errorTitle", i.t("Unexpected error"))
                   .addObject("errorDescription", cause)
@@ -190,8 +184,8 @@ class GameAdminController extends UrlGrabber {
         }
     }.getOrElse {
       new ModelAndView("error/show")
-        .addObject("errorTitle", i.t("League season not found"))
-        .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+        .addObject("errorTitle", i.t("Competition season not found"))
+        .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
     }
   }
 
@@ -216,9 +210,9 @@ class GameAdminController extends UrlGrabber {
         // TODO select act by sport
         val actFragment: String = "admin/game/soccer/edit_soccer"
 
-        leagueService.findSeasonByLeagueSlug(fedId, slug, year).map {
-          leagueSeason =>
-            val teamsList: Seq[Team] = teamService.findTeamsByLeagueSeasonId(leagueSeason.id)
+        competitionService.findSeasonByCompetitionSlug(fedId, slug, year).map {
+          competitionSeason =>
+            val teamsList: Seq[Team] = teamService.findTeamsByCompetitionSeasonId(competitionSeason.id)
 
             val localPlayerStats: Seq[ActionableSoccerStaffStats] =
               soccerStaffStatsService.findLocalPlayersStats(act.actId).map(
@@ -254,8 +248,8 @@ class GameAdminController extends UrlGrabber {
               .addObject("calendarLink", backLink)
         }.getOrElse {
           new ModelAndView("error/show")
-            .addObject("errorTitle", i.t("League season not found"))
-            .addObject("errorDescription", i.t("Sorry!, this league season doesn't exist"))
+            .addObject("errorTitle", i.t("Competition season not found"))
+            .addObject("errorDescription", i.t("Sorry!, this competition season doesn't exist"))
         }
     }.getOrElse {
       new ModelAndView("error/show")

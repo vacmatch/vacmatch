@@ -4,10 +4,9 @@ import com.vac.manager.model.team.Team
 import javax.persistence.Entity
 import javax.persistence.Table
 import java.util.Calendar
-import com.vac.manager.model.competition.Competition
 import com.vac.manager.model.personal.Address
 import com.vac.manager.model.staff.StaffMember
-import com.vac.manager.model.competition.LeagueSeasonPK
+import com.vac.manager.model.competition.CompetitionSeasonPK
 
 trait TeamService {
 
@@ -19,7 +18,7 @@ trait TeamService {
 
   def findTeamsByFederationId(fedId: Long): Seq[Team]
 
-  def findTeamsByLeagueSeasonId(leagueSeasonId: LeagueSeasonPK): Seq[Team]
+  def findTeamsByCompetitionSeasonId(competitionSeasonId: CompetitionSeasonPK): Seq[Team]
 
   def findStaffMemberById(staffMemberId: Long): Option[StaffMember]
 

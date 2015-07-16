@@ -1,30 +1,66 @@
 package com.vac.manager.model.competition
 
+import java.util.Calendar
 import javax.persistence._
 import scala.beans.BeanProperty
-import com.vac.manager.model.federation.Federation
-import java.util.ArrayList
+import javax.validation.constraints.Size
+import javax.validation.constraints.NotNull
 
 @Entity
-@Table(name = "COMPETITION")
-class Competition(compName: String, fed: Federation) {
+@Table(
+  name = "COMPETITION",
+  uniqueConstraints = Array(new UniqueConstraint(columnNames = Array("fedId", "slug")))
+) //@BatchSize(size=10)
+class Competition {
 
   @Id
+  @Column(name = "competition_id")
   @SequenceGenerator(name = "competitionIdGenerator", sequenceName = "competition_id_seq")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "competitionIdGenerator")
-  var compId: Long = _
+  @BeanProperty
+  var competitionId: java.lang.Long = _
+
+  @BeanProperty
+  @Column(nullable = false) // TODO: Actually relate to real federations
+  var fedId: java.lang.Long = _
 
   @BeanProperty
   @Column
-  var competitionName: String = compName
+  @Enumerated(EnumType.STRING)
+  var sport: Sport = Sport.SOCCER
 
   @BeanProperty
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "fedId")
-  var federation: Federation = fed
+  @NotNull
+  @Size(min = 1)
+  @Column(nullable = false)
+  var competitionName: String = _
 
-  def this() = this(null, null)
+  @BeanProperty
+  @NotNull
+  @Size(min = 1)
+  @Column(nullable = false)
+  var slug: String = _
 
-  override def toString = "(" + this.compId + ") " + this.competitionName
+  @BeanProperty
+  @Column
+  @Temporal(TemporalType.DATE)
+  var startDate: Calendar = _
 
+  @BeanProperty
+  @Column
+  @Temporal(TemporalType.DATE)
+  var endDate: Calendar = _
+
+  @BeanProperty // TODO: Create sponsor things
+  @Transient
+  var sponsorList: java.util.List[String] = _
+
+  @BeanProperty
+  @OneToMany(mappedBy = "id.competition", fetch = FetchType.EAGER)
+  @OrderBy("startTime DESC")
+  var seasonList: java.util.List[CompetitionSeason] = _
+
+  override def toString: String = {
+    "main.scala.model.competition.Competition{fedId=" + (if (fedId != null) { fedId.toString() } else { "null" }) + ", name=" + competitionName + "}"
+  }
 }

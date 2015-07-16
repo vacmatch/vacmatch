@@ -11,7 +11,7 @@ class ActionableGame(val game: Game, val slug: String, val year: String, userCan
     with UrlGrabber {
 
   gameId = game.gameId
-  leagueSeason = game.leagueSeason
+  competitionSeason = game.competitionSeason
   matchDay = game.matchDay
 
   val showLink = getUrl("GameController.show", "slug" -> slug, "year" -> year, "gameId" -> game.gameId)

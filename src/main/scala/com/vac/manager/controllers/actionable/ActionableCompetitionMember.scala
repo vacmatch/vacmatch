@@ -10,11 +10,11 @@ class ActionableCompetitionMember(cm: CompetitionMember, slug: String, year: Str
   id = cm.id
   startDate = cm.startDate
   endDate = cm.endDate
-  leagueSeason = cm.leagueSeason
+  competitionSeason = cm.competitionSeason
   team = cm.team
 
   def getDisenrollPostLink(): String = {
-    getUrl("LeagueSeasonAdminController.disenrollTeamInSeasonPost", "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
+    getUrl("CompetitionSeasonAdminController.disenrollTeamInSeasonPost", "teamId" -> team.teamId, "slug" -> slug, "year" -> year)
   }
 
 }

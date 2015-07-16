@@ -59,7 +59,8 @@ class PersonServiceImplTest
 
     validPerson = new Person(
       "Jose", "López Castro", "jlcastro@email.com", "666555444",
-      "33442212X", Calendar.getInstance(), validFederation)
+      "33442212X", Calendar.getInstance(), validFederation
+    )
     validPerson.address = validAddress
     validPerson.personId = 1
 
@@ -86,7 +87,8 @@ class PersonServiceImplTest
           person.telephones,
           person.cardId,
           person.birthdate,
-          person.federation.getFedId)
+          person.federation.getFedId
+        )
 
       //Set ID to be the same
       person.personId = insertedPerson.personId
@@ -117,7 +119,8 @@ class PersonServiceImplTest
             person.telephones,
             person.cardId,
             person.birthdate,
-            notExistentFedId)
+            notExistentFedId
+          )
       }
 
       Then("The Person cannot be created")
@@ -146,7 +149,8 @@ class PersonServiceImplTest
             person.telephones,
             person.cardId,
             person.birthdate,
-            person.federation.fedId)
+            person.federation.fedId
+          )
       }
 
       Then("The Person cannot be created")
@@ -174,7 +178,8 @@ class PersonServiceImplTest
             person.telephones,
             person.cardId,
             person.birthdate,
-            person.federation.fedId)
+            person.federation.fedId
+          )
       }
 
       Then("The Person cannot be created")
@@ -203,7 +208,8 @@ class PersonServiceImplTest
             person.telephones,
             person.cardId,
             person.birthdate,
-            person.federation.fedId)
+            person.federation.fedId
+          )
       }
 
       Then("The Person cannot be created")
@@ -232,100 +238,13 @@ class PersonServiceImplTest
             person.telephones,
             person.cardId,
             person.birthdate,
-            person.federation.fedId)
+            person.federation.fedId
+          )
       }
 
       Then("The Person cannot be created")
 
     }
-
-    scenario("Person cannot be created if Person cardId is empty") {
-
-      Given("Empty Person cardId")
-      val person: Person = validPerson
-      person.cardId = ""
-
-      Given("An existent federation")
-      val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
-
-      When("A new Person is created")
-      When("cardId parameter is empty")
-
-      intercept[IllegalArgumentException] {
-        val insertedPerson: Person =
-          personService.createPerson(
-            person.name,
-            person.surname,
-            person.email,
-            person.telephones,
-            person.cardId,
-            person.birthdate,
-            person.federation.fedId)
-      }
-
-      Then("The Person cannot be created")
-
-    }
-
-    scenario("Person cannot be created if Person cardId is null") {
-
-      Given("Null Person cardId")
-      val person: Person = validPerson
-      person.cardId = null
-
-      Given("An existent federation")
-      val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
-
-      When("A new Person is created")
-      When("cardId parameter is null")
-
-      intercept[IllegalArgumentException] {
-        val insertedPerson: Person =
-          personService.createPerson(
-            person.name,
-            person.surname,
-            person.email,
-            person.telephones,
-            person.cardId,
-            person.birthdate,
-            person.federation.fedId)
-      }
-
-      Then("The Person cannot be created")
-
-    }
-
-    scenario("Person cannot be created if Person birthdate is null") {
-
-      Given("Null Person birthdate")
-      val person: Person = validPerson
-      person.birthdate = null
-
-      Given("An existent federation")
-      val federation: Federation = validFederation
-      Mockito.when(personService.federationService find (federation.fedId)).thenReturn(Some(federation))
-
-      When("A new Person is created")
-      When("birthdate parameter is null")
-
-      intercept[IllegalArgumentException] {
-        val insertedPerson: Person =
-          personService.createPerson(
-            person.name,
-            person.surname,
-            person.email,
-            person.telephones,
-            person.cardId,
-            person.birthdate,
-            person.federation.fedId)
-      }
-
-      Then("The Person cannot be created")
-
-    }
-
   }
 
   feature("Person modification") {
@@ -345,7 +264,8 @@ class PersonServiceImplTest
 
       Mockito.when(personService.addressService.createAddress(
         address.firstLine, address.secondLine, address.postCode,
-        address.province, address.locality, address.country)).thenReturn(address)
+        address.province, address.locality, address.country
+      )).thenReturn(address)
 
       When("Person try to be modified")
       val maybePerson: Option[Person] =
@@ -357,7 +277,8 @@ class PersonServiceImplTest
           person.telephones,
           address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
 
       Then("Person must be modified")
       val modifiedPerson: Person = maybePerson.get
@@ -371,7 +292,8 @@ class PersonServiceImplTest
           address.postCode,
           address.locality,
           address.province,
-          address.country)
+          address.country
+        )
 
       Then("Person must be saved")
       Then("Person address must be saved")
@@ -397,7 +319,8 @@ class PersonServiceImplTest
           person.telephones,
           person.address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
 
       Then("Person can't be modified")
       modifiedPerson should equal(None)
@@ -427,7 +350,8 @@ class PersonServiceImplTest
           person.telephones,
           person.address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
       }
 
       Then("Person can't be modified")
@@ -454,7 +378,8 @@ class PersonServiceImplTest
           person.telephones,
           person.address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
       }
 
       Then("Person can't be modified")
@@ -481,7 +406,8 @@ class PersonServiceImplTest
           person.telephones,
           person.address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
       }
 
       Then("Person can't be modified")
@@ -508,93 +434,14 @@ class PersonServiceImplTest
           person.telephones,
           person.address,
           person.cardId,
-          person.birthdate)
+          person.birthdate
+        )
       }
 
       Then("Person can't be modified")
 
     }
 
-    scenario("Someone try to modify a existent Person with null cardId") {
-
-      Given("An existent Person")
-      Given("Null Person cardId")
-      val person: Person = validPerson
-      person.cardId = null
-
-      Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
-
-      When("Person try to be modified")
-      When("cardId is null")
-      intercept[IllegalArgumentException] {
-        personService.modifyPerson(
-          person.personId,
-          person.name,
-          person.surname,
-          person.email,
-          person.telephones,
-          person.address,
-          person.cardId,
-          person.birthdate)
-      }
-
-      Then("Person can't be modified")
-
-    }
-
-    scenario("Someone try to modify a existent Person with empty cardId") {
-
-      Given("An existent Person")
-      Given("Empty Person cardId")
-      val person: Person = validPerson
-      person.cardId = ""
-
-      Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
-
-      When("Person try to be modified")
-      When("cardId is empty")
-      intercept[IllegalArgumentException] {
-        personService.modifyPerson(
-          person.personId,
-          person.name,
-          person.surname,
-          person.email,
-          person.telephones,
-          person.address,
-          person.cardId,
-          person.birthdate)
-      }
-
-      Then("Person can't be modified")
-
-    }
-
-    scenario("Someone try to modify a existent Person with null birthdate") {
-
-      Given("An existent Person")
-      Given("Null Person birthdate")
-      val person: Person = validPerson
-      person.birthdate = null
-
-      Mockito.when(personService.personDao.findById(person.personId)).thenReturn(Some(person))
-
-      When("Person try to be modified")
-      When("birthdate is null")
-      intercept[IllegalArgumentException] {
-        personService.modifyPerson(
-          person.personId,
-          person.name,
-          person.surname,
-          person.email,
-          person.telephones,
-          person.address,
-          person.cardId,
-          person.birthdate)
-      }
-
-      Then("Person can't be modified")
-
-    }
   }
 
   feature("Person address modification") {
@@ -616,7 +463,8 @@ class PersonServiceImplTest
 
       Mockito.when(personService.addressService.createAddress(
         newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
-        newAddress.locality, newAddress.province, newAddress.country)).thenReturn(newAddress)
+        newAddress.locality, newAddress.province, newAddress.country
+      )).thenReturn(newAddress)
 
       When("Person address try to be modified")
       val modifiedPerson: Option[Person] =
@@ -646,7 +494,8 @@ class PersonServiceImplTest
 
       Mockito.when(personService.addressService.createAddress(
         newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
-        newAddress.locality, newAddress.province, newAddress.country)).thenReturn(newAddress)
+        newAddress.locality, newAddress.province, newAddress.country
+      )).thenReturn(newAddress)
 
       When("Person address try to be modified")
       val modifiedPerson: Option[Person] =
@@ -684,7 +533,8 @@ class PersonServiceImplTest
       Then("New address can't be saved in the DB")
       verify(personService.addressService, never).createAddress(
         newAddress.firstLine, newAddress.secondLine, newAddress.postCode,
-        newAddress.locality, newAddress.province, newAddress.country)
+        newAddress.locality, newAddress.province, newAddress.country
+      )
 
       Then("Person can't be modified")
       modifiedPerson should equal(None)
@@ -714,7 +564,8 @@ class PersonServiceImplTest
 
       Then("New address must be saved in the DB")
       verify(personService.addressService).createAddress(
-        "", "", "", "", "", "")
+        "", "", "", "", "", ""
+      )
 
     }
 
@@ -741,7 +592,8 @@ class PersonServiceImplTest
 
       Then("New address can't be saved in the DB")
       verify(personService.addressService, never).createAddress(
-        anyString, anyString, anyString, anyString, anyString, anyString)
+        anyString, anyString, anyString, anyString, anyString, anyString
+      )
 
       Then("Person can't be modified")
       modifiedPerson.get.address should equal(oldAddress)
