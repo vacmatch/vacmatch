@@ -1,15 +1,15 @@
 package com.vac.manager
 
-import java.util.ArrayList
-import javax.servlet.ServletRequest
-import javax.sql.DataSource
-
 import com.vac.manager.auth.model.FederationUserDetailsService
 import com.vac.manager.controllers.conversions.{ CalendarFormatter, DateFormatter }
 import com.vac.manager.util.{ FederationBean, FederationBeanImpl, TenantFilter, ThymeleafLayoutInterceptor }
+import com.vacmatch.support.springscala.ScalaFutureHandlerConfiguration
+import java.util.ArrayList
+import javax.servlet.ServletRequest
+import javax.sql.DataSource
 import org.apache.log4j.LogManager
 import org.resthub.web.springmvc.router.RouterConfigurationSupport
-import org.springframework.beans.factory.annotation.{ Autowired, Value }
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.embedded.{ FilterRegistrationBean, ServletRegistrationBean }
@@ -23,7 +23,7 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.{ EnableWebSecurity, WebSecurityConfigurerAdapter }
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.csrf.CsrfFilter
@@ -33,7 +33,6 @@ import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.config.annotation.{ InterceptorRegistry, ResourceHandlerRegistry }
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import org.thymeleaf.templateresolver.TemplateResolver
-
 import scala.collection.JavaConverters._
 
 @Lazy
@@ -161,7 +160,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 @EnableTransactionManagement
 @EnableAutoConfiguration
 @ComponentScan(basePackages = Array("com.vac.manager"))
-@Import(Array(classOf[WebAppConfig], classOf[I18nableApplication], classOf[WebSecurityConfig]))
+@Import(Array(
+  classOf[WebAppConfig],
+  classOf[I18nableApplication],
+  classOf[WebSecurityConfig],
+  classOf[ScalaFutureHandlerConfiguration]
+))
 class WebApplication extends Application {
 
   @Bean
