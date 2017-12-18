@@ -236,11 +236,13 @@ bissected by features, although bisect'ing features can be a bit harder.
 License
 =======
 
-Copyright 2015 The VACMatch Contributors. All rights reserved.
+Copyright 2015 VACmatch
 
-The content within VACMatch organizational repos is copyrighted and
-intellectual property which may not be publicly released until proper
-authorization.
+This project is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+VACmatch is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with VACmatch. If not, see http://www.gnu.org/licenses/.
 
 
   [ensime-server]: http://github.com/ensime/ensime-server
